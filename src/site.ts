@@ -53,7 +53,8 @@ export type NavItem = {
 /**
  * Main nav — numbered like an engineering index.
  * Updates lives in the footer only.
- * Collection sections are filtered at render time via getVisibleNav().
+ * Collection sections are filtered + renumbered via nav-gate (getVisibleNav /
+ * siteSidebarItems). Static `num` values here are source-order only.
  */
 export const NAV: readonly NavItem[] = [
   { num: '00', label: 'Home', href: '/', always: true },
