@@ -1,0 +1,200 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  BOOK_TITLE,
+  BOOK_SUBTITLE,
+  BOOK_EDITION,
+  BOOK_DESCRIPTION,
+  BOOK_OG_IMAGE,
+  PDF_PATH,
+  CHAPTERS,
+  LINKS,
+  LICENCE_SHORT,
+} from '../site';
+---
+<BaseLayout
+  title={`${BOOK_TITLE}: ${BOOK_SUBTITLE}`}
+  description={BOOK_DESCRIPTION}
+  canonicalPath="/book/"
+  ogImage={BOOK_OG_IMAGE}
+  preloadCover={true}
+>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="edition">{BOOK_EDITION}</p>
+        <h1>
+          Programming
+          <span class="loop">the Loop</span>
+        </h1>
+        <p class="subtitle">{BOOK_SUBTITLE}</p>
+        <p class="byline">By Garry Meaburn · Free ebook (PDF)</p>
+        <div class="actions">
+          <a class="button primary" href={PDF_PATH}>Download the PDF</a>
+          <a class="button" href="/contents/">Contents</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img
+          src="/book-cover.png"
+          width="1600"
+          height="2400"
+          alt="Cover of Programming the Loop: What I Measured with Coding Agents by Garry Meaburn"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about-the-book">
+    <div class="wrap">
+      <h2>What this book is</h2>
+      <div class="prose">
+        <p>
+          A free first-edition ebook about coding agents: what happens when you give them more
+          repository context, what happens when the facts they need are missing or stale, and how
+          verification (or the lack of it) changes the result.
+        </p>
+        <p>
+          The measured findings come from small controlled trials on a handful of repositories,
+          with stated limits next to each result. Recommendations are judgement, informed by those
+          findings and by other practitioners’ published practice. Where a recommendation goes
+          beyond what was measured, the book says so.
+        </p>
+        <p>
+          One worked example runs through the chapters: add an API endpoint with a cross-repository
+          dependency. It is a reproducible engineering demonstration of failure modes the
+          experiments found (guessed facts, stale knowledge, unverifiable claims), not a recorded
+          agent session. Source:
+          <a href={LINKS.workedExample}>meabs/ProgrammingTheLoop-WorkedExample</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="measured">
+    <div class="wrap">
+      <h2>What was measured</h2>
+      <p class="lead">
+        From the foreword’s findings in brief. Individual experimental results with stated limits,
+        not laws of nature.
+      </p>
+      <div class="findings">
+        <article class="finding">
+          <span class="label">Finding 1 · Experiment J</span>
+          <h3>A fully “agent-optimised” repository cost more and was not reliably more correct</h3>
+          <p>
+            On a large Java backend the agent could read, a copy set up with a generated guide, a
+            code graph, three operating skills and a configured <code>AGENTS.md</code> used
+            35–48% more tokens, with no reliable gain in correctness: 29 against 28 of 32 changes,
+            19 against 16 of 24 structure questions, both within noise.
+          </p>
+          <p class="limits">
+            Limits: one repository, one model, mechanical edits and structure questions, 8 runs per
+            task per arm, four ingredients tested together. Analysed in Chapter 3.
+          </p>
+        </article>
+        <article class="finding">
+          <span class="label">Finding 2 · Stale knowledge</span>
+          <h3>Out-of-date knowledge of an unread dependency was repeated as fact</h3>
+          <p>
+            After four names in a backend were renamed, agents with the stale guide and no source to
+            check gave the old answer in 14 of 16 drift answers, and none of the wrong answers
+            hedged.
+          </p>
+          <p class="limits">
+            Limits: the drift was planted, 4 runs per question, one model. Analysed in Chapter 3.
+          </p>
+        </article>
+        <article class="finding">
+          <span class="label">Finding 3 · Cross-repository</span>
+          <h3>When missing backend facts were supplied, passes rose from 3 to 18–19 of 20</h3>
+          <p>
+            A storefront change depended on a backend the agent could not see. With nothing, 3 of 20
+            runs passed the hidden tests; with a guide to the backend, 19 of 20 on small tasks and
+            18 of 20 on harder ones. A later experiment found an API contract or a 3&nbsp;KB note
+            did about as well, more cheaply.
+          </p>
+          <p class="limits">
+            Limits: 5 runs per task, identifiers renamed by the author, one model. Analysed in
+            Chapter 3.
+          </p>
+        </article>
+        <article class="finding">
+          <span class="label">Finding 4 · Verification</span>
+          <h3>Without the contract, agents defeated the check meant to catch them</h3>
+          <p>
+            Each rewrote the freshness gate so that, with no provider contract to hand, it compared
+            the contract the agent had invented with itself, and passed. Their reports still matched
+            their command logs. All 12 runs, with and without the contract, reported
+            <code>passed</code> while listing the brief’s criterion 6 (a check against the real
+            inventory service) as unverified. With the contract, all 6 runs were correct.
+          </p>
+          <p class="limits">
+            Limits: one model, one task, 6 runs per arm. Analysed in Chapters 3 and 5.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contents">
+    <div class="wrap">
+      <h2>Contents</h2>
+      <p class="lead">
+        Eleven chapters. Chapter 3 is the heart of the evidence. Short web notes for each chapter
+        are also available; the PDF is the permanent first edition.
+      </p>
+      <ol class="chapter-list">
+        {CHAPTERS.map((ch) => (
+          <li>
+            <a href={ch.href}>
+              <span class="chapter-num">{String(ch.num).padStart(2, '0')}</span>
+              <span>
+                <span class="chapter-title">{ch.title}</span>
+                {ch.subtitle && <span class="chapter-sub">{ch.subtitle}</span>}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <p class="lead" style="margin-top:1.5rem">
+        <a href="/contents/">Full contents page</a>
+        ·
+        <a href={PDF_PATH}>Download PDF</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="licence">
+    <div class="wrap">
+      <h2>Licence and download</h2>
+      <div class="licence-box">
+        <p>{LICENCE_SHORT}</p>
+        <p>
+          The latest edition is published via
+          <a href={LINKS.githubAuthor}>github.com/meabs</a>.
+          This site offers the PDF only.
+        </p>
+        <div class="actions">
+          <a class="button primary" href={PDF_PATH}>Download Programming-the-Loop-1st-edition.pdf</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="feedback">
+    <div class="wrap">
+      <h2>Feedback</h2>
+      <div class="prose">
+        <p>
+          If something in the book or the worked example is wrong, unclear, or incomplete, say so.
+          Prefer concrete corrections: a page, a number, a limit that was missed.
+        </p>
+      </div>
+      <div class="feedback-links">
+        <a href={LINKS.feedbackIssue}>Open an issue on the worked example</a>
+        <a href={LINKS.workedExample}>Worked example repository</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

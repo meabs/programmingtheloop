@@ -1,22 +1,31 @@
 /** Shared site constants — keep URLs absolute for SEO / social tags. */
 export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
-export const SITE_SUBTITLE = 'What I Measured with Coding Agents';
+export const SITE_TAGLINE = 'Agentic engineering';
 export const SITE_AUTHOR = 'Garry Meaburn';
-export const SITE_EDITION = 'First edition, October 2026';
 export const SITE_DESCRIPTION =
+  'Garry Meaburn on agentic engineering: working with coding agents — practices, measurements, experiments and notes.';
+
+/** Book-specific (use on book pages only). */
+export const BOOK_TITLE = 'Programming the Loop';
+export const BOOK_SUBTITLE = 'What I Measured with Coding Agents';
+export const BOOK_EDITION = 'First edition, October 2026';
+export const BOOK_DESCRIPTION =
   'Programming the Loop: What I Measured with Coding Agents — a free ebook by Garry Meaburn on coding agents, context, verification and measured experiments. First edition, October 2026.';
 
 export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
-export const OG_IMAGE = `${SITE_URL}/og-cover.png`;
-export const CANONICAL_BASE = SITE_URL;
+export const BOOK_OG_IMAGE = `${SITE_URL}/og-cover.png`;
+/** Site-level social image (same cover for now; book pages set this explicitly too). */
+export const SITE_OG_IMAGE = `${SITE_URL}/og-cover.png`;
 
+/**
+ * Main nav: only sections that currently have real content.
+ * Add Notes / Experiments / Updates here when they have published pages.
+ * Folders under src/content/docs/ already exist for those sections.
+ */
 export const NAV = [
   { label: 'Home', href: '/' },
-  { label: 'Contents', href: '/contents/' },
-  { label: 'Notes', href: '/notes/' },
-  { label: 'Experiments', href: '/experiments/' },
-  { label: 'Updates', href: '/updates/' },
+  { label: 'Book', href: '/book/' },
   { label: 'About', href: '/about/' },
 ] as const;
 

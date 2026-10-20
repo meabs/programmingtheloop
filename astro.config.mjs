@@ -11,7 +11,7 @@ export default defineConfig({
     starlight({
       title: 'Programming the Loop',
       description:
-        'Programming the Loop: What I Measured with Coding Agents — a free ebook by Garry Meaburn. First edition, October 2026.',
+        'Garry Meaburn on agentic engineering: working with coding agents — practices, measurements, experiments and notes.',
       favicon: '/favicon.svg',
       head: [
         {
@@ -42,17 +42,20 @@ export default defineConfig({
       customCss: ['./src/styles/starlight.css'],
       sidebar: [
         {
-          label: 'The book',
+          label: 'Site',
           items: [
             { label: 'Home', link: '/' },
-            { label: 'Contents', link: '/contents/' },
-            { label: 'Download PDF', link: '/downloads/' },
+            { label: 'Book', link: '/book/' },
+            { label: 'About', link: '/about/' },
           ],
         },
         {
-          label: 'Chapters',
+          label: 'Book',
           collapsed: false,
           items: [
+            { label: 'Book overview', link: '/book/' },
+            { label: 'Contents', link: '/contents/' },
+            { label: 'Download PDF', link: '/downloads/' },
             { label: '1. Facts, checks and upkeep', link: '/learn/facts-checks-upkeep/' },
             { label: '2. Briefs, plans and specifications', link: '/learn/briefs-plans-specifications/' },
             { label: '3. The right facts, not every fact', link: '/learn/right-facts/' },
@@ -64,15 +67,6 @@ export default defineConfig({
             { label: '9. Tools and honest measurement', link: '/learn/tools-measurement/' },
             { label: '10. Safety, cost and the human', link: '/learn/safety-cost-human/' },
             { label: '11. The take-home kit', link: '/learn/take-home-kit/' },
-          ],
-        },
-        {
-          label: 'Site sections',
-          items: [
-            { label: 'Notes', link: '/notes/' },
-            { label: 'Experiments', link: '/experiments/' },
-            { label: 'Updates', link: '/updates/' },
-            { label: 'About', link: '/about/' },
           ],
         },
       ],
