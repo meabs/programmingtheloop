@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedViews, viewHref, formatViewDate } from '../../lib/views';
+
+const posts = await getPublishedViews();
+---
+<BaseLayout
+  title="Views"
+  description="Garry Meaburn’s views on industry trends, tools and releases in agentic build engineering."
+  canonicalPath="/views/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <h1>Views</h1>
+      <p>
+        Short posts on industry trends and new tools or releases, written as I go. Not lifted from
+        the ebook.
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      {posts.length === 0 ? (
+        <p class="empty-note">
+          Nothing published here yet. When there is a post, it will show up on this page and on the
+          home page.
+        </p>
+      ) : (
+        <ul class="link-list">
+          {posts.map((post) => (
+            <li>
+              <a href={viewHref(post)}>{post.data.title}</a>
+              <span class="link-note">{formatViewDate(post.data.date)} · {post.data.description}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </div>
+</BaseLayout>

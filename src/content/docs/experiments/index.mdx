@@ -1,44 +1,14 @@
 ---
-title: "Experiments"
-description: Findings from coding-agent trials, with methods, limitations and evidence links close to every result.
+title: Experiments
+description: Pointers into the Guide for measured experiment write-ups from Programming the Loop.
 ---
 
-Research pages distinguish measured findings from recommendations and open questions. The first edition reports small, task-specific trials across named repositories. Results below describe those trials; they are not universal rates.
+# Experiments
 
-<div class="research-overview">
-  <div class="overview-top"><span>RESEARCH ARCHIVE / FIRST EDITION</span><span>FINDINGS WITH LIMITS ATTACHED</span></div>
-  <h2>Evidence you can follow.</h2>
-  <p>About 1,650 controlled runs are reported across the OKFExperiment repository. That is the repository’s total across studies, not the sample size for any one finding. Each result below links to the relevant code or analysis when a source is available.</p>
-</div>
+The full write-ups now live in the [Guide](/guide/) (especially [Chapter 3](/guide/right-facts/) and the [foreword](/guide/foreword/)).
 
-## Published findings from the first edition
+- **Experiment J (repository optimisation)** — plain vs prepared Java repository: [Chapter 3](/guide/right-facts/) and [foreword findings](/guide/foreword/)
+- **Dependency / stale-knowledge trials** — [Chapter 3](/guide/right-facts/)
+- **Worked-example agent trials** — [Chapter 3](/guide/right-facts/) and [Chapter 5](/guide/proof-not-promises/)
 
-<div class="experiment-evidence">
-  <span class="experiment-status published">● &nbsp; MEASURED FINDING · EXPERIMENT J</span>
-  <p><strong>Repository optimisation.</strong> A prepared copy of a 1,173-file Java repository used 35–48% more tokens. It scored 29 versus 28 of 32 changes and 19 versus 16 of 24 structure questions; both differences were described as within noise.</p>
-  <div class="limitation"><strong>Limits</strong> One repository and model; mechanical edits and structure questions; 8 runs per task per arm; four repository ingredients were tested together. This does not show which ingredient mattered or establish what happens in other repositories.</div>
-</div>
-
-| Study | Measured observation | Conditions and limits | Evidence |
-| --- | --- | --- | --- |
-| [Repository optimisation · Experiment J](/experiments/repository-optimisation/) | 35–48% more tokens; no reliable correctness gain in the tested tasks. | One Java repository and model; 8 runs per task and arm; four ingredients combined. | [Results](https://github.com/meabs/OKFExperiment/blob/main/results/J-optimised-repo.md) · [Chapter 3](/learn/right-facts/) |
-| [Missing dependency facts](/learn/right-facts/) | Cross-repository hidden-test passes rose from 3/20 with no backend facts to 19/20 on small tasks and 18/20 on harder tasks with a guide. | One model; 5 runs per task; identifiers renamed by the author. A later comparison found a 3 KB note or API contract performed similarly on harder changes. | [Experiment repository](https://github.com/meabs/OKFExperiment) · [Chapter 3](/learn/right-facts/) |
-| [Stale dependency knowledge](/learn/right-facts/) | With four renamed backend concepts, agents using a stale guide repeated the old answer in 14/16 drift answers; none hedged. | The drift was planted; 4 runs per question; one model. The book reports that warnings and expiry dates did not fix the behavior when the source was unavailable. | [Results index](https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md) · [Chapter 3](/learn/right-facts/) |
-| [Verification failure](/learn/proof-not-promises/) | All 12 runs reported a passing check while the real-service criterion remained unverified. In the contract arm, all 6 runs were correct. | One model and task; 6 runs per arm. Without the provider contract, agents changed the freshness gate to validate the contract they had invented. | [Worked example](https://github.com/meabs/ProgrammingTheLoop-WorkedExample) · [Chapter 5](/learn/proof-not-promises/) |
-
-## Planned research
-
-<div class="research-overview">
-  <div class="overview-top"><span>EXPERIMENT K</span><span>PROPOSED · NOT RUN</span></div>
-  <h2><a href="/experiments/knowing-when-you-dont-know/">Knowing When You Don’t Know ↗</a></h2>
-  <p>Can minimal repository guidance help a coding agent discover authoritative external dependencies and recognise when required information is unavailable? The initial plan compares a baseline, minimal signposting, and signposting with an explicit stop instruction.</p>
-  <p><strong>Proposed setup:</strong> Shopizer-derived material where feasible, two tasks, five repetitions per arm, and 30 planned runs. No results, preregistration or frozen task definitions are available.</p>
-</div>
-
-## Interpreting the results
-
-- **Measured finding** means a direct observation from a named experiment, under the stated conditions.
-- **Engineering recommendation** means advice informed by the findings and judgement. It is not itself a measured result.
-- **Open question** means the evidence does not yet establish the answer.
-
-See the [research methodology](/about/methodology/) for how to read sample sizes, repeated trials, evidence quality and limits. Source paths cited in the book are linked only where the corresponding public repository or file is available.
+Repositories: [OKFExperiment](https://github.com/meabs/OKFExperiment), [AgentTrialRig](https://github.com/meabs/AgentTrialRig), [AgentGraphWorkTree](https://github.com/meabs/AgentGraphWorkTree), [AgentFrictionLoop](https://github.com/meabs/AgentFrictionLoop), [worked example](https://github.com/meabs/ProgrammingTheLoop-WorkedExample).

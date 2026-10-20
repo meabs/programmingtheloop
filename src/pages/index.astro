@@ -1,261 +1,207 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  BOOK_SUBTITLE,
+  BOOK_EDITION,
+  PDF_PATH,
+  LINKS,
+  SITE_OG_IMAGE,
+} from '../site';
+import { getPublishedViews, viewHref, formatViewDate } from '../lib/views';
 
-const title = 'Programming the Loop — Evidence-led engineering for coding agents';
-const description = 'Practical experiments exploring what makes coding agents effective, where they fail, and which engineering practices justify their cost.';
-
-const paths = [
-  { number: '01', name: 'Agent foundations', text: 'Give work a clear brief, a bounded change and an observable finish.', href: '/learn/agent-foundations/', chapter: 'Start with the loop' },
-  { number: '02', name: 'Context & knowledge', text: 'Supply the facts an agent cannot discover, and keep them authoritative.', href: '/learn/right-facts/', chapter: 'Chapter 3 · The evidence' },
-  { number: '03', name: 'Verification & harness', text: 'Turn a plausible answer into a result a repository can actually check.', href: '/learn/proof-not-promises/', chapter: 'Chapter 5 · Proof' },
-  { number: '04', name: 'Scaling & measurement', text: 'Review parallel work and measure the cost of the engineering around it.', href: '/learn/parallel-agents/', chapter: 'Chapter 7 · Parallel work' },
-];
-
-const nav = [
-  { label: 'Home', href: '/' },
-  { label: 'Learn', href: '/learn/' },
-  { label: 'Experiments', href: '/experiments/' },
-  { label: 'Resources', href: '/resources/' },
-  { label: 'About', href: '/about/' },
-];
+const latestViews = (await getPublishedViews()).slice(0, 3);
+const hasViews = latestViews.length > 0;
 ---
-<!doctype html>
-<html lang="en" data-theme="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href="https://programmingtheloop.com/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://programmingtheloop.com/" />
-    <meta property="og:image" content="https://programmingtheloop.com/social-card.svg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://programmingtheloop.com/social-card.svg" />
-    <meta name="theme-color" content="#0b1220" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <div class="nav-shell">
-        <a class="brand" href="/" aria-label="Programming the Loop home">
-          <img src="/favicon.svg" alt="" width="34" height="34" />
-          <span>Programming <i>the</i> Loop</span>
-        </a>
-        <nav class="desktop-nav" aria-label="Main navigation">
-          {nav.map((item) => <a class:list={{ active: item.href === '/' }} href={item.href}>{item.label}</a>)}
-        </nav>
-        <div class="header-actions">
-          <button class="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
-            <svg class="theme-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2m13 0h2M4 4l1.4 1.4m9.2 9.2L16 16m0-12-1.4 1.4m-9.2 9.2L4 16"/></svg>
-          </button>
-          <a class="ebook-link" href="/downloads/Programming-the-Loop-1st-edition.pdf" download>
-            <span>Free ebook</span><span aria-hidden="true">↗</span>
-          </a>
-          <details class="mobile-nav">
-            <summary aria-label="Open site navigation"><span></span><span></span></summary>
-            <nav aria-label="Mobile navigation">
-              {nav.map((item) => <a href={item.href}>{item.label}</a>)}
-              <a href="/downloads/Programming-the-Loop-1st-edition.pdf" download>Download the ebook</a>
-            </nav>
-          </details>
+<BaseLayout
+  title={`${SITE_NAME} — Agentic build engineering`}
+  description={SITE_DESCRIPTION}
+  canonicalPath="/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <section class="hero-site">
+    <div class="wrap hero-layout">
+      <div class="hero-copy">
+        <p class="edition">Agentic build engineering</p>
+        <h1>
+          Programming
+          <span class="loop">the Loop</span>
+        </h1>
+        <p class="subtitle">
+          Building software with coding agents — briefs, context, verification, harness and review.
+        </p>
+        <p class="byline">
+          The living Guide holds the full text. Measurements with stated limits. Views as they earn a post.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="/guide/">Read the Guide</a>
+          <a class="button" href="#explore">Explore the site</a>
         </div>
       </div>
-    </header>
 
-    <main id="main">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-inner site-width">
-          <div class="hero-copy">
-            <p class="hero-kicker"><span class="kicker-line"></span> Independent research on coding agents</p>
-            <h1 id="hero-title">Coding agents are fast.<br /><em>Are they right?</em></h1>
-            <p class="hero-deck">Practical experiments exploring what makes coding agents effective, where they fail, and which engineering practices justify their cost.</p>
-            <p class="hero-subdeck">Evidence-led guidance from real repositories, measured trials and reproducible code.</p>
-            <div class="hero-actions">
-              <a class="action-primary" href="/experiments/">Explore the research <span aria-hidden="true">↗</span></a>
-              <a class="action-secondary" href="/learn/">Start learning <span aria-hidden="true">→</span></a>
-            </div>
-            <div class="hero-note"><span class="edition-mark">FIELD NOTES&nbsp; / &nbsp;VOL. 01</span><span>First edition · October 2026</span></div>
+      <div class="hero-visual" aria-hidden="false">
+        <figure class="loop-diagram">
+          <svg viewBox="0 0 420 360" role="img" aria-labelledby="loop-title loop-desc">
+            <title id="loop-title">The agent loop</title>
+            <desc id="loop-desc">
+              A cycle of Brief, Context, Change, Verify and Review around a coding agent.
+            </desc>
+            <defs>
+              <linearGradient id="loop-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.18" />
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <circle cx="210" cy="178" r="118" fill="url(#loop-glow)" />
+            <circle
+              class="loop-path loop-path-flow"
+              cx="210"
+              cy="178"
+              r="108"
+              fill="none"
+            />
+            <circle class="loop-path" cx="210" cy="178" r="108" fill="none" />
+
+            <!-- Core -->
+            <circle class="loop-node loop-node-core" cx="210" cy="178" r="36" />
+            <text class="loop-label" x="210" y="174" text-anchor="middle">Agent</text>
+            <text class="loop-label" x="210" y="190" text-anchor="middle" opacity="0.7" font-size="9">loop</text>
+
+            <!-- Brief (top) -->
+            <circle class="loop-node" cx="210" cy="70" r="22" />
+            <text class="loop-label" x="210" y="74" text-anchor="middle">Brief</text>
+
+            <!-- Context (top-right) -->
+            <circle class="loop-node" cx="312" cy="128" r="22" />
+            <text class="loop-label" x="312" y="132" text-anchor="middle">Context</text>
+
+            <!-- Change (bottom-right) -->
+            <circle class="loop-node" cx="292" cy="248" r="22" />
+            <text class="loop-label" x="292" y="252" text-anchor="middle">Change</text>
+
+            <!-- Verify (bottom-left) -->
+            <circle class="loop-node" cx="128" cy="248" r="22" />
+            <text class="loop-label" x="128" y="252" text-anchor="middle">Verify</text>
+
+            <!-- Review (top-left) -->
+            <circle class="loop-node" cx="108" cy="128" r="22" />
+            <text class="loop-label" x="108" y="132" text-anchor="middle">Review</text>
+
+            <!-- Soft pulse on the ring between stations -->
+            <circle class="loop-dot" cx="268" cy="90" r="3" style="animation-delay: 0s" />
+            <circle class="loop-dot" cx="318" cy="190" r="3" style="animation-delay: 0.7s" />
+            <circle class="loop-dot" cx="210" cy="286" r="3" style="animation-delay: 1.4s" />
+            <circle class="loop-dot" cx="102" cy="190" r="3" style="animation-delay: 2.1s" />
+            <circle class="loop-dot" cx="152" cy="90" r="3" style="animation-delay: 2.8s" />
+          </svg>
+          <figcaption class="loop-caption">Brief → Context → Change → Verify → Review</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="explore">
+    <div class="wrap">
+      <h2 class="reveal">What this site is</h2>
+      <p class="lead reveal">
+        A place for agentic build engineering: the practical work of running coding agents well,
+        measuring what you change, and writing it up when the evidence is worth sharing.
+      </p>
+
+      <div class="bento">
+        {hasViews ? (
+          <div class="card card-wide reveal">
+            <span class="card-kicker">Views</span>
+            <h3 class="card-title">Industry trends and tools</h3>
+            <p class="card-desc">Latest posts on releases and practice.</p>
+            <ul class="card-list">
+              {latestViews.map((post) => (
+                <li>
+                  <a href={viewHref(post)}>{post.data.title}</a>
+                  <span>{formatViewDate(post.data.date)}</span>
+                </li>
+              ))}
+            </ul>
+            <a class="card-meta" href="/views/">All views →</a>
           </div>
+        ) : (
+          <a class="card card-wide reveal" href="/views/">
+            <span class="card-kicker">Views</span>
+            <h3 class="card-title">Industry trends and tools</h3>
+            <p class="card-desc">
+              Short takes on industry trends and new tools or releases. Nothing published yet.
+            </p>
+            <span class="card-meta">Open Views →</span>
+          </a>
+        )}
 
-          <figure class="orbit-figure" aria-labelledby="orbit-caption">
-            <div class="figure-label"><span>THE EXECUTION LOOP</span><span class="figure-index">SYSTEM / 01</span></div>
-            <svg class="orbit-svg" viewBox="0 0 680 510" role="img" aria-labelledby="orbit-title orbit-desc">
-              <title id="orbit-title">An engineering feedback loop</title>
-              <desc id="orbit-desc">Task and repository context shape an implementation. Executable verification returns feedback to the agent, which guides the next change.</desc>
-              <defs>
-                <marker id="arrowTeal" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#64d9c8" stroke-width="1.2"/></marker>
-                <marker id="arrowBrass" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#d6b170" stroke-width="1.2"/></marker>
-                <radialGradient id="core" cx="50%" cy="45%"><stop offset="0" stop-color="#d6b170" stop-opacity=".17"/><stop offset="1" stop-color="#d6b170" stop-opacity="0"/></radialGradient>
-              </defs>
-              <g class="orbit-grid" fill="none">
-                <ellipse cx="341" cy="249" rx="252" ry="103" transform="rotate(-31 341 249)"/>
-                <ellipse cx="341" cy="249" rx="252" ry="103" transform="rotate(31 341 249)"/>
-                <ellipse cx="341" cy="249" rx="211" ry="74" transform="rotate(90 341 249)"/>
-                <ellipse cx="341" cy="249" rx="294" ry="151" transform="rotate(-10 341 249)" class="orbit-faint"/>
-              </g>
-              <path class="orbit-route route-main" d="M150 176 C207 77 403 63 500 155 C582 233 527 367 414 400 C290 437 149 359 146 261 C145 229 155 202 174 180" marker-end="url(#arrowTeal)"/>
-              <path class="orbit-route route-return" d="M518 322 C457 410 322 432 218 381 C145 345 115 269 148 209" marker-end="url(#arrowBrass)"/>
-              <circle class="orbit-wash" cx="341" cy="249" r="96" fill="url(#core)"/>
-              <circle class="orbit-core" cx="341" cy="249" r="50"/>
-              <circle class="orbit-core-dot" cx="341" cy="249" r="3"/>
-              <text class="core-label" x="341" y="242" text-anchor="middle">CHANGE</text>
-              <text class="core-label secondary" x="341" y="259" text-anchor="middle">UNDER TEST</text>
-              <g class="orbit-node node-task"><circle cx="153" cy="173" r="5"/><circle cx="153" cy="173" r="12"/><text x="98" y="145">TASK</text><text class="node-meta" x="98" y="159">bounded brief</text></g>
-              <g class="orbit-node node-context"><circle cx="513" cy="157" r="5"/><circle cx="513" cy="157" r="12"/><text x="532" y="139">CONTEXT</text><text class="node-meta" x="532" y="153">right facts</text></g>
-              <g class="orbit-node node-code"><circle cx="510" cy="336" r="5"/><circle cx="510" cy="336" r="12"/><text x="529" y="333">CODE</text><text class="node-meta" x="529" y="347">small diff</text></g>
-              <g class="orbit-node node-verify"><circle cx="164" cy="320" r="5"/><circle cx="164" cy="320" r="12"/><text x="87" y="351">VERIFY</text><text class="node-meta" x="87" y="365">executable proof</text></g>
-              <path class="feedback-line" d="M164 331 C222 476 458 477 510 347" marker-end="url(#arrowBrass)"/>
-              <text class="feedback-label" x="339" y="453" text-anchor="middle">OBSERVE · CORRECT · CONTINUE</text>
-              <path class="axis-mark" d="M341 37v18M341 443v18M68 249h18M596 249h18"/>
-            </svg>
-            <figcaption id="orbit-caption"><span class="legend-dot"></span> Verification turns an agent’s output into feedback for the next attempt.</figcaption>
-          </figure>
-        </div>
-        <div class="hero-baseline site-width"><span>THE RIGHT FACTS, NOT EVERY FACT.</span><span>FIELD GUIDE TO THE AGENT–REPOSITORY LOOP</span></div>
-      </section>
+        <a class="card card-narrow reveal" href="/guide/">
+          <span class="card-kicker">Guide</span>
+          <h3 class="card-title">Full text</h3>
+          <p class="card-desc">
+            Eleven chapters, checklists, findings and the worked example — the living edition.
+          </p>
+          <span class="card-meta">Open the Guide →</span>
+        </a>
 
-      <section class="evidence-section" aria-labelledby="evidence-title">
-        <div class="site-width">
-          <div class="section-heading evidence-heading"><div><p class="section-kicker">Small trials. Stated limits.</p><h2 id="evidence-title">What the measurements say.</h2></div><a class="underlined-link" href="/experiments/">Read the evidence register <span aria-hidden="true">→</span></a></div>
-          <div class="evidence-ribbon">
-            <article class="evidence-stat source-stat">
-              <div class="stat-mark"><span>REPOSITORY</span><a href="https://github.com/meabs/OKFExperiment" target="_blank" rel="noreferrer">OKFExperiment ↗</a></div>
-              <div class="stat-value">~1,650</div>
-              <h3>controlled runs in the research repository</h3>
-              <p>A project-level total across experiments on generated knowledge, contracts and stale documentation. Not a single study’s sample size.</p>
-            </article>
-            <article class="evidence-stat">
-              <div class="stat-mark"><span>EXPERIMENT J</span><span>PREPARED REPOSITORY</span></div>
-              <div class="stat-value">+35–48<span class="stat-unit">%</span></div>
-              <h3>more tokens, no reliable correctness gain</h3>
-              <p>One large Java repository; the guide, graph, skills and instructions were tested together. Differences were within noise.</p>
-              <a class="evidence-link" href="/learn/right-facts/">Chapter 3, with limits <span aria-hidden="true">↗</span></a>
-            </article>
-            <article class="evidence-stat">
-              <div class="stat-mark"><span>CROSS-REPOSITORY</span><span>HIDDEN-TEST PASSES</span></div>
-              <div class="stat-value compact-value">3 <span class="value-arrow">→</span> 18–19<span class="stat-unit">/20</span></div>
-              <h3>when the missing dependency facts were supplied</h3>
-              <p>Storefront changes against an unseen backend. Five runs per task; one model; identifiers renamed by the author.</p>
-              <a class="evidence-link" href="/learn/right-facts/">Read the case study <span aria-hidden="true">↗</span></a>
-            </article>
+        <a class="card card-book reveal" href="/guide/">
+          <img
+            class="card-book-cover"
+            src="/book-cover.png"
+            width="1600"
+            height="2400"
+            alt=""
+            loading="lazy"
+          />
+          <div>
+            <span class="card-kicker">Living edition · {BOOK_EDITION} origin</span>
+            <h3 class="card-title">Programming the Loop</h3>
+            <p class="card-desc">{BOOK_SUBTITLE}. Read on the web; PDF kept as an archive.</p>
+            <span class="card-meta">Start reading →</span>
           </div>
-          <p class="evidence-footnote"><span class="footnote-rule"></span>These are observations from particular repositories and tasks. Each finding is linked to its method and limitations; none is a universal success rate.</p>
-        </div>
-      </section>
+        </a>
 
-      <section class="featured-study" aria-labelledby="featured-study-title">
-        <div class="site-width featured-grid">
-          <div class="study-copy">
-            <p class="section-kicker">A result worth reading slowly · Experiment J</p>
-            <h2 id="featured-study-title">More repository knowledge did not make this agent more correct.</h2>
-            <p>On a 1,173-file Java monolith, the prepared copy bundled a generated guide, code graph, three operating skills and configured <code>AGENTS.md</code>. It cost more tokens. The measured correctness differences were not reliable.</p>
-            <div class="finding-label"><span class="finding-icon" aria-hidden="true">●</span> Measured finding <span class="label-divider">/</span> Chapter 3</div>
-            <a class="study-cta" href="/learn/right-facts/">Read the full analysis <span aria-hidden="true">↗</span></a>
-            <p class="study-limits"><strong>Limits</strong> One repository and model; mechanical edits and structure questions; 8 runs per task per arm; four ingredients tested together.</p>
-          </div>
-          <figure class="study-chart">
-            <div class="chart-header"><div><span class="chart-kicker">CORRECT ANSWERS</span><h3>Experiment J · Pass counts</h3></div><span class="chart-units">RUNS / TASK</span></div>
-            <div class="chart-legend"><span><i class="legend-plain"></i>Plain repository</span><span><i class="legend-prepared"></i>Prepared repository</span></div>
-            <div class="metric-chart" role="img" aria-label="Experiment J correctness counts. Mechanical changes: 28 of 32 in the plain repository and 29 of 32 in the prepared repository. Structure questions: 16 of 24 plain and 19 of 24 prepared. The book describes both differences as within noise.">
-              <div class="metric-row"><div class="metric-label"><span>Mechanical changes</span><span class="metric-denom">32 trials</span></div><div class="metric-bars"><div class="bar-track"><span class="bar bar-plain" style="--value:87.5%"></span><b>28</b></div><div class="bar-track"><span class="bar bar-prepared" style="--value:90.625%"></span><b>29</b></div></div></div>
-              <div class="metric-row"><div class="metric-label"><span>Structure questions</span><span class="metric-denom">24 trials</span></div><div class="metric-bars"><div class="bar-track"><span class="bar bar-plain" style="--value:66.67%"></span><b>16</b></div><div class="bar-track"><span class="bar bar-prepared" style="--value:79.17%"></span><b>19</b></div></div></div>
-              <div class="chart-axis"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
-            </div>
-            <figcaption><strong>Within noise.</strong> The chart shows the observed counts, not a reliable improvement. Eight runs per task and arm; four repository ingredients were bundled in the prepared condition.</figcaption>
-            <a class="chart-source" href="https://github.com/meabs/OKFExperiment/tree/main/results">Source results in OKFExperiment <span aria-hidden="true">↗</span></a>
-          </figure>
-        </div>
-      </section>
+        <a class="card card-narrow reveal" href="/downloads/">
+          <span class="card-kicker">Archive</span>
+          <h3 class="card-title">First-edition PDF</h3>
+          <p class="card-desc">October 2026 snapshot. Share unchanged; credit the author.</p>
+          <span class="card-meta">Download PDF →</span>
+        </a>
 
-      <section class="learning-section" aria-labelledby="learning-title">
-        <div class="site-width learning-layout">
-          <div class="learning-intro">
-            <p class="section-kicker">The book, made navigable</p>
-            <h2 id="learning-title">Learn the engineering around the agent.</h2>
-            <p>Eleven chapters, reorganised for the web. Move from task design through context and verification to the practices that keep work safe and measurable.</p>
-            <a class="underlined-link" href="/learn/">Browse all lessons <span aria-hidden="true">→</span></a>
-          </div>
-          <div class="path-list">
-            {paths.map((path) => (
-              <a class="path-row" href={path.href}>
-                <span class="path-number">{path.number}</span>
-                <span class="path-body"><strong>{path.name}</strong><span>{path.text}</span></span>
-                <span class="path-chapter">{path.chapter}</span>
-                <span class="path-arrow" aria-hidden="true">↗</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+        <a class="card reveal" href={LINKS.workedExample} rel="noopener noreferrer">
+          <span class="card-kicker">Worked example</span>
+          <h3 class="card-title">Repository</h3>
+          <p class="card-desc">
+            The cross-repository API endpoint used through the Guide. Corrections welcome via issues.
+          </p>
+          <span class="card-meta">GitHub →</span>
+        </a>
 
-      <section class="research-section" aria-labelledby="research-title">
-        <div class="site-width">
-          <div class="section-heading research-heading"><div><p class="section-kicker">Research log</p><h2 id="research-title">Published evidence. Open questions.</h2></div><a class="underlined-link" href="/experiments/">View all experiments <span aria-hidden="true">→</span></a></div>
-          <div class="research-records">
-            <a class="research-record published-record" href="/experiments/repository-optimisation/">
-              <span class="record-state"><i></i> PUBLISHED</span>
-              <span class="record-id">J</span>
-              <span class="record-copy"><strong>Repository optimisation</strong><span>Token cost and correctness in a readable Java monolith.</span></span>
-              <span class="record-date">FIRST EDITION</span><span class="record-arrow" aria-hidden="true">↗</span>
-            </a>
-            <a class="research-record planned-record" href="/experiments/knowing-when-you-dont-know/">
-              <span class="record-state"><i></i> PLANNED</span>
-              <span class="record-id">K</span>
-              <span class="record-copy"><strong>Knowing When You Don’t Know</strong><span>Can signposting help an agent find the authoritative dependency?</span></span>
-              <span class="record-date">NO RESULTS</span><span class="record-arrow" aria-hidden="true">↗</span>
-            </a>
-          </div>
-          <p class="research-note">Experiment K remains a proposal: two tasks, five repetitions per arm, and 30 planned runs. No outcomes are available.</p>
-        </div>
-      </section>
+        <a class="card reveal" href={LINKS.feedbackIssue} rel="noopener noreferrer">
+          <span class="card-kicker">Feedback</span>
+          <h3 class="card-title">Open an issue</h3>
+          <p class="card-desc">On the worked example repo — for mistakes, gaps or questions.</p>
+          <span class="card-meta">New issue →</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-      <section class="book-section" aria-labelledby="book-title">
-        <div class="site-width book-layout">
-          <div class="book-art"><img src="/book-cover.webp" width="910" height="1287" loading="lazy" alt="Cover of Programming the Loop: What I Measured with Coding Agents by Garry Meaburn" /></div>
-          <div class="book-copy">
-            <p class="section-kicker">A permanent edition · October 2026</p>
-            <h2 id="book-title">Programming the Loop</h2>
-            <p class="book-subtitle">What I Measured with Coding Agents</p>
-            <p>The original first edition, preserved as published. Read it as a free PDF or follow the chapters online with source links and navigable evidence.</p>
-            <div class="book-actions"><a class="action-primary" href="/downloads/Programming-the-Loop-1st-edition.pdf" download>Download the PDF <span aria-hidden="true">↓</span></a><a class="action-secondary" href="/learn/">Read online <span aria-hidden="true">→</span></a></div>
-            <div class="book-meta"><span>GARRY MEABURN</span><span>FIRST EDITION</span><span>74 PAGES</span></div>
-          </div>
-          <div class="book-geometry" aria-hidden="true"><svg viewBox="0 0 360 360"><g fill="none"><ellipse cx="180" cy="180" rx="147" ry="58" transform="rotate(-38 180 180)"/><ellipse cx="180" cy="180" rx="147" ry="58" transform="rotate(38 180 180)"/><ellipse cx="180" cy="180" rx="122" ry="42" transform="rotate(90 180 180)"/></g><circle cx="180" cy="180" r="5"/></svg></div>
-        </div>
-      </section>
-
-      <section class="about-section" aria-labelledby="about-title">
-        <div class="site-width about-layout">
-          <div><p class="section-kicker">About the research</p><h2 id="about-title">Evidence first.<br /><em>Certainty earned.</em></h2></div>
-          <div class="about-copy"><p>These are practical trials, not universal laws. Findings describe what happened in specific repositories under specific conditions. Recommendations are engineering judgement, clearly separated from those observations.</p><div class="about-links"><a href="/about/methodology/">Research methodology <span aria-hidden="true">↗</span></a><a href="/about/references/">References & attribution <span aria-hidden="true">↗</span></a><a href="/about/">About Garry and the project <span aria-hidden="true">↗</span></a></div></div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="site-width footer-top"><a class="brand footer-brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30"/><span>Programming <i>the</i> Loop</span></a><p>Evidence-led engineering for coding agents.</p><nav aria-label="Footer navigation"><a href="https://github.com/meabs/programmingtheloop" target="_blank" rel="noreferrer">GitHub ↗</a><a href="/about/">About</a><a href="/resources/ebook/">Ebook</a><a href="/about/methodology/">Methodology</a><a href="/about/references/">References</a></nav></div>
-      <div class="site-width footer-bottom"><span>© Garry Meaburn 2026</span><span>Made to be checked.</span></div>
-    </footer>
-    <script>
-      const themeButton = document.querySelector('.theme-toggle');
-      const themeLabel = (theme: string) => {
-        const next = theme === 'light' ? 'dark' : 'light';
-        themeButton?.setAttribute('aria-label', `Switch to ${next} theme`);
-        themeButton?.setAttribute('title', `Switch to ${next} theme`);
-      };
-      const savedTheme = localStorage.getItem('starlight-theme');
-      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
-      themeLabel(document.documentElement.dataset.theme || 'dark');
-      themeButton?.addEventListener('click', () => {
-        const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
-        document.documentElement.dataset.theme = next;
-        localStorage.setItem('starlight-theme', next);
-        themeLabel(next);
-      });
-    </script>
-  </body>
-</html>
+  <section class="section" id="elsewhere">
+    <div class="wrap">
+      <h2 class="reveal">Elsewhere</h2>
+      <ul class="link-list reveal">
+        <li>
+          <a href={LINKS.x}>X · @Mav1972</a>
+        </li>
+        <li>
+          <a href={LINKS.youtube}>YouTube · Frugal AI Engineer</a>
+        </li>
+        <li>
+          <a href={LINKS.githubSite}>Site source on GitHub</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,208 @@
+---
+import '../styles/global.css';
+import {
+  SITE_URL,
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  SITE_OG_IMAGE,
+  NAV,
+  CF_WEB_ANALYTICS_SRC,
+  CF_WEB_ANALYTICS_BEACON,
+} from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  noindex?: boolean;
+  ogImage?: string;
+  preloadCover?: boolean;
+}
+
+const {
+  title = `${SITE_NAME} — Agentic build engineering`,
+  description = SITE_DESCRIPTION,
+  canonicalPath = '/',
+  noindex = false,
+  ogImage = SITE_OG_IMAGE,
+  preloadCover = false,
+} = Astro.props;
+
+const canonical = new URL(canonicalPath, SITE_URL).href;
+const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        try {
+          var key = 'ptl-theme';
+          var stored = localStorage.getItem(key);
+          var system = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+          var theme = stored === 'dark' || stored === 'light' ? stored : system;
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Garry Meaburn" />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    {preloadCover && <link rel="preload" href="/book-cover.png" as="image" />}
+    <!-- Cloudflare Web Analytics -->
+    <script
+      is:inline
+      type="module"
+      src={CF_WEB_ANALYTICS_SRC}
+      data-cf-beacon={CF_WEB_ANALYTICS_BEACON}
+    ></script>
+    <!-- End Cloudflare Web Analytics -->
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="site-header">
+      <div class="wrap nav">
+        <a class="brand" href="/" aria-label={`${SITE_NAME} home`}>
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-name">Programming the Loop</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          {NAV.map((item) => (
+            <a href={item.href}>{item.label}</a>
+          ))}
+        </nav>
+        <div class="nav-tools">
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Toggle colour theme"
+          >
+            <span class="theme-icon theme-icon-sun" aria-hidden="true"></span>
+            <span class="theme-icon theme-icon-moon" aria-hidden="true"></span>
+          </button>
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+          >
+            Menu
+          </button>
+        </div>
+        <nav class="mobile-panel" id="mobile-menu" aria-label="Mobile">
+          {NAV.map((item) => (
+            <a href={item.href}>{item.label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <div>
+          <strong>{SITE_NAME}</strong>
+          <p>Agentic build engineering · Garry Meaburn</p>
+        </div>
+        <div class="footer-links">
+          <a href="/guide/">Guide</a>
+          <a href="/views/">Views</a>
+          <a href="/updates/">Updates</a>
+          <a href="/about/">About</a>
+          <a href="/guide/#licence">Licence</a>
+          <a href="/downloads/">PDF archive</a>
+          <a href="https://github.com/meabs/programmingtheloop">GitHub</a>
+        </div>
+      </div>
+    </footer>
+    <script>
+      const key = 'ptl-theme';
+      const root = document.documentElement;
+      const toggle = document.getElementById('theme-toggle');
+      const button = document.querySelector('.menu-toggle');
+      const menu = document.querySelector('.mobile-panel');
+      const header = document.getElementById('site-header');
+
+      const applyTheme = (theme: string) => {
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        try {
+          localStorage.setItem(key, theme);
+        } catch (_) {}
+      };
+
+      toggle?.addEventListener('click', () => {
+        applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+
+      try {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (!localStorage.getItem(key)) {
+            applyTheme(e.matches ? 'dark' : 'light');
+          }
+        });
+      } catch (_) {}
+
+      button?.addEventListener('click', () => {
+        const open = button.getAttribute('aria-expanded') !== 'true';
+        button.setAttribute('aria-expanded', String(open));
+        menu?.classList.toggle('open', open);
+      });
+
+      const onScroll = () => {
+        header?.classList.toggle('is-scrolled', window.scrollY > 8);
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        const nodes = document.querySelectorAll('.reveal');
+        if (nodes.length && 'IntersectionObserver' in window) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-visible');
+                  io.unobserve(entry.target);
+                }
+              }
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+          );
+          nodes.forEach((el) => io.observe(el));
+        } else {
+          nodes.forEach((el) => el.classList.add('is-visible'));
+        }
+      } else {
+        document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>
