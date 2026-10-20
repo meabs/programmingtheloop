@@ -1,4 +1,37 @@
 ---
 import '../styles/global.css';
 ---
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Page not found — Programming the Loop</title><meta name="description" content="This page could not be found. Browse lessons or experiments."/><link rel="canonical" href="https://programmingtheloop.com/404.html"/><meta property="og:image" content="https://programmingtheloop.com/social-card.svg"/><meta property="og:title" content="Page not found — Programming the Loop"/><meta property="og:description" content="This page could not be found. Browse lessons or experiments."/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/></head><body><header class="site-header"><div class="wrap nav"><a class="brand" href="/"><img src="/favicon.svg" alt=""/>Programming the Loop</a><nav class="nav-links" aria-label="Main navigation"><a href="/">Home</a><a href="/learn/">Learn</a><a href="/experiments/">Experiments</a><a href="/resources/">Resources</a><a href="/about/">About</a><a class="nav-ebook" href="/downloads/">Free ebook ↗</a></nav></div></header><main class="section"><div class="wrap"><div class="eyebrow">404 · Route not found</div><h1 style="font-size:clamp(42px,7vw,72px);letter-spacing:-.06em;margin:20px 0 14px">This page isn’t in the loop.</h1><p class="lede">The link may have moved. Start again from the lessons or research index.</p><div class="actions"><a class="button primary" href="/learn/">Browse lessons →</a><a class="button" href="/experiments/">Explore experiments</a></div></div></main></body></html>
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found — Programming the Loop</title>
+    <meta name="description" content="This page could not be found. Browse lessons or experiments." />
+    <meta name="robots" content="noindex" />
+    <meta property="og:image" content="https://programmingtheloop.com/social-card.svg" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header"><div class="nav-shell">
+      <a class="brand" href="/" aria-label="Programming the Loop home"><img src="/favicon.svg" alt="" width="34" height="34"/><span>Programming <i>the</i> Loop</span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/learn/">Learn</a><a href="/experiments/">Experiments</a><a href="/resources/">Resources</a><a href="/about/">About</a></nav>
+      <a class="ebook-link" href="/downloads/Programming-the-Loop-1st-edition.pdf" download>Free ebook <span aria-hidden="true">↗</span></a>
+    </div></header>
+    <main class="not-found site-width" id="main">
+      <div class="not-found-copy"><p class="section-kicker">404 / ROUTE NOT FOUND</p><h1>This page isn’t<br /><em>in the loop.</em></h1><p>The link may have moved. The lessons and experiment archive are a good place to continue.</p><div class="hero-actions"><a class="action-primary" href="/learn/">Browse the lessons <span aria-hidden="true">→</span></a><a class="action-secondary" href="/experiments/">Explore research <span aria-hidden="true">↗</span></a></div></div>
+      <svg class="not-found-orbit" viewBox="0 0 420 420" role="img" aria-labelledby="lost-title"><title id="lost-title">A feedback path searching for its next node</title><g fill="none" stroke-width="1"><ellipse cx="210" cy="210" rx="173" ry="65" transform="rotate(-38 210 210)" stroke="var(--brass)"/><ellipse cx="210" cy="210" rx="173" ry="65" transform="rotate(38 210 210)" stroke="var(--teal)"/><ellipse cx="210" cy="210" rx="138" ry="45" transform="rotate(90 210 210)" stroke="var(--line)"/></g><circle cx="210" cy="210" r="28" fill="var(--surface)" stroke="var(--line)"/><circle cx="210" cy="210" r="4" fill="var(--brass)"/><circle cx="73" cy="124" r="5" fill="var(--teal)"/><circle cx="351" cy="287" r="5" fill="var(--brass)"/></svg>
+    </main>
+    <footer class="site-footer"><div class="site-width footer-bottom"><span>© Garry Meaburn 2026</span><a href="https://github.com/meabs/programmingtheloop">GitHub ↗</a></div></footer>
+  </body>
+</html>
+
+<style>
+  .not-found { min-height: min(76vh, 790px); display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,.8fr); align-items:center; gap:50px; }
+  .not-found-copy { max-width:650px; }
+  .not-found h1 { margin:0; color:var(--ink); font-size:clamp(56px,7vw,94px); font-weight:560; letter-spacing:-.065em; line-height:.98; }
+  .not-found h1 em { color:var(--brass-soft); font-family:var(--serif); font-weight:420; }
+  .not-found-copy > p:not(.section-kicker) { max-width:460px; color:var(--muted); }
+  .not-found-orbit { width:min(100%,420px); justify-self:center; }
+  @media(max-width:700px) { .not-found { min-height:calc(100svh - 150px); grid-template-columns:1fr; gap:4px; padding-block:55px; } .not-found h1 { font-size:58px; } .not-found-orbit { width:220px; margin-top:18px; } .not-found .hero-actions { align-items:flex-start; flex-direction:column; } }
+</style>

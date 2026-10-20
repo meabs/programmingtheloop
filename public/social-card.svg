@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"><defs><pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#314052" stroke-opacity=".32"/></pattern><radialGradient id="a"><stop stop-color="#1b746f" stop-opacity=".4"/><stop offset="1" stop-color="#090e18" stop-opacity="0"/></radialGradient></defs><rect width="1200" height="630" fill="#090e18"/><rect width="1200" height="630" fill="url(#g)"/><ellipse cx="900" cy="280" rx="400" ry="320" fill="url(#a)"/><g transform="translate(70 76)"><rect width="48" height="48" rx="12" fill="#111a2a" stroke="#55e6d0"/><path d="M14 11a16 16 0 0 1 23 13m-1-7 2 7 6-4M34 37a16 16 0 0 1-23-13m1 7-2-7-6 4" fill="none" stroke="#55e6d0" stroke-width="2"/><circle cx="24" cy="24" r="4" fill="#9b8cff"/></g><text x="136" y="110" fill="#f3f6fc" font-family="Arial,sans-serif" font-size="25" font-weight="700">Programming the Loop</text><text x="70" y="276" fill="#f3f6fc" font-family="Arial,sans-serif" font-size="70" font-weight="700">Better coding agents</text><text x="70" y="361" fill="#55e6d0" font-family="Arial,sans-serif" font-size="70" font-weight="700">start with better engineering.</text><text x="74" y="433" fill="#aab6c8" font-family="Arial,sans-serif" font-size="26">Evidence-led learning, experiments and practical methods.</text><text x="74" y="558" fill="#8190a5" font-family="monospace" font-size="17">PROGRAMMINGTHELOOP.COM · OCTOBER 2026</text><g transform="translate(925 474)" fill="none" stroke="#55e6d0" stroke-width="3"><path d="M0 0h150v60H0z"/><path d="M27 20h96M27 36h68" opacity=".7"/><circle cx="20" cy="-14" r="7" fill="#55e6d0"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0b1220"/>
+  <path d="M0 505h1200M0 506h1200" stroke="#2b3a4d"/>
+  <g fill="none" stroke-width="1.1" opacity=".68">
+    <ellipse cx="890" cy="300" rx="270" ry="100" transform="rotate(-35 890 300)" stroke="#d6b170"/>
+    <ellipse cx="890" cy="300" rx="270" ry="100" transform="rotate(35 890 300)" stroke="#64d9c8"/>
+    <ellipse cx="890" cy="300" rx="210" ry="72" transform="rotate(90 890 300)" stroke="#69788e"/>
+    <ellipse cx="890" cy="300" rx="345" ry="158" transform="rotate(-8 890 300)" stroke="#2b3a4d" stroke-dasharray="2 7"/>
+  </g>
+  <g fill="#64d9c8"><circle cx="690" cy="194" r="5"/><circle cx="1046" cy="221" r="5"/><circle cx="1011" cy="402" r="5"/></g>
+  <g fill="#d6b170"><circle cx="764" cy="420" r="5"/><circle cx="907" cy="145" r="4"/></g>
+  <circle cx="890" cy="300" r="44" fill="#121d2c" stroke="#d6b170"/>
+  <circle cx="890" cy="300" r="4" fill="#64d9c8"/>
+  <text x="66" y="92" fill="#d6b170" font-family="monospace" font-size="15" letter-spacing="3">INDEPENDENT RESEARCH ON CODING AGENTS</text>
+  <text x="63" y="232" fill="#f4efe4" font-family="Georgia,serif" font-size="74" letter-spacing="-3">Programming</text>
+  <text x="63" y="319" fill="#f4efe4" font-family="Georgia,serif" font-size="74" letter-spacing="-3">the <tspan fill="#efcf92" font-style="italic">Loop</tspan></text>
+  <path d="M66 358h74" stroke="#d6b170" stroke-width="2"/>
+  <text x="66" y="405" fill="#c3c4c1" font-family="Arial,sans-serif" font-size="26">Evidence-led engineering for coding agents.</text>
+  <text x="66" y="560" fill="#9da9b7" font-family="monospace" font-size="13" letter-spacing="2">MEASURED FINDINGS · REPRODUCIBLE CODE · STATED LIMITATIONS</text>
+</svg>

@@ -7,12 +7,18 @@ export default defineConfig({
     title: 'Programming the Loop',
     description: 'Evidence-led engineering for coding agents.',
     favicon: '/favicon.svg',
+    logo: { src: './src/assets/loop-mark.svg', alt: 'Programming the Loop' },
+    components: {
+      Header: './src/components/SiteHeader.astro',
+      Footer: './src/components/SiteFooter.astro',
+    },
     head: [
+      { tag: 'script', content: "try { if (!localStorage.getItem('starlight-theme')) localStorage.setItem('starlight-theme', 'dark'); } catch {}" },
       { tag: 'meta', attrs: { property: 'og:image', content: 'https://programmingtheloop.com/social-card.svg' } },
       { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
       { tag: 'meta', attrs: { name: 'twitter:image', content: 'https://programmingtheloop.com/social-card.svg' } },
     ],
-    customCss: ['./src/styles/starlight.css'],
+    customCss: ['./src/styles/global.css', './src/styles/starlight.css'],
     sidebar: [
       { label: 'Start here', items: [{ label: 'Learning paths', link: '/learn/' }, { label: 'Getting started', link: '/learn/getting-started/' }] },
       { label: 'The book, online', collapsed: true, items: [
@@ -28,7 +34,11 @@ export default defineConfig({
         { label: '10. Safety, cost and the human', link: '/learn/safety-cost-human/' },
         { label: '11. The take-home kit', link: '/learn/take-home-kit/' }
       ] },
-      { label: 'Experiments', items: [{ label: 'Research index', link: '/experiments/' }, { label: 'Knowing When You Don’t Know · planned', link: '/experiments/knowing-when-you-dont-know/' }] },
+      { label: 'Experiments', items: [
+        { label: 'Research index', link: '/experiments/' },
+        { label: 'Experiment J · Repository optimisation', link: '/experiments/repository-optimisation/' },
+        { label: 'Experiment K · planned', link: '/experiments/knowing-when-you-dont-know/' }
+      ] },
       { label: 'Resources', items: [{ label: 'Ebook', link: '/resources/ebook/' }, { label: 'Evidence and method', link: '/about/methodology/' }] }
     ],
     social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/meabs/programmingtheloop' }],
