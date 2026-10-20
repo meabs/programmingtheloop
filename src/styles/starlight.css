@@ -48,7 +48,9 @@
 
 .sl-markdown-content table {
   display: block;
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   font-size: 0.92rem;
 }
 
@@ -188,6 +190,26 @@
     grid-template-columns: 1fr 1fr;
   }
   .guide-stat {
+    border-right: 1px solid var(--sl-color-gray-5);
     border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+  .guide-stat:nth-child(even) {
+    border-right: 0;
+  }
+  .guide-stat:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .guide-stats {
+    grid-template-columns: 1fr;
+  }
+  .guide-stat {
+    border-right: 0;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+  }
+  .guide-stat:last-child {
+    border-bottom: 0;
   }
 }

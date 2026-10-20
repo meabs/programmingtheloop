@@ -1,9 +1,13 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES } from '../../../site';
+import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES, type StartThenPart } from '../../../site';
+
+function isThenLink(part: StartThenPart): part is { label: string; href: string } {
+  return typeof part === 'object' && part !== null && 'href' in part;
+}
 ---
 <BaseLayout
-  title={`Start — ${SITE_NAME}`}
+  title={`Where to start — ${SITE_NAME}`}
   description="Find the right chapter of Programming the Loop for what you're dealing with."
   canonicalPath="/guides/programming-the-loop/start/"
   ogImage={SITE_OG_IMAGE}
@@ -12,7 +16,7 @@ import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES } from '../../../site';
     <div class="wrap start-head">
       <div>
         <p class="section-label">§ 01 — Start here</p>
-        <h1>/start</h1>
+        <h1>Where to start</h1>
         <p class="lead">
           Pick the row that sounds like you. It tells you which chapter to read first, and where
           to go after.
@@ -30,9 +34,21 @@ import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES } from '../../../site';
           <div role="columnheader" class="start-action-h"><span class="visually-hidden">Open</span></div>
         </div>
         {START_ROUTES.map((row) => (
-          <a class={`start-row accent-${row.accent} reveal`} href={row.startWith.href} role="row">
-            <div role="cell" class="start-have">{row.have}</div>
+          <article class={`start-row accent-${row.accent} reveal`} role="row">
+            <a
+              class="start-route-hit"
+              href={row.startWith.href}
+              aria-label={`Read first: ${row.startWith.label}, ${row.startWith.detail}`}
+            >
+              <span class="visually-hidden">
+                Read first: {row.startWith.label}, {row.startWith.detail}
+              </span>
+            </a>
+            <div role="cell" class="start-have">
+              <span class="start-have-text">{row.have}</span>
+            </div>
             <div role="cell" class="start-with">
+              <span class="start-field-label">Read first</span>
               <span class="start-chapter">{row.startWith.label}</span>
               <span class="start-detail">{row.startWith.detail}</span>
               <span class="start-chips">
@@ -41,9 +57,22 @@ import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES } from '../../../site';
                 ))}
               </span>
             </div>
-            <div role="cell" class="start-leads">{row.leadsTo}</div>
-            <div role="cell" class="start-action" aria-hidden="true">→</div>
-          </a>
+            <div role="cell" class="start-leads">
+              <span class="start-field-label">Then</span>
+              <span class="start-then-copy">
+                {row.then.map((part) =>
+                  isThenLink(part) ? (
+                    <a class="start-then-link" href={part.href}>{part.label}</a>
+                  ) : (
+                    part
+                  )
+                )}
+              </span>
+            </div>
+            <div role="cell" class="start-action" aria-hidden="true">
+              <span class="start-action-arrow">→</span>
+            </div>
+          </article>
         ))}
       </div>
       <p class="start-footnote">

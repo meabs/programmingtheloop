@@ -14,7 +14,7 @@ Free to read on the web. Last updated: 20 October 2026.
 
 What I Measured with Coding Agents. The full text is here. I'll keep these pages up to date as I learn more. The October 2026 [PDF](/downloads/) is still there if you want it.
 
-Not sure where to begin? Use the [start table](/guides/programming-the-loop/start/) — pick the row that sounds like you.
+Not sure where to begin? Use [Where to start](/guides/programming-the-loop/start/) — pick the row that sounds like you.
 
 ## At a glance
 
