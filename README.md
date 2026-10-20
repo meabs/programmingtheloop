@@ -1,6 +1,6 @@
 # Programming the Loop
 
-Site for **agentic build engineering** by Garry Meaburn. The **[Guide](https://programmingtheloop.com/guide/)** holds the full text of *Programming the Loop*, free to read. The October 2026 first-edition PDF is still available. Hosted at [programmingtheloop.com](https://programmingtheloop.com).
+Site for **agentic build engineering** by Garry Meaburn: articles, experiments and guides on working with coding agents. Hosted at [programmingtheloop.com](https://programmingtheloop.com).
 
 Built with Astro and Starlight for GitHub Pages.
 
@@ -13,7 +13,7 @@ npm run dev
 
 - `npm run build` — type-check and build into `dist/`
 - `npm run preview` — serve the production build
-- `python3 scripts/build_guide_from_book.py` — regenerate Guide pages from the book Markdown master
+- `python3 scripts/build_guide_from_book.py` — regenerate Programming the Loop guide pages from the book Markdown master
 - `python3 scripts/verify_book_coverage.py` — paragraph / checklist / figure coverage report
 
 Node 22 is used in CI (see `.github/workflows/deploy.yml`).
@@ -23,23 +23,39 @@ Node 22 is used in CI (see `.github/workflows/deploy.yml`).
 | Path | Purpose | In main nav? |
 | --- | --- | --- |
 | `/` | Site home | Yes |
-| `/guide/` | Full-text Guide (chapters + back matter) | Yes |
-| `/start/` | Route into the Guide by situation | Yes |
-| `/views/` | Industry trends and tool/release takes | Yes |
-| `/updates/` | Changelog | Yes |
-| `/about/` | About (site voice) | Yes |
+| `/articles/` | Short writing (collection) | Yes |
+| `/experiments/` | Experiment write-ups (collection) | Yes |
+| `/guides/` | Guide catalog | Yes |
+| `/guides/programming-the-loop/` | Multi-page guide (Starlight) | Via Guides |
+| `/guides/programming-the-loop/start/` | Chapter routing table | Inside the guide |
+| `/about/` | About | Yes |
+| `/updates/` | Site changelog | Footer |
 | `/downloads/` | October 2026 PDF | Footer |
-| `/book/`, `/contents/` | Book hub / contents mirror | Via Guide |
+
+Old URLs (`/guide/…`, `/start/`, `/views/…`, `/book/`) redirect to the new paths.
 
 Main nav: `src/site.ts` (`NAV`). Shared layout: `src/layouts/BaseLayout.astro`.
 
-Do not invent posts, experiments, quotes or download counts.
+Do not invent posts, experiments, quotes or metrics.
 
-## How to add a Views post
+## How to add an article
 
-1. Copy the template: [`docs/templates/view-post.md`](docs/templates/view-post.md)
-2. Save it under `src/content/views/` as `YYYY-MM-DD-short-slug.md` (or any `.md` / `.mdx` name).
-3. Edit frontmatter and write the body. `draft: true` keeps a file unpublished.
+1. Copy [`docs/templates/article.md`](docs/templates/article.md) into `src/content/articles/` as `YYYY-MM-DD-short-slug.md`.
+2. Fill frontmatter. Keep `draft: true` until ready.
+3. Write the body. It appears on `/articles/`, home Latest, and the Articles preview when published.
+
+## How to add an experiment
+
+1. Copy [`docs/templates/experiment.md`](docs/templates/experiment.md) into `src/content/experiments/` as `short-slug.md`.
+2. Fill title, summary, type tag, date, GitHub and Guide links. Only use facts you can point to in a Guide chapter or published repo.
+3. Keep `draft: true` until ready. Published items appear on `/experiments/` and home.
+
+## How to add a guide
+
+1. Copy [`docs/templates/guide.md`](docs/templates/guide.md) into `src/content/guides/` (catalog card).
+2. Add multi-page Markdown under `src/content/docs/guides/<slug>/`.
+3. Wire the Starlight sidebar in `astro.config.mjs`.
+4. Set `href` on the catalog entry to `/guides/<slug>/`.
 
 ## October 2026 PDF
 
@@ -51,7 +67,7 @@ Licence: free to read; share unchanged with attribution and the copyright notice
 ## SEO and sharing
 
 - `site` in `astro.config.mjs` is `https://programmingtheloop.com`.
-- Absolute `https://programmingtheloop.com/og-cover.png` for social images.
+- Absolute `https://programmingtheloop.com/og-cover.png` for social images (book cover OG is fine on the guide; home uses the same site OG).
 - `public/CNAME` must remain `programmingtheloop.com`.
 
 ## Analytics

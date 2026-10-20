@@ -3,7 +3,10 @@ export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
 export const SITE_DESCRIPTION =
-  "Building software with coding agents. What I've measured, what I think, and the full Programming the Loop guide, free to read.";
+  "Articles, experiments and guides on working with coding agents. What I've measured, and what I think.";
+
+/** Base path for the Programming the Loop multi-page guide. */
+export const PTL_GUIDE_HREF = '/guides/programming-the-loop/';
 
 /** Visible “last updated” for the Guide (ISO date). */
 export const GUIDE_LAST_UPDATED = '2026-10-20';
@@ -27,15 +30,15 @@ export const CF_WEB_ANALYTICS_SRC = 'https://static.cloudflareinsights.com/beaco
 export const CF_WEB_ANALYTICS_BEACON = `{"token": "${CF_WEB_ANALYTICS_TOKEN}"}`;
 
 /**
- * Main nav — numbered like an engineering index. Views may be empty.
+ * Main nav — numbered like an engineering index.
+ * Updates lives in the footer only.
  */
 export const NAV = [
-  { num: '00', label: 'Index', href: '/' },
-  { num: '01', label: 'Guide', href: '/guide/' },
-  { num: '02', label: 'Start', href: '/start/' },
-  { num: '03', label: 'Views', href: '/views/' },
-  { num: '04', label: 'Updates', href: '/updates/' },
-  { num: '05', label: 'About', href: '/about/' },
+  { num: '00', label: 'Home', href: '/' },
+  { num: '01', label: 'Articles', href: '/articles/' },
+  { num: '02', label: 'Experiments', href: '/experiments/' },
+  { num: '03', label: 'Guides', href: '/guides/' },
+  { num: '04', label: 'About', href: '/about/' },
 ] as const;
 
 /**
@@ -112,7 +115,7 @@ export const TOPIC_TICKER = [
 export const START_ROUTES = [
   {
     have: 'Twenty minutes and want the heart of the argument',
-    startWith: { label: 'Chapter 3', href: '/guide/right-facts/', detail: 'The right facts, not every fact' },
+    startWith: { label: 'Chapter 3', href: '/guides/programming-the-loop/right-facts/', detail: 'The right facts, not every fact' },
     leadsTo: 'Then Chapter 5 and the take-home kit (Ch. 11)',
     chips: ['20 minutes', 'Ch. 3'],
     accent: 'teal',
@@ -121,7 +124,7 @@ export const START_ROUTES = [
     have: 'An agent about to get production credentials',
     startWith: {
       label: 'Chapter 10',
-      href: '/guide/safety-cost-human/',
+      href: '/guides/programming-the-loop/safety-cost-human/',
       detail: 'Safety, cost and the human in the loop',
     },
     leadsTo: 'Harness and review habits before you widen access',
@@ -130,14 +133,14 @@ export const START_ROUTES = [
   },
   {
     have: 'Agents burning tokens on context I already have in source',
-    startWith: { label: 'Chapter 3', href: '/guide/right-facts/', detail: 'Finding 1 — optimised repo cost' },
+    startWith: { label: 'Chapter 3', href: '/guides/programming-the-loop/right-facts/', detail: 'Finding 1 — optimised repo cost' },
     leadsTo: 'Lean AGENTS.md; add layers only when they pay',
     chips: ['+35–48%', 'tokens'],
     accent: 'blue',
   },
   {
     have: 'Changes that depend on a repository the agent cannot read',
-    startWith: { label: 'Chapter 3', href: '/guide/right-facts/', detail: 'Findings 2–3 — facts across a boundary' },
+    startWith: { label: 'Chapter 3', href: '/guides/programming-the-loop/right-facts/', detail: 'Findings 2–3 — facts across a boundary' },
     leadsTo: 'Contracts and freshness gates in Chapter 5',
     chips: ['3 → 18–19/20'],
     accent: 'green',
@@ -146,7 +149,7 @@ export const START_ROUTES = [
     have: 'No clear “done” before the agent starts writing',
     startWith: {
       label: 'Chapter 2',
-      href: '/guide/briefs-plans-specifications/',
+      href: '/guides/programming-the-loop/briefs-plans-specifications/',
       detail: 'Briefs, plans and specifications',
     },
     leadsTo: 'One verifiable change at a time (Ch. 4)',
@@ -155,7 +158,7 @@ export const START_ROUTES = [
   },
   {
     have: 'Reports that say passed while the real check is unverified',
-    startWith: { label: 'Chapter 5', href: '/guide/proof-not-promises/', detail: 'Proof, not promises' },
+    startWith: { label: 'Chapter 5', href: '/guides/programming-the-loop/proof-not-promises/', detail: 'Proof, not promises' },
     leadsTo: 'Independent checks the agent cannot rewrite',
     chips: ['12 runs', 'freshness gate'],
     accent: 'rose',
@@ -164,7 +167,7 @@ export const START_ROUTES = [
     have: 'The same environment failures every agent session',
     startWith: {
       label: 'Chapter 6',
-      href: '/guide/harness-friction-loop/',
+      href: '/guides/programming-the-loop/harness-friction-loop/',
       detail: 'The harness and the friction loop',
     },
     leadsTo: 'Fixes in the harness, not only in prompts',
@@ -175,7 +178,7 @@ export const START_ROUTES = [
     have: 'Need to match review depth to blast radius',
     startWith: {
       label: 'Chapter 8',
-      href: '/guide/review-merging-risk/',
+      href: '/guides/programming-the-loop/review-merging-risk/',
       detail: 'Review, merging and risk',
     },
     leadsTo: 'Tiered review from reversibility and verification strength',
@@ -186,7 +189,7 @@ export const START_ROUTES = [
     have: 'Wondering whether a set-up change actually helped',
     startWith: {
       label: 'Chapter 9',
-      href: '/guide/tools-measurement/',
+      href: '/guides/programming-the-loop/tools-measurement/',
       detail: 'Tools and honest measurement',
     },
     leadsTo: 'Repeated runs with stated limits, not Tuesday anecdotes',
@@ -195,14 +198,14 @@ export const START_ROUTES = [
   },
   {
     have: 'Ready to adopt — what do we put in place first',
-    startWith: { label: 'Chapter 11', href: '/guide/take-home-kit/', detail: 'The take-home kit' },
+    startWith: { label: 'Chapter 11', href: '/guides/programming-the-loop/take-home-kit/', detail: 'The take-home kit' },
     leadsTo: 'Default / Conditional / Experimental labels for each layer',
     chips: ['Stage 0', 'justify'],
     accent: 'orange',
   },
   {
     have: 'Want the findings and thesis before any chapter',
-    startWith: { label: 'Foreword', href: '/guide/foreword/', detail: 'Why I ran the experiments' },
+    startWith: { label: 'Foreword', href: '/guides/programming-the-loop/foreword/', detail: 'Why I ran the experiments' },
     leadsTo: 'Eleven chapters with checklists and the worked example',
     chips: ['4 findings', 'thesis'],
     accent: 'teal',
@@ -217,7 +220,7 @@ export const CHAPTERS = [
     subtitle: 'the argument and the evidence',
     blurb:
       'Terms, the evidence in outline, and the worked example the rest of the book follows.',
-    href: '/guide/facts-checks-upkeep/',
+    href: '/guides/programming-the-loop/facts-checks-upkeep/',
   },
   {
     num: 2,
@@ -225,7 +228,7 @@ export const CHAPTERS = [
     subtitle: 'deciding what "done" means',
     blurb:
       'Decide what the change is, how you will know it is done, and what must not change, before an agent writes code.',
-    href: '/guide/briefs-plans-specifications/',
+    href: '/guides/programming-the-loop/briefs-plans-specifications/',
   },
   {
     num: 3,
@@ -233,14 +236,14 @@ export const CHAPTERS = [
     subtitle: 'context, documentation and knowledge layers',
     blurb:
       'The main evidence chapter: generated context on a readable repository, stale dependency knowledge, and facts across a repository boundary.',
-    href: '/guide/right-facts/',
+    href: '/guides/programming-the-loop/right-facts/',
   },
   {
     num: 4,
     title: 'One verifiable change at a time',
     subtitle: 'the implementation loop',
     blurb: 'Hand an agent one change you can verify at a time; the quality hangs on step size and the verify step.',
-    href: '/guide/verifiable-change/',
+    href: '/guides/programming-the-loop/verifiable-change/',
   },
   {
     num: 5,
@@ -248,7 +251,7 @@ export const CHAPTERS = [
     subtitle: 'verification',
     blurb:
       'Executable checks and an independent judgement of the work, not only the agent’s account of it.',
-    href: '/guide/proof-not-promises/',
+    href: '/guides/programming-the-loop/proof-not-promises/',
   },
   {
     num: 6,
@@ -256,7 +259,7 @@ export const CHAPTERS = [
     subtitle: 'finding and removing recurring problems',
     blurb:
       'Agents trip on the same few environment problems; put fixes in the harness around them, not only in prompts.',
-    href: '/guide/harness-friction-loop/',
+    href: '/guides/programming-the-loop/harness-friction-loop/',
   },
   {
     num: 7,
@@ -264,7 +267,7 @@ export const CHAPTERS = [
     subtitle: 'isolation and the cost of coordination',
     blurb:
       'Deliberately short: none of my experiments measured parallel working as such, so this is judgement and other people’s published practice.',
-    href: '/guide/parallel-agents/',
+    href: '/guides/programming-the-loop/parallel-agents/',
   },
   {
     num: 8,
@@ -272,7 +275,7 @@ export const CHAPTERS = [
     subtitle: 'matching scrutiny to consequence',
     blurb:
       'Review by the consequence of being wrong: reversibility, blast radius and verification strength.',
-    href: '/guide/review-merging-risk/',
+    href: '/guides/programming-the-loop/review-merging-risk/',
   },
   {
     num: 9,
@@ -280,7 +283,7 @@ export const CHAPTERS = [
     subtitle: '',
     blurb:
       'Prefer boring tools with clear errors, and measure set-up changes with repeated runs rather than single anecdotes.',
-    href: '/guide/tools-measurement/',
+    href: '/guides/programming-the-loop/tools-measurement/',
   },
   {
     num: 10,
@@ -288,7 +291,7 @@ export const CHAPTERS = [
     subtitle: '',
     blurb:
       'Security, cost and skills; keeps general practice apart from what I measured in the earlier trials.',
-    href: '/guide/safety-cost-human/',
+    href: '/guides/programming-the-loop/safety-cost-human/',
   },
   {
     num: 11,
@@ -296,7 +299,7 @@ export const CHAPTERS = [
     subtitle: 'adopting agents, one justified layer at a time',
     blurb:
       'Start with a short AGENTS.md, runnable checks and contracts for unread dependencies; add each further layer only when it has earned its keep.',
-    href: '/guide/take-home-kit/',
+    href: '/guides/programming-the-loop/take-home-kit/',
   },
 ] as const;
 

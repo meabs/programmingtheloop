@@ -16,7 +16,7 @@ BOOK = Path(
     "/home/ubuntu/.cursor/projects/workspace/uploads/"
     "Programming-the-Loop-1st-edition_8326.md"
 )
-OUT_DIR = Path("src/content/docs/guide")
+OUT_DIR = Path("src/content/docs/guides/programming-the-loop")
 LEARN_DIR = Path("src/content/docs/learn")
 
 # Split points: top-level # headings that start a guide page (not code samples).
@@ -88,19 +88,19 @@ SECTIONS: list[tuple[str, str, str]] = [
 ]
 
 CHAPTER_LINKS = {
-    "Chapter 1": "/guide/facts-checks-upkeep/",
-    "Chapter 2": "/guide/briefs-plans-specifications/",
-    "Chapter 3": "/guide/right-facts/",
-    "Chapter 4": "/guide/verifiable-change/",
-    "Chapter 5": "/guide/proof-not-promises/",
-    "Chapter 6": "/guide/harness-friction-loop/",
-    "Chapter 7": "/guide/parallel-agents/",
-    "Chapter 8": "/guide/review-merging-risk/",
-    "Chapter 9": "/guide/tools-measurement/",
-    "Chapter 10": "/guide/safety-cost-human/",
-    "Chapter 11": "/guide/take-home-kit/",
-    "Chapters 3 and 5": "/guide/right-facts/",  # dual — note in coverage
-    "Chapters 3 to 9": "/guide/right-facts/",
+    "Chapter 1": "/guides/programming-the-loop/facts-checks-upkeep/",
+    "Chapter 2": "/guides/programming-the-loop/briefs-plans-specifications/",
+    "Chapter 3": "/guides/programming-the-loop/right-facts/",
+    "Chapter 4": "/guides/programming-the-loop/verifiable-change/",
+    "Chapter 5": "/guides/programming-the-loop/proof-not-promises/",
+    "Chapter 6": "/guides/programming-the-loop/harness-friction-loop/",
+    "Chapter 7": "/guides/programming-the-loop/parallel-agents/",
+    "Chapter 8": "/guides/programming-the-loop/review-merging-risk/",
+    "Chapter 9": "/guides/programming-the-loop/tools-measurement/",
+    "Chapter 10": "/guides/programming-the-loop/safety-cost-human/",
+    "Chapter 11": "/guides/programming-the-loop/take-home-kit/",
+    "Chapters 3 and 5": "/guides/programming-the-loop/right-facts/",  # dual — note in coverage
+    "Chapters 3 to 9": "/guides/programming-the-loop/right-facts/",
 }
 
 
@@ -243,35 +243,39 @@ def to_page(slug: str, title: str, body: str) -> str:
 
 def write_index() -> None:
     rows = "\n".join(
-        f"| {title} | [/guide/{slug}/](/guide/{slug}/) |"
+        f"| {title} | [/guides/programming-the-loop/{slug}/](/guides/programming-the-loop/{slug}/) |"
         for slug, title, _ in SECTIONS
     )
     content = f"""---
-title: "Guide"
-description: "Programming the Loop — the full book, free to read on the web."
+title: "Programming the Loop"
+description: "What I Measured with Coding Agents — the full guide, free to read on the web."
 ---
 
 <p class="guide-edition-note">
 Free to read on the web. Last updated: 20 October 2026.
+<a href="/guides/programming-the-loop/start/">Where to start</a> ·
 <a href="/updates/">Updates</a> ·
 <a href="/downloads/">October 2026 PDF</a>
 </p>
 
-# Guide
+# Programming the Loop
 
-The full text of *Programming the Loop: What I Measured with Coding Agents* is here. I'll keep these pages up to date as I learn more. The October 2026 [PDF](/downloads/) is still there if you want it.
+What I Measured with Coding Agents. The full text is here. I'll keep these pages up to date as I learn more. The October 2026 [PDF](/downloads/) is still there if you want it.
+
+Not sure where to begin? Use the [start table](/guides/programming-the-loop/start/) — pick the row that sounds like you.
 
 ## Contents
 
 | Section | Page |
 | --- | --- |
+| Where to start | [/guides/programming-the-loop/start/](/guides/programming-the-loop/start/) |
 {rows}
 
 ## Licence
 
 © Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the October 2026 PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.
 
-**Quoted material** belongs to its authors and is used briefly, with attribution and a link, for commentary. **My software repositories** carry their own licences, listed in ["About the evidence"](/guide/about-the-evidence/) at the back; they are not covered by the copyright line above.
+**Quoted material** belongs to its authors and is used briefly, with attribution and a link, for commentary. **My software repositories** carry their own licences, listed in ["About the evidence"](/guides/programming-the-loop/about-the-evidence/) at the back; they are not covered by the copyright line above.
 
 **Disclaimer.** Practical opinion, written in good faith, about tools that change month to month. Not legal, security or financial advice. My experiments are small and I say so each time. Test anything here on your own code before you rely on it, and keep backups: agents can and do delete things. The views in this book are the author's own and do not represent any employer, past or present.
 """

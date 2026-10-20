@@ -1,65 +1,20 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import {
-  CHAPTERS,
-  BOOK_EDITION,
-  BOOK_DESCRIPTION,
-  BOOK_OG_IMAGE,
-} from '../site';
+/**
+ * Compatibility: /contents → guide home (also declared in astro.config redirects).
+ */
+const dest = '/guides/programming-the-loop/';
 ---
-<BaseLayout
-  title="Contents — Programming the Loop"
-  description={BOOK_DESCRIPTION}
-  canonicalPath="/contents/"
-  ogImage={BOOK_OG_IMAGE}
->
-  <header class="page-head">
-    <div class="wrap">
-      <p class="edition">Guide · {BOOK_EDITION}</p>
-      <h1>Contents</h1>
-      <p>
-        Full chapter text is on the web. This list mirrors the Guide. Prefer
-        <a href="/guide/">/guide/</a> for reading with previous and next links.
-      </p>
-    </div>
-  </header>
-  <div class="page-body">
-    <div class="wrap">
-      <ol class="chapter-list">
-        <li>
-          <a href="/guide/foreword/">
-            <span class="chapter-num">—</span>
-            <span>
-              <span class="chapter-title">Foreword: why I ran the experiments</span>
-              <span class="chapter-sub">Findings in brief, and how findings differ from recommendations.</span>
-            </span>
-          </a>
-        </li>
-        {CHAPTERS.map((ch) => (
-          <li>
-            <a href={ch.href}>
-              <span class="chapter-num">{String(ch.num).padStart(2, '0')}</span>
-              <span>
-                <span class="chapter-title">{ch.title}</span>
-                <span class="chapter-sub">{ch.blurb}</span>
-              </span>
-            </a>
-          </li>
-        ))}
-        <li>
-          <a href="/guide/cheat-sheet/">
-            <span class="chapter-num">—</span>
-            <span>
-              <span class="chapter-title">Cheat sheet, glossary, references, about the evidence</span>
-              <span class="chapter-sub">Back matter in the Guide.</span>
-            </span>
-          </a>
-        </li>
-      </ol>
-      <p style="margin-top:2rem" class="actions">
-        <a class="button primary" href="/guide/">Open the Guide</a>
-        <a class="button" href="/downloads/">October 2026 PDF</a>
-      </p>
-    </div>
-  </div>
-</BaseLayout>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <title>Moved</title>
+    <meta http-equiv="refresh" content={`0;url=${dest}`} />
+    <link rel="canonical" href={new URL(dest, 'https://programmingtheloop.com').href} />
+    <script is:inline define:vars={{ dest }}>
+      location.replace(dest);
+    </script>
+  </head>
+  <body>
+    <p>This page has moved to <a href={dest}>{dest}</a>.</p>
+  </body>
+</html>

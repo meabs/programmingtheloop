@@ -7,15 +7,28 @@ import {
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og-cover.png`;
+const guideBase = '/guides/programming-the-loop';
 
 export default defineConfig({
   site,
   trailingSlash: 'always',
+  redirects: {
+    '/guide': `${guideBase}/`,
+    '/guide/': `${guideBase}/`,
+    '/start': `${guideBase}/start/`,
+    '/start/': `${guideBase}/start/`,
+    '/views': '/articles/',
+    '/views/': '/articles/',
+    '/book': `${guideBase}/`,
+    '/book/': `${guideBase}/`,
+    '/contents': `${guideBase}/`,
+    '/contents/': `${guideBase}/`,
+  },
   integrations: [
     starlight({
       title: 'Programming the Loop',
       description:
-        "Building software with coding agents. What I've measured, what I think, and the full Programming the Loop guide, free to read.",
+        "Articles, experiments and guides on working with coding agents. What I've measured, and what I think.",
       favicon: '/favicon.svg',
       head: [
         {
@@ -57,49 +70,42 @@ export default defineConfig({
           label: 'Site',
           items: [
             { label: 'Home', link: '/' },
-            { label: 'Views', link: '/views/' },
-            { label: 'Guide', link: '/guide/' },
-            { label: 'Updates', link: '/updates/' },
+            { label: 'Articles', link: '/articles/' },
+            { label: 'Experiments', link: '/experiments/' },
+            { label: 'Guides', link: '/guides/' },
             { label: 'About', link: '/about/' },
           ],
         },
         {
-          label: 'Guide',
+          label: 'Programming the Loop',
           collapsed: false,
           items: [
-            { label: 'Contents', link: '/guide/' },
-            { label: 'Foreword', link: '/guide/foreword/' },
-            { label: '1. Facts, checks and upkeep', link: '/guide/facts-checks-upkeep/' },
-            { label: '2. Briefs, plans and specifications', link: '/guide/briefs-plans-specifications/' },
-            { label: '3. The right facts, not every fact', link: '/guide/right-facts/' },
-            { label: '4. One verifiable change at a time', link: '/guide/verifiable-change/' },
-            { label: '5. Proof, not promises', link: '/guide/proof-not-promises/' },
-            { label: '6. The harness and the friction loop', link: '/guide/harness-friction-loop/' },
-            { label: '7. Parallel agents', link: '/guide/parallel-agents/' },
-            { label: '8. Review, merging and risk', link: '/guide/review-merging-risk/' },
-            { label: '9. Tools and honest measurement', link: '/guide/tools-measurement/' },
-            { label: '10. Safety, cost and the human', link: '/guide/safety-cost-human/' },
-            { label: '11. The take-home kit', link: '/guide/take-home-kit/' },
-            { label: 'Cheat sheet', link: '/guide/cheat-sheet/' },
-            { label: 'Glossary', link: '/guide/glossary/' },
-            { label: 'References', link: '/guide/references/' },
-            { label: 'About the evidence', link: '/guide/about-the-evidence/' },
-            { label: 'About the author', link: '/guide/about-the-author/' },
-            { label: 'Acknowledgements', link: '/guide/acknowledgements/' },
+            { label: 'Guide home', link: `${guideBase}/` },
+            { label: 'Where to start', link: `${guideBase}/start/` },
+            { label: 'Foreword', link: `${guideBase}/foreword/` },
+            { label: '1. Facts, checks and upkeep', link: `${guideBase}/facts-checks-upkeep/` },
+            { label: '2. Briefs, plans and specifications', link: `${guideBase}/briefs-plans-specifications/` },
+            { label: '3. The right facts, not every fact', link: `${guideBase}/right-facts/` },
+            { label: '4. One verifiable change at a time', link: `${guideBase}/verifiable-change/` },
+            { label: '5. Proof, not promises', link: `${guideBase}/proof-not-promises/` },
+            { label: '6. The harness and the friction loop', link: `${guideBase}/harness-friction-loop/` },
+            { label: '7. Parallel agents', link: `${guideBase}/parallel-agents/` },
+            { label: '8. Review, merging and risk', link: `${guideBase}/review-merging-risk/` },
+            { label: '9. Tools and honest measurement', link: `${guideBase}/tools-measurement/` },
+            { label: '10. Safety, cost and the human', link: `${guideBase}/safety-cost-human/` },
+            { label: '11. The take-home kit', link: `${guideBase}/take-home-kit/` },
+            { label: 'Cheat sheet', link: `${guideBase}/cheat-sheet/` },
+            { label: 'Glossary', link: `${guideBase}/glossary/` },
+            { label: 'References', link: `${guideBase}/references/` },
+            { label: 'About the evidence', link: `${guideBase}/about-the-evidence/` },
+            { label: 'About the author', link: `${guideBase}/about-the-author/` },
+            { label: 'Acknowledgements', link: `${guideBase}/acknowledgements/` },
           ],
         },
         {
           label: 'PDF',
           collapsed: true,
-          items: [
-            { label: 'October 2026 PDF', link: '/downloads/' },
-            { label: 'Book landing', link: '/book/' },
-          ],
-        },
-        {
-          label: 'Start',
-          collapsed: true,
-          items: [{ label: 'Where to begin', link: '/start/' }],
+          items: [{ label: 'October 2026 PDF', link: '/downloads/' }],
         },
       ],
       social: [

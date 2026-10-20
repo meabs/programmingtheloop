@@ -12,7 +12,7 @@ BOOK = Path(
     "/home/ubuntu/.cursor/projects/workspace/uploads/"
     "Programming-the-Loop-1st-edition_8326.md"
 )
-GUIDE = Path("src/content/docs/guide")
+GUIDE = Path("src/content/docs/guides/programming-the-loop")
 REPORT = Path("docs/book-coverage-report.json")
 
 
@@ -152,7 +152,7 @@ def main() -> int:
     # references: count numbered refs 1–21
     ref_count_book = len(re.findall(r"^\d+\.\s+", book[book.find("# References") :], re.M))
     ref_count_guide = len(
-        re.findall(r"^\d+\.\s+", Path("src/content/docs/guide/references.md").read_text(), re.M)
+        re.findall(r"^\d+\.\s+", (GUIDE / "references.md").read_text(), re.M)
     )
 
     para_cov = 1 - len(missing_paras) / max(len(book_paras), 1)

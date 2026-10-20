@@ -674,7 +674,7 @@ html.js-motion .dash-live {
 /* Stats strip */
 .stats-strip {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   border-top: 1px solid var(--line);
 }
 
@@ -1870,5 +1870,117 @@ html.js-motion .hero-headline.is-in .word {
 
   .ticker-track span::after {
     content: none;
+  }
+}
+
+/* —— Collection cards (articles / experiments / guides) —— */
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.85rem;
+}
+
+.collection-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.2rem 1.15rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  text-decoration: none;
+  color: inherit;
+  min-height: 10rem;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.collection-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+  color: inherit;
+}
+
+.collection-card time {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.collection-card .card-title {
+  font-size: 1.12rem;
+}
+
+.section-more {
+  margin-top: 1.25rem;
+  font-weight: 600;
+}
+
+.section-more a {
+  text-decoration: none;
+}
+
+/* Latest panel in hero */
+.latest-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.latest-list li {
+  border-bottom: 1px solid var(--line);
+}
+
+.latest-list li:last-child {
+  border-bottom: 0;
+}
+
+.latest-list a {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5rem 0.75rem;
+  align-items: baseline;
+  padding: 0.7rem 0.85rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.latest-list a:hover {
+  background: var(--accent-soft);
+  color: inherit;
+}
+
+.latest-tag {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.latest-title {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 0.92rem;
+}
+
+.latest-meta {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.65rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .latest-list a {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
   }
 }

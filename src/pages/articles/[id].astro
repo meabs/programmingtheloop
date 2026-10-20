@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedArticles, formatItemDate } from '../../lib/collections';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedArticles();
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  canonicalPath={`/articles/${post.id}/`}
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Article · {formatItemDate(post.data.date)}</p>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.description}</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap view-prose">
+      <Content />
+      <p class="view-back">
+        <a href="/articles/">← All articles</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

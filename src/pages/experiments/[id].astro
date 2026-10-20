@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedExperiments, formatItemDate } from '../../lib/collections';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const items = await getPublishedExperiments();
+  return items.map((item) => ({
+    params: { id: item.id },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+---
+<BaseLayout
+  title={item.data.title}
+  description={item.data.description}
+  canonicalPath={`/experiments/${item.id}/`}
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">
+        {item.data.type} · {formatItemDate(item.data.date)}
+      </p>
+      <h1>{item.data.title}</h1>
+      <p>{item.data.description}</p>
+      {(item.data.github.length > 0 || item.data.guideLinks.length > 0) && (
+        <div class="actions">
+          {item.data.guideLinks.map((link) => (
+            <a class="button" href={link.href}>{link.label}</a>
+          ))}
+          {item.data.github.map((link) => (
+            <a class="button" href={link.href} rel="noopener noreferrer">{link.label} ↗</a>
+          ))}
+        </div>
+      )}
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap view-prose">
+      <Content />
+      <p class="view-back">
+        <a href="/experiments/">← All experiments</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import {
+  getPublishedExperiments,
+  experimentHref,
+  formatItemDate,
+} from '../../lib/collections';
+
+const items = await getPublishedExperiments();
+---
+<BaseLayout
+  title="Experiments"
+  description="Controlled trials and worked examples on coding agents, with limits stated."
+  canonicalPath="/experiments/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">§ 02 — Experiments</p>
+      <h1>Experiments</h1>
+      <p>
+        Each item is one write-up: what I asked, what I measured, and where to read the full
+        numbers. Limits stay with the numbers.
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <div class="collection-grid">
+        {items.map((item) => (
+          <a class="collection-card reveal" href={experimentHref(item)}>
+            <span class="card-kicker">{item.data.type}</span>
+            <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
+            <h2 class="card-title">{item.data.title}</h2>
+            <p class="card-desc">{item.data.summary}</p>
+            <span class="card-meta">Open →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
