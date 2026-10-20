@@ -24,6 +24,21 @@ def strip_fm(text: str) -> str:
     return text
 
 
+def adapt_copyright_for_web(text: str) -> str:
+    """Map book copyright-page ebook/PDF-or-EPUB wording to the site's web licence."""
+    text = text.replace("This ebook is free to read", "This guide is free to read")
+    text = text.replace(
+        "the unchanged PDF or EPUB",
+        "the unchanged pages (or the archived PDF)",
+    )
+    text = text.replace("keep this notice", "keep the copyright notice")
+    text = text.replace(
+        "modified versions or extracts presented as the whole",
+        "modified versions",
+    )
+    return text
+
+
 def normalize(text: str) -> str:
     text = strip_fm(text)
     # drop pandoc attrs / divs markers for comparison of prose
@@ -43,9 +58,14 @@ def normalize(text: str) -> str:
 def paragraphs(text: str) -> list[str]:
     """Split into prose paragraphs / table rows / list items worth covering."""
     raw = strip_fm(text)
-    # remove title page
-    if "# Foreword:" in raw:
-        raw = raw[raw.find("# Foreword:") :]
+    # Keep copyright-page prose (© notice, Quoted material, Disclaimer); drop only
+    # the decorative title / byline block above the first © line.
+    copyright_start = raw.find("© Garry Meaburn")
+    foreword = raw.find("# Foreword:")
+    if copyright_start != -1 and (foreword == -1 or copyright_start < foreword):
+        raw = adapt_copyright_for_web(raw[copyright_start:])
+    elif foreword != -1:
+        raw = raw[foreword:]
     # unwrap format-specific fences — both forms are expected on the web
     raw = re.sub(r"::: \{\.pdf-only\}\n(.*?):::", r"\1", raw, flags=re.S)
     raw = re.sub(r"::: \{\.epub-only\}\n(.*?):::", r"\1", raw, flags=re.S)
@@ -98,9 +118,11 @@ def image_refs(text: str) -> list[str]:
 
 def main() -> int:
     book = BOOK.read_text()
-    guide_text = "\n\n".join(
-        p.read_text() for p in sorted(GUIDE.glob("*.md")) if p.name != "index.md"
-    )
+    # Include guide/index.md (licence / about-the-guide) plus chapter pages.
+    guide_text = "\n\n".join(p.read_text() for p in sorted(GUIDE.glob("*.md")))
+    about_licence = Path("src/content/docs/about/index.mdx")
+    if about_licence.exists():
+        guide_text = guide_text + "\n\n" + about_licence.read_text()
 
     book_paras = paragraphs(book)
     guide_norm = normalize(guide_text)
@@ -152,7 +174,8 @@ def main() -> int:
         "reference_lines_book": ref_count_book,
         "reference_lines_guide": ref_count_guide,
         "intentional_omissions": [
-            "Title page (web uses site chrome / Guide index)",
+            "Title / byline above the copyright notice (web uses site chrome / Guide index); copyright-page paragraphs (© notice, Quoted material, Disclaimer) are included",
+            "Copyright © line: ebook / PDF-or-EPUB wording adapted for the web (guide + pages / archived PDF); Quoted material and Disclaimer kept verbatim",
             "Pandoc `{.unnumbered}` / `{.pdf-only}` / `{.epub-only}` / `{.checklist}` / `{.keep}` / `{.refs}` attributes (converted for web; content kept)",
             "Bare 'Chapter N' strings turned into internal links (prose unchanged aside from link markup)",
         ],

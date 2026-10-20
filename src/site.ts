@@ -139,8 +139,23 @@ export const LINKS = {
 } as const;
 
 /**
- * Licence for the free PDF on this site (PDF download only).
- * Adapted from the book’s copyright notice; EPUB omitted because this site does not offer EPUB.
+ * Licence for the free web guide and archived PDF.
+ * Adapted from the book’s copyright notice; ebook / PDF-or-EPUB wording fitted for the web.
  */
 export const LICENCE_SHORT =
   '© Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the archived first-edition PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.';
+
+/** Copyright-page paragraph from the first edition (verbatim). */
+export const LICENCE_QUOTED =
+  'Quoted material belongs to its authors and is used briefly, with attribution and a link, for commentary. My software repositories carry their own licences, listed in "About the evidence" at the back; they are not covered by the copyright line above.';
+
+/** Copyright-page disclaimer from the first edition (verbatim). */
+export const LICENCE_DISCLAIMER =
+  'Disclaimer. Practical opinion, written in good faith, about tools that change month to month. Not legal, security or financial advice. My experiments are small and I say so each time. Test anything here on your own code before you rely on it, and keep backups: agents can and do delete things. The views in this book are the author\'s own and do not represent any employer, past or present.';
+
+/** HTML forms for custom pages (bold lead-ins as in the book). */
+export const LICENCE_QUOTED_HTML =
+  '<strong>Quoted material</strong> belongs to its authors and is used briefly, with attribution and a link, for commentary. <strong>My software repositories</strong> carry their own licences, listed in "About the evidence" at the back; they are not covered by the copyright line above.';
+
+export const LICENCE_DISCLAIMER_HTML =
+  '<strong>Disclaimer.</strong> Practical opinion, written in good faith, about tools that change month to month. Not legal, security or financial advice. My experiments are small and I say so each time. Test anything here on your own code before you rely on it, and keep backups: agents can and do delete things. The views in this book are the author\'s own and do not represent any employer, past or present.';

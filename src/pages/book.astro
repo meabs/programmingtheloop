@@ -10,6 +10,8 @@ import {
   CHAPTERS,
   LINKS,
   LICENCE_SHORT,
+  LICENCE_QUOTED_HTML,
+  LICENCE_DISCLAIMER_HTML,
   GUIDE_LAST_UPDATED_LABEL,
 } from '../site';
 ---
@@ -102,6 +104,8 @@ import {
       <h2>Licence and archive download</h2>
       <div class="licence-box">
         <p>{LICENCE_SHORT}</p>
+        <p set:html={LICENCE_QUOTED_HTML} />
+        <p set:html={LICENCE_DISCLAIMER_HTML} />
         <p>
           The latest related repositories are at
           <a href={LINKS.githubAuthor}>github.com/meabs</a>.

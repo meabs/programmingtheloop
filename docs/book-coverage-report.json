@@ -1,5 +1,5 @@
 {
-  "book_paragraphs": 370,
+  "book_paragraphs": 373,
   "missing_paragraphs": 0,
   "paragraph_coverage": 1.0,
   "book_checklist_items": 76,
@@ -27,7 +27,8 @@
   "reference_lines_book": 21,
   "reference_lines_guide": 21,
   "intentional_omissions": [
-    "Title page (web uses site chrome / Guide index)",
+    "Title / byline above the copyright notice (web uses site chrome / Guide index); copyright-page paragraphs (\u00a9 notice, Quoted material, Disclaimer) are included",
+    "Copyright \u00a9 line: ebook / PDF-or-EPUB wording adapted for the web (guide + pages / archived PDF); Quoted material and Disclaimer kept verbatim",
     "Pandoc `{.unnumbered}` / `{.pdf-only}` / `{.epub-only}` / `{.checklist}` / `{.keep}` / `{.refs}` attributes (converted for web; content kept)",
     "Bare 'Chapter N' strings turned into internal links (prose unchanged aside from link markup)"
   ],
