@@ -30,16 +30,42 @@ export const CF_WEB_ANALYTICS_SRC = 'https://static.cloudflareinsights.com/beaco
 export const CF_WEB_ANALYTICS_BEACON = `{"token": "${CF_WEB_ANALYTICS_TOKEN}"}`;
 
 /**
+ * Minimum published items before a collection-gated nav section appears.
+ * Home and About always show. Guides uses minItems: 1 (book hub).
+ * Articles / Experiments use NAV_MIN_ITEMS.
+ */
+export const NAV_MIN_ITEMS = 3;
+
+export type NavCollection = 'articles' | 'experiments' | 'guides';
+
+export type NavItem = {
+  num: string;
+  label: string;
+  href: string;
+  /** Always shown regardless of counts. */
+  always?: boolean;
+  /** Gate on published count for this collection. */
+  collection?: NavCollection;
+  /** Override NAV_MIN_ITEMS for this item (e.g. Guides: 1). */
+  minItems?: number;
+};
+
+/**
  * Main nav — numbered like an engineering index.
  * Updates lives in the footer only.
+ * Collection sections are filtered at render time via getVisibleNav().
  */
-export const NAV = [
-  { num: '00', label: 'Home', href: '/' },
-  { num: '01', label: 'Articles', href: '/articles/' },
-  { num: '02', label: 'Experiments', href: '/experiments/' },
-  { num: '03', label: 'Guides', href: '/guides/' },
-  { num: '04', label: 'About', href: '/about/' },
-] as const;
+export const NAV: readonly NavItem[] = [
+  { num: '00', label: 'Home', href: '/', always: true },
+  // Empty/sparse sections wait for NAV_MIN_ITEMS (default 3).
+  { num: '01', label: 'Articles', href: '/articles/', collection: 'articles' },
+  // Transitional: two live experiments already exist — show once ≥1 published.
+  // Raise to NAV_MIN_ITEMS (omit minItems) when a third experiment ships.
+  { num: '02', label: 'Experiments', href: '/experiments/', collection: 'experiments', minItems: 1 },
+  // Book hub: show once at least one guide is published.
+  { num: '03', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
+  { num: '04', label: 'About', href: '/about/', always: true },
+];
 
 /**
  * Real counts from the Guide / first edition — never invent metrics for UI chrome.

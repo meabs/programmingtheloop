@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { NAV, NAV_MIN_ITEMS, type NavItem, type NavCollection } from '../site';
 
 export type Article = CollectionEntry<'articles'>;
 export type Experiment = CollectionEntry<'experiments'>;
@@ -42,6 +43,34 @@ export function articleHref(post: Article): string {
 
 export function experimentHref(item: Experiment): string {
   return `/experiments/${item.id}/`;
+}
+
+/** Published counts used to gate collection nav sections. */
+export async function getNavCollectionCounts(): Promise<Record<NavCollection, number>> {
+  const [articles, experiments, guides] = await Promise.all([
+    getPublishedArticles(),
+    getPublishedExperiments(),
+    getPublishedGuides(),
+  ]);
+  return {
+    articles: articles.length,
+    experiments: experiments.length,
+    guides: guides.length,
+  };
+}
+
+/**
+ * Nav items visible under NAV_MIN_ITEMS.
+ * Home / About always; collection sections need ≥ threshold published items.
+ */
+export async function getVisibleNav(): Promise<NavItem[]> {
+  const counts = await getNavCollectionCounts();
+  return NAV.filter((item) => {
+    if (item.always) return true;
+    if (!item.collection) return true;
+    const need = item.minItems ?? NAV_MIN_ITEMS;
+    return counts[item.collection] >= need;
+  });
 }
 
 /** Newest items across articles, experiments and guides. */

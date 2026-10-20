@@ -2,6 +2,7 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
+import { isTopicId } from './data/topics';
 
 const articleSchema = z.object({
   title: z.string(),
@@ -13,6 +14,43 @@ const articleSchema = z.object({
   draft: z.boolean().default(false),
 });
 
+/**
+ * Finding record — defined once on an experiment.
+ * IDs are globally unique: <experimentId>-<n> (e.g. J-1). Never reused.
+ */
+const findingSchema = z.object({
+  id: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.]*-\d+$/, {
+    message: 'Finding id must look like <experimentId>-<n> (e.g. J-1)',
+  }),
+  statement: z.string().min(1),
+  metric: z.string().optional(),
+  value: z.string().optional(),
+  interval: z
+    .object({
+      low: z.string(),
+      high: z.string(),
+      method: z.string(),
+    })
+    .optional(),
+  n: z.union([z.number(), z.string()]).optional(),
+  limits: z.array(z.string()).min(1),
+  source: z.string().url(),
+  status: z.enum(['current', 'superseded']).default('current'),
+  featured: z.boolean().default(false),
+});
+
+const agentSchema = z.object({
+  name: z.string(),
+  model: z.string(),
+  settings: z.string().optional(),
+});
+
+/**
+ * Experiments — transitional schema (Phase 1 approach A).
+ * Existing card fields stay required so the two live pages keep building unchanged.
+ * Structured finding fields are optional until an experiment opts into `status`.
+ * When `status` is set, check:content enforces published/superseded rules.
+ */
 const experimentSchema = z.object({
   title: z.string(),
   description: z.string(),
@@ -25,6 +63,22 @@ const experimentSchema = z.object({
   guideLinks: z
     .array(z.object({ label: z.string(), href: z.string() }))
     .default([]),
+
+  // —— Structured fields (optional during transition) ——
+  /** Short id matching source naming (e.g. J, D2). Required when status is set. */
+  experimentId: z.string().min(1).optional(),
+  question: z.string().optional(),
+  status: z.enum(['planned', 'running', 'published', 'superseded']).optional(),
+  supersededBy: z.string().optional(),
+  evidenceGrade: z.enum(['published', 'unpublished']).optional(),
+  agents: z.array(agentSchema).optional(),
+  runs: z.union([z.number(), z.string()]).optional(),
+  repo: z.string().url().optional(),
+  report: z.string().url().optional(),
+  prediction: z.string().url().optional(),
+  topics: z.array(z.string().refine(isTopicId, { message: 'Unknown topic id' })).optional(),
+  publishedOn: z.coerce.date().optional(),
+  findings: z.array(findingSchema).default([]),
 });
 
 const guideSchema = z.object({
