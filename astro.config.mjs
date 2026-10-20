@@ -15,7 +15,7 @@ export default defineConfig({
     starlight({
       title: 'Programming the Loop',
       description:
-        'Garry Meaburn on building software with coding agents. Programming the Loop is free to read here, with measurements, experiments, and occasional views on industry trends.',
+        "Building software with coding agents. What I've measured, what I think, and the full Programming the Loop guide, free to read.",
       favicon: '/favicon.svg',
       head: [
         {

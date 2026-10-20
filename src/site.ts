@@ -3,7 +3,7 @@ export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
 export const SITE_DESCRIPTION =
-  'Garry Meaburn on building software with coding agents. The full book Programming the Loop is free to read here, with measurements, experiments, and occasional views on industry trends.';
+  "Building software with coding agents. What I've measured, what I think, and the full Programming the Loop guide, free to read.";
 
 /** Visible “last updated” for the Guide (ISO date). */
 export const GUIDE_LAST_UPDATED = '2026-10-20';
