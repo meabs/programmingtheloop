@@ -1,8 +1,8 @@
 # Programming the Loop
 
-Site for **agentic engineering** (working with coding agents: practices, measurements, experiments and notes), by Garry Meaburn. Hosted at [programmingtheloop.com](https://programmingtheloop.com).
+Site for **agentic build engineering** by Garry Meaburn: building software with coding agents, practical engineering of the agent loop, measurements and experiments, views on industry trends, and a free ebook. Hosted at [programmingtheloop.com](https://programmingtheloop.com).
 
-Built with Astro and Starlight for GitHub Pages. The free ebook *Programming the Loop: What I Measured with Coding Agents* (first edition, October 2026) is a featured section, not the whole site identity.
+Built with Astro and Starlight for GitHub Pages.
 
 ## Local development
 
@@ -20,35 +20,40 @@ Node 22 is used in CI (see `.github/workflows/deploy.yml`).
 
 | Path | Purpose | In main nav? |
 | --- | --- | --- |
-| `/` | Site home (agentic engineering) | Yes |
-| `/book/` | Ebook hub (summary, findings, licence, download) | Yes |
+| `/` | Site home (what the site is / will be) | Yes |
+| `/views/` | Industry trends and tool/release takes | Yes |
+| `/book/` | Ebook hub | Yes |
 | `/contents/`, `/downloads/`, `/learn/…` | Book contents, PDF, chapter notes | Via Book |
-| `/about/` | About the site and author | Yes |
-| `/notes/` | Notes/writing (empty until published) | No until content exists |
+| `/about/` | About | Yes |
 | `/experiments/` | Experiment write-ups (empty until published) | No until content exists |
-| `/updates/` | Dated updates (empty until published) | No until content exists |
 
-Main nav is defined in `src/site.ts` (`NAV`). Shared chrome for custom pages is `src/layouts/BaseLayout.astro`. Starlight sidebar is in `astro.config.mjs`.
+Main nav: `src/site.ts` (`NAV`). Shared layout: `src/layouts/BaseLayout.astro`.
 
-**What exists today:** the book (PDF + chapter notes) and the [worked example](https://github.com/meabs/ProgrammingTheLoop-WorkedExample). Do not invent articles, experiments, quotes or download counts to fill sections.
+Do not invent posts, experiments, quotes or download counts.
 
-## How to add a new section page
+## How to add a Views post
 
-1. Add Markdown/MDX under the right folder, e.g. `src/content/docs/notes/my-note.mdx`.
-2. Frontmatter:
+1. Copy the template: [`docs/templates/view-post.md`](docs/templates/view-post.md)
+2. Save it under `src/content/views/` as `YYYY-MM-DD-short-slug.md` (or any `.md` / `.mdx` name).
+3. Edit frontmatter:
 
-   ```md
-   ---
-   title: My note title
-   description: One sentence for search and social previews.
-   ---
+   ```yaml
+   title: "Short clear title"
+   description: "One sentence for the home page and social previews."
+   date: 2026-11-01
+   draft: false
    ```
 
-3. URL follows the path: `notes/my-note.mdx` → `/notes/my-note/`.
-4. When the section has real content, add it to `NAV` in `src/site.ts` and optionally to the Starlight `sidebar` in `astro.config.mjs`.
-5. Run `npm run build`.
+4. Write the body. Keep measured findings apart from opinion.
+5. `draft: true` means the file is kept but **not** published (not on `/views/`, not on the home page).
+6. Run `npm run build`. The home page lists the latest published views automatically.
 
-Keep **findings** (measured, with limits) separate from **recommendations** and **open questions**.
+## How to add other section pages
+
+1. Add Markdown/MDX under `src/content/docs/<section>/`, e.g. `experiments/my-trial.mdx`.
+2. Frontmatter needs `title` and `description`.
+3. URL follows the path under `docs/`.
+4. Add to `NAV` in `src/site.ts` and optionally the Starlight `sidebar` in `astro.config.mjs` when the section should appear in navigation.
 
 ## Ebook PDF
 
@@ -60,8 +65,7 @@ Licence (site wording): free to read; share the unchanged PDF free of charge wit
 ## SEO and sharing
 
 - `site` in `astro.config.mjs` is `https://programmingtheloop.com`.
-- Site-level title/description: agentic engineering (`src/site.ts`).
-- Book pages (`/book/`, `/contents/`, downloads, chapter notes): book-specific description; `og:image` / `twitter:image` use absolute `https://programmingtheloop.com/og-cover.png`.
+- Book pages use book-specific meta and absolute `https://programmingtheloop.com/og-cover.png`.
 - `public/CNAME` must remain `programmingtheloop.com`.
 - `public/robots.txt` allows indexing and points at the sitemap.
 
@@ -70,5 +74,3 @@ No analytics or tracking scripts. No API keys in the repository.
 ## Deploy
 
 Pushing to `main` runs `.github/workflows/deploy.yml`. The workflow checks that `dist/CNAME` equals `programmingtheloop.com`.
-
-**Settings → Pages → GitHub Actions.** Configure DNS for the apex domain at the registrar. Enable **Enforce HTTPS** after the certificate is ready.

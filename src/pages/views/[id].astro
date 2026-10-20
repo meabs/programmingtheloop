@@ -1,0 +1,39 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedViews, formatViewDate } from '../../lib/views';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedViews();
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  canonicalPath={`/views/${post.id}/`}
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="edition">{formatViewDate(post.data.date)} · Views</p>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.description}</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap prose view-prose">
+      <Content />
+      <p class="view-back">
+        <a href="/views/">All views</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

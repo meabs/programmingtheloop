@@ -9,9 +9,12 @@ import {
   LINKS,
   SITE_OG_IMAGE,
 } from '../site';
+import { getPublishedViews, viewHref, formatViewDate } from '../lib/views';
+
+const latestViews = (await getPublishedViews()).slice(0, 5);
 ---
 <BaseLayout
-  title={`${SITE_NAME} — Agentic engineering`}
+  title={`${SITE_NAME} — Agentic build engineering`}
   description={SITE_DESCRIPTION}
   canonicalPath="/"
   ogImage={SITE_OG_IMAGE}
@@ -24,34 +27,69 @@ import {
         <span class="loop">the Loop</span>
       </h1>
       <p class="subtitle">
-        Agentic engineering: working with coding agents, and measuring what helps instead of guessing.
+        Agentic build engineering: building software with coding agents.
       </p>
       <p class="byline">
-        Free ebook, a worked example, and room for notes later. If something here is wrong, say so.
+        Practice on the agent loop, measurements and experiments, and views on industry trends.
       </p>
       <div class="actions">
-        <a class="button primary" href="/book/">The book</a>
-        <a class="button" href={LINKS.workedExample}>Worked example</a>
+        <a class="button primary" href="#about-site">What this site is</a>
+        <a class="button" href="/book/">The book</a>
       </div>
     </div>
   </section>
 
-  <section class="section" id="what">
+  <section class="section" id="about-site">
     <div class="wrap">
-      <h2>What I write about here</h2>
+      <h2>What this site is</h2>
       <div class="prose">
         <p>
-          Coding agents can be capable when they have the right context, and expensive when you feed
-          them everything “just in case”. A lot of advice assumes that the more you tell an agent
-          about your repository, the better it does. I wanted numbers from controlled trials, not
-          single-run anecdotes.
+          This is a place for <strong>agentic build engineering</strong>: building software with
+          coding agents, and the practical engineering of the agent loop (briefs, context,
+          verification, harness, review).
         </p>
         <p>
-          This site is for that kind of work: practices, measurements, experiments and notes. Most of
-          what is published so far is in the free ebook. Notes and separate experiment pages will
-          appear when there is something worth putting up.
+          I publish measurements and experiments when I have results worth writing up, with the
+          limits stated next to the numbers.
+        </p>
+        <p>
+          <a href="/views/">Views</a> is for short takes on industry trends and new tools or
+          releases. I have not posted any yet.
+        </p>
+        <p>
+          The free ebook <a href="/book/">Programming the Loop</a> is one part of the site. It is
+          not the whole of it.
         </p>
       </div>
+    </div>
+  </section>
+
+  <section class="section" id="views">
+    <div class="wrap">
+      <h2>Views</h2>
+      {latestViews.length === 0 ? (
+        <p class="lead">
+          Short posts on industry trends and new tools or releases will appear here. Nothing
+          published yet.
+        </p>
+      ) : (
+        <>
+          <p class="lead">Latest posts.</p>
+          <ul class="link-list">
+            {latestViews.map((post) => (
+              <li>
+                <a href={viewHref(post)}>{post.data.title}</a>
+                <span class="link-note">
+                  {formatViewDate(post.data.date)} · {post.data.description}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p class="lead" style="margin-top:1.25rem">
+            <a href="/views/">All views</a>
+          </p>
+        </>
+      )}
     </div>
   </section>
 
@@ -75,16 +113,13 @@ import {
           <p class="feature-sub">{BOOK_SUBTITLE}</p>
           <div class="prose">
             <p>
-              Eleven chapters on context, verification and the harness around coding agents. The
-              measured findings come from small trials on a handful of repositories, with the limits
-              written next to the numbers. Recommendations are my judgement; where they go beyond
-              what I measured, the book says so.
+              Free PDF. What I measured with coding agents in small controlled trials, with the
+              limits written beside the findings.
             </p>
           </div>
           <div class="actions">
             <a class="button primary" href={PDF_PATH}>Download the PDF</a>
             <a class="button" href="/book/">Book page</a>
-            <a class="button" href="/contents/">Contents</a>
           </div>
         </div>
       </div>
@@ -97,14 +132,11 @@ import {
       <ul class="link-list">
         <li>
           <a href={LINKS.workedExample}>Worked example repository</a>
-          <span class="link-note">
-            Add an API endpoint with a cross-repository dependency — a reproducible demonstration,
-            not a recorded agent session
-          </span>
+          <span class="link-note">Used through the ebook; corrections welcome via issues</span>
         </li>
         <li>
           <a href={LINKS.feedbackIssue}>Open an issue</a>
-          <span class="link-note">Corrections and questions on the worked example repo</span>
+          <span class="link-note">On the worked example repo</span>
         </li>
         <li>
           <a href={LINKS.x}>X · @Mav1972</a>

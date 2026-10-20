@@ -3,7 +3,7 @@ export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
 export const SITE_DESCRIPTION =
-  'Garry Meaburn on agentic engineering and coding agents: measurements from small trials, a free ebook, and a worked example. Corrections welcome.';
+  'Garry Meaburn on agentic build engineering: building software with coding agents, measurements and experiments, views on industry trends, and a free ebook.';
 
 /** Book-specific (use on book pages only). */
 export const BOOK_TITLE = 'Programming the Loop';
@@ -17,11 +17,11 @@ export const BOOK_OG_IMAGE = `${SITE_URL}/og-cover.png`;
 export const SITE_OG_IMAGE = `${SITE_URL}/og-cover.png`;
 
 /**
- * Main nav: only sections that currently have real content.
- * Add Notes / Experiments / Updates here when they have published pages.
+ * Main nav. Views is a core section (may be empty). Add Experiments when it has pages.
  */
 export const NAV = [
   { label: 'Home', href: '/' },
+  { label: 'Views', href: '/views/' },
   { label: 'Book', href: '/book/' },
   { label: 'About', href: '/about/' },
 ] as const;
