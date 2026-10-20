@@ -3,9 +3,9 @@ export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
 export const SITE_DESCRIPTION =
-  'Garry Meaburn on agentic build engineering: the living web edition of Programming the Loop, measurements and experiments, views on industry trends, and the archived first-edition PDF.';
+  "Building software with coding agents. What I've measured, what I think, and the full Programming the Loop guide, free to read.";
 
-/** Visible “last updated” for the living guide (ISO date). */
+/** Visible “last updated” for the Guide (ISO date). */
 export const GUIDE_LAST_UPDATED = '2026-10-20';
 export const GUIDE_LAST_UPDATED_LABEL = '20 October 2026';
 
@@ -14,7 +14,7 @@ export const BOOK_TITLE = 'Programming the Loop';
 export const BOOK_SUBTITLE = 'What I Measured with Coding Agents';
 export const BOOK_EDITION = 'First edition, October 2026';
 export const BOOK_DESCRIPTION =
-  'Programming the Loop: What I Measured with Coding Agents — living web Guide by Garry Meaburn, from the October 2026 first edition. Small controlled trials on coding agents, with limits stated.';
+  'Programming the Loop: What I Measured with Coding Agents by Garry Meaburn. Free to read on the web. Small controlled trials on coding agents, with limits stated.';
 
 export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
 export const BOOK_OG_IMAGE = `${SITE_URL}/og-cover.png`;
@@ -27,14 +27,186 @@ export const CF_WEB_ANALYTICS_SRC = 'https://static.cloudflareinsights.com/beaco
 export const CF_WEB_ANALYTICS_BEACON = `{"token": "${CF_WEB_ANALYTICS_TOKEN}"}`;
 
 /**
- * Main nav. Views is a core section (may be empty). Add Experiments when it has pages.
+ * Main nav — numbered like an engineering index. Views may be empty.
  */
 export const NAV = [
-  { label: 'Home', href: '/' },
-  { label: 'Guide', href: '/guide/' },
-  { label: 'Views', href: '/views/' },
-  { label: 'Updates', href: '/updates/' },
-  { label: 'About', href: '/about/' },
+  { num: '00', label: 'Index', href: '/' },
+  { num: '01', label: 'Guide', href: '/guide/' },
+  { num: '02', label: 'Start', href: '/start/' },
+  { num: '03', label: 'Views', href: '/views/' },
+  { num: '04', label: 'Updates', href: '/updates/' },
+  { num: '05', label: 'About', href: '/about/' },
+] as const;
+
+/**
+ * Real counts from the Guide / first edition — never invent metrics for UI chrome.
+ * Checklist items: 76 across the 11 chapter end-checklists. Figures: 13 guide images.
+ * Controlled runs: “About 1,650” from the OKFExperiment row in the Chapter 1
+ * evidence table (facts, checks and upkeep — repositories used in the book).
+ */
+export const SITE_STATS = [
+  { key: 'Chapters', value: '11', caption: 'In the Guide' },
+  { key: 'Checklist items', value: '76', caption: 'Across 11 chapter checklists' },
+  { key: 'Figures', value: '13', caption: 'Charts and diagrams' },
+  { key: 'Headline findings', value: '4', caption: 'Foreword, with limits stated' },
+  { key: 'Controlled runs', value: '~1,650', caption: 'OKFExperiment repo' },
+] as const;
+
+/** Finding numbers for the hero “live dashboard” card — all from the Foreword. */
+export const FINDING_DASHBOARD = [
+  {
+    id: 'F1',
+    label: 'Optimised repo tokens',
+    value: '+35–48%',
+    note: 'Finding 1 · no reliable correctness gain',
+  },
+  {
+    id: 'F2',
+    label: 'Stale answers repeated',
+    value: '14 / 16',
+    note: 'Finding 2 · no hedging',
+  },
+  {
+    id: 'F3',
+    label: 'Cross-repo with facts',
+    value: '3 → 18–19',
+    note: 'Finding 3 · of 20 passes',
+  },
+  {
+    id: 'F4',
+    label: 'Worked-example trials',
+    value: '12 runs',
+    note: 'Finding 4 · composer-2.5',
+  },
+] as const;
+
+/** Key–value status list — site facts only. */
+export const SYSTEM_STATUS = [
+  { label: 'Chapters', value: '11' },
+  { label: 'Checklist items', value: '76' },
+  { label: 'Figures', value: '13' },
+  { label: 'References', value: '21' },
+  { label: 'First edition', value: 'Oct 2026' },
+] as const;
+
+/** Ticker topics drawn from Guide chapter titles / thesis — not marketing fluff. */
+export const TOPIC_TICKER = [
+  'Briefs',
+  'Context',
+  'Verification',
+  'Harness',
+  'Friction loop',
+  'Contracts',
+  'Freshness gates',
+  'Review tiers',
+  'Honest measurement',
+  'Human in the loop',
+  'Take-home kit',
+  'Right facts, not every fact',
+] as const;
+
+/**
+ * /start routing table: reader situation → Guide entry → where it leads.
+ * Situations and destinations follow the book’s own reading advice and chapter jobs.
+ */
+export const START_ROUTES = [
+  {
+    have: 'Twenty minutes and want the heart of the argument',
+    startWith: { label: 'Chapter 3', href: '/guide/right-facts/', detail: 'The right facts, not every fact' },
+    leadsTo: 'Then Chapter 5 and the take-home kit (Ch. 11)',
+    chips: ['20 minutes', 'Ch. 3'],
+    accent: 'teal',
+  },
+  {
+    have: 'An agent about to get production credentials',
+    startWith: {
+      label: 'Chapter 10',
+      href: '/guide/safety-cost-human/',
+      detail: 'Safety, cost and the human in the loop',
+    },
+    leadsTo: 'Harness and review habits before you widen access',
+    chips: ['read first', 'credentials'],
+    accent: 'rose',
+  },
+  {
+    have: 'Agents burning tokens on context I already have in source',
+    startWith: { label: 'Chapter 3', href: '/guide/right-facts/', detail: 'Finding 1 — optimised repo cost' },
+    leadsTo: 'Lean AGENTS.md; add layers only when they pay',
+    chips: ['+35–48%', 'tokens'],
+    accent: 'blue',
+  },
+  {
+    have: 'Changes that depend on a repository the agent cannot read',
+    startWith: { label: 'Chapter 3', href: '/guide/right-facts/', detail: 'Findings 2–3 — facts across a boundary' },
+    leadsTo: 'Contracts and freshness gates in Chapter 5',
+    chips: ['3 → 18–19/20'],
+    accent: 'green',
+  },
+  {
+    have: 'No clear “done” before the agent starts writing',
+    startWith: {
+      label: 'Chapter 2',
+      href: '/guide/briefs-plans-specifications/',
+      detail: 'Briefs, plans and specifications',
+    },
+    leadsTo: 'One verifiable change at a time (Ch. 4)',
+    chips: ['brief', 'acceptance'],
+    accent: 'orange',
+  },
+  {
+    have: 'Reports that say passed while the real check is unverified',
+    startWith: { label: 'Chapter 5', href: '/guide/proof-not-promises/', detail: 'Proof, not promises' },
+    leadsTo: 'Independent checks the agent cannot rewrite',
+    chips: ['12 runs', 'freshness gate'],
+    accent: 'rose',
+  },
+  {
+    have: 'The same environment failures every agent session',
+    startWith: {
+      label: 'Chapter 6',
+      href: '/guide/harness-friction-loop/',
+      detail: 'The harness and the friction loop',
+    },
+    leadsTo: 'Fixes in the harness, not only in prompts',
+    chips: ['friction', 'script'],
+    accent: 'teal',
+  },
+  {
+    have: 'Need to match review depth to blast radius',
+    startWith: {
+      label: 'Chapter 8',
+      href: '/guide/review-merging-risk/',
+      detail: 'Review, merging and risk',
+    },
+    leadsTo: 'Tiered review from reversibility and verification strength',
+    chips: ['tiers', 'blast radius'],
+    accent: 'blue',
+  },
+  {
+    have: 'Wondering whether a set-up change actually helped',
+    startWith: {
+      label: 'Chapter 9',
+      href: '/guide/tools-measurement/',
+      detail: 'Tools and honest measurement',
+    },
+    leadsTo: 'Repeated runs with stated limits, not Tuesday anecdotes',
+    chips: ['measure', 'limits'],
+    accent: 'green',
+  },
+  {
+    have: 'Ready to adopt — what do we put in place first',
+    startWith: { label: 'Chapter 11', href: '/guide/take-home-kit/', detail: 'The take-home kit' },
+    leadsTo: 'Default / Conditional / Experimental labels for each layer',
+    chips: ['Stage 0', 'justify'],
+    accent: 'orange',
+  },
+  {
+    have: 'Want the findings and thesis before any chapter',
+    startWith: { label: 'Foreword', href: '/guide/foreword/', detail: 'Why I ran the experiments' },
+    leadsTo: 'Eleven chapters with checklists and the worked example',
+    chips: ['4 findings', 'thesis'],
+    accent: 'teal',
+  },
 ] as const;
 
 /** Chapter titles from the book; one-line notes drawn from each chapter’s opening. */
@@ -139,11 +311,11 @@ export const LINKS = {
 } as const;
 
 /**
- * Licence for the free web guide and archived PDF.
+ * Licence for the free web guide and October 2026 PDF.
  * Adapted from the book’s copyright notice; ebook / PDF-or-EPUB wording fitted for the web.
  */
 export const LICENCE_SHORT =
-  '© Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the archived first-edition PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.';
+  '© Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the October 2026 PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.';
 
 /** Copyright-page paragraph from the first edition (verbatim). */
 export const LICENCE_QUOTED =

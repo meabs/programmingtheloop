@@ -3,7 +3,7 @@ title: "Glossary"
 description: "From Programming the Loop — Glossary."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 **Acceptance criteria.** Checks that define when a task is done.
 

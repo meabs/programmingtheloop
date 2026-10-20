@@ -15,7 +15,7 @@ export default defineConfig({
     starlight({
       title: 'Programming the Loop',
       description:
-        'Garry Meaburn on agentic build engineering: living web edition of Programming the Loop, measurements, experiments, views on industry trends, and the archived first-edition PDF.',
+        "Building software with coding agents. What I've measured, what I think, and the full Programming the Loop guide, free to read.",
       favicon: '/favicon.svg',
       head: [
         {
@@ -89,12 +89,17 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Archive',
+          label: 'PDF',
           collapsed: true,
           items: [
-            { label: 'First-edition PDF (Oct 2026)', link: '/downloads/' },
-            { label: 'Book landing (archive hub)', link: '/book/' },
+            { label: 'October 2026 PDF', link: '/downloads/' },
+            { label: 'Book landing', link: '/book/' },
           ],
+        },
+        {
+          label: 'Start',
+          collapsed: true,
+          items: [{ label: 'Where to begin', link: '/start/' }],
         },
       ],
       social: [

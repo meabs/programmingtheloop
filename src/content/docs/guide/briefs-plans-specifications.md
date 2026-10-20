@@ -3,7 +3,7 @@ title: "2. Briefs, plans and specifications"
 description: "From Programming the Loop — 2. Briefs, plans and specifications."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Much bad agent output traces back to a decision nobody made. Before an agent writes code, someone has to decide what the change is, how you will know it is done, and what must not change. That decision belongs in a brief with acceptance criteria. But not every task needs a durable specification living in the repository. A **temporary implementation plan** is a working note for one change; an **authoritative requirement** is a long-lived statement of how the system must behave. They have different owners, lifetimes and homes, and mixing them up produces a repository full of stale plans that agents then trust.
 

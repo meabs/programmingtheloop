@@ -3,7 +3,7 @@ title: "11. The take-home kit"
 description: "From Programming the Loop — 11. The take-home kit."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Teams don't need a knowledge platform, an orchestration framework or a programme to document everything before they get value from coding agents. They need a well-engineered repository with a short `AGENTS.md`, runnable checks, authoritative contracts for the things agents can't read, and a habit of adding each further layer only when it has shown it pays. That is a recommendation, built on the findings in [Chapters 3 to 9](/guide/right-facts/) and on engineering judgement where they run out. This chapter is the part to keep on your desk, next to the kettle: a framework for deciding what to adopt, the templates, and the checklists.
 

@@ -20,7 +20,7 @@ interface Props {
 }
 
 const {
-  title = `${SITE_NAME} — Agentic build engineering`,
+  title = `${SITE_NAME} — Building software with coding agents`,
   description = SITE_DESCRIPTION,
   canonicalPath = '/',
   noindex = false,
@@ -30,6 +30,7 @@ const {
 
 const canonical = new URL(canonicalPath, SITE_URL).href;
 const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
+const path = Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -47,6 +48,9 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
           var theme = stored === 'dark' || stored === 'light' ? stored : system;
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
+          if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('js-motion');
+          }
         } catch (e) {
           document.documentElement.dataset.theme = 'light';
         }
@@ -82,18 +86,32 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
     ></script>
     <!-- End Cloudflare Web Analytics -->
   </head>
-  <body>
+  <body class="spec-body">
+    <div class="page-grid" aria-hidden="true"></div>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header" id="site-header">
-      <div class="wrap nav">
+      <div class="wrap nav-shell">
         <a class="brand" href="/" aria-label={`${SITE_NAME} home`}>
           <span class="brand-mark" aria-hidden="true"></span>
           <span class="brand-name">Programming the Loop</span>
         </a>
-        <nav class="nav-links" aria-label="Main">
-          {NAV.map((item) => (
-            <a href={item.href}>{item.label}</a>
-          ))}
+        <nav class="nav-cells" aria-label="Main">
+          {NAV.map((item) => {
+            const active =
+              item.href === '/'
+                ? path === '/'
+                : path === item.href || path.startsWith(item.href);
+            return (
+              <a
+                href={item.href}
+                class:list={['nav-cell', { 'is-active': active }]}
+                aria-current={active ? 'page' : undefined}
+              >
+                <span class="nav-num">[ {item.num} ]</span>
+                <span class="nav-label">{item.label}</span>
+              </a>
+            );
+          })}
         </nav>
         <div class="nav-tools">
           <button
@@ -116,7 +134,9 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
         </div>
         <nav class="mobile-panel" id="mobile-menu" aria-label="Mobile">
           {NAV.map((item) => (
-            <a href={item.href}>{item.label}</a>
+            <a href={item.href}>
+              <span class="nav-num">[ {item.num} ]</span> {item.label}
+            </a>
           ))}
         </nav>
       </div>
@@ -132,11 +152,12 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
         </div>
         <div class="footer-links">
           <a href="/guide/">Guide</a>
+          <a href="/start/">Start</a>
           <a href="/views/">Views</a>
           <a href="/updates/">Updates</a>
           <a href="/about/">About</a>
           <a href="/guide/#licence">Licence</a>
-          <a href="/downloads/">PDF archive</a>
+          <a href="/downloads/">October 2026 PDF</a>
           <a href="https://github.com/meabs/programmingtheloop">GitHub</a>
         </div>
       </div>
@@ -148,6 +169,7 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
       const button = document.querySelector('.menu-toggle');
       const menu = document.querySelector('.mobile-panel');
       const header = document.getElementById('site-header');
+      const motion = root.classList.contains('js-motion');
 
       const applyTheme = (theme: string) => {
         root.dataset.theme = theme;
@@ -181,27 +203,128 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
       onScroll();
       window.addEventListener('scroll', onScroll, { passive: true });
 
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduce) {
-        const nodes = document.querySelectorAll('.reveal');
-        if (nodes.length && 'IntersectionObserver' in window) {
-          const io = new IntersectionObserver(
-            (entries) => {
-              for (const entry of entries) {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add('is-visible');
-                  io.unobserve(entry.target);
-                }
-              }
-            },
-            { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
-          );
-          nodes.forEach((el) => io.observe(el));
-        } else {
-          nodes.forEach((el) => el.classList.add('is-visible'));
+      /** Split headline lines into words for staggered rise. Text stays in DOM if JS fails. */
+      const prepareHeadline = () => {
+        const el = document.querySelector<HTMLElement>('[data-headline]');
+        if (!el || !motion) {
+          el?.classList.add('is-in');
+          return;
         }
+        el.querySelectorAll('.headline-line').forEach((line) => {
+          const text = line.textContent ?? '';
+          line.textContent = '';
+          text.split(/(\s+)/).forEach((token, i) => {
+            if (!token) return;
+            if (/^\s+$/.test(token)) {
+              line.appendChild(document.createTextNode(token));
+              return;
+            }
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = token;
+            span.style.animationDelay = `${0.08 + i * 0.06}s`;
+            line.appendChild(span);
+          });
+        });
+        requestAnimationFrame(() => el.classList.add('is-in'));
+      };
+
+      /** Count up numeric stats once when scrolled into view. Final value is already in HTML. */
+      const prepareCounts = () => {
+        const cells = document.querySelectorAll<HTMLElement>('[data-count]');
+        if (!cells.length) return;
+
+        const animate = (el: HTMLElement) => {
+          const label = el.dataset.countLabel || el.dataset.count || el.textContent || '';
+          if (!motion) {
+            el.textContent = label;
+            return;
+          }
+          const match = label.match(/^(~?)([\d,]+)(.*)$/);
+          if (!match) {
+            el.textContent = label;
+            return;
+          }
+          const prefix = match[1];
+          const target = parseInt(match[2].replace(/,/g, ''), 10);
+          const suffix = match[3];
+          if (!Number.isFinite(target)) {
+            el.textContent = label;
+            return;
+          }
+          const duration = 900;
+          const start = performance.now();
+          const tick = (now: number) => {
+            const t = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - t, 3);
+            const n = Math.round(target * eased);
+            el.textContent = `${prefix}${n.toLocaleString('en-GB')}${suffix}`;
+            if (t < 1) requestAnimationFrame(tick);
+            else el.textContent = label;
+          };
+          requestAnimationFrame(tick);
+        };
+
+        if (!motion || !('IntersectionObserver' in window)) {
+          cells.forEach((el) => {
+            el.textContent = el.dataset.countLabel || el.dataset.count || el.textContent || '';
+          });
+          return;
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              animate(entry.target as HTMLElement);
+              io.unobserve(entry.target);
+            }
+          },
+          { threshold: 0.4 },
+        );
+        cells.forEach((el) => io.observe(el));
+      };
+
+      const prepareLoop = () => {
+        const panel = document.querySelector('.dark-loop');
+        if (!panel) return;
+        if (!motion || !('IntersectionObserver' in window)) {
+          panel.classList.add('is-drawn');
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-drawn');
+              io.unobserve(entry.target);
+            }
+          },
+          { threshold: 0.35 },
+        );
+        io.observe(panel);
+      };
+
+      prepareHeadline();
+      prepareCounts();
+      prepareLoop();
+
+      const nodes = document.querySelectorAll('.reveal');
+      if (motion && nodes.length && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+        );
+        nodes.forEach((el) => io.observe(el));
       } else {
-        document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+        nodes.forEach((el) => el.classList.add('is-visible'));
       }
     </script>
   </body>

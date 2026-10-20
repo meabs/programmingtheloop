@@ -29,7 +29,7 @@ def adapt_copyright_for_web(text: str) -> str:
     text = text.replace("This ebook is free to read", "This guide is free to read")
     text = text.replace(
         "the unchanged PDF or EPUB",
-        "the unchanged pages (or the archived PDF)",
+        "the unchanged pages (or the October 2026 PDF)",
     )
     text = text.replace("keep this notice", "keep the copyright notice")
     text = text.replace(
@@ -175,7 +175,7 @@ def main() -> int:
         "reference_lines_guide": ref_count_guide,
         "intentional_omissions": [
             "Title / byline above the copyright notice (web uses site chrome / Guide index); copyright-page paragraphs (© notice, Quoted material, Disclaimer) are included",
-            "Copyright © line: ebook / PDF-or-EPUB wording adapted for the web (guide + pages / archived PDF); Quoted material and Disclaimer kept verbatim",
+            "Copyright © line: ebook / PDF-or-EPUB wording adapted for the web (guide + pages / October 2026 PDF); Quoted material and Disclaimer kept verbatim",
             "Pandoc `{.unnumbered}` / `{.pdf-only}` / `{.epub-only}` / `{.checklist}` / `{.keep}` / `{.refs}` attributes (converted for web; content kept)",
             "Bare 'Chapter N' strings turned into internal links (prose unchanged aside from link markup)",
         ],
