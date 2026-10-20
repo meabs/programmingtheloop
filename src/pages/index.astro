@@ -16,7 +16,7 @@ import {
   canonicalPath="/"
   ogImage={SITE_OG_IMAGE}
 >
-  <section class="hero hero-site">
+  <section class="hero-site">
     <div class="wrap">
       <p class="edition">Garry Meaburn</p>
       <h1>
@@ -24,11 +24,10 @@ import {
         <span class="loop">the Loop</span>
       </h1>
       <p class="subtitle">
-        Agentic engineering — working with coding agents: practices, measurements,
-        experiments and notes.
+        Agentic engineering: working with coding agents, and measuring what helps instead of guessing.
       </p>
       <p class="byline">
-        Modest reports of what was tried and what was measured. Corrections welcome.
+        Free ebook, a worked example, and room for notes later. If something here is wrong, say so.
       </p>
       <div class="actions">
         <a class="button primary" href="/book/">The book</a>
@@ -39,16 +38,18 @@ import {
 
   <section class="section" id="what">
     <div class="wrap">
-      <h2>What this site is for</h2>
+      <h2>What I write about here</h2>
       <div class="prose">
         <p>
-          This is a place for writing about <strong>agentic engineering</strong>: how to give
-          coding agents useful work, how to check their output, and how to measure what helps
-          without drowning them in context.
+          Coding agents can be capable when they have the right context, and expensive when you feed
+          them everything “just in case”. A lot of advice assumes that the more you tell an agent
+          about your repository, the better it does. I wanted numbers from controlled trials, not
+          single-run anecdotes.
         </p>
         <p>
-          New notes and experiments will appear here when there is something to publish. Until
-          then, the main material is the free ebook and its worked example repository.
+          This site is for that kind of work: practices, measurements, experiments and notes. Most of
+          what is published so far is in the free ebook. Notes and separate experiment pages will
+          appear when there is something worth putting up.
         </p>
       </div>
     </div>
@@ -56,15 +57,17 @@ import {
 
   <section class="section" id="book">
     <div class="wrap">
-      <h2>Featured: the book</h2>
+      <h2>The book</h2>
       <div class="feature-book">
         <div class="feature-book-visual">
-          <img
-            src="/book-cover.png"
-            width="1600"
-            height="2400"
-            alt="Cover of Programming the Loop: What I Measured with Coding Agents"
-          />
+          <a href="/book/">
+            <img
+              src="/book-cover.png"
+              width="1600"
+              height="2400"
+              alt="Cover of Programming the Loop: What I Measured with Coding Agents"
+            />
+          </a>
         </div>
         <div class="feature-book-copy">
           <p class="edition">{BOOK_EDITION}</p>
@@ -72,10 +75,10 @@ import {
           <p class="feature-sub">{BOOK_SUBTITLE}</p>
           <div class="prose">
             <p>
-              A free first-edition ebook on coding agents: what happens when you add repository
-              context, when facts are missing or stale, and how verification changes the result.
-              Findings come from small controlled trials with stated limits; recommendations are
-              judgement and are labelled as such.
+              Eleven chapters on context, verification and the harness around coding agents. The
+              measured findings come from small trials on a handful of repositories, with the limits
+              written next to the numbers. Recommendations are my judgement; where they go beyond
+              what I measured, the book says so.
             </p>
           </div>
           <div class="actions">
@@ -94,11 +97,14 @@ import {
       <ul class="link-list">
         <li>
           <a href={LINKS.workedExample}>Worked example repository</a>
-          <span class="link-note">Reproducible demonstration used in the book</span>
+          <span class="link-note">
+            Add an API endpoint with a cross-repository dependency — a reproducible demonstration,
+            not a recorded agent session
+          </span>
         </li>
         <li>
-          <a href={LINKS.feedbackIssue}>Open feedback</a>
-          <span class="link-note">Issues on the worked example repo</span>
+          <a href={LINKS.feedbackIssue}>Open an issue</a>
+          <span class="link-note">Corrections and questions on the worked example repo</span>
         </li>
         <li>
           <a href={LINKS.x}>X · @Mav1972</a>

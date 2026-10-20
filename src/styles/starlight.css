@@ -1,6 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap');
 
 :root {
+  color-scheme: light;
+  --sl-color-accent-low: #f3e8d8;
+  --sl-color-accent: #b8894a;
+  --sl-color-accent-high: #7a5a2e;
+  --sl-color-white: #0c1b2e;
+  --sl-color-gray-1: #1a2b40;
+  --sl-color-gray-2: #33475f;
+  --sl-color-gray-3: #5a6d82;
+  --sl-color-gray-4: #8a9bb0;
+  --sl-color-gray-5: #c5d0de;
+  --sl-color-gray-6: #e8edf3;
+  --sl-color-black: #f3f5f8;
+  --sl-font: 'Figtree', 'Segoe UI', sans-serif;
+  --sl-font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  --sl-content-width: 48rem;
+}
+
+:root[data-theme='dark'] {
   color-scheme: dark;
   --sl-color-accent-low: #2a2418;
   --sl-color-accent: #d4a574;
@@ -13,24 +31,22 @@
   --sl-color-gray-5: #3a4d66;
   --sl-color-gray-6: #152a44;
   --sl-color-black: #0a1628;
-  --sl-font: 'Source Sans 3', 'Segoe UI', sans-serif;
-  --sl-font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
-  --sl-content-width: 48rem;
 }
 
 .sl-markdown-content h1,
 .sl-markdown-content h2,
 .sl-markdown-content h3 {
-  font-family: 'Libre Baskerville', 'Palatino Linotype', Palatino, serif;
-  letter-spacing: -0.015em;
+  font-family: 'Newsreader', 'Iowan Old Style', Palatino, serif;
+  letter-spacing: -0.02em;
 }
 
 .experiment-status {
   display: inline-flex;
   font-size: 0.75rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.25rem 0.5rem;
+  font-weight: 600;
+  padding: 0.3rem 0.55rem;
   border: 1px solid var(--sl-color-gray-5);
   color: var(--sl-color-accent-high);
 }

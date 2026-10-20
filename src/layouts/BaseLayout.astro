@@ -13,7 +13,6 @@ interface Props {
   description?: string;
   canonicalPath?: string;
   noindex?: boolean;
-  /** Absolute https URL for og/twitter image. Defaults to site image. */
   ogImage?: string;
   preloadCover?: boolean;
 }
@@ -58,7 +57,7 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
+    <header class="site-header" id="site-header">
       <div class="wrap nav">
         <a class="brand" href="/" aria-label={`${SITE_NAME} home`}>
           <span class="brand-mark" aria-hidden="true"></span>
@@ -105,11 +104,17 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
     <script>
       const button = document.querySelector('.menu-toggle');
       const menu = document.querySelector('.mobile-panel');
+      const header = document.getElementById('site-header');
       button?.addEventListener('click', () => {
         const open = button.getAttribute('aria-expanded') !== 'true';
         button.setAttribute('aria-expanded', String(open));
         menu?.classList.toggle('open', open);
       });
+      const onScroll = () => {
+        header?.classList.toggle('is-scrolled', window.scrollY > 8);
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
     </script>
   </body>
 </html>

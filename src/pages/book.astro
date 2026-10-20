@@ -28,10 +28,10 @@ import {
           <span class="loop">the Loop</span>
         </h1>
         <p class="subtitle">{BOOK_SUBTITLE}</p>
-        <p class="byline">By Garry Meaburn · Free ebook (PDF)</p>
+        <p class="byline">By Garry Meaburn · Free PDF</p>
         <div class="actions">
           <a class="button primary" href={PDF_PATH}>Download the PDF</a>
-          <a class="button" href="/contents/">Contents</a>
+          <a class="button" href="#contents">Contents</a>
         </div>
       </div>
       <div class="hero-visual">
@@ -47,25 +47,33 @@ import {
 
   <section class="section" id="about-the-book">
     <div class="wrap">
-      <h2>What this book is</h2>
+      <h2>About the book</h2>
       <div class="prose">
         <p>
-          A free first-edition ebook about coding agents: what happens when you give them more
-          repository context, what happens when the facts they need are missing or stale, and how
-          verification (or the lack of it) changes the result.
+          When I started using coding agents on my own projects, they were capable when they had the
+          right context and expensive when fed everything “just in case”. Some published advice
+          assumes that the more you tell an agent about your repository, the better it does. I
+          wanted numbers from controlled trials rather than single-run anecdotes. The experiments
+          test that assumption; the results below are where it held and where it didn’t.
         </p>
         <p>
-          The measured findings come from small controlled trials on a handful of repositories,
-          with stated limits next to each result. Recommendations are judgement, informed by those
-          findings and by other practitioners’ published practice. Where a recommendation goes
-          beyond what was measured, the book says so.
+          Findings are individual experimental results with stated limits, not laws of nature.
+          Findings 1 to 3 used OpenAI’s Codex (recorded as <code>gpt-5.6-luna</code> at medium
+          reasoning); finding 4 used Cursor’s <code>composer-2.5</code>. Recommendations in the book
+          are engineering judgement, informed by the findings and by other practitioners’ published
+          practice. Where a recommendation goes beyond what I measured, the text says so.
         </p>
         <p>
           One worked example runs through the chapters: add an API endpoint with a cross-repository
           dependency. It is a reproducible engineering demonstration of failure modes the
           experiments found (guessed facts, stale knowledge, unverifiable claims), not a recorded
-          agent session. Source:
+          agent session. It is at
           <a href={LINKS.workedExample}>meabs/ProgrammingTheLoop-WorkedExample</a>.
+        </p>
+        <p>
+          Eleven chapters. Chapter 3 is the heart of the book. If you have twenty minutes, read it
+          and Chapter 5, then go straight to the take-home kit in Chapter 11. If you are about to
+          give an agent your production credentials, read Chapter 10 first.
         </p>
       </div>
     </div>
@@ -73,41 +81,42 @@ import {
 
   <section class="section" id="measured">
     <div class="wrap">
-      <h2>What was measured</h2>
+      <h2>Findings in brief</h2>
       <p class="lead">
-        From the foreword’s findings in brief. Individual experimental results with stated limits,
-        not laws of nature.
+        From the foreword. Small samples. The limits sit with the numbers.
       </p>
       <div class="findings">
         <article class="finding">
           <span class="label">Finding 1 · Experiment J</span>
           <h3>A fully “agent-optimised” repository cost more and was not reliably more correct</h3>
           <p>
-            On a large Java backend the agent could read, a copy set up with a generated guide, a
-            code graph, three operating skills and a configured <code>AGENTS.md</code> used
-            35–48% more tokens, with no reliable gain in correctness: 29 against 28 of 32 changes,
-            19 against 16 of 24 structure questions, both within noise.
+            On a large Java backend the agent could read, a copy set up the recommended way (a
+            generated guide, a code graph, three operating skills and a configured
+            <code>AGENTS.md</code>) used 35–48% more tokens, with no reliable gain in correctness:
+            29 against 28 of 32 changes, 19 against 16 of 24 structure questions, both within noise.
           </p>
           <p class="limits">
             Limits: one repository, one model, mechanical edits and structure questions, 8 runs per
-            task per arm, four ingredients tested together. Analysed in Chapter 3.
+            task per arm, four ingredients tested together. Analysed in Chapter 3. Source:
+            OKFExperiment, <code>results/J-optimised-repo.md</code>.
           </p>
         </article>
         <article class="finding">
-          <span class="label">Finding 2 · Stale knowledge</span>
-          <h3>Out-of-date knowledge of an unread dependency was repeated as fact</h3>
+          <span class="label">Finding 2</span>
+          <h3>Out-of-date knowledge of a dependency the agent couldn’t read was repeated as fact</h3>
           <p>
-            After four names in a backend were renamed, agents with the stale guide and no source to
+            After I renamed four things in a backend, agents with the stale guide and no source to
             check gave the old answer in 14 of 16 drift answers, and none of the wrong answers
             hedged.
           </p>
           <p class="limits">
             Limits: the drift was planted, 4 runs per question, one model. Analysed in Chapter 3.
+            Source: OKFExperiment, <code>docs/RESULTS.md</code>, section D2.
           </p>
         </article>
         <article class="finding">
-          <span class="label">Finding 3 · Cross-repository</span>
-          <h3>When missing backend facts were supplied, passes rose from 3 to 18–19 of 20</h3>
+          <span class="label">Finding 3</span>
+          <h3>When the missing backend facts were supplied, passes went from 3 to 18–19 out of 20</h3>
           <p>
             A storefront change depended on a backend the agent could not see. With nothing, 3 of 20
             runs passed the hidden tests; with a guide to the backend, 19 of 20 on small tasks and
@@ -115,19 +124,20 @@ import {
             did about as well, more cheaply.
           </p>
           <p class="limits">
-            Limits: 5 runs per task, identifiers renamed by the author, one model. Analysed in
-            Chapter 3.
+            Limits: 5 runs per task, identifiers renamed by me, one model. Analysed in Chapter 3.
+            Source: OKFExperiment, <code>docs/RESULTS.md</code>, sections F and G.
           </p>
         </article>
         <article class="finding">
-          <span class="label">Finding 4 · Verification</span>
+          <span class="label">Finding 4</span>
           <h3>Without the contract, agents defeated the check meant to catch them</h3>
           <p>
-            Each rewrote the freshness gate so that, with no provider contract to hand, it compared
-            the contract the agent had invented with itself, and passed. Their reports still matched
-            their command logs. All 12 runs, with and without the contract, reported
-            <code>passed</code> while listing the brief’s criterion 6 (a check against the real
-            inventory service) as unverified. With the contract, all 6 runs were correct.
+            On the worked example’s own task, each rewrote the freshness gate so that, with no
+            provider contract to hand, it compared the contract the agent had invented with itself,
+            and passed. Their reports still matched their command logs. All 12 runs, with and without
+            the contract, reported <code>passed</code> while listing the brief’s criterion 6, a
+            check against the real inventory service, as unverified. With the contract, all 6 runs
+            were correct.
           </p>
           <p class="limits">
             Limits: one model, one task, 6 runs per arm. Analysed in Chapters 3 and 5.
@@ -141,8 +151,7 @@ import {
     <div class="wrap">
       <h2>Contents</h2>
       <p class="lead">
-        Eleven chapters. Chapter 3 is the heart of the evidence. Short web notes for each chapter
-        are also available; the PDF is the permanent first edition.
+        The PDF is the permanent first edition. The chapter links are short web notes drawn from it.
       </p>
       <ol class="chapter-list">
         {CHAPTERS.map((ch) => (
@@ -151,17 +160,12 @@ import {
               <span class="chapter-num">{String(ch.num).padStart(2, '0')}</span>
               <span>
                 <span class="chapter-title">{ch.title}</span>
-                {ch.subtitle && <span class="chapter-sub">{ch.subtitle}</span>}
+                <span class="chapter-sub">{ch.blurb}</span>
               </span>
             </a>
           </li>
         ))}
       </ol>
-      <p class="lead" style="margin-top:1.5rem">
-        <a href="/contents/">Full contents page</a>
-        ·
-        <a href={PDF_PATH}>Download PDF</a>
-      </p>
     </div>
   </section>
 
@@ -171,7 +175,7 @@ import {
       <div class="licence-box">
         <p>{LICENCE_SHORT}</p>
         <p>
-          The latest edition is published via
+          The latest edition is at
           <a href={LINKS.githubAuthor}>github.com/meabs</a>.
           This site offers the PDF only.
         </p>
@@ -187,8 +191,8 @@ import {
       <h2>Feedback</h2>
       <div class="prose">
         <p>
-          If something in the book or the worked example is wrong, unclear, or incomplete, say so.
-          Prefer concrete corrections: a page, a number, a limit that was missed.
+          If a number, a limit or a claim is wrong, I want to know. Prefer something concrete: which
+          page, which figure, what you think it should say.
         </p>
       </div>
       <div class="feedback-links">

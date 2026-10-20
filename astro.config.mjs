@@ -11,7 +11,7 @@ export default defineConfig({
     starlight({
       title: 'Programming the Loop',
       description:
-        'Garry Meaburn on agentic engineering: working with coding agents — practices, measurements, experiments and notes.',
+        'Garry Meaburn on agentic engineering and coding agents: measurements from small trials, a free ebook, and a worked example.',
       favicon: '/favicon.svg',
       head: [
         {

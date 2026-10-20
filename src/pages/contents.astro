@@ -16,12 +16,11 @@ import {
 >
   <header class="page-head">
     <div class="wrap">
-      <p class="edition">Book</p>
+      <p class="edition">Book · {BOOK_EDITION}</p>
       <h1>Contents</h1>
       <p>
-        {BOOK_EDITION}. Eleven chapters plus a foreword, cheat sheet, glossary, references and
-        notes on the evidence. The PDF is the permanent edition; chapter pages below are short web
-        notes drawn from it.
+        Eleven chapters, plus a foreword and back matter in the PDF. The lines under each chapter
+        are short notes from the openings; the PDF has the full wording.
       </p>
     </div>
   </header>
@@ -33,7 +32,7 @@ import {
             <span class="chapter-num">—</span>
             <span>
               <span class="chapter-title">Foreword: why I ran the experiments</span>
-              <span class="chapter-sub">In the PDF (opening pages)</span>
+              <span class="chapter-sub">In the PDF. Findings in brief, and how findings differ from recommendations.</span>
             </span>
           </a>
         </li>
@@ -43,7 +42,7 @@ import {
               <span class="chapter-num">{String(ch.num).padStart(2, '0')}</span>
               <span>
                 <span class="chapter-title">{ch.title}</span>
-                {ch.subtitle && <span class="chapter-sub">{ch.subtitle}</span>}
+                <span class="chapter-sub">{ch.blurb}</span>
               </span>
             </a>
           </li>
@@ -53,7 +52,7 @@ import {
             <span class="chapter-num">—</span>
             <span>
               <span class="chapter-title">Cheat sheet, glossary, references, about the evidence</span>
-              <span class="chapter-sub">In the PDF (back matter)</span>
+              <span class="chapter-sub">In the PDF.</span>
             </span>
           </a>
         </li>
