@@ -15,7 +15,13 @@ You're the first reviewer of anything your agent produces. Size that review to t
 
 ## Risk tiers
 
-![Figure 8.1: Review risk tiers. An illustrative scheme: risk-grade every change, and match the review to the consequence of being wrong. The idea of grading each PR for risk and merging low-to-medium-risk changes without human review comes from @poteto's description of her team's practice; the tier boundaries and examples are my own suggestion, not a measured standard.](/guide-images/fig-risk-tiers.png)
+<figure class="guide-figure">
+
+![Review risk tiers](/guide-images/fig-risk-tiers.png)
+
+<figcaption>Figure 8.1. Review risk tiers. An illustrative scheme: risk-grade every change, and match the review to the consequence of being wrong. The idea of grading each PR for risk and merging low-to-medium-risk changes without human review comes from @poteto's description of her team's practice; the tier boundaries and examples are my own suggestion, not a measured standard.</figcaption>
+
+</figure>
 
 
 | Tier | Typical change | What puts it here | Review |
@@ -34,7 +40,7 @@ Review in this order: brief, evidence, shape of the diff, tests, implementation,
 
 1. **Brief.** One endpoint; out of scope: caching, contract changes, `/products/{sku}`, UI.
 2. **Evidence** ([Chapter 5](/guides/programming-the-loop/proof-not-promises/)), checked against the logs: freshness check passed; red run 4 failed, 3 passed; green 9 passed; live run against inventory 2.1.0 matches criteria 1 to 3; criterion 4 covered by unit tests only, and the report says so.
-3. **Shape of the diff** (genuine output):
+3. **Shape of the diff** — real script output:
 
 ```text
  app/clients/inventory.py   | 33 +++++++++++++++++++++

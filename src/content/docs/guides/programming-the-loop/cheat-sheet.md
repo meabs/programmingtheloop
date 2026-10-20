@@ -5,11 +5,11 @@ description: "From Programming the Loop — Cheat sheet."
 
 <p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
-![](/guide-images/cheatsheet.png)
+![Cheat sheet: thesis and eleven chapter reminders from Programming the Loop](/guide-images/cheatsheet.png)
 
-*Recommendations, not findings: the evidence and its limits are in the chapters.*
+*Recommendations, not findings: the evidence and its limits are in the chapters. Full thesis wording is in the [Foreword](/guides/programming-the-loop/foreword/).*
 
-**The thesis.** Agents need the right facts, not every fact. They need executable verification, not reassuring instructions. Every layer of agent infrastructure must justify its existence. *On readable code: smaller bill, no reliable difference in correctness. Across a boundary: much better code.*
+**The thesis (short).** Right facts, not every fact. Executable verification, not reassuring instructions. Every layer must justify its existence.
 
 **1 The argument.** Own every line. Ask of any practice: what facts, what check, what upkeep? Distrust single runs.
 

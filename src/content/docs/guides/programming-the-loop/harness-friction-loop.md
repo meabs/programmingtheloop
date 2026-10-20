@@ -15,7 +15,13 @@ Agents trip over the same few things again and again: an undocumented migration,
 
 ("ngmi": "not gonna make it".) Her summary is one of the best lines in the field: “the best rules are in your code.” (lauren (@poteto), [post on X, 18 Jul 2026](https://x.com/poteto/status/2078527882499150286))
 
-![Figure 6.1: The inverse pyramid of guardrails. The widest, strongest layer is the code itself; human review is the narrowest and last resort. Redrawn from the four-level list in @poteto's post on X (16 August 2026).](/guide-images/fig-inverse-pyramid.png)
+<figure class="guide-figure">
+
+![The inverse pyramid of guardrails](/guide-images/fig-inverse-pyramid.png)
+
+<figcaption>Figure 6.1. The inverse pyramid of guardrails. The widest, strongest layer is the code itself; human review is the narrowest and last resort. Redrawn from the four-level list in @poteto's post on X (16 August 2026).</figcaption>
+
+</figure>
 
 Architecture and types can't be ignored. A test or lint rule runs every time and fails loudly. A rule in a skill or `AGENTS.md` is read *sometimes* and followed *usually*. Human review is slow and tired by Thursday afternoon. Mitchell Hashimoto, who coined the term *harness engineering* that I've borrowed, does both halves: he adds a line to `AGENTS.md` when the agent repeats a mistake, and he builds actual programmed tools, such as scripts for screenshots and filtered tests. My data says the second half is where the durable wins are.
 
@@ -33,7 +39,13 @@ AgentFrictionLoop grew out of watching trial transcripts late at night and reali
 
 Each note has an **origin**, which decides who can fix it: `repository-discovery` (it exists but couldn't be found), `task-context` (the brief lacked something), `execution-environment` (a prerequisite or ordering), `verification` (no fast way to check the change), `conflicting-knowledge` (two sources disagree).
 
-![Figure 6.2: The friction loop. Agent notes become commit-linked records on a hidden branch; a weekly review opens an issue only for recurring gaps; a person fixes the cause in a normal pull request. Redrawn from the data-flow diagram in the AgentFrictionLoop README.](/guide-images/fig-friction-loop.png)
+<figure class="guide-figure">
+
+![The friction loop](/guide-images/fig-friction-loop.png)
+
+<figcaption>Figure 6.2. The friction loop. Agent notes become commit-linked records on a hidden branch; a weekly review opens an issue only for recurring gaps; a person fixes the cause in a normal pull request. Redrawn from the data-flow diagram in the AgentFrictionLoop README.</figcaption>
+
+</figure>
 
 ## One recurring problem, from first note to elimination
 

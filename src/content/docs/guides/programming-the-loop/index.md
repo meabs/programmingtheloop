@@ -26,14 +26,6 @@ Not sure where to begin? Use [Where to start](/guides/programming-the-loop/start
   <div class="guide-stat" role="listitem"><span class="guide-stat-key">Controlled runs</span><span class="guide-stat-value">~1,650</span><span class="guide-stat-cap">OKFExperiment repo</span></div>
 </div>
 
-| | |
-| --- | --- |
-| Chapters | 11 |
-| Checklist items | 76 |
-| Figures | 13 |
-| References | 21 |
-| First edition | October 2026 |
-
 ## Foreword findings
 
 Numbers from the Foreword. Each has limits stated in the chapter.
@@ -47,7 +39,7 @@ Read them in the [Foreword](/guides/programming-the-loop/foreword/), then [Chapt
 
 ## Contents
 
-| Section | Page |
+| Section | Link |
 | --- | --- |
 | Where to start | [/guides/programming-the-loop/start/](/guides/programming-the-loop/start/) |
 | Foreword: why I ran the experiments | [/guides/programming-the-loop/foreword/](/guides/programming-the-loop/foreword/) |
@@ -73,6 +65,6 @@ Read them in the [Foreword](/guides/programming-the-loop/foreword/), then [Chapt
 
 © Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the October 2026 PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.
 
-**Quoted material** belongs to its authors and is used briefly, with attribution and a link, for commentary. **My software repositories** carry their own licences, listed in ["About the evidence"](/guides/programming-the-loop/about-the-evidence/) at the back; they are not covered by the copyright line above.
+**Quoted material** belongs to its authors and is used briefly, with attribution and a link, for commentary. **My software repositories** carry their own licences, listed in ["About the evidence"](/guides/programming-the-loop/about-the-evidence/); they are not covered by the copyright line above.
 
 **Disclaimer.** Practical opinion, written in good faith, about tools that change month to month. Not legal, security or financial advice. My experiments are small and I say so each time. Test anything here on your own code before you rely on it, and keep backups: agents can and do delete things. The views in this book are the author's own and do not represent any employer, past or present.

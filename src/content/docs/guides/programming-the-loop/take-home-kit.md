@@ -5,7 +5,7 @@ description: "From Programming the Loop — 11. The take-home kit."
 
 <p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
-Teams don't need a knowledge platform, an orchestration framework or a programme to document everything before they get value from coding agents. They need a well-engineered repository with a short `AGENTS.md`, runnable checks, authoritative contracts for the things agents can't read, and a habit of adding each further layer only when it has shown it pays. That is a recommendation, built on the findings in [Chapters 3 to 9](/guides/programming-the-loop/right-facts/) and on engineering judgement where they run out. This chapter is the part to keep on your desk, next to the kettle: a framework for deciding what to adopt, the templates, and the checklists.
+Teams don't need a knowledge platform, an orchestration framework or a programme to document everything before they get value from coding agents. They need a well-engineered repository with a short `AGENTS.md`, runnable checks, authoritative contracts for the things agents can't read, and a habit of adding each further layer only when it has shown it pays. That is a recommendation, built on the findings in [Chapter 3](/guides/programming-the-loop/right-facts/) through [Chapter 9](/guides/programming-the-loop/tools-measurement/) and on engineering judgement where they run out. This chapter is the part to keep on your desk, next to the kettle: a framework for deciding what to adopt, the templates, and the checklists.
 
 If you strip everything in this book back to three rules for Monday morning, make them these:
 
@@ -68,7 +68,13 @@ The provider owns its published interface; the consumer owns how it uses it and 
 
 ## The adoption path
 
-![Figure 11.1: A staged adoption path with exit criteria. Each stage is entered only when the previous stage's exit test passes and measured friction justifies the next. Adapted from the adoption roadmap in *Agentic Software Engineering: a practical standard* v1.0 (author's unpublished document), with stages 1 and 3 narrowed to fit Experiment J.](/guide-images/fig-roadmap.png)
+<figure class="guide-figure">
+
+![A staged adoption path with exit criteria](/guide-images/fig-roadmap.png)
+
+<figcaption>Figure 11.1. A staged adoption path with exit criteria. Each stage is entered only when the previous stage's exit test passes and measured friction justifies the next. Adapted from the adoption roadmap in *Agentic Software Engineering: a practical standard* v1.0 (author's unpublished document), with stages 1 and 3 narrowed to fit Experiment J.</figcaption>
+
+</figure>
 
 | Stage | Implement | Move on when |
 |---|---|---|

@@ -23,7 +23,7 @@ Andrej Karpathy's comparison is apt: “context windows are really kind of like 
 
 Experiment J asked the question most teams adopting agents are implicitly answering: does a repository *set up for agents* do better than the same repository left as it is? Here is what was compared, on a 1,173-file Java backend.
 
-**Before: `plain`**
+#### Plain arm
 
 ```text
 shopizer/
@@ -31,7 +31,7 @@ shopizer/
 └── (no AGENTS.md, no guide, no graph, no skills)
 ```
 
-**After: `optimised`**
+#### Optimised arm
 
 ```text
 shopizer/
@@ -46,7 +46,7 @@ shopizer/
 └── sm-core/, sm-core-modules/, sm-shop/, …   source, unchanged
 ```
 
-The `AGENTS.md` and skills are published in the repository ([fixtures/operating-skills](https://github.com/meabs/OKFExperiment/tree/main/fixtures/operating-skills)). It starts (abridged: the first paragraph only, with its lines re-wrapped for print):
+The `AGENTS.md` and skills are published in the repository ([fixtures/operating-skills](https://github.com/meabs/OKFExperiment/tree/main/fixtures/operating-skills)). It starts (abridged: the first paragraph only, lines re-wrapped for readability):
 
 ```markdown
 # Working in this repository
@@ -56,19 +56,39 @@ places. It was generated or written to help you work here, so use it, then confi
 in the source before you rely on it.
 ```
 
-> **Case study: the agent-optimised repository (experiment J).** 112 runs: four mechanical changes (including a rename touching 105 sites in 58 files) and three structure questions, 8 runs per task per arm, Codex with isolation on. The set-up was used: the agent ran `kg` and opened the guide in all 56 optimised runs and read the navigation skill in 55. Changes passed 28 of 32 (plain) against 29 of 32 (optimised), p = 1.0; questions 16 of 24 against 19 of 24, p = 0.52. Neither difference is reliable. Tokens: **1.48 times** the plain arm's (bootstrap interval 1.38 to 1.60), where each run's tokens are divided by the plain arm's mean for the same task and those ratios are averaged, so each task counts equally. The per-task ratios ran from 1.20 (j3) to 1.90 (j4). The simple ratio of mean tokens per run, 401k against 297k, is **1.35**: lower, because the rename across 58 files dominated the totals (1,046k and 1,278k tokens a run) and had one of the smallest ratios, 1.22. Either way the set-up was reliably dearer. The optimised runs took more turns (8.8 against 5.9), because the agent read the instructions, the guide and the graph output, *and then still searched and read the source*. Source: [results/J-optimised-repo.md](https://github.com/meabs/OKFExperiment/blob/main/results/J-optimised-repo.md), [docs/EXPERIMENT_J.md](https://github.com/meabs/OKFExperiment/blob/main/docs/EXPERIMENT_J.md). **What it shows:** in a large, readable codebase, the full set-up was reliably dearer and not reliably better. **What it doesn't:** which of the four ingredients mattered (they were tested together, deliberately), or anything about other repositories, models or kinds of task. The plain arm was already strong: 44 of 56.
+> **Case study: the agent-optimised repository (experiment J).** 112 runs: four mechanical changes (including a rename touching 105 sites in 58 files) and three structure questions, 8 runs per task per arm, Codex with isolation on. The set-up was used: the agent ran `kg` and opened the guide in all 56 optimised runs and read the navigation skill in 55. Changes passed 28 of 32 (plain) against 29 of 32 (optimised), p = 1.0; questions 16 of 24 against 19 of 24, p = 0.52. Neither difference is reliable. Tokens: **1.48 times** the plain arm's (bootstrap interval 1.38 to 1.60), where each run's tokens are divided by the plain arm's mean for the same task and those ratios are averaged, so each task counts equally. The per-task ratios ran from 1.20 (j3) to 1.90 (j4). The simple ratio of mean tokens per run, 401k against 297k, is **1.35**: lower, because the rename across 58 files dominated the totals (1,046k and 1,278k tokens a run) and had one of the smallest ratios, 1.22. Either way the set-up was reliably dearer. The optimised runs took more turns (8.8 against 5.9), because the agent read the instructions, the guide and the graph output, *and then still searched and read the source*. Source: [results/J-optimised-repo.md](https://github.com/meabs/OKFExperiment/blob/main/results/J-optimised-repo.md), [docs/EXPERIMENT_J.md](https://github.com/meabs/OKFExperiment/blob/main/docs/EXPERIMENT_J.md).
+>
+> *Limits.* In a large, readable codebase, the full set-up was reliably dearer and not reliably better. The study does not say which of the four ingredients mattered (they were tested together, deliberately), or anything about other repositories, models or kinds of task. The plain arm was already strong: 44 of 56.
 
-![Figure 3.1: Tokens per run by task, plain repository against the same repository set up for agents (guide, code graph, skills and AGENTS.md), Codex, 8 runs per arm per task. Chart generated from the tables in OKFExperiment results/J-optimised-repo.md; pass counts are shown under each task (j7 as re-scored in that file).](/guide-images/chart-j-tokens.png)
+<figure class="guide-figure">
+
+![Tokens per run by task, plain repository against the same repository set up for agents (guide,…](/guide-images/chart-j-tokens.png)
+
+<figcaption>Figure 3.1. Tokens per run by task, plain repository against the same repository set up for agents (guide, code graph, skills and AGENTS.md), Codex, 8 runs per arm per task. Chart generated from the tables in OKFExperiment results/J-optimised-repo.md; pass counts are shown under each task (j7 as re-scored in that file).</figcaption>
+
+</figure>
 
 A smaller library said the same thing earlier. On Click, agents answered 14 or 15 of 15 questions and made 8 or 9 of 9 changes correctly *with or without* a guide; the default guide cost 1.30 times the tokens in one run and 1.07 in a rerun, and the thinnest guide (names only) was reliably the dearest, 1.26 to 1.42 times ([docs/RESULTS.md, section A](https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md)).
 
 ### The documentation layout itself
 
-A separate study compared documentation *layouts* on six copies of one FastAPI and React application. It is my own unpublished document, so its evidence is **lower grade** than the rest of this chapter: you can't check its numbers against a public repository, only its trial set-up. I use it for the *shape* of a layer, and nothing in this chapter rests on it alone. Two of its designs make a useful before and after.
+A separate study compared documentation *layouts* on six copies of one FastAPI and React application. It is my own unpublished document, so its evidence is **lower grade** than the rest of this chapter: you can't check its numbers against a public repository, only its trial set-up. I use it for the *shape* of a layer, and nothing in this chapter rests on it alone. Two of its designs make a useful before and after: a heavy layout that loads everything up front, and a lean layout the study recommends.
 
-**Heavy: a long, always-read `AGENTS.md`, a separate tree of "why we built it this way" decision records, and OKF reference pages, with prompts telling the agent to read all of it.**
+<div class="design-compare" role="group" aria-label="Heavy design against lean design">
 
-**Lean: the design the study recommends.**
+<div class="design-compare-panel">
+
+<strong class="design-compare-label">Heavy design</strong>
+
+<p>A long, always-read <code>AGENTS.md</code>, a separate tree of “why we built it this way” decision records, and OKF reference pages, with prompts telling the agent to read all of it.</p>
+
+</div>
+
+<div class="design-compare-panel is-recommended">
+
+<strong class="design-compare-label">Lean design <span class="design-compare-note">(the one the study recommends)</span></strong>
+
+<p>A tiny index, task-scoped skills opened only when needed, and reference pages with the “why” folded into the relevant concept:</p>
 
 ```text
 repo-agent-recommended/
@@ -80,6 +100,10 @@ repo-agent-recommended/
     ├── model-field-change/  write-migration/  add-api-endpoint/
     └── regenerate-frontend-client/  add-ui-action/  verify-work/
 ```
+
+</div>
+
+</div>
 
 > **Case study: the documentation-layer study (lower-grade evidence: author's unpublished document).** Four independent rounds per design and task; cost from the provider transcript. The heavy design was **dearer on the simple change in all four rounds**: +40.3% tokens, +28.7% cost. With prompts that never mentioned any of the documentation, the lean design was discovered and the task-relevant skills opened in **24 of 24** measured cells. Over eight rounds, the lean design was cheaper than the baseline in 7 of 8 rounds on both change tasks (two-sided binomial p = 0.07): suggestive, not confirmed. Recreated on five other open-source repositories, one run per cell, comprehension was cheaper in four of five, but code-change cost moved both ways (+86.4% to −64.3% tokens in individual cells), and **three of the five generated documentation layers contained a task-relevant factual error**. *Source: "Agent-ready repository design: documentation-layer study", author's unpublished document; the numbers can't be independently checked. The trial set-up is published as [AgentTrialRig, examples/fastapi-doc-layers](https://github.com/meabs/AgentTrialRig/blob/main/examples/fastapi-doc-layers/README.md).* Heavy always-loaded context has a measurable cost, then, and agents find a tiny index plus task-scoped skills without prompting. That falls short of showing the lean layout always saves money: the heavy design was also run with prescriptive prompts, so prompt and layout are confounded there, and the external cells are single runs.
 
@@ -102,7 +126,13 @@ Most real changes cross a boundary: another team's API, a private library, code 
 
 > **Case study: what kind of facts? (experiment H)** The harder change tasks again, five arms, 16 runs each: nothing, an OpenAPI contract, a hand-written 3 KB note, the generated guide, and the source. All four beat nothing (4 of 16) and didn't differ reliably from each other: contract 13, note 14, guide 14, source 14 of 16. The note was cheapest at about 128k tokens per run, against 192k for the contract, 282k for the guide and 334k for the source ([results/H1-contract-vs-okf-changes.md](https://github.com/meabs/OKFExperiment/blob/main/results/H1-contract-vs-okf-changes.md)). Caveats: I wrote the note knowing the tasks, which favours it, and the contract was generated from the source by a script. For questions about *internal* call structure, only the guide and the source worked, 21 of 24 each, against 8 for the contract and 0 for the note ([results/H2-contract-vs-okf-questions.md](https://github.com/meabs/OKFExperiment/blob/main/results/H2-contract-vs-okf-questions.md)), but that measured answers, not better changes. With 16 runs per arm, gaps under about 30 points can't be separated, so "level" doesn't mean "equivalent".
 
-![Figure 3.2: Cross-repository change tasks by kind of knowledge supplied, Codex, 16 runs per arm. Bars show runs passing the hidden tests; labels show mean tokens per run. Chart generated from the trial table in OKFExperiment results/H1-contract-vs-okf-changes.md.](/guide-images/chart-h1.png)
+<figure class="guide-figure">
+
+![Cross-repository change tasks by kind of knowledge supplied, Codex, 16 runs per arm](/guide-images/chart-h1.png)
+
+<figcaption>Figure 3.2. Cross-repository change tasks by kind of knowledge supplied, Codex, 16 runs per arm. Bars show runs passing the hidden tests; labels show mean tokens per run. Chart generated from the trial table in OKFExperiment results/H1-contract-vs-okf-changes.md.</figcaption>
+
+</figure>
 
 ## When the knowledge is out of date
 
@@ -119,7 +149,13 @@ I also built a code graph, [AgentGraphWorkTree](https://github.com/meabs/AgentGr
 - **Simple lookups.** Level, or up to 80% dearer with the graph. Across 192 runs on Python and TypeScript repositories it did not reduce tokens overall: agents ran `kg` and then checked it with `grep`, just as they checked the guide in experiment J.
 - **Very large repositories.** On the Java backend, a separate earlier evaluation (figures carried over, not re-derived) recorded Codex using 398k tokens with the graph against 953k without, with accuracy already at ceiling.
 
-![Figure 3.3: Tokens per question for multi-level "callers of callers" questions, with and without the code graph, by agent. Chart generated from the `kg callers --depth` row of the token-cost table in AgentGraphWorkTree docs/EVALUATION.md (36 runs across Click and Express); token totals are not comparable between agents.](/guide-images/chart-kg-callers.png)
+<figure class="guide-figure">
+
+![Tokens per question for multi-level "callers of callers" questions, with and without the code…](/guide-images/chart-kg-callers.png)
+
+<figcaption>Figure 3.3. Tokens per question for multi-level "callers of callers" questions, with and without the code graph, by agent. Chart generated from the `kg callers --depth` row of the token-cost table in AgentGraphWorkTree docs/EVALUATION.md (36 runs across Click and Express); token totals are not comparable between agents.</figcaption>
+
+</figure>
 
 Put that next to experiment J and the answer is to **route by question type**. A graph earns its place for multi-hop structural questions; it costs extra as a general-purpose layer.
 
@@ -157,7 +193,9 @@ The repository is small and readable, so the code itself is the context: `app/ma
 
 So the working context for the task is: `AGENTS.md`, the brief, three storefront files and one contract. No guide, no graph, no skills. Whether that's enough is what the tests and the live check in [Chapter 5](/guides/programming-the-loop/proof-not-promises/) are for.
 
-**What changes when the fact is missing.** To show the alternative, `reproduce.sh` also builds a branch where the contract isn't available and the client uses names an agent might plausibly guess: `/stock/{sku}` and a `quantity` field. The two lines that differ:
+### What changes when the fact is missing
+
+To show the alternative, `reproduce.sh` also builds a branch where the contract isn't available and the client uses names an agent might plausibly guess: `/stock/{sku}` and a `quantity` field. The two lines that differ:
 
 ```text
 -            r = http.get(f"/v2/stock/{sku}")
@@ -166,7 +204,7 @@ So the working context for the task is: `AGENTS.md`, the brief, three storefront
 +        return int(body["quantity"]), int(body.get("reserved", 0))
 ```
 
-Its own tests, written against its own guessed stub, pass. Then the live check, against the real running inventory service (genuine output):
+Its own tests, written against its own guessed stub, pass. Then the live check, against the real running inventory service — real script output:
 
 ```text
 8 passed in 0.27s
@@ -189,7 +227,7 @@ Green tests, and every product reported as unknown, because the guessed path doe
 >
 > Without the contract, every run tried to fetch one from the internet (the sandbox blocked it), then wrote its own and pinned it as version 1.0.0. All six read the right fields, `on_hand` and `reserved`, from the brief's "units on hand minus units reserved". All six guessed the path wrong: `/stock/` twice, `/skus/` twice, `/v1/stock/` twice, against the provider's `/v2/stock/`. So the real failure was narrower than my hand-written guess, which got the field name wrong too, but it ended the same way: the provider's 404 was read as "unknown SKU". With the contract, every run called `/v2/stock/{sku}` and passed the behaviour test, for under half the tokens. B-2 and B-6 failed the live check as written only because they read the inventory URL from a differently named environment variable, which neither the brief nor the contract specifies. That's [Chapter 2](/guides/programming-the-loop/briefs-plans-specifications/)'s ambiguous brief again: the brief left the variable unnamed, and the two runs filled the gap with two different, reasonable names.
 >
-> **What it shows:** where the agent can't read the provider, the contract decided the outcome (6 of 6 against 0 of 6; Fisher's exact test, two-sided, p ≈ 0.002) and cut the cost by more than half. **What it doesn't:** anything beyond one model and one task, and the task was designed so that the contract decides it. Two pilot runs were excluded (web tools still on; the CLI hung). Isolation was a Linux sandbox (bubblewrap with pasta), not AgentTrialRig's macOS option. What the agents *reported* is in [Chapter 5](/guides/programming-the-loop/proof-not-promises/). *Source: trial write-up and per-run logs, [agent-trials/results.md](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/blob/main/agent-trials/results.md) and [agent-trials/runs/](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/tree/main/agent-trials/runs) in the worked-example repository (17 October 2026).*
+> *Limits.* Where the agent can't read the provider, the contract decided the outcome (6 of 6 against 0 of 6; Fisher's exact test, two-sided, p ≈ 0.002) and cut the cost by more than half. That says nothing beyond one model and one task, and the task was designed so that the contract decides it. Two pilot runs were excluded (web tools still on; the CLI hung). Isolation was a Linux sandbox (bubblewrap with pasta — a userspace network/isolation stack), not AgentTrialRig's macOS option. What the agents *reported* is in [Chapter 5](/guides/programming-the-loop/proof-not-promises/). *Source: trial write-up and per-run logs, [agent-trials/results.md](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/blob/main/agent-trials/results.md) and [agent-trials/runs/](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/tree/main/agent-trials/runs) in the worked-example repository (17 October 2026).*
 
 ## Rules files, examples, and where my data stops
 
@@ -201,7 +239,13 @@ And where my data stops: a team whose agents work mostly in very large, unfamili
 
 ## Recommendation: a layered approach
 
-![Figure 3.4: Layers of knowledge for a dependency the agent can't read, each added only when the task needs it, with a freshness gate across all of them. Redrawn from Figure 1 of the OKFExperiment architecture recommendation.](/guide-images/fig-knowledge-layers.png)
+<figure class="guide-figure">
+
+![Layers of knowledge for a dependency the agent can't read, each added only when the task needs…](/guide-images/fig-knowledge-layers.png)
+
+<figcaption>Figure 3.4. Layers of knowledge for a dependency the agent can't read, each added only when the task needs it, with a freshness gate across all of them. Redrawn from Figure 1 of the OKFExperiment architecture recommendation.</figcaption>
+
+</figure>
 
 1. **If the agent can read the repository**, rely on the source and existing tools, and add "read the source to confirm before you rely on it" to the instructions.
 2. **For a dependency it can't read**, supply a **versioned API contract** first, owned and published by the dependency's team, listing every success and error response. In one small trial, a contract that listed only one success code led agents to treat the service's other success code as an error (README, experiment H3).

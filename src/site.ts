@@ -397,7 +397,7 @@ export const LICENCE_SHORT =
 
 /** Copyright-page paragraph from the first edition (verbatim). */
 export const LICENCE_QUOTED =
-  'Quoted material belongs to its authors and is used briefly, with attribution and a link, for commentary. My software repositories carry their own licences, listed in "About the evidence" at the back; they are not covered by the copyright line above.';
+  'Quoted material belongs to its authors and is used briefly, with attribution and a link, for commentary. My software repositories carry their own licences, listed in "About the evidence"; they are not covered by the copyright line above.';
 
 /** Copyright-page disclaimer from the first edition (verbatim). */
 export const LICENCE_DISCLAIMER =
@@ -405,7 +405,7 @@ export const LICENCE_DISCLAIMER =
 
 /** HTML forms for custom pages (bold lead-ins as in the book). */
 export const LICENCE_QUOTED_HTML =
-  '<strong>Quoted material</strong> belongs to its authors and is used briefly, with attribution and a link, for commentary. <strong>My software repositories</strong> carry their own licences, listed in "About the evidence" at the back; they are not covered by the copyright line above.';
+  '<strong>Quoted material</strong> belongs to its authors and is used briefly, with attribution and a link, for commentary. <strong>My software repositories</strong> carry their own licences, listed in "About the evidence"; they are not covered by the copyright line above.';
 
 export const LICENCE_DISCLAIMER_HTML =
   '<strong>Disclaimer.</strong> Practical opinion, written in good faith, about tools that change month to month. Not legal, security or financial advice. My experiments are small and I say so each time. Test anything here on your own code before you rely on it, and keep backups: agents can and do delete things. The views in this book are the author\'s own and do not represent any employer, past or present.';

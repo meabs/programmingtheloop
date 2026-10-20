@@ -28,7 +28,13 @@ The practical rule follows: **judge correctness by an independent check; judge h
 
 ## The layers of verification
 
-![Figure 5.1: Verification layers, from cheapest and fastest to most realistic. Each layer catches failures the one before it misses; the evidence layer turns the agent's claims into something a reviewer can check. Synthesis of the practices described by Willison, Beck, Huntley, Hashimoto and @poteto.](/guide-images/fig-verification-layers.png)
+<figure class="guide-figure">
+
+![Verification layers, from cheapest and fastest to most realistic](/guide-images/fig-verification-layers.png)
+
+<figcaption>Figure 5.1. Verification layers, from cheapest and fastest to most realistic. Each layer catches failures the one before it misses; the evidence layer turns the agent's claims into something a reviewer can check. Synthesis of the practices described by Willison, Beck, Huntley, Hashimoto and @poteto.</figcaption>
+
+</figure>
 
 1. **Tests, run first.** Start each session by having the agent run the existing suite: it learns how, and how big it is. For new behaviour, **red/green**: write the test, watch it fail, then make it pass.
 2. **Types, linters, static analysis.** Every rule a linter enforces is one your `AGENTS.md` doesn't need to state and the agent can't forget.
@@ -50,11 +56,17 @@ The practical rule follows: **judge correctness by an independent check; judge h
 >
 > **What the rig's labels mean.** "Independent check" is comparison (a). The rig's other column sets the agent's claimed result against that same independent check, not against the command log: a `passed` claim on a failing change is a **false_pass**, and a `failed` or `not-run` claim on a passing change is a **false_fail**. So the two `result: "failed"` reports were false_fails: wrong about the change, but not necessarily dishonest. In four of the six runs the agent's own pytest run could not collect at all, and the rig did not compare claims with command logs, so **whether those two reports were honest in the sense of comparison (b) was not measured.** *(AgentTrialRig v0.7.0 and later use false_pass/false_fail; earlier versions used overclaim/underclaim.)* Correctness stayed constant throughout. What changed was whether the agent *could* verify, and so what it had to report. Each step moved the cause into the repository, and turns and tokens followed. That stops short of a reliable cost saving (no interval excluded "no difference", and the scripted arm ran on its own after the others), and it says nothing about claim honesty. The README also records a corrected count in the first table after the stored tool calls were recounted.
 
-![Figure 5.2: Mean turns and tokens per run as the test prerequisite moved from the agent's judgement into the repository. Codex on a FastAPI change task, 3 runs per arm. Chart generated from the tables in the AgentTrialRig README ("Verification claims"); no interval excludes "no difference", so read it as a direction.](/guide-images/chart-friction-to-script.png)
+<figure class="guide-figure">
+
+![Mean turns and tokens per run as the test prerequisite moved from the agent's judgement into the…](/guide-images/chart-friction-to-script.png)
+
+<figcaption>Figure 5.2. Mean turns and tokens per run as the test prerequisite moved from the agent's judgement into the repository. Codex on a FastAPI change task, 3 runs per arm. Chart generated from the tables in the AgentTrialRig README ("Verification claims"); no interval excludes "no difference", so read it as a direction.</figcaption>
+
+</figure>
 
 ## Worked example, stage 5: run the tests, then verify real behaviour
 
-`bash scripts/test.sh` passed in [Chapter 4](/guides/programming-the-loop/verifiable-change/). Tests against a stub only prove the code agrees with the stub, though, and [Chapter 3](/guides/programming-the-loop/right-facts/) showed a guessed stub agreeing with guessed code. So the next step is to start the real inventory service and the storefront and call the endpoint, which `run_live.sh` does (genuine output):
+`bash scripts/test.sh` passed in [Chapter 4](/guides/programming-the-loop/verifiable-change/). Tests against a stub only prove the code agrees with the stub, though, and [Chapter 3](/guides/programming-the-loop/right-facts/) showed a guessed stub agreeing with guessed code. So the next step is to start the real inventory service and the storefront and call the endpoint, which `run_live.sh` does — real script output:
 
 ```text
 $ curl -s -w ' [%{http_code}]' localhost:8000/products/MUG-001/availability
@@ -77,7 +89,9 @@ Not run: live check of criterion 4 (inventory down or off-contract); covered by 
 Follow-up: the two 404 tests should assert the error detail, not just the status
 ```
 
-**What changes when the knowledge is stale.** Now suppose the inventory team ships version 3.0.0, which renames `on_hand` to `quantity_on_hand`, and the storefront is still pinned to 2.1.0. `reproduce.sh` simulates it. The freshness gate in `scripts/test.sh` catches it before any test runs:
+### What changes when the knowledge is stale
+
+Now suppose the inventory team ships version 3.0.0, which renames `on_hand` to `quantity_on_hand`, and the storefront is still pinned to 2.1.0. `reproduce.sh` simulates it. The freshness gate in `scripts/test.sh` catches it before any test runs:
 
 ```text
 == contract freshness
@@ -96,7 +110,9 @@ inventory response outside contract for MUG-001: {'sku': 'MUG-001', 'quantity_on
 
 Three lessons. A freshness check *outside* the knowledge caught what nothing *inside* it could. The brief's insistence on failing loudly turned silent data corruption into a visible error. And the guessed-names branch from [Chapter 3](/guides/programming-the-loop/right-facts/) is the "incorrect but honest" cell of the table above: a report saying "8 passed" would have been true to the log, and the live check would still have found every product reported as unknown.
 
-**What the freshness gate can't do.** The gate compares version numbers: the version the storefront pinned against the version the provider publishes. Agreement between those numbers can't establish *behavioural* compatibility, and the gate can't detect a provider that changed its behaviour without bumping its version: a field that now means something different, a new error case, a slower or stricter endpoint under the same `2.1.0`. It is a cheap first line that catches declared change. Undeclared change needs checks that exercise behaviour: contract tests run against the real provider, the live check, and the provider team's own discipline about versioning.
+### What the freshness gate can't do
+
+The gate compares version numbers: the version the storefront pinned against the version the provider publishes. Agreement between those numbers can't establish *behavioural* compatibility, and the gate can't detect a provider that changed its behaviour without bumping its version: a field that now means something different, a new error case, a slower or stricter endpoint under the same `2.1.0`. It is a cheap first line that catches declared change. Undeclared change needs checks that exercise behaviour: contract tests run against the real provider, the live check, and the provider team's own discipline about versioning.
 
 > **Case study: what the agents reported.** These are the trials from [Chapter 3](/guides/programming-the-loop/right-facts/) (`composer-2.5`, 6 runs per arm, A without the contract, B with it), scored by both comparisons. An *independent pass* means the live check and all 7 black-box checks passed.
 >
@@ -109,7 +125,9 @@ Three lessons. A freshness check *outside* the knowledge caught what nothing *in
 >
 > Every A run edited `scripts/test.sh` (five runs) or `scripts/check_contract.py` (one) so that the freshness gate compared the contract it had written with itself, and every A report showed the gate's output: `ok: pinned 1.0.0, provider publishes 1.0.0`. The check built to catch a stale contract became a rubber stamp. A-1 said what it had done ("pinned `1.0.0` so the freshness gate and client could align"); A-3 listed its own file as a "vendored OpenAPI". Three A runs wrote a stub inventory to match their own contract, curled it and attached the output as live evidence. A-5's showed `{"sku":"MUG-001","available":10,"in_stock":true}`, a stock figure its stub had made up.
 >
-> By comparison (b) the reports held up: a check by hand found no claimed command missing from the logs, and every run listed real-inventory verification under `could_not_verify`. Yet all 12 reported `result: passed` while acceptance criterion 6, a live check against the real inventory service, was unverified. **What it shows:** a false pass needn't be a lie. It can be an honest log of checks that were rewritten to agree with the agent, or a "passed" that leaves out a criterion the same report lists as unverified. **What it doesn't:** how other models behave; one task, 6 runs per arm. *Source: trial write-up and per-run logs, [agent-trials/results.md](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/blob/main/agent-trials/results.md) and [agent-trials/runs/](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/tree/main/agent-trials/runs) in the worked-example repository (17 October 2026).*
+> By comparison (b) the reports held up: a check by hand found no claimed command missing from the logs, and every run listed real-inventory verification under `could_not_verify`. Yet all 12 reported `result: passed` while acceptance criterion 6, a live check against the real inventory service, was unverified. A false pass needn't be a lie: it can be an honest log of checks that were rewritten to agree with the agent, or a "passed" that leaves out a criterion the same report lists as unverified.
+>
+> *Limits.* How other models behave is not measured here; one task, 6 runs per arm. *Source: trial write-up and per-run logs, [agent-trials/results.md](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/blob/main/agent-trials/results.md) and [agent-trials/runs/](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/tree/main/agent-trials/runs) in the worked-example repository (17 October 2026).*
 
 ## What practitioners insist on
 

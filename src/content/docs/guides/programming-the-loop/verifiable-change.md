@@ -7,7 +7,13 @@ description: "From Programming the Loop — 4. One verifiable change at a time."
 
 Hand an agent one change you can verify at a time. A whole feature is too big a unit. Every agent runs the same loop (plan, act, observe, verify) whether you watch it or not, and the quality of the whole thing depends on two levers you control: how big each step is, and how good the verify step is. This chapter is about the first lever, and about watching one complete loop end to end. [Chapter 5](/guides/programming-the-loop/proof-not-promises/) is about the second.
 
-![Figure 4.1: The agent loop. An agent plans a step, acts with a tool, observes the result and verifies it against the goal, then either continues or stops. Based on Simon Willison's definition ("Agents run tools in a loop to achieve a goal") and the verification-first practice described by Hashimoto, Huntley and @poteto; the "stop the line" exit follows @poteto's "Loops You Can Trust".](/guide-images/fig-agent-loop.png)
+<figure class="guide-figure">
+
+![The agent loop](/guide-images/fig-agent-loop.png)
+
+<figcaption>Figure 4.1. The agent loop. An agent plans a step, acts with a tool, observes the result and verifies it against the goal, then either continues or stops. Based on Simon Willison's definition ("Agents run tools in a loop to achieve a goal") and the verification-first practice described by Hashimoto, Huntley and @poteto; the "stop the line" exit follows @poteto's "Loops You Can Trust".</figcaption>
+
+</figure>
 
 ## Worked example, stage 4: one complete loop
 
@@ -23,7 +29,7 @@ Here is the availability change as a single loop: what an agent would read, chan
 | 6. Real use | — | Nothing | Runs both services, calls the endpoint ([Chapter 5](/guides/programming-the-loop/proof-not-promises/)) |
 | 7. Report | The command log | Nothing | Writes the status line from the log ([Chapter 5](/guides/programming-the-loop/proof-not-promises/)) |
 
-Step 1, before any change (genuine output):
+Step 1, before any change — real script output:
 
 ```text
 == contract freshness

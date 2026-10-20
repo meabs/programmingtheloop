@@ -11,7 +11,7 @@ Parallelism multiplies whatever quality you already have. Ten riveters on one pl
 
 ## Isolation: files and state
 
-The hard lesson: in my own trials, agents read other runs' files off the disk and cloned code from the internet when they could (the case study is in [Chapter 9](/guides/programming-the-loop/tools-measurement/), "Agents use whatever they can reach"). Agents use whatever they can reach, so you have to enforce what's reachable. Asking nicely doesn't work. If two agents can see each other's files, databases or outputs, they will eventually interfere, and you'll lose an afternoon working out why a test passes on one branch and fails on the other.
+The hard lesson: in my own trials, agents read other runs' files off the disk and cloned code from the internet when they could (the case study is in [Chapter 9](/guides/programming-the-loop/tools-measurement/#agents-use-whatever-they-can-reach)). You have to enforce what's reachable; asking nicely doesn't work. If two agents can see each other's files, databases or outputs, they will eventually interfere, and you'll lose an afternoon working out why a test passes on one branch and fails on the other.
 
 **In the worked example,** `run_live.sh` starts the inventory service on port 8001 and the storefront on 8000. Two agents running it at once would collide on the ports, and if the inventory service had a real database, they'd share its data. Making it parallel-safe means a port and a database per run, passed in through the environment. Nothing about that changes if the agents move to the cloud and both point at the same staging inventory service.
 
