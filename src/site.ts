@@ -130,7 +130,6 @@ export const START_ROUTES: ReadonlyArray<{
       detail: 'The right facts, not every fact',
     },
     then: [
-      'Then ',
       { label: 'Chapter 5', href: '/guides/programming-the-loop/proof-not-promises/' },
       ' and the ',
       { label: 'take-home kit (Ch. 11)', href: '/guides/programming-the-loop/take-home-kit/' },
