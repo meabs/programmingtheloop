@@ -1,23 +1,27 @@
 ---
 title: Experiments
-description: Read measured findings and planned research with methods and limitations.
+description: Measured findings from the first edition and planned follow-up work.
 ---
 
 # Experiments
 
-Research pages distinguish measured findings from recommendations and open questions. Results in the first edition come from small, task-specific trials. The PDF names source repositories and files; those evidence repositories are not yet linked from this new site, so links are included only when a verifiable public source is available.
+Research pages should distinguish measured findings from recommendations and open questions. Results in the first edition come from small, task-specific trials. Source repositories and files are named in the PDF.
 
-## Published findings from the first edition
+## From the first edition
 
 | Study | Observation | Limits |
 | --- | --- | --- |
-| Repository optimisation (Experiment J) | Prepared Java repository used 35–48% more tokens, without reliable correctness improvement in tested tasks. | One repository/model; mechanical edits and structure questions; 8 runs per task per arm; four ingredients combined. |
-| Missing dependency facts | Hidden-test passes rose from 3/20 with no backend facts to 18–19/20 with a guide. | One model; five runs per task; identifiers renamed by author. |
-| Stale dependency knowledge | 14/16 planted drift answers repeated old names without hedging. | One model; four runs per question; drift was planted. |
-| Verification failure | All 12 runs reported passing while the real-service criterion was unverified; all 6 contract runs were correct. | One model/task; 6 runs per arm. |
+| Repository optimisation (Experiment J) | Prepared Java repository used 35–48% more tokens, without reliable correctness improvement in the tested tasks (29 vs 28 of 32 changes; 19 vs 16 of 24 structure questions). | One repository and model; mechanical edits and structure questions; 8 runs per task per arm; four ingredients combined. |
+| Stale dependency knowledge | 14 of 16 planted drift answers repeated old names without hedging. | One model; four runs per question; drift was planted. |
+| Missing dependency facts | Hidden-test passes rose from 3 of 20 with no backend facts to 18–19 of 20 with a guide. | One model; five runs per task; identifiers renamed by the author. |
+| Verification on the worked example | All 12 runs reported `passed` while the real-service criterion was unverified; without the contract, agents rewrote the freshness gate; with the contract, all 6 runs were correct. | One model and task; 6 runs per arm. |
 
-These are concise summaries; see [Chapter 3](/learn/right-facts/) and [Chapter 5](/learn/proof-not-promises/) for interpretation and conditions. Study source paths are as named in the PDF and are not links until the corresponding evidence is published.
+See [Chapter 3](/learn/right-facts/) and [Chapter 5](/learn/proof-not-promises/) for interpretation. Prefer the [PDF](/downloads/) for full wording and sources.
 
 ## Planned
 
-[Experiment K: Knowing When You Don’t Know](/experiments/knowing-when-you-dont-know/) is a proposed comparison. It has no results.
+[Knowing When You Don’t Know](/experiments/knowing-when-you-dont-know/) is a proposed comparison. It has no results yet.
+
+## Feedback
+
+[Open an issue](https://github.com/meabs/ProgrammingTheLoop-WorkedExample/issues/new/choose) on the worked example if a result or limit looks wrong.

@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CHAPTERS, PDF_PATH, SITE_EDITION } from '../site';
+---
+<BaseLayout
+  title="Contents"
+  description="Chapter list for Programming the Loop: What I Measured with Coding Agents (First edition, October 2026)."
+  canonicalPath="/contents/"
+>
+  <header class="page-head">
+    <div class="wrap">
+      <h1>Contents</h1>
+      <p>
+        {SITE_EDITION}. Eleven chapters plus a foreword, cheat sheet, glossary, references and
+        notes on the evidence. The PDF is the permanent edition; chapter pages below are short web
+        notes drawn from it.
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <ol class="chapter-list">
+        <li>
+          <a href={PDF_PATH}>
+            <span class="chapter-num">—</span>
+            <span>
+              <span class="chapter-title">Foreword: why I ran the experiments</span>
+              <span class="chapter-sub">In the PDF (opening pages)</span>
+            </span>
+          </a>
+        </li>
+        {CHAPTERS.map((ch) => (
+          <li>
+            <a href={ch.href}>
+              <span class="chapter-num">{String(ch.num).padStart(2, '0')}</span>
+              <span>
+                <span class="chapter-title">{ch.title}</span>
+                {ch.subtitle && <span class="chapter-sub">{ch.subtitle}</span>}
+              </span>
+            </a>
+          </li>
+        ))}
+        <li>
+          <a href={PDF_PATH}>
+            <span class="chapter-num">—</span>
+            <span>
+              <span class="chapter-title">Cheat sheet, glossary, references, about the evidence</span>
+              <span class="chapter-sub">In the PDF (back matter)</span>
+            </span>
+          </a>
+        </li>
+      </ol>
+      <p style="margin-top:2rem">
+        <a class="button primary" href={PDF_PATH}>Download the PDF</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

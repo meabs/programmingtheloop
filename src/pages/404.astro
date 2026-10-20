@@ -1,4 +1,23 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Page not found — Programming the Loop</title><meta name="description" content="This page could not be found. Browse lessons or experiments."/><link rel="canonical" href="https://programmingtheloop.com/404.html"/><meta property="og:image" content="https://programmingtheloop.com/social-card.svg"/><meta property="og:title" content="Page not found — Programming the Loop"/><meta property="og:description" content="This page could not be found. Browse lessons or experiments."/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/></head><body><header class="site-header"><div class="wrap nav"><a class="brand" href="/"><img src="/favicon.svg" alt=""/>Programming the Loop</a><nav class="nav-links" aria-label="Main navigation"><a href="/">Home</a><a href="/learn/">Learn</a><a href="/experiments/">Experiments</a><a href="/resources/">Resources</a><a href="/about/">About</a><a class="nav-ebook" href="/downloads/">Free ebook ↗</a></nav></div></header><main class="section"><div class="wrap"><div class="eyebrow">404 · Route not found</div><h1 style="font-size:clamp(42px,7vw,72px);letter-spacing:-.06em;margin:20px 0 14px">This page isn’t in the loop.</h1><p class="lede">The link may have moved. Start again from the lessons or research index.</p><div class="actions"><a class="button primary" href="/learn/">Browse lessons →</a><a class="button" href="/experiments/">Explore experiments</a></div></div></main></body></html>
+<BaseLayout
+  title="Page not found"
+  description="This page could not be found on programmingtheloop.com."
+  canonicalPath="/404.html"
+  noindex={true}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <h1>Page not found</h1>
+      <p>That URL is not on this site. Try the home page, contents, or the PDF download.</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap actions">
+      <a class="button primary" href="/">Home</a>
+      <a class="button" href="/contents/">Contents</a>
+      <a class="button" href="/downloads/Programming-the-Loop-1st-edition.pdf">Download PDF</a>
+    </div>
+  </div>
+</BaseLayout>

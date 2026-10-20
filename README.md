@@ -1,6 +1,6 @@
 # Programming the Loop
 
-An independent engineering research and learning website about coding agents. The site uses Astro and Starlight, generates static files, and is configured for `https://programmingtheloop.com`.
+Site for Garry Meaburn’s free ebook **Programming the Loop: What I Measured with Coding Agents** (first edition, October 2026). Built with Astro and Starlight, deployed to GitHub Pages at [programmingtheloop.com](https://programmingtheloop.com).
 
 ## Local development
 
@@ -9,40 +9,70 @@ npm ci
 npm run dev
 ```
 
-Run `npm run build` to type-check and build the static site. Preview the production output with `npm run preview`.
+- `npm run build` — type-check and build static files into `dist/`
+- `npm run preview` — serve the production build locally
 
-## Content
+Node 22 is used in CI (see `.github/workflows/deploy.yml`).
 
-- Add lessons as Markdown or MDX under `src/content/docs/learn/` and link them in `astro.config.mjs` when they should appear in the sidebar.
-- Add an experiment page under `src/content/docs/experiments/`. Include the research question, hypothesis, setup, results, limitations, practical implications and evidence register. State unknown metadata as unavailable; do not infer it.
-- Publish results only after definitions and evidence are stable. Link the task definitions, source code, run logs, commit and deviations where available. Keep historical findings and corrections traceable.
-- Label direct observations as measured findings; distinguish recommendations and open questions. Keep limitations next to the claim.
-- Update a recommendation by linking its evidence, explaining what changed and preserving the prior result record.
-- Put downloads in `public/downloads/` and add an entry under `src/content/docs/downloads/` or `resources/`.
-- The permanent ebook file is the original October 2026 PDF. Replace it only with a separately named edition, never overwrite the first edition.
+## Site map
 
-## Analytics
+| Path | Purpose |
+| --- | --- |
+| `/` | Book landing page (summary, measured findings, licence, download, feedback) |
+| `/contents/` | Chapter list |
+| `/downloads/` | PDF download and licence |
+| `/learn/` | Short web notes for each chapter |
+| `/notes/` | Notes/articles that are **not** only the book (add pages here) |
+| `/experiments/` | Experiment index and planned work |
+| `/updates/` | Dated updates and corrections |
+| `/about/` | Author, licence, feedback links |
 
-No analytics script is enabled by default. To enable privacy-conscious Cloudflare Web Analytics, add the site token in Cloudflare and include its beacon snippet through an environment-driven build setting or a reviewed source change. Do not commit account credentials. Cloudflare Web Analytics runs without adding an application backend; ebook click measurement is intentionally not enabled until a privacy-appropriate, static-compatible approach is selected.
+Custom pages (home, contents, 404) live under `src/pages/` and share `src/layouts/BaseLayout.astro` plus `src/site.ts`. Starlight content lives under `src/content/docs/`.
 
-## Deploy to GitHub Pages
+## How to add a new section page
 
-The workflow in `.github/workflows/deploy.yml` builds on pushes to `main` and deploys with the supported Pages artifact and deploy actions. The Astro site URL is the apex domain, so it is built for `/`, not a repository subpath. `public/CNAME` ensures the custom-domain file is copied into the deployment artifact.
+1. Create a Markdown or MDX file under the right folder, for example:
+   - Note: `src/content/docs/notes/my-note.mdx`
+   - Experiment: `src/content/docs/experiments/my-experiment.mdx`
+   - Update: `src/content/docs/updates/2026-11-correction.mdx`
+2. Put YAML frontmatter at the top:
 
-1. In the repository, open **Settings → Pages** and select **GitHub Actions** as the build and deployment source.
-2. Configure the apex domain `programmingtheloop.com` at the DNS provider. GitHub Pages currently documents four A records (`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`) and an optional AAAA set (`2606:50c0:8000::153`, `:8001::153`, `:8002::153`, `:8003::153`). Confirm the current values in GitHub’s Pages custom-domain documentation before applying them. This repository does not change registrar settings.
-3. Optionally create `www.programmingtheloop.com` as a CNAME to `meabs.github.io` if you want GitHub Pages to redirect the `www` name. Configure it in Pages after the apex domain is verified.
-4. Wait for DNS and certificate provisioning, then enable **Enforce HTTPS** in Pages settings.
-5. Verify the latest Actions workflow succeeded, visit `https://programmingtheloop.com`, and check the certificate, canonical URLs, sitemap and PDF download.
+   ```md
+   ---
+   title: My note title
+   description: One sentence for search and social previews.
+   ---
 
-### Troubleshooting
+   # My note title
 
-- A Pages build failure is shown in the Actions run; reproduce it with `npm ci && npm run build` locally.
-- A missing custom-domain file means `public/CNAME` is absent or incorrect; the workflow checks the deployed `dist/CNAME` value.
-- DNS changes can take time to propagate. Check the apex A/AAAA records and remove conflicting records. Use GitHub’s current domain setup guidance rather than changing records by guesswork.
-- If HTTPS is unavailable, wait for GitHub to provision the certificate and verify the domain records before enabling enforcement.
-- If a route is missing, ensure the Markdown/MDX file is under `src/content/docs/` and use its generated route (for example, `src/content/docs/learn/getting-started.mdx` becomes `/learn/getting-started/`).
+   Body text…
+   ```
 
-## Source and publication status
+3. The URL is the file path under `docs/`, e.g. `notes/my-note.mdx` → `/notes/my-note/`.
+4. If it should appear in the Starlight sidebar, add a link in `astro.config.mjs` under `sidebar`.
+5. If it should appear in the home-page header, add it to `NAV` in `src/site.ts`.
+6. Run `npm run build` and check the new route.
 
-The original first-edition PDF is the source of the initial learning content. New content must preserve the distinction between an observation and a recommendation. Experiment K is a plan only; no results are published.
+Keep **findings** (measured, with limits) separate from **recommendations** and **open questions**. Do not invent numbers, quotes, testimonials or download counts.
+
+## Ebook PDF
+
+- File: `public/downloads/Programming-the-Loop-1st-edition.pdf`
+- Do not overwrite the first edition in place. Publish a later edition under a new filename and update links.
+
+Licence (site wording): free to read; share the unchanged PDF free of charge with attribution and the copyright notice; no selling, no commercial use, no modified versions without permission. This site offers PDF only.
+
+## SEO and sharing
+
+- `site` in `astro.config.mjs` is `https://programmingtheloop.com` (canonical base, sitemap).
+- `public/CNAME` must remain `programmingtheloop.com` for the custom domain.
+- Social image: `public/og-cover.png` (absolute URLs in meta tags — never localhost).
+- `public/robots.txt` allows indexing and points at the generated sitemap.
+
+No analytics or tracking scripts. No API keys in the repository.
+
+## Deploy
+
+Pushing to `main` runs `.github/workflows/deploy.yml` (GitHub Pages via Actions). The workflow checks that `dist/CNAME` equals `programmingtheloop.com`.
+
+In the repository: **Settings → Pages → GitHub Actions**. DNS for the apex domain is configured at the registrar (GitHub’s documented A/AAAA records). Enable **Enforce HTTPS** after the certificate is ready.
