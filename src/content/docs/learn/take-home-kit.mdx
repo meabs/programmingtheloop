@@ -1,0 +1,27 @@
+---
+title: The take-home kit
+description: Chapter 11 — put the book’s practices into an adoptable workflow.
+---
+
+# 11. The take-home kit
+
+The final chapter turns the book into an adoption kit. Its Default, Conditional and Experimental labels describe how to adopt a practice, not the strength of evidence for a claim.
+
+Use the recommendations as starting points. Choose practices that solve an observed problem, preserve the information needed to check them, and keep historical experiment results stable when later evidence changes a view.
+
+## A starting checklist
+
+- State the task outcome and observable acceptance criteria.
+- Supply the authoritative facts the agent cannot discover from its repository.
+- Break work into small changes with explicit stopping conditions.
+- Check both the implementation and whether the checks cover the required behavior.
+- Record friction and measured results with enough context to reproduce them.
+- Match human review and permissions to the risk of the change.
+
+## Three rules for Monday morning
+
+The author’s summary is: put recurring fixes in scripts rather than prose; keep local context lean and document the boundaries the agent cannot see; never trust a green report without an independent check. The book’s examples and rationale are in the linked chapters above.
+
+## Adopt in stages
+
+The book distinguishes **Default** practices (cheap, reversible and broadly useful), **Conditional** practices (adopt after a targeted trial on your work), and **Experimental** practices (pilot separately with an exit test). These describe adoption choices, not statistical evidence strength. The opening baseline is a reliable build, test and lint command, a short `AGENTS.md`, and briefs with acceptance criteria; move to added layers only when observed friction justifies them.

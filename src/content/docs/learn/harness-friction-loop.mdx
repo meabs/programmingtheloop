@@ -1,0 +1,20 @@
+---
+title: The harness and the friction loop
+description: Chapter 6 — use repeated workflow friction to improve the engineering environment.
+---
+
+# 6. The harness and the friction loop
+
+Chapter 6 describes the harness as the tools and environment around the agent: commands, tests, permissions, documentation, error messages and feedback paths. Friction is useful evidence about where this environment makes work difficult.
+
+## Record, classify, improve
+
+The book’s minimum viable friction loop is to capture recurring obstacles, distinguish repository or tool problems from task problems, and remove a repeated source of wasted effort. It also discusses observation and self-reports, including privacy considerations.
+
+The chapter orders possible fixes from higher-level causes such as architecture, then checks and scripts, then skills and rules, and finally review. Reports are leads; act on problems that repeat across sessions or people. Instrumentation should not block a commit, and a fresh clone can expose undocumented prerequisites before an agent encounters them.
+
+## Try this
+
+Keep a short record of failed commands, missing prerequisites, unclear errors and repeated manual steps. Prioritise a change only after identifying who benefits, what it will maintain and how you will know it helped.
+
+After changing the workflow, repeat the same kind of task and check whether the friction returns. If it does, the fix has not closed the loop.

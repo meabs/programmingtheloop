@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://programmingtheloop.com/sitemap-index.xml
