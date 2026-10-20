@@ -22,6 +22,7 @@ export const SITE_OG_IMAGE = `${SITE_URL}/og-cover.png`;
 export const NAV = [
   { label: 'Home', href: '/' },
   { label: 'Views', href: '/views/' },
+  { label: 'Experiments', href: '/experiments/' },
   { label: 'Book', href: '/book/' },
   { label: 'About', href: '/about/' },
 ] as const;

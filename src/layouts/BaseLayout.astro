@@ -18,7 +18,7 @@ interface Props {
 }
 
 const {
-  title = `${SITE_NAME} — Agentic engineering`,
+  title = `${SITE_NAME} — Agentic build engineering`,
   description = SITE_DESCRIPTION,
   canonicalPath = '/',
   noindex = false,
@@ -34,6 +34,22 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        try {
+          var key = 'ptl-theme';
+          var stored = localStorage.getItem(key);
+          var system = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+          var theme = stored === 'dark' || stored === 'light' ? stored : system;
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Garry Meaburn" />
@@ -51,6 +67,7 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.png" type="image/png" />
     {preloadCover && <link rel="preload" href="/book-cover.png" as="image" />}
@@ -61,23 +78,32 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
       <div class="wrap nav">
         <a class="brand" href="/" aria-label={`${SITE_NAME} home`}>
           <span class="brand-mark" aria-hidden="true"></span>
-          <span class="brand-text">
-            <span class="brand-name">Programming the Loop</span>
-          </span>
+          <span class="brand-name">Programming the Loop</span>
         </a>
         <nav class="nav-links" aria-label="Main">
           {NAV.map((item) => (
             <a href={item.href}>{item.label}</a>
           ))}
         </nav>
-        <button
-          class="menu-toggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
-          Menu
-        </button>
+        <div class="nav-tools">
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Toggle colour theme"
+          >
+            <span class="theme-icon theme-icon-sun" aria-hidden="true"></span>
+            <span class="theme-icon theme-icon-moon" aria-hidden="true"></span>
+          </button>
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+          >
+            Menu
+          </button>
+        </div>
         <nav class="mobile-panel" id="mobile-menu" aria-label="Mobile">
           {NAV.map((item) => (
             <a href={item.href}>{item.label}</a>
@@ -92,10 +118,11 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
       <div class="wrap footer-inner">
         <div>
           <strong>{SITE_NAME}</strong>
-          <p>Agentic engineering · Garry Meaburn</p>
+          <p>Agentic build engineering · Garry Meaburn</p>
         </div>
         <div class="footer-links">
           <a href="/views/">Views</a>
+          <a href="/experiments/">Experiments</a>
           <a href="/book/">Book</a>
           <a href="/about/">About</a>
           <a href="https://github.com/meabs/programmingtheloop">GitHub</a>
@@ -103,19 +130,67 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
       </div>
     </footer>
     <script>
+      const key = 'ptl-theme';
+      const root = document.documentElement;
+      const toggle = document.getElementById('theme-toggle');
       const button = document.querySelector('.menu-toggle');
       const menu = document.querySelector('.mobile-panel');
       const header = document.getElementById('site-header');
+
+      const applyTheme = (theme: string) => {
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        try {
+          localStorage.setItem(key, theme);
+        } catch (_) {}
+      };
+
+      toggle?.addEventListener('click', () => {
+        applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+      });
+
+      try {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (!localStorage.getItem(key)) {
+            applyTheme(e.matches ? 'dark' : 'light');
+          }
+        });
+      } catch (_) {}
+
       button?.addEventListener('click', () => {
         const open = button.getAttribute('aria-expanded') !== 'true';
         button.setAttribute('aria-expanded', String(open));
         menu?.classList.toggle('open', open);
       });
+
       const onScroll = () => {
         header?.classList.toggle('is-scrolled', window.scrollY > 8);
       };
       onScroll();
       window.addEventListener('scroll', onScroll, { passive: true });
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        const nodes = document.querySelectorAll('.reveal');
+        if (nodes.length && 'IntersectionObserver' in window) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('is-visible');
+                  io.unobserve(entry.target);
+                }
+              }
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+          );
+          nodes.forEach((el) => io.observe(el));
+        } else {
+          nodes.forEach((el) => el.classList.add('is-visible'));
+        }
+      } else {
+        document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+      }
     </script>
   </body>
 </html>

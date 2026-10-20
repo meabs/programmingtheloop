@@ -11,7 +11,8 @@ import {
 } from '../site';
 import { getPublishedViews, viewHref, formatViewDate } from '../lib/views';
 
-const latestViews = (await getPublishedViews()).slice(0, 5);
+const latestViews = (await getPublishedViews()).slice(0, 3);
+const hasViews = latestViews.length > 0;
 ---
 <BaseLayout
   title={`${SITE_NAME} — Agentic build engineering`}
@@ -20,129 +21,185 @@ const latestViews = (await getPublishedViews()).slice(0, 5);
   ogImage={SITE_OG_IMAGE}
 >
   <section class="hero-site">
-    <div class="wrap">
-      <p class="edition">Garry Meaburn</p>
-      <h1>
-        Programming
-        <span class="loop">the Loop</span>
-      </h1>
-      <p class="subtitle">
-        Agentic build engineering: building software with coding agents.
-      </p>
-      <p class="byline">
-        Practice on the agent loop, measurements and experiments, and views on industry trends.
-      </p>
-      <div class="actions">
-        <a class="button primary" href="#about-site">What this site is</a>
-        <a class="button" href="/book/">The book</a>
+    <div class="wrap hero-layout">
+      <div class="hero-copy">
+        <p class="edition">Agentic build engineering</p>
+        <h1>
+          Programming
+          <span class="loop">the Loop</span>
+        </h1>
+        <p class="subtitle">
+          Building software with coding agents — briefs, context, verification, harness and review.
+        </p>
+        <p class="byline">
+          Measurements and experiments with stated limits. Views on tools and trends as they earn a post.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="#explore">Explore the site</a>
+          <a class="button" href="/book/">The book</a>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <section class="section" id="about-site">
-    <div class="wrap">
-      <h2>What this site is</h2>
-      <div class="prose">
-        <p>
-          This is a place for <strong>agentic build engineering</strong>: building software with
-          coding agents, and the practical engineering of the agent loop (briefs, context,
-          verification, harness, review).
-        </p>
-        <p>
-          I publish measurements and experiments when I have results worth writing up, with the
-          limits stated next to the numbers.
-        </p>
-        <p>
-          <a href="/views/">Views</a> is for short takes on industry trends and new tools or
-          releases. I have not posted any yet.
-        </p>
-        <p>
-          The free ebook <a href="/book/">Programming the Loop</a> is one part of the site. It is
-          not the whole of it.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="views">
-    <div class="wrap">
-      <h2>Views</h2>
-      {latestViews.length === 0 ? (
-        <p class="lead">
-          Short posts on industry trends and new tools or releases will appear here. Nothing
-          published yet.
-        </p>
-      ) : (
-        <>
-          <p class="lead">Latest posts.</p>
-          <ul class="link-list">
-            {latestViews.map((post) => (
-              <li>
-                <a href={viewHref(post)}>{post.data.title}</a>
-                <span class="link-note">
-                  {formatViewDate(post.data.date)} · {post.data.description}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p class="lead" style="margin-top:1.25rem">
-            <a href="/views/">All views</a>
-          </p>
-        </>
-      )}
-    </div>
-  </section>
-
-  <section class="section" id="book">
-    <div class="wrap">
-      <h2>The book</h2>
-      <div class="feature-book">
-        <div class="feature-book-visual">
-          <a href="/book/">
-            <img
-              src="/book-cover.png"
-              width="1600"
-              height="2400"
-              alt="Cover of Programming the Loop: What I Measured with Coding Agents"
+      <div class="hero-visual" aria-hidden="false">
+        <figure class="loop-diagram">
+          <svg viewBox="0 0 420 360" role="img" aria-labelledby="loop-title loop-desc">
+            <title id="loop-title">The agent loop</title>
+            <desc id="loop-desc">
+              A cycle of Brief, Context, Change, Verify and Review around a coding agent.
+            </desc>
+            <defs>
+              <linearGradient id="loop-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.18" />
+                <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <circle cx="210" cy="178" r="118" fill="url(#loop-glow)" />
+            <circle
+              class="loop-path loop-path-flow"
+              cx="210"
+              cy="178"
+              r="108"
+              fill="none"
             />
-          </a>
-        </div>
-        <div class="feature-book-copy">
-          <p class="edition">{BOOK_EDITION}</p>
-          <h3 class="feature-title">Programming the Loop</h3>
-          <p class="feature-sub">{BOOK_SUBTITLE}</p>
-          <div class="prose">
-            <p>
-              Free PDF. What I measured with coding agents in small controlled trials, with the
-              limits written beside the findings.
+            <circle class="loop-path" cx="210" cy="178" r="108" fill="none" />
+
+            <!-- Core -->
+            <circle class="loop-node loop-node-core" cx="210" cy="178" r="36" />
+            <text class="loop-label" x="210" y="174" text-anchor="middle">Agent</text>
+            <text class="loop-label" x="210" y="190" text-anchor="middle" opacity="0.7" font-size="9">loop</text>
+
+            <!-- Brief (top) -->
+            <circle class="loop-node" cx="210" cy="70" r="22" />
+            <text class="loop-label" x="210" y="74" text-anchor="middle">Brief</text>
+
+            <!-- Context (top-right) -->
+            <circle class="loop-node" cx="312" cy="128" r="22" />
+            <text class="loop-label" x="312" y="132" text-anchor="middle">Context</text>
+
+            <!-- Change (bottom-right) -->
+            <circle class="loop-node" cx="292" cy="248" r="22" />
+            <text class="loop-label" x="292" y="252" text-anchor="middle">Change</text>
+
+            <!-- Verify (bottom-left) -->
+            <circle class="loop-node" cx="128" cy="248" r="22" />
+            <text class="loop-label" x="128" y="252" text-anchor="middle">Verify</text>
+
+            <!-- Review (top-left) -->
+            <circle class="loop-node" cx="108" cy="128" r="22" />
+            <text class="loop-label" x="108" y="132" text-anchor="middle">Review</text>
+
+            <!-- Soft pulse on the ring between stations -->
+            <circle class="loop-dot" cx="268" cy="90" r="3" style="animation-delay: 0s" />
+            <circle class="loop-dot" cx="318" cy="190" r="3" style="animation-delay: 0.7s" />
+            <circle class="loop-dot" cx="210" cy="286" r="3" style="animation-delay: 1.4s" />
+            <circle class="loop-dot" cx="102" cy="190" r="3" style="animation-delay: 2.1s" />
+            <circle class="loop-dot" cx="152" cy="90" r="3" style="animation-delay: 2.8s" />
+          </svg>
+          <figcaption class="loop-caption">Brief → Context → Change → Verify → Review</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="explore">
+    <div class="wrap">
+      <h2 class="reveal">What this site is</h2>
+      <p class="lead reveal">
+        A place for agentic build engineering: the practical work of running coding agents well,
+        measuring what you change, and writing it up when the evidence is worth sharing.
+      </p>
+
+      <div class="bento">
+        {hasViews ? (
+          <div class="card card-wide reveal">
+            <span class="card-kicker">Views</span>
+            <h3 class="card-title">Industry trends and tools</h3>
+            <p class="card-desc">Latest posts on releases and practice.</p>
+            <ul class="card-list">
+              {latestViews.map((post) => (
+                <li>
+                  <a href={viewHref(post)}>{post.data.title}</a>
+                  <span>{formatViewDate(post.data.date)}</span>
+                </li>
+              ))}
+            </ul>
+            <a class="card-meta" href="/views/">All views →</a>
+          </div>
+        ) : (
+          <a class="card card-wide reveal" href="/views/">
+            <span class="card-kicker">Views</span>
+            <h3 class="card-title">Industry trends and tools</h3>
+            <p class="card-desc">
+              Short takes on industry trends and new tools or releases. Nothing published yet.
             </p>
+            <span class="card-meta">Open Views →</span>
+          </a>
+        )}
+
+        <a class="card card-narrow reveal" href="/experiments/">
+          <span class="card-kicker">Experiments</span>
+          <h3 class="card-title">Measurements</h3>
+          <p class="card-desc">
+            Controlled trials with limits stated beside the numbers.
+          </p>
+          <span class="card-meta">See experiments →</span>
+        </a>
+
+        <a class="card card-book reveal" href="/book/">
+          <img
+            class="card-book-cover"
+            src="/book-cover.png"
+            width="1600"
+            height="2400"
+            alt=""
+            loading="lazy"
+          />
+          <div>
+            <span class="card-kicker">{BOOK_EDITION}</span>
+            <h3 class="card-title">Programming the Loop</h3>
+            <p class="card-desc">{BOOK_SUBTITLE}. Free PDF — one part of the site, not the whole of it.</p>
+            <span class="card-meta">Book page →</span>
           </div>
-          <div class="actions">
-            <a class="button primary" href={PDF_PATH}>Download the PDF</a>
-            <a class="button" href="/book/">Book page</a>
-          </div>
-        </div>
+        </a>
+
+        <a class="card card-narrow reveal" href={PDF_PATH}>
+          <span class="card-kicker">Download</span>
+          <h3 class="card-title">Free PDF</h3>
+          <p class="card-desc">First edition. Share unchanged; credit the author.</p>
+          <span class="card-meta">Get the PDF →</span>
+        </a>
+
+        <a class="card reveal" href={LINKS.workedExample} rel="noopener noreferrer">
+          <span class="card-kicker">Worked example</span>
+          <h3 class="card-title">Repository</h3>
+          <p class="card-desc">
+            The cross-repository API endpoint used through the ebook. Corrections welcome via issues.
+          </p>
+          <span class="card-meta">GitHub →</span>
+        </a>
+
+        <a class="card reveal" href={LINKS.feedbackIssue} rel="noopener noreferrer">
+          <span class="card-kicker">Feedback</span>
+          <h3 class="card-title">Open an issue</h3>
+          <p class="card-desc">On the worked example repo — for mistakes, gaps or questions.</p>
+          <span class="card-meta">New issue →</span>
+        </a>
       </div>
     </div>
   </section>
 
   <section class="section" id="elsewhere">
     <div class="wrap">
-      <h2>Elsewhere</h2>
-      <ul class="link-list">
-        <li>
-          <a href={LINKS.workedExample}>Worked example repository</a>
-          <span class="link-note">Used through the ebook; corrections welcome via issues</span>
-        </li>
-        <li>
-          <a href={LINKS.feedbackIssue}>Open an issue</a>
-          <span class="link-note">On the worked example repo</span>
-        </li>
+      <h2 class="reveal">Elsewhere</h2>
+      <ul class="link-list reveal">
         <li>
           <a href={LINKS.x}>X · @Mav1972</a>
         </li>
         <li>
           <a href={LINKS.youtube}>YouTube · Frugal AI Engineer</a>
+        </li>
+        <li>
+          <a href={LINKS.githubSite}>Site source on GitHub</a>
         </li>
       </ul>
     </div>
