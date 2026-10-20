@@ -1944,12 +1944,21 @@ html.js-motion .hero-headline.is-in .word {
     width: min(100% - 1.5rem, 1120px);
   }
 
+  /* Two visible cells (e.g. Guides + Experiments) stay side-by-side on iPhone. */
   .stats-strip {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .stat-cell {
     border-right: 0;
+  }
+
+  .stat-cell:not(:last-child) {
+    border-right: 1px solid var(--line);
+  }
+
+  .stat-cell:nth-last-child(-n + 2) {
+    border-bottom: 0;
   }
 }
 

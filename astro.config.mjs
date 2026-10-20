@@ -4,10 +4,15 @@ import {
   CF_WEB_ANALYTICS_SRC,
   CF_WEB_ANALYTICS_BEACON,
 } from './src/site.ts';
+import {
+  readNavCollectionCountsSync,
+  siteSidebarItems,
+} from './src/lib/nav-gate.ts';
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og-cover.png`;
 const guideBase = '/guides/programming-the-loop';
+const siteNavSidebar = siteSidebarItems(readNavCollectionCountsSync());
 
 export default defineConfig({
   site,
@@ -68,13 +73,7 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Site',
-          items: [
-            { label: 'Home', link: '/' },
-            { label: 'Articles', link: '/articles/' },
-            { label: 'Experiments', link: '/experiments/' },
-            { label: 'Guides', link: '/guides/' },
-            { label: 'About', link: '/about/' },
-          ],
+          items: siteNavSidebar,
         },
         {
           label: 'Programming the Loop',

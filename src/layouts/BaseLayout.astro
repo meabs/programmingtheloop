@@ -5,10 +5,10 @@ import {
   SITE_NAME,
   SITE_DESCRIPTION,
   SITE_OG_IMAGE,
-  NAV,
   CF_WEB_ANALYTICS_SRC,
   CF_WEB_ANALYTICS_BEACON,
 } from '../site';
+import { getVisibleNav, isCollectionNavVisible } from '../lib/collections';
 
 interface Props {
   title?: string;
@@ -31,6 +31,8 @@ const {
 const canonical = new URL(canonicalPath, SITE_URL).href;
 const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
 const path = Astro.url.pathname;
+const nav = await getVisibleNav();
+const showArticles = await isCollectionNavVisible('articles');
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -96,7 +98,7 @@ const path = Astro.url.pathname;
           <span class="brand-name">Programming the Loop</span>
         </a>
         <nav class="nav-cells" aria-label="Main">
-          {NAV.map((item) => {
+          {nav.map((item) => {
             const active =
               item.href === '/'
                 ? path === '/'
@@ -133,7 +135,7 @@ const path = Astro.url.pathname;
           </button>
         </div>
         <nav class="mobile-panel" id="mobile-menu" aria-label="Mobile">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <a href={item.href}>
               <span class="nav-num">[ {item.num} ]</span> {item.label}
             </a>
@@ -151,7 +153,7 @@ const path = Astro.url.pathname;
           <p>Agentic build engineering · Garry Meaburn</p>
         </div>
         <div class="footer-links">
-          <a href="/articles/">Articles</a>
+          {showArticles && <a href="/articles/">Articles</a>}
           <a href="/experiments/">Experiments</a>
           <a href="/guides/">Guides</a>
           <a href="/about/">About</a>

@@ -8,6 +8,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "check:content": "node scripts/check-content.mjs",
+    "test:content": "node --test tests/check-content/check-content.test.mjs",
     "guide:build": "python3 scripts/build_guide_from_book.py",
     "guide:verify": "python3 scripts/verify_book_coverage.py"
   },

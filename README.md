@@ -13,8 +13,12 @@ npm run dev
 
 - `npm run build` — type-check and build into `dist/`
 - `npm run preview` — serve the production build
+- `npm run check:content` — experiment finding IDs, published/superseded rules, topics, route baseline
+- `npm run test:content` — fixture tests for check:content failures
+- `npm run guide:verify` — book fact-number / citation / checklist coverage (`scripts/verify_book_coverage.py`)
 - `python3 scripts/build_guide_from_book.py` — regenerate Programming the Loop guide pages from the book Markdown master
-- `python3 scripts/verify_book_coverage.py` — paragraph / checklist / figure coverage report
+
+`check:content` and `guide:verify` are separate: the former guards collection integrity; the latter guards Guide facts against the book.
 
 Node 22 is used in CI (see `.github/workflows/deploy.yml`).
 
