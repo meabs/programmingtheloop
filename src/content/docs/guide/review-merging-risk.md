@@ -3,7 +3,7 @@ title: "8. Review, merging and risk"
 description: "From Programming the Loop — 8. Review, merging and risk."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 You're the first reviewer of anything your agent produces. Size that review to the *consequence of being wrong*, whatever the size of the diff or the confidence of the description. I judge that consequence on three criteria: **reversibility** (how easily can we undo it?), **blast radius** (who and what is affected if it's wrong?) and **verification strength** (how strongly has the behaviour actually been shown?). Strong verification can lower the review a change needs; weak verification raises it, whatever the size.
 

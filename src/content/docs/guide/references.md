@@ -3,7 +3,7 @@ title: "References and further reading"
 description: "From Programming the Loop — References and further reading."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Practitioner sources (quoted or discussed in the text; all accessed October 2026):
 

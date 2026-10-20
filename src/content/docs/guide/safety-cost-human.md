@@ -3,7 +3,7 @@ title: "10. Safety, cost and the human in the loop"
 description: "From Programming the Loop — 10. Safety, cost and the human in the loop."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Security, cost and your own skills are easy to postpone and expensive to get wrong. This chapter keeps two kinds of statement apart. **General practice** is widely agreed advice that I recommend but did not test. **Experimentally established** means I measured it, in the small settings described in earlier chapters. Most of the security material is the first kind; most of the cost material is the second.
 

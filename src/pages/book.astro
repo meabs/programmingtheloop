@@ -25,18 +25,18 @@ import {
   <section class="hero">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <p class="edition">Archive hub · {BOOK_EDITION}</p>
+        <p class="edition">{BOOK_EDITION}</p>
         <h1>
           Programming
           <span class="loop">the Loop</span>
         </h1>
         <p class="subtitle">{BOOK_SUBTITLE}</p>
         <p class="byline">
-          By Garry Meaburn · Living Guide updated {GUIDE_LAST_UPDATED_LABEL}
+          By Garry Meaburn · Guide updated {GUIDE_LAST_UPDATED_LABEL}
         </p>
         <div class="actions">
           <a class="button primary" href="/guide/">Read the Guide</a>
-          <a class="button" href={PDF_PATH}>Archived PDF</a>
+          <a class="button" href={PDF_PATH}>October 2026 PDF</a>
         </div>
       </div>
       <div class="hero-visual">
@@ -50,17 +50,17 @@ import {
     </div>
   </section>
 
-  <section class="section" id="living-guide">
+  <section class="section" id="the-guide">
     <div class="wrap">
-      <h2>The living Guide</h2>
+      <h2>The Guide</h2>
       <div class="prose">
         <p>
-          This site is now the primary home for the full text. The Guide carries every chapter,
-          checklist, table, figure and reference from the October 2026 first edition, and will be
-          updated here when something needs correcting or adding.
+          The full text is on this site. Every chapter, checklist, table, figure and reference
+          from the October 2026 first edition is in the Guide. I'll update it here when something
+          needs correcting or adding.
         </p>
         <p>
-          The PDF remains available as a fixed snapshot of that first edition. Prefer the
+          The PDF is still the October 2026 first edition if you want that fixed copy. Prefer the
           <a href="/guide/">Guide</a> for the current wording.
         </p>
       </div>
@@ -101,7 +101,7 @@ import {
 
   <section class="section" id="licence">
     <div class="wrap">
-      <h2>Licence and archive download</h2>
+      <h2>Licence and PDF download</h2>
       <div class="licence-box">
         <p>{LICENCE_SHORT}</p>
         <p set:html={LICENCE_QUOTED_HTML} />
@@ -111,7 +111,7 @@ import {
           <a href={LINKS.githubAuthor}>github.com/meabs</a>.
         </p>
         <div class="actions">
-          <a class="button primary" href={PDF_PATH}>Download archived first-edition PDF</a>
+          <a class="button primary" href={PDF_PATH}>Download October 2026 PDF</a>
         </div>
       </div>
     </div>
@@ -126,9 +126,8 @@ import {
           page, which figure, what you think it should say.
         </p>
       </div>
-      <div class="feedback-links">
-        <a href={LINKS.feedbackIssue}>Open an issue on the worked example</a>
-        <a href={LINKS.workedExample}>Worked example repository</a>
+      <div class="actions">
+        <a class="button" href={LINKS.feedbackIssue}>Open an issue</a>
       </div>
     </div>
   </section>

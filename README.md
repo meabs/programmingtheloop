@@ -1,6 +1,6 @@
 # Programming the Loop
 
-Site for **agentic build engineering** by Garry Meaburn. The living **[Guide](https://programmingtheloop.com/guide/)** holds the full text of *Programming the Loop*; the October 2026 first-edition PDF is kept as an archive. Hosted at [programmingtheloop.com](https://programmingtheloop.com).
+Site for **agentic build engineering** by Garry Meaburn. The **[Guide](https://programmingtheloop.com/guide/)** holds the full text of *Programming the Loop*, free to read. The October 2026 first-edition PDF is still available. Hosted at [programmingtheloop.com](https://programmingtheloop.com).
 
 Built with Astro and Starlight for GitHub Pages.
 
@@ -23,12 +23,13 @@ Node 22 is used in CI (see `.github/workflows/deploy.yml`).
 | Path | Purpose | In main nav? |
 | --- | --- | --- |
 | `/` | Site home | Yes |
-| `/guide/` | Living full-text Guide (chapters + back matter) | Yes |
+| `/guide/` | Full-text Guide (chapters + back matter) | Yes |
+| `/start/` | Route into the Guide by situation | Yes |
 | `/views/` | Industry trends and tool/release takes | Yes |
 | `/updates/` | Changelog | Yes |
 | `/about/` | About (site voice) | Yes |
-| `/downloads/` | Archived first-edition PDF | Footer / Archive |
-| `/book/`, `/contents/` | Archive hub / contents mirror | Via Guide |
+| `/downloads/` | October 2026 PDF | Footer |
+| `/book/`, `/contents/` | Book hub / contents mirror | Via Guide |
 
 Main nav: `src/site.ts` (`NAV`). Shared layout: `src/layouts/BaseLayout.astro`.
 
@@ -40,7 +41,7 @@ Do not invent posts, experiments, quotes or download counts.
 2. Save it under `src/content/views/` as `YYYY-MM-DD-short-slug.md` (or any `.md` / `.mdx` name).
 3. Edit frontmatter and write the body. `draft: true` keeps a file unpublished.
 
-## Archived PDF
+## October 2026 PDF
 
 - File: `public/downloads/Programming-the-Loop-1st-edition.pdf`
 - Labelled as the October 2026 first edition; do not overwrite in place for later editions.
@@ -53,8 +54,6 @@ Licence: free to read; share unchanged with attribution and the copyright notice
 - Absolute `https://programmingtheloop.com/og-cover.png` for social images.
 - `public/CNAME` must remain `programmingtheloop.com`.
 
-Cloudflare Web Analytics (cookie-free page views) is loaded once per page via `CF_WEB_ANALYTICS_TOKEN` in `src/site.ts`. No API secrets in the repository.
+## Analytics
 
-## Deploy
-
-Pushing to `main` runs `.github/workflows/deploy.yml`. The workflow checks that `dist/CNAME` equals `programmingtheloop.com`.
+Cloudflare Web Analytics beacon once per page (`src/site.ts` token; `BaseLayout` + Starlight `head`).

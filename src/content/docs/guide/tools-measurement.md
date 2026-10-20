@@ -3,7 +3,7 @@ title: "9. Tools and honest measurement"
 description: "From Programming the Loop — 9. Tools and honest measurement."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Boring tools win. An agent is only as useful as the tools it can reach, and the best ones are mostly fast, quiet command-line tools with clear errors. Specialised tools, such as a code graph, earn a place for specific question types rather than everywhere. And any change to your agent set-up should be measured with repeated runs and intervals, because a single before-and-after comparison tells you almost nothing. Those runs also have to be kept from seeing each other, because agents use whatever they can reach.
 

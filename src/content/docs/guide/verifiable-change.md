@@ -3,7 +3,7 @@ title: "4. One verifiable change at a time"
 description: "From Programming the Loop — 4. One verifiable change at a time."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Hand an agent one change you can verify at a time. A whole feature is too big a unit. Every agent runs the same loop (plan, act, observe, verify) whether you watch it or not, and the quality of the whole thing depends on two levers you control: how big each step is, and how good the verify step is. This chapter is about the first lever, and about watching one complete loop end to end. [Chapter 5](/guide/proof-not-promises/) is about the second.
 

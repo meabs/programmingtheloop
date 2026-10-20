@@ -3,7 +3,7 @@ title: "Foreword: why I ran the experiments"
 description: "From Programming the Loop — Foreword: why I ran the experiments."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 I have worked in infrastructure and cloud architecture for over 25 years. My roles have included Senior Solutions Architect at Amazon Web Services and, earlier, positions at Barclays, Rathbones, Gartner, Unilever and Microsoft. At AWS my work included generative AI proofs of concept and projects focused on retrieval-augmented generation (RAG): systems whose quality depends on what information reaches the model.
 

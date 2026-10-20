@@ -3,7 +3,7 @@ title: "1. Facts, checks and upkeep"
 description: "From Programming the Loop — 1. Facts, checks and upkeep."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 First, some groundwork: the terms, the evidence in outline, and the example we'll follow through the book. The thesis is in the Foreword, and the rest of the book tests it a chapter at a time.
 

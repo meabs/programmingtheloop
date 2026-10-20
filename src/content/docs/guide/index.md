@@ -1,17 +1,17 @@
 ---
 title: "Guide"
-description: "Programming the Loop — living web edition of the October 2026 first edition."
+description: "Programming the Loop — the full book, free to read on the web."
 ---
 
 <p class="guide-edition-note">
-Living web edition. Last updated: 20 October 2026.
-<a href="/updates/">Changelog</a> ·
-<a href="/downloads/">Archived first-edition PDF</a>
+Free to read on the web. Last updated: 20 October 2026.
+<a href="/updates/">Updates</a> ·
+<a href="/downloads/">October 2026 PDF</a>
 </p>
 
 # Guide
 
-This site is the living home for *Programming the Loop: What I Measured with Coding Agents*. The October 2026 first edition is available as an [archived PDF](/downloads/); the pages below are the full text, kept up to date here.
+The full text of *Programming the Loop: What I Measured with Coding Agents* is here. I'll keep these pages up to date as I learn more. The October 2026 [PDF](/downloads/) is still there if you want it.
 
 ## Contents
 
@@ -38,7 +38,7 @@ This site is the living home for *Programming the Loop: What I Measured with Cod
 
 ## Licence
 
-© Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the archived PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.
+© Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the October 2026 PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.
 
 **Quoted material** belongs to its authors and is used briefly, with attribution and a link, for commentary. **My software repositories** carry their own licences, listed in ["About the evidence"](/guide/about-the-evidence/) at the back; they are not covered by the copyright line above.
 

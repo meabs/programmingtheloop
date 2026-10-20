@@ -3,7 +3,7 @@ title: "7. Parallel agents"
 description: "From Programming the Loop — 7. Parallel agents."
 ---
 
-<p class="guide-edition-note">Living web edition of the October 2026 first edition. <a href="/downloads/">Archived PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Parallelism multiplies whatever quality you already have. Ten riveters on one plate just get in each other's way. This chapter is deliberately short: none of my experiments measured parallel working as such, so what follows is judgement, other practitioners' experience, and one lesson from my own trials. Make one agent reliable on a kind of task before you run several, and when you do, spend your effort on **isolation**: each agent must see exactly what it should and nothing else.
 

@@ -28,7 +28,7 @@
   "reference_lines_guide": 21,
   "intentional_omissions": [
     "Title / byline above the copyright notice (web uses site chrome / Guide index); copyright-page paragraphs (\u00a9 notice, Quoted material, Disclaimer) are included",
-    "Copyright \u00a9 line: ebook / PDF-or-EPUB wording adapted for the web (guide + pages / archived PDF); Quoted material and Disclaimer kept verbatim",
+    "Copyright \u00a9 line: ebook / PDF-or-EPUB wording adapted for the web (guide + pages / October 2026 PDF); Quoted material and Disclaimer kept verbatim",
     "Pandoc `{.unnumbered}` / `{.pdf-only}` / `{.epub-only}` / `{.checklist}` / `{.keep}` / `{.refs}` attributes (converted for web; content kept)",
     "Bare 'Chapter N' strings turned into internal links (prose unchanged aside from link markup)"
   ],
