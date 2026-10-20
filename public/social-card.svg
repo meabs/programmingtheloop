@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0b1220"/>
+  <path d="M0 505h1200M0 506h1200" stroke="#2b3a4d"/>
+  <g fill="none" stroke-width="1.1" opacity=".68">
+    <ellipse cx="890" cy="300" rx="270" ry="100" transform="rotate(-35 890 300)" stroke="#d6b170"/>
+    <ellipse cx="890" cy="300" rx="270" ry="100" transform="rotate(35 890 300)" stroke="#64d9c8"/>
+    <ellipse cx="890" cy="300" rx="210" ry="72" transform="rotate(90 890 300)" stroke="#69788e"/>
+    <ellipse cx="890" cy="300" rx="345" ry="158" transform="rotate(-8 890 300)" stroke="#2b3a4d" stroke-dasharray="2 7"/>
+  </g>
+  <g fill="#64d9c8"><circle cx="690" cy="194" r="5"/><circle cx="1046" cy="221" r="5"/><circle cx="1011" cy="402" r="5"/></g>
+  <g fill="#d6b170"><circle cx="764" cy="420" r="5"/><circle cx="907" cy="145" r="4"/></g>
+  <circle cx="890" cy="300" r="44" fill="#121d2c" stroke="#d6b170"/>
+  <circle cx="890" cy="300" r="4" fill="#64d9c8"/>
+  <text x="66" y="92" fill="#d6b170" font-family="monospace" font-size="15" letter-spacing="3">INDEPENDENT RESEARCH ON CODING AGENTS</text>
+  <text x="63" y="232" fill="#f4efe4" font-family="Georgia,serif" font-size="74" letter-spacing="-3">Programming</text>
+  <text x="63" y="319" fill="#f4efe4" font-family="Georgia,serif" font-size="74" letter-spacing="-3">the <tspan fill="#efcf92" font-style="italic">Loop</tspan></text>
+  <path d="M66 358h74" stroke="#d6b170" stroke-width="2"/>
+  <text x="66" y="405" fill="#c3c4c1" font-family="Arial,sans-serif" font-size="26">Evidence-led engineering for coding agents.</text>
+  <text x="66" y="560" fill="#9da9b7" font-family="monospace" font-size="13" letter-spacing="2">MEASURED FINDINGS · REPRODUCIBLE CODE · STATED LIMITATIONS</text>
+</svg>

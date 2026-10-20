@@ -1,0 +1,23 @@
+---
+import config from 'virtual:starlight/user-config';
+import LanguageSelect from 'virtual:starlight/components/LanguageSelect';
+import Search from 'virtual:starlight/components/Search';
+import SiteTitle from 'virtual:starlight/components/SiteTitle';
+import SocialIcons from 'virtual:starlight/components/SocialIcons';
+import ThemeSelect from 'virtual:starlight/components/ThemeSelect';
+
+const shouldRenderSearch = config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
+---
+<div class="header research-header">
+  <div class="title-wrapper"><SiteTitle /></div>
+  <nav class="docs-primary-nav" aria-label="Main navigation">
+    <a href="/">Home</a><a href="/learn/">Learn</a><a href="/experiments/">Experiments</a><a href="/resources/">Resources</a><a href="/about/">About</a>
+  </nav>
+  <div class="docs-actions">
+    {shouldRenderSearch && <Search />}
+    <ThemeSelect />
+    <div class="docs-social"><SocialIcons /></div>
+    <a class="docs-ebook-link" href="/downloads/Programming-the-Loop-1st-edition.pdf" download>Free ebook <span aria-hidden="true">↗</span></a>
+    <LanguageSelect />
+  </div>
+</div>

@@ -47,6 +47,7 @@ export default defineConfig({
             { label: 'Home', link: '/' },
             { label: 'Views', link: '/views/' },
             { label: 'Book', link: '/book/' },
+            { label: 'Experiments', link: '/experiments/' },
             { label: 'About', link: '/about/' },
           ],
         },
