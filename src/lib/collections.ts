@@ -1,5 +1,10 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { NAV, NAV_MIN_ITEMS, type NavItem, type NavCollection } from '../site';
+import { NAV, type NavItem, type NavCollection } from '../site';
+import {
+  collectionIsVisible,
+  visibleNavFromCounts,
+  type NavCounts,
+} from './nav-gate';
 
 export type Article = CollectionEntry<'articles'>;
 export type Experiment = CollectionEntry<'experiments'>;
@@ -46,7 +51,7 @@ export function experimentHref(item: Experiment): string {
 }
 
 /** Published counts used to gate collection nav sections. */
-export async function getNavCollectionCounts(): Promise<Record<NavCollection, number>> {
+export async function getNavCollectionCounts(): Promise<NavCounts> {
   const [articles, experiments, guides] = await Promise.all([
     getPublishedArticles(),
     getPublishedExperiments(),
@@ -60,17 +65,19 @@ export async function getNavCollectionCounts(): Promise<Record<NavCollection, nu
 }
 
 /**
- * Nav items visible under NAV_MIN_ITEMS.
+ * Nav items visible under NAV_MIN_ITEMS, renumbered sequentially.
  * Home / About always; collection sections need ≥ threshold published items.
+ * Gate logic lives in nav-gate.ts — keep all chrome callers on that helper.
  */
 export async function getVisibleNav(): Promise<NavItem[]> {
-  const counts = await getNavCollectionCounts();
-  return NAV.filter((item) => {
-    if (item.always) return true;
-    if (!item.collection) return true;
-    const need = item.minItems ?? NAV_MIN_ITEMS;
-    return counts[item.collection] >= need;
-  });
+  return visibleNavFromCounts(NAV, await getNavCollectionCounts());
+}
+
+/** Whether a collection-gated surface should show (CTA, stat, footer, section). */
+export async function isCollectionNavVisible(
+  collection: NavCollection,
+): Promise<boolean> {
+  return collectionIsVisible(collection, await getNavCollectionCounts());
 }
 
 /** Newest items across articles, experiments and guides. */

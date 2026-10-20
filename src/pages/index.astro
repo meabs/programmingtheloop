@@ -9,6 +9,7 @@ import {
 } from '../site';
 import {
   getLatestItems,
+  getNavCollectionCounts,
   getPublishedArticles,
   getPublishedExperiments,
   getPublishedGuides,
@@ -16,26 +17,35 @@ import {
   experimentHref,
   formatItemDate,
 } from '../lib/collections';
+import { collectionIsVisible } from '../lib/nav-gate';
 
 const latest = await getLatestItems(5);
 const articles = await getPublishedArticles();
 const experiments = await getPublishedExperiments();
 const guides = await getPublishedGuides();
+const counts = await getNavCollectionCounts();
+const showArticles = collectionIsVisible('articles', counts);
+const showExperiments = collectionIsVisible('experiments', counts);
+const showGuides = collectionIsVisible('guides', counts);
 const ticker = [...TOPIC_TICKER, ...TOPIC_TICKER];
 
 const siteStats = [
-  { key: 'Guides', value: String(guides.length), caption: guides.length === 1 ? guides[0].data.title : 'Published' },
-  {
+  showGuides && {
+    key: 'Guides',
+    value: String(guides.length),
+    caption: guides.length === 1 ? guides[0].data.title : 'Published',
+  },
+  showExperiments && {
     key: 'Experiments',
     value: String(experiments.length),
     caption: experiments.length ? 'Published write-ups' : 'None yet',
   },
-  {
+  showArticles && {
     key: 'Articles',
     value: String(articles.length),
     caption: articles.length ? 'Published' : 'None yet',
   },
-];
+].filter(Boolean) as { key: string; value: string; caption: string }[];
 ---
 <BaseLayout
   title={`${SITE_NAME} — Building software with coding agents`}
@@ -75,7 +85,9 @@ const siteStats = [
           ))}
         </ul>
         <div class="abstract-cta">
-          <a class="button primary pill" href="/articles/">Articles</a>
+          {showArticles && (
+            <a class="button primary pill" href="/articles/">Articles</a>
+          )}
           <a class="button" href="/about/">About</a>
         </div>
       </aside>
@@ -124,32 +136,34 @@ const siteStats = [
     </div>
   </section>
 
-  <section class="section" id="articles">
-    <div class="wrap">
-      <p class="section-label reveal">§ 02 — Articles</p>
-      <h2 class="reveal">Articles</h2>
-      <p class="lead reveal">
-        Short writing on trends and tools. Empty for now — that is honest.
-      </p>
-      {articles.length === 0 ? (
-        <p class="empty-note reveal">
-          Nothing published yet. <a href="/articles/">Articles index →</a>
+  {showArticles && (
+    <section class="section" id="articles">
+      <div class="wrap">
+        <p class="section-label reveal">§ 02 — Articles</p>
+        <h2 class="reveal">Articles</h2>
+        <p class="lead reveal">
+          Short writing on trends and tools. Empty for now — that is honest.
         </p>
-      ) : (
-        <div class="collection-grid">
-          {articles.slice(0, 3).map((post) => (
-            <a class="collection-card reveal" href={articleHref(post)}>
-              <span class="card-kicker">Article</span>
-              <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
-              <h3 class="card-title">{post.data.title}</h3>
-              <p class="card-desc">{post.data.summary ?? post.data.description}</p>
-              <span class="card-meta">Read →</span>
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
-  </section>
+        {articles.length === 0 ? (
+          <p class="empty-note reveal">
+            Nothing published yet. <a href="/articles/">Articles index →</a>
+          </p>
+        ) : (
+          <div class="collection-grid">
+            {articles.slice(0, 3).map((post) => (
+              <a class="collection-card reveal" href={articleHref(post)}>
+                <span class="card-kicker">Article</span>
+                <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
+                <h3 class="card-title">{post.data.title}</h3>
+                <p class="card-desc">{post.data.summary ?? post.data.description}</p>
+                <span class="card-meta">Read →</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
 
   <section class="section" id="experiments">
     <div class="wrap">
