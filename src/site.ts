@@ -3,14 +3,18 @@ export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
 export const SITE_DESCRIPTION =
-  'Garry Meaburn on agentic build engineering: building software with coding agents, measurements and experiments, views on industry trends, and a free ebook.';
+  'Garry Meaburn on agentic build engineering: the living web edition of Programming the Loop, measurements and experiments, views on industry trends, and the archived first-edition PDF.';
+
+/** Visible “last updated” for the living guide (ISO date). */
+export const GUIDE_LAST_UPDATED = '2026-10-20';
+export const GUIDE_LAST_UPDATED_LABEL = '20 October 2026';
 
 /** Book-specific (use on book pages only). */
 export const BOOK_TITLE = 'Programming the Loop';
 export const BOOK_SUBTITLE = 'What I Measured with Coding Agents';
 export const BOOK_EDITION = 'First edition, October 2026';
 export const BOOK_DESCRIPTION =
-  'Programming the Loop: What I Measured with Coding Agents — free ebook by Garry Meaburn. First edition, October 2026. Small controlled trials on coding agents, with limits stated.';
+  'Programming the Loop: What I Measured with Coding Agents — living web Guide by Garry Meaburn, from the October 2026 first edition. Small controlled trials on coding agents, with limits stated.';
 
 export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
 export const BOOK_OG_IMAGE = `${SITE_URL}/og-cover.png`;
@@ -27,9 +31,9 @@ export const CF_WEB_ANALYTICS_BEACON = `{"token": "${CF_WEB_ANALYTICS_TOKEN}"}`;
  */
 export const NAV = [
   { label: 'Home', href: '/' },
+  { label: 'Guide', href: '/guide/' },
   { label: 'Views', href: '/views/' },
-  { label: 'Experiments', href: '/experiments/' },
-  { label: 'Book', href: '/book/' },
+  { label: 'Updates', href: '/updates/' },
   { label: 'About', href: '/about/' },
 ] as const;
 
@@ -41,7 +45,7 @@ export const CHAPTERS = [
     subtitle: 'the argument and the evidence',
     blurb:
       'Terms, the evidence in outline, and the worked example the rest of the book follows.',
-    href: '/learn/facts-checks-upkeep/',
+    href: '/guide/facts-checks-upkeep/',
   },
   {
     num: 2,
@@ -49,7 +53,7 @@ export const CHAPTERS = [
     subtitle: 'deciding what "done" means',
     blurb:
       'Decide what the change is, how you will know it is done, and what must not change, before an agent writes code.',
-    href: '/learn/briefs-plans-specifications/',
+    href: '/guide/briefs-plans-specifications/',
   },
   {
     num: 3,
@@ -57,14 +61,14 @@ export const CHAPTERS = [
     subtitle: 'context, documentation and knowledge layers',
     blurb:
       'The main evidence chapter: generated context on a readable repository, stale dependency knowledge, and facts across a repository boundary.',
-    href: '/learn/right-facts/',
+    href: '/guide/right-facts/',
   },
   {
     num: 4,
     title: 'One verifiable change at a time',
     subtitle: 'the implementation loop',
     blurb: 'Hand an agent one change you can verify at a time; the quality hangs on step size and the verify step.',
-    href: '/learn/verifiable-change/',
+    href: '/guide/verifiable-change/',
   },
   {
     num: 5,
@@ -72,7 +76,7 @@ export const CHAPTERS = [
     subtitle: 'verification',
     blurb:
       'Executable checks and an independent judgement of the work, not only the agent’s account of it.',
-    href: '/learn/proof-not-promises/',
+    href: '/guide/proof-not-promises/',
   },
   {
     num: 6,
@@ -80,7 +84,7 @@ export const CHAPTERS = [
     subtitle: 'finding and removing recurring problems',
     blurb:
       'Agents trip on the same few environment problems; put fixes in the harness around them, not only in prompts.',
-    href: '/learn/harness-friction-loop/',
+    href: '/guide/harness-friction-loop/',
   },
   {
     num: 7,
@@ -88,7 +92,7 @@ export const CHAPTERS = [
     subtitle: 'isolation and the cost of coordination',
     blurb:
       'Deliberately short: none of my experiments measured parallel working as such, so this is judgement and other people’s published practice.',
-    href: '/learn/parallel-agents/',
+    href: '/guide/parallel-agents/',
   },
   {
     num: 8,
@@ -96,7 +100,7 @@ export const CHAPTERS = [
     subtitle: 'matching scrutiny to consequence',
     blurb:
       'Review by the consequence of being wrong: reversibility, blast radius and verification strength.',
-    href: '/learn/review-merging-risk/',
+    href: '/guide/review-merging-risk/',
   },
   {
     num: 9,
@@ -104,7 +108,7 @@ export const CHAPTERS = [
     subtitle: '',
     blurb:
       'Prefer boring tools with clear errors, and measure set-up changes with repeated runs rather than single anecdotes.',
-    href: '/learn/tools-measurement/',
+    href: '/guide/tools-measurement/',
   },
   {
     num: 10,
@@ -112,7 +116,7 @@ export const CHAPTERS = [
     subtitle: '',
     blurb:
       'Security, cost and skills; keeps general practice apart from what I measured in the earlier trials.',
-    href: '/learn/safety-cost-human/',
+    href: '/guide/safety-cost-human/',
   },
   {
     num: 11,
@@ -120,7 +124,7 @@ export const CHAPTERS = [
     subtitle: 'adopting agents, one justified layer at a time',
     blurb:
       'Start with a short AGENTS.md, runnable checks and contracts for unread dependencies; add each further layer only when it has earned its keep.',
-    href: '/learn/take-home-kit/',
+    href: '/guide/take-home-kit/',
   },
 ] as const;
 
@@ -139,4 +143,4 @@ export const LINKS = {
  * Adapted from the book’s copyright notice; EPUB omitted because this site does not offer EPUB.
  */
 export const LICENCE_SHORT =
-  '© Garry Meaburn 2026. This ebook is free to read. You may share the unchanged PDF with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.';
+  '© Garry Meaburn 2026. This guide is free to read. You may share the unchanged pages (or the archived first-edition PDF) with others, free of charge, as long as you credit Garry Meaburn as the author and keep the copyright notice. You may not sell it, use it commercially, or share modified versions, without written permission.';

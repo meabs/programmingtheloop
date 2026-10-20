@@ -32,11 +32,11 @@ const hasViews = latestViews.length > 0;
           Building software with coding agents — briefs, context, verification, harness and review.
         </p>
         <p class="byline">
-          Measurements and experiments with stated limits. Views on tools and trends as they earn a post.
+          The living Guide holds the full text. Measurements with stated limits. Views as they earn a post.
         </p>
         <div class="actions">
-          <a class="button primary" href="#explore">Explore the site</a>
-          <a class="button" href="/book/">The book</a>
+          <a class="button primary" href="/guide/">Read the Guide</a>
+          <a class="button" href="#explore">Explore the site</a>
         </div>
       </div>
 
@@ -136,16 +136,16 @@ const hasViews = latestViews.length > 0;
           </a>
         )}
 
-        <a class="card card-narrow reveal" href="/experiments/">
-          <span class="card-kicker">Experiments</span>
-          <h3 class="card-title">Measurements</h3>
+        <a class="card card-narrow reveal" href="/guide/">
+          <span class="card-kicker">Guide</span>
+          <h3 class="card-title">Full text</h3>
           <p class="card-desc">
-            Controlled trials with limits stated beside the numbers.
+            Eleven chapters, checklists, findings and the worked example — the living edition.
           </p>
-          <span class="card-meta">See experiments →</span>
+          <span class="card-meta">Open the Guide →</span>
         </a>
 
-        <a class="card card-book reveal" href="/book/">
+        <a class="card card-book reveal" href="/guide/">
           <img
             class="card-book-cover"
             src="/book-cover.png"
@@ -155,25 +155,25 @@ const hasViews = latestViews.length > 0;
             loading="lazy"
           />
           <div>
-            <span class="card-kicker">{BOOK_EDITION}</span>
+            <span class="card-kicker">Living edition · {BOOK_EDITION} origin</span>
             <h3 class="card-title">Programming the Loop</h3>
-            <p class="card-desc">{BOOK_SUBTITLE}. Free PDF — one part of the site, not the whole of it.</p>
-            <span class="card-meta">Book page →</span>
+            <p class="card-desc">{BOOK_SUBTITLE}. Read on the web; PDF kept as an archive.</p>
+            <span class="card-meta">Start reading →</span>
           </div>
         </a>
 
-        <a class="card card-narrow reveal" href={PDF_PATH}>
-          <span class="card-kicker">Download</span>
-          <h3 class="card-title">Free PDF</h3>
-          <p class="card-desc">First edition. Share unchanged; credit the author.</p>
-          <span class="card-meta">Get the PDF →</span>
+        <a class="card card-narrow reveal" href="/downloads/">
+          <span class="card-kicker">Archive</span>
+          <h3 class="card-title">First-edition PDF</h3>
+          <p class="card-desc">October 2026 snapshot. Share unchanged; credit the author.</p>
+          <span class="card-meta">Download PDF →</span>
         </a>
 
         <a class="card reveal" href={LINKS.workedExample} rel="noopener noreferrer">
           <span class="card-kicker">Worked example</span>
           <h3 class="card-title">Repository</h3>
           <p class="card-desc">
-            The cross-repository API endpoint used through the ebook. Corrections welcome via issues.
+            The cross-repository API endpoint used through the Guide. Corrections welcome via issues.
           </p>
           <span class="card-meta">GitHub →</span>
         </a>
