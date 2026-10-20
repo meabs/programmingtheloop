@@ -52,12 +52,11 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Book',
+          label: 'Learn',
           collapsed: false,
           items: [
-            { label: 'Book overview', link: '/book/' },
-            { label: 'Contents', link: '/contents/' },
-            { label: 'Download PDF', link: '/downloads/' },
+            { label: 'Chapters', link: '/learn/' },
+            { label: 'Getting started', link: '/learn/getting-started/' },
             { label: '1. Facts, checks and upkeep', link: '/learn/facts-checks-upkeep/' },
             { label: '2. Briefs, plans and specifications', link: '/learn/briefs-plans-specifications/' },
             { label: '3. The right facts, not every fact', link: '/learn/right-facts/' },
@@ -69,6 +68,16 @@ export default defineConfig({
             { label: '9. Tools and honest measurement', link: '/learn/tools-measurement/' },
             { label: '10. Safety, cost and the human', link: '/learn/safety-cost-human/' },
             { label: '11. The take-home kit', link: '/learn/take-home-kit/' },
+          ],
+        },
+        {
+          label: 'Book',
+          collapsed: true,
+          items: [
+            { label: 'Book overview', link: '/book/' },
+            { label: 'Contents', link: '/contents/' },
+            { label: 'Download PDF', link: '/downloads/' },
+            { label: 'Experiment J', link: '/experiments/repository-optimisation/' },
           ],
         },
       ],

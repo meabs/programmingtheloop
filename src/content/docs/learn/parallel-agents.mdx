@@ -1,16 +1,37 @@
 ---
 title: "7. Parallel agents"
-description: Chapter 7 — consider isolation, shared state and coordination costs.
+description: "Chapter 7 — isolation and the cost of coordination. Deliberately short: no parallel experiments of my own."
 ---
 
-Chapter 7 focuses on isolation of files and state, the risk of agents interfering through shared work, and the coordination cost of splitting a task. Parallelism can increase throughput only when the work can be separated and integrated safely.
+import { LinkCard } from '@astrojs/starlight/components';
 
-The source discusses slop, shared state and cloud agents as operational concerns. It does not present a universal throughput multiplier; evaluation needs to count coordination and integration work as well as individual agent time.
+<p class="chapter-kicker">Chapter 7 · web summary · deliberately short</p>
 
-The book recommends a progression: first one supervised agent, then one in the background, then subagents for search and summarising, then a few parallel agents on independent, well-specified tasks with full isolation, and only later a coordinator. Move on when verification is strong enough that reviewing results, rather than supervising work, is the bottleneck.
+This chapter is deliberately short: none of my experiments measured parallel working as such. What follows is judgement, other practitioners’ experience, and one lesson from my own trials. Make one agent reliable on a kind of task before you run several, and when you do, spend your effort on **isolation**: each agent must see exactly what it should and nothing else.
 
-## Try this
+## Isolation: files and state
 
-Before parallelising, define file ownership, shared interfaces, branch boundaries and how conflicts will be resolved. Decide which changes require serialization and include review and merge effort in your assessment.
+In my trials, agents read other runs’ files off the disk and cloned code from the internet when they could (Chapter 9). Agents use whatever they can reach, so you have to enforce what’s reachable. Asking nicely doesn’t work.
 
-Check shared resources too: ports, databases, caches, credentials, queues and external services. A cloud agent’s isolated machine does not isolate those external systems. Keep one point of control.
+In the worked example, `run_live.sh` starts inventory on port 8001 and the storefront on 8000. Two agents running it at once would collide on the ports; if inventory had a real database, they’d share its data. Parallel-safe means a port and a database per run. Cloud agents fix *local* shared state (ports, Docker, caches, the file system). They do not fix *external* shared state: staging databases, queues, object stores and third-party sandboxes still need isolation of their own.
+
+## Costs of coordination
+
+Before parallelising, count them honestly: review, merging, environment, and your own attention. Ten small PRs are quicker to review than one huge one, but not quicker than three.
+
+**Recommendation: a progression, not a jump.** Move on only when verification is strong enough that reviewing results, not supervising work, is the bottleneck: one supervised agent; one in the background; subagents for search and summarising; a few parallel agents on independent, well-specified tasks, each fully isolated; then a coordinator that assigns work from a plan and gathers results.
+
+## Checklist
+
+- [ ] Make one agent reliable on a task type before parallelising it.
+- [ ] Isolate files *and* state: ports, databases, caches, credentials.
+- [ ] Cloud agents isolate the machine, not external databases, staging or queues.
+- [ ] Assume agents will use anything they can reach; enforce what’s reachable (Chapter 9).
+- [ ] Count review, merge and attention costs before adding agents.
+- [ ] Keep one point of control.
+
+<LinkCard
+  title="Full chapter in the PDF"
+  href="/downloads/Programming-the-Loop-1st-edition.pdf"
+  description="Practitioner positions and the try-this isolation exercise."
+/>

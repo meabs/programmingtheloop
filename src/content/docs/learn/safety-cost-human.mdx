@@ -1,16 +1,57 @@
 ---
 title: "10. Safety, cost and the human in the loop"
-description: Chapter 10 — account for operational risk, expense and human oversight.
+description: "Chapter 10 — security (general practice), cost (what I measured), and skills you keep."
 ---
 
-Chapter 10 draws a practical line around security, cost and human oversight. Agent capability does not remove the need to control permissions, protect work and evaluate the consequences of mistakes.
+import { LinkCard } from '@astrojs/starlight/components';
 
-The book describes practical opinion about tools that change quickly and explicitly says its experiments are small. Its safety and cost advice should be read as engineering guidance with local validation, not as legal, security or financial advice.
+<p class="chapter-kicker">Chapter 10 · web summary</p>
 
-One safety frame in Chapter 10 is the “lethal trifecta”: an agent should not combine access to private data, untrusted content and external communication. If permission prompts are skipped, the author recommends a sandbox without production credentials. For cost, the book recommends spending effort where its evidence suggests waste occurs (blind search and heavy always-loaded context) and measuring value as well as tokens.
+Security, cost and your own skills are easy to postpone and expensive to get wrong. This chapter keeps two kinds of statement apart. **General practice** is widely agreed advice that I recommend but did not test. **Experimentally established** means I measured it, in the small settings described earlier. Most of the security material is the first kind; most of the cost material is the second.
 
-## Try this
+This is not legal, security or financial advice. Test anything here on your own code before you rely on it.
 
-Set the least access needed for a task, define which actions require review, keep backups, and decide what costs and failure modes you will monitor. Revisit those choices when the tools or work change.
+## Security: general practice
 
-The chapter also recommends preserving your own key skills and batching check-ins. Token counts should be compared within one agent tool; tokens are not the same as value.
+**The lethal trifecta** (Simon Willison): an agent is dangerous when it combines access to private data, exposure to untrusted content and the ability to communicate externally. The mechanism is prompt injection — models can’t reliably tell your instructions from instructions inside the content they read. No prompt wording has been shown to fix it reliably. The defence is structural: remove at least one leg for any agent that could meet untrusted content.
+
+**Sandboxes and permissions.** If you remove permission prompts, add a sandbox: only the repository mounted, no production credentials, network limited to what the task needs. My trial rig’s README says plainly: don’t point a trial at a repository or credentials you can’t afford to have an agent touch.
+
+**Experimentally adjacent:** Chapter 9’s isolation findings — agents read whatever the disk and network allowed (3 of 24 runs searched the disk; 56 of 120 cloned a public repository when the network was on). If an agent can reach something, assume it will use it.
+
+## Cost: what I measured
+
+- Heavy always-loaded context costs: **+40.3% tokens** on a simple change (documentation-layer study; unpublished, lower-grade). Experiment J points the same way.
+- A full agent set-up on a readable repository costs more tokens with no reliable correctness gain (Experiment J).
+- Searching blind is expensive: about **785k** tokens per question searching for a backend it couldn’t read, right **1 time in 24**; supplied with the facts, about 170k–190k tokens and 24 of 24 (D1).
+- Moving a prerequisite into a script cut turns and tokens in direction (15.3 to 7.7 turns, 647k to 314k tokens), without a reliable interval (Chapter 5).
+- Token counts aren’t comparable between agent tools.
+
+Fewer tokens isn’t the same as better value. A run that uses fewer tokens and then needs a human to fix it hasn’t saved anything.
+
+## The human in the loop: general practice
+
+Skills you stop practising fade — choose deliberately which to keep sharp (design, debugging, reading code). The work gets more interesting and more tiring. Batch your check-ins and decide in advance what you’ll do while the agent works.
+
+## Failure modes worth watching
+
+Cheating (tests disabled or weakened); checks rewritten to agree with the change; placeholders; duplication; swallowed errors; stale knowledge; guessed facts; overclaiming; untested gaps; scope creep; runaway loops; injection. Each recurring one is a candidate for an automatic check.
+
+## Recommendation
+
+Never give one agent private data, untrusted content and external communication together. If you skip permission prompts, use a sandbox with no production credentials. Spend your cost effort where my data says the waste is: blind searching and heavy always-loaded context. Measure value as well as tokens.
+
+## Checklist
+
+- [ ] Break the lethal trifecta for any agent that meets untrusted content.
+- [ ] No permission prompts? Then a sandbox, with no production credentials.
+- [ ] Assume an agent will use anything it can reach.
+- [ ] Supply facts rather than letting agents search blind.
+- [ ] Compare tokens only within one agent tool; value isn’t the same as tokens.
+- [ ] Keep your own key skills in practice; batch your check-ins.
+
+<LinkCard
+  title="Full chapter in the PDF"
+  href="/downloads/Programming-the-Loop-1st-edition.pdf"
+  description="Trifecta figure, cost table and the failure-mode field guide."
+/>

@@ -1,26 +1,61 @@
 ---
 title: "1. Facts, checks and upkeep"
-description: Chapter 1 — when repository practices are worth their maintenance.
+description: "Chapter 1 — terms, the evidence in outline, and the worked example that runs through the book."
 ---
 
-The book opens by separating facts about a repository from mechanisms that check behavior. Both can help an agent; both need to stay connected to the code they describe.
+import { LinkCard } from '@astrojs/starlight/components';
 
-## Three questions before adding a practice
+<p class="chapter-kicker">Chapter 1 · web summary</p>
 
-Chapter 1 asks practitioners to identify the problem a practice addresses, the evidence that it helps, and the cost of keeping it current. That framing applies to generated guides, repository instructions, code maps and test harnesses.
+This chapter is groundwork: what a coding agent is, how the evidence sits, and the worked example we follow through the book. The thesis is in the foreword; the rest of the book tests it a chapter at a time.
 
-The author also warns against trusting a single run. In one trial, observed spread implied about 131 runs per arm would be needed to detect a 20% cost difference; the trial had 16. This is the estimate for that trial’s variance and design, not a general sample-size rule.
+Speed was never the problem I wanted to solve. Agents already type faster than any of us. I wanted to stop them being confidently, plausibly wrong — writing against guessed APIs, trusting stale documentation, or reporting “all tests pass” when the suite never ran.
 
-The source presents a worked example that follows across the book: a storefront needs to expose inventory supplied by a separate backend. The boundary matters because an agent changing one repository cannot infer authoritative behavior from an unavailable dependency.
+## What a coding agent is
+
+Simon Willison’s definition is the cleanest: agents run tools in a loop to achieve a goal. The agent reads files, runs commands, edits code, looks at the result and decides what to do next, until *it* judges the goal met. That last part is the trap. A chatbot hands you text. An agent acts, and checks in when it thinks it’s finished.
+
+So the questions that matter are: what does the agent know when it starts, how does it find out the rest, and how do you and it know when the work is actually done?
+
+## The evidence, in outline
+
+The experiments live in four repositories: [OKFExperiment](https://github.com/meabs/OKFExperiment) (about 1,650 controlled runs), [AgentTrialRig](https://github.com/meabs/AgentTrialRig), [AgentGraphWorkTree](https://github.com/meabs/AgentGraphWorkTree) and [AgentFrictionLoop](https://github.com/meabs/AgentFrictionLoop). The headline results are in the foreword and analysed in Chapter 3:
+
+- Where the agent can read the code, extra knowledge mostly adds cost, not correctness (finding 1).
+- Where it can’t, the right facts decide the outcome (finding 3).
+- Out-of-date facts get repeated as fact, without hedging (finding 2).
+- Executable checks beat prose: when a test prerequisite moved from a sentence in `AGENTS.md` into a script, agents stopped tripping on it (Chapter 5).
+
+Those are findings, with limits given where each is introduced. What follows from them is labelled as recommendation.
+
+## The worked example
+
+One change runs through the book: add `GET /products/{sku}/availability` on a `storefront-api` whose stock numbers come from an `inventory-service` the agent cannot see. It is a reproducible demonstration of the failure modes the experiments found — guessed facts, stale knowledge, unverifiable claims — not a recorded agent session. Published at [meabs/ProgrammingTheLoop-WorkedExample](https://github.com/meabs/ProgrammingTheLoop-WorkedExample). The worked example’s code was written by hand; every test run, `curl` response and friction record shown in the book is genuine output of its scripts.
+
+Separately, real agent trials on the same task (12 runs of Cursor’s `composer-2.5`, with and without the contract) are reported in Chapters 3 and 5.
+
+## Recommendation
+
+Before you adopt any agent practice, including mine, ask three questions: what facts does this give the agent that it couldn’t get for itself? How will the agent prove its work with something that runs? And what will this cost to maintain?
+
+Distrust any claim based on a single run, including your own. In one of my trials, run-to-run spread was large enough that about 131 runs per arm would have been needed to detect a 20% cost difference; the trial had 16 ([results/H1-contract-vs-okf-changes.md](https://github.com/meabs/OKFExperiment/blob/main/results/H1-contract-vs-okf-changes.md)).
 
 ## Try this on your repository
 
-For each instruction or generated artifact an agent reads, record its owner, source of truth, update trigger and consequence if stale. For each check, name the behavior it protects and whether it observes the real system or only a local substitute.
+1. Pick three recent small tasks: one bug fix, one feature, one refactor.
+2. For each, write one line naming what the agent would need that it *can’t* find by reading the repository.
+3. Write how the agent would prove the change with a command that runs. If there is no such command, note that too.
+4. The first list is your real context problem; the second is your real verification problem.
 
-**Engineering recommendation:** Treat context and checks as maintained engineering assets. This is a recommendation from the book, not a universal measured effect for every repository.
+## Checklist
 
-## Chapter checklist
+- [ ] Use an agent that can run tools for real work, not a chat window alone.
+- [ ] Own every line the agent writes.
+- [ ] Before adopting a practice, ask: what facts, what check, what upkeep?
+- [ ] Distrust single runs, including your own.
 
-- Use an agent that can run tools for real work, and own every line it writes.
-- Before adopting a practice, ask what facts it supplies, what runnable check proves the work and what upkeep it creates.
-- Distrust single-run claims, including your own.
+<LinkCard
+  title="Full chapter in the PDF"
+  href="/downloads/Programming-the-Loop-1st-edition.pdf"
+  description="First edition — permanent text, figures and references."
+/>

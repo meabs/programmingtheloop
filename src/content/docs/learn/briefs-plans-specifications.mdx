@@ -1,24 +1,60 @@
 ---
 title: "2. Briefs, plans and specifications"
-description: Chapter 2 — distinguish task requests, plans and executable criteria.
+description: "Chapter 2 — deciding what done means before an agent writes code."
 ---
 
-Chapter 2 distinguishes three documents that are often blurred together: the brief says what outcome is wanted; the plan describes an approach; the specification makes behavior testable.
+import { LinkCard } from '@astrojs/starlight/components';
 
-## Make the outcome observable
+<p class="chapter-kicker">Chapter 2 · web summary</p>
 
-The book’s inventory example makes outcomes concrete: known stock returns an available quantity, fully reserved stock returns unavailable, an unknown SKU returns not found, and an unreachable or out-of-contract service produces a logged error response. It also distinguishes a contract freshness check from demonstrating real behavior against a running service.
+Before an agent writes code, someone has to decide what the change is, how you will know it is done, and what must not change. That decision belongs in a brief with acceptance criteria. A temporary implementation plan is a working note for one change; an authoritative requirement is a long-lived statement of how the system must behave. Mixing them up leaves a repository full of stale plans that agents then trust.
 
-The brief can be the problem. Ambiguous or conflicting criteria leave the agent to choose what success means. A plan may improve sequencing, but only a check tied to the required behavior can provide evidence about the result.
+## Three kinds of planning document
 
-## Try this
+| | Task brief | Implementation plan | Long-lived requirement |
+|---|---|---|---|
+| Says | What to change and how we’ll know it’s done | The steps for this change | How the system must behave, for good |
+| Lifetime | One task | One task or branch | Years |
+| Owner | Whoever asks for the change | The person (or agent) doing it | The product or service owner |
+| Home | Issue, PR description, or a brief file deleted on merge | Scratch file, PR, or branch | Tests first; a spec or policy only where a test can’t carry it |
+| Agent should | Follow it | Update it as reality changes | Treat it as authoritative; stop and ask on conflict |
 
-Write acceptance criteria as observable cases. Mark each as locally testable, dependent on an external service, or requiring human judgement. Ensure the final report distinguishes passed checks from criteria that were not verified.
+An implementation plan left behind after the work lands becomes a document that describes intentions, not the system. Chapter 3 shows what agents do with documents that are out of date: they repeat them confidently.
 
-## Chapter checklist
+## When the brief was the problem
 
-- Give every non-trivial task a brief with acceptance criteria and an out-of-scope line.
-- Ask the agent to restate the goal and identify contradictions or gaps before it starts.
-- Delete or archive temporary plans when work merges.
-- Keep durable behavior in tests; give long-lived requirements an owner.
-- Keep data-model and boundary decisions with a human.
+In my cross-repository change trials, one task was found ambiguous in its first draft and was reworded before any real run. Even so, in another task an agent added an `/api/v1` prefix that “the task did not clearly rule out”, and the write-up concludes that the task wording should have been clearer about the prefix ([OKFExperiment, docs/RESULTS.md, section F](https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md)). My friction tool has a dedicated origin for this, `task-context` (“the brief had no acceptance criterion”). How often that happens in everyday work, I didn’t measure.
+
+My rule of thumb: if a careful person could read your brief two ways, expect the agent to pick the one you didn’t mean.
+
+## Worked example, stage 1
+
+The real brief from the worked example (`storefront-api/docs/brief.md`) is a temporary task brief, to be deleted or archived when the change merges. It names the goal, the response shape, six acceptance criteria (including a live check against a running inventory service), context, and an out-of-scope line. The lasting statement of the behaviour is the tests the change adds — not a durable spec left in the tree.
+
+Asking the agent to restate the goal and acceptance criteria before it codes is cheap insurance. Criterion 4 — inventory unreachable or answering outside its contract must return 502, never a made-up number — is the one that earns its keep later.
+
+## Recommendation
+
+Write a brief for every non-trivial task, with acceptance criteria and an out-of-scope line. Keep implementation plans out of the long-lived parts of the repository, or give them an expiry: delete on merge. Put durable behaviour into tests. Only write a long-lived requirement when a test can’t carry it, and give it an owner. Keep data-model and boundary decisions for a human.
+
+## Try this on your repository
+
+1. Search for planning documents: `plan`, `todo`, `design`, `spec`, `proposal` in file names.
+2. For each, ask: temporary plan or authoritative requirement? Who owns it? Does it still match the code?
+3. Delete or archive finished plans. For each requirement that’s still true, check whether a test asserts it.
+4. Take your next agent task and write the brief: Goal · Change · Acceptance criteria · Context · Constraints · Out of scope.
+
+## Checklist
+
+- [ ] Every non-trivial task gets a brief with acceptance criteria and an out-of-scope line.
+- [ ] Ask the agent to restate the goal before it starts.
+- [ ] Ask it to look for contradictions and gaps in the brief.
+- [ ] Temporary plans are deleted or archived when the work merges.
+- [ ] Durable behaviour lives in tests; long-lived requirements have an owner.
+- [ ] Keep data model and boundary decisions for a human.
+
+<LinkCard
+  title="Full chapter in the PDF"
+  href="/downloads/Programming-the-Loop-1st-edition.pdf"
+  description="Includes the full brief template and worked-example prompt."
+/>

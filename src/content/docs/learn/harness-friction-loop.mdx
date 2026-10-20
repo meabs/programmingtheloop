@@ -1,18 +1,58 @@
 ---
 title: "6. The harness and the friction loop"
-description: Chapter 6 — use repeated workflow friction to improve the engineering environment.
+description: "Chapter 6 — finding and removing recurring agent friction, strongest fix first."
 ---
 
-Chapter 6 describes the harness as the tools and environment around the agent: commands, tests, permissions, documentation, error messages and feedback paths. Friction is useful evidence about where this environment makes work difficult.
+import { LinkCard } from '@astrojs/starlight/components';
 
-## Record, classify, improve
+<p class="chapter-kicker">Chapter 6 · web summary</p>
 
-The book’s minimum viable friction loop is to capture recurring obstacles, distinguish repository or tool problems from task problems, and remove a repeated source of wasted effort. It also discusses observation and self-reports, including privacy considerations.
+Agents trip over the same few things again and again: an undocumented migration, a generated directory missing from a fresh checkout, a contract they can’t find. Most of it is invisible unless you read transcripts all day. The system around the agent — instructions, scripts, checks and sandboxes — deserves the treatment you’d give any production system. Measure where it fails and fix the cause at the strongest level available.
 
-The chapter orders possible fixes from higher-level causes such as architecture, then checks and scripts, then skills and rules, and finally review. Reports are leads; act on problems that repeat across sessions or people. Instrumentation should not block a commit, and a fresh clone can expose undocumented prerequisites before an agent encounters them.
+## Where to put a fix
 
-## Try this
+@poteto’s ordering, from most to least preferred: eliminate the problem in architecture or data structures; turn it into a lint rule or test so CI catches it; turn it into a skill or rule; have humans review the code to catch it. Architecture and types can’t be ignored. A test or lint rule runs every time. A rule in a skill or `AGENTS.md` is read sometimes and followed usually. Human review is slow.
 
-Keep a short record of failed commands, missing prerequisites, unclear errors and repeated manual steps. Prioritise a change only after identifying who benefits, what it will maintain and how you will know it helped.
+Mitchell Hashimoto coined *harness engineering*. My data says the durable wins are in programmed tools — scripts for screenshots, filtered tests, one-command checks — more than in more prose.
 
-After changing the workflow, repeat the same kind of task and check whether the friction returns. If it does, the fix has not closed the loop.
+## How the friction loop works
+
+[AgentFrictionLoop](https://github.com/meabs/AgentFrictionLoop) makes agents report their own friction:
+
+1. The agent leaves a one-line note when something blocked or slowed it, even if it worked around it.
+2. A `post-commit` hook files a small JSON record against the commit (no code, prompts, commit messages or names).
+3. Records travel on a hidden `fbl-insights` branch; hooks never block a commit or push.
+4. A weekly review groups records and opens an issue only when the same gap recurs across several sessions and more than one person.
+5. A person fixes the cause in a normal pull request. Nothing edits the repository automatically.
+
+Origins include `repository-discovery`, `task-context`, `execution-environment`, `verification` and `conflicting-knowledge`.
+
+## One recurring problem, end to end
+
+The FastAPI test database with no tables until migrations ran:
+
+1. Early notes mislabelled the same root cause (overlapping categories). The instrument was fixed first: one classifying question, five options instead of seven.
+2. In a second batch (eight sessions), the four sessions on the original docs — and only those — filed the same category. Notes agreed with transcripts in **8 of 8**.
+3. The weekly review produced one established recommendation (F-003) only when evidence crossed the threshold of three actors.
+4. Prose that stated the migration step stopped that note in one batch, but in AgentTrialRig agents still sometimes ran tests before migrating (**1 of 3** runs filed a note in each prose arm).
+5. A `backend/scripts/test.sh` that applied migrations itself filed **0 of 3** notes, averaging 7.7 turns against 15.3 for the original (Chapter 5).
+
+I can’t claim it generalises: two sessions per cell, one operator, one task on one repository. No team has yet acted on an issue and watched the notes stop.
+
+## Recommendation
+
+The minimum viable friction loop needs no tool: ask agents to report blockers in one line with one classifying question, collect the notes, read them weekly, fix each repeated cause as high up the pyramid as you can, and check that the note stops.
+
+## Checklist
+
+- [ ] Fix recurring problems in architecture first, then checks and scripts, then skills and rules, then review.
+- [ ] Ask agents to report what slowed them down, in one line, with one classifying question.
+- [ ] Treat self-reports as leads; act on repeats across sessions and people.
+- [ ] Never let instrumentation block a commit; pseudonymous isn’t anonymous.
+- [ ] Check a fresh clone for undocumented prerequisites before an agent hits them.
+
+<LinkCard
+  title="Full chapter in the PDF"
+  href="/downloads/Programming-the-Loop-1st-edition.pdf"
+  description="Friction notes, weekly review thresholds and the worked-example stage 6."
+/>
