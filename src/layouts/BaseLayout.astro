@@ -6,6 +6,8 @@ import {
   SITE_DESCRIPTION,
   SITE_OG_IMAGE,
   NAV,
+  CF_WEB_ANALYTICS_SRC,
+  CF_WEB_ANALYTICS_BEACON,
 } from '../site';
 
 interface Props {
@@ -71,6 +73,14 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.png" type="image/png" />
     {preloadCover && <link rel="preload" href="/book-cover.png" as="image" />}
+    <!-- Cloudflare Web Analytics -->
+    <script
+      is:inline
+      type="module"
+      src={CF_WEB_ANALYTICS_SRC}
+      data-cf-beacon={CF_WEB_ANALYTICS_BEACON}
+    ></script>
+    <!-- End Cloudflare Web Analytics -->
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

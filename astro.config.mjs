@@ -1,5 +1,9 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import {
+  CF_WEB_ANALYTICS_SRC,
+  CF_WEB_ANALYTICS_BEACON,
+} from './src/site.ts';
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og-cover.png`;
@@ -37,6 +41,14 @@ export default defineConfig({
         {
           tag: 'link',
           attrs: { rel: 'icon', href: '/favicon.png', type: 'image/png' },
+        },
+        {
+          tag: 'script',
+          attrs: {
+            type: 'module',
+            src: CF_WEB_ANALYTICS_SRC,
+            'data-cf-beacon': CF_WEB_ANALYTICS_BEACON,
+          },
         },
       ],
       customCss: ['./src/styles/starlight.css'],

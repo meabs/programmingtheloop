@@ -69,7 +69,7 @@ Licence (site wording): free to read; share the unchanged PDF free of charge wit
 - `public/CNAME` must remain `programmingtheloop.com`.
 - `public/robots.txt` allows indexing and points at the sitemap.
 
-No analytics or tracking scripts. No API keys in the repository.
+Cloudflare Web Analytics (cookie-free page views) is loaded once per page via `CF_WEB_ANALYTICS_TOKEN` in `src/site.ts`. No API secrets in the repository.
 
 ## Deploy
 

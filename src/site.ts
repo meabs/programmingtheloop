@@ -16,6 +16,12 @@ export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
 export const BOOK_OG_IMAGE = `${SITE_URL}/og-cover.png`;
 export const SITE_OG_IMAGE = `${SITE_URL}/og-cover.png`;
 
+/** Cloudflare Web Analytics — public site beacon token (cookie-free page views). */
+export const CF_WEB_ANALYTICS_TOKEN = '0db0c13715df4bfda2115c9f12310d14';
+export const CF_WEB_ANALYTICS_SRC = 'https://static.cloudflareinsights.com/beacon.min.js';
+/** Exact `data-cf-beacon` payload (spacing matches Cloudflare’s snippet). */
+export const CF_WEB_ANALYTICS_BEACON = `{"token": "${CF_WEB_ANALYTICS_TOKEN}"}`;
+
 /**
  * Main nav. Views is a core section (may be empty). Add Experiments when it has pages.
  */
