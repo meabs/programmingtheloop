@@ -3,19 +3,39 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import {
   SITE_NAME,
   SITE_DESCRIPTION,
-  BOOK_SUBTITLE,
-  LINKS,
   SITE_OG_IMAGE,
-  SITE_STATS,
-  FINDING_DASHBOARD,
-  SYSTEM_STATUS,
   TOPIC_TICKER,
+  LINKS,
 } from '../site';
-import { getPublishedViews, viewHref, formatViewDate } from '../lib/views';
+import {
+  getLatestItems,
+  getPublishedArticles,
+  getPublishedExperiments,
+  getPublishedGuides,
+  articleHref,
+  experimentHref,
+  formatItemDate,
+} from '../lib/collections';
 
-const latestViews = (await getPublishedViews()).slice(0, 3);
-const hasViews = latestViews.length > 0;
+const latest = await getLatestItems(5);
+const articles = await getPublishedArticles();
+const experiments = await getPublishedExperiments();
+const guides = await getPublishedGuides();
 const ticker = [...TOPIC_TICKER, ...TOPIC_TICKER];
+
+const siteStats = [
+  { key: 'Guides', value: String(guides.length), caption: guides.length === 1 ? guides[0].data.title : 'Published' },
+  {
+    key: 'Experiments',
+    value: String(experiments.length),
+    caption: experiments.length ? 'Published write-ups' : 'None yet',
+  },
+  {
+    key: 'Articles',
+    value: String(articles.length),
+    caption: articles.length ? 'Published' : 'None yet',
+  },
+];
 ---
 <BaseLayout
   title={`${SITE_NAME} — Building software with coding agents`}
@@ -32,51 +52,37 @@ const ticker = [...TOPIC_TICKER, ...TOPIC_TICKER];
           <span class="headline-line loop">with coding agents</span>
         </h1>
         <p class="subtitle">
-          What I've measured, what I think, and the full Programming the Loop guide, free to
-          read.
+          Articles, experiments and guides on working with coding agents. What I measured, and
+          what I think.
         </p>
         <div class="actions">
-          <a class="button primary pill" href="/guide/">Read the Guide</a>
-          <a class="button" href="/start/">Find your starting chapter →</a>
+          <a class="button primary pill" href="/guides/">Browse guides</a>
+          <a class="button" href="/experiments/">See experiments →</a>
         </div>
       </div>
 
-      <aside class="hero-abstract" aria-label="Abstract">
-        <p class="abstract-label">In short</p>
-        <p>
-          The full book is free to read here. Eleven chapters, checklists, figures and the
-          worked example. Small controlled trials. I say when something is a finding and when
-          it is my judgement.
-        </p>
+      <aside class="hero-abstract" aria-label="Latest">
+        <p class="abstract-label">Latest</p>
+        <ul class="latest-list">
+          {latest.map((item) => (
+            <li>
+              <a href={item.href}>
+                <span class="latest-tag">{item.tag}</span>
+                <span class="latest-title">{item.title}</span>
+                <span class="latest-meta">{formatItemDate(item.date)}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
         <div class="abstract-cta">
-          <a class="icon-btn" href="/start/" aria-label="Open Start">→</a>
-          <a class="button primary pill" href="/start/">Open /start</a>
-        </div>
-
-        <div class="dash-card" aria-label="Headline findings from the Foreword">
-          <div class="dash-head">
-            <span class="dash-live" aria-hidden="true"></span>
-            <span>Foreword findings</span>
-            <span class="dash-meta">with limits</span>
-          </div>
-          <ul class="dash-rows">
-            {FINDING_DASHBOARD.map((row) => (
-              <li>
-                <span class="dash-id">{row.id}</span>
-                <span class="dash-body">
-                  <strong>{row.value}</strong>
-                  <span>{row.label}</span>
-                </span>
-                <span class="dash-note">{row.note}</span>
-              </li>
-            ))}
-          </ul>
+          <a class="button primary pill" href="/articles/">Articles</a>
+          <a class="button" href="/about/">About</a>
         </div>
       </aside>
     </div>
 
-    <div class="stats-strip" role="list" aria-label="Guide contents at a glance">
-      {SITE_STATS.map((stat) => (
+    <div class="stats-strip" role="list" aria-label="What is on this site">
+      {siteStats.map((stat) => (
         <div class="stat-cell" role="listitem">
           <span class="stat-key">{stat.key}</span>
           <span
@@ -97,179 +103,110 @@ const ticker = [...TOPIC_TICKER, ...TOPIC_TICKER];
       ))}
     </div>
   </div>
-  <p class="visually-hidden">
-    Guide topics: {TOPIC_TICKER.join(', ')}.
-  </p>
+  <p class="visually-hidden">Topics: {TOPIC_TICKER.join(', ')}.</p>
 
-  <section class="section panel-section">
-    <div class="wrap panel-grid">
-      <div class="tech-panel reveal" data-loop-panel>
-        <div class="tech-panel-bar">Agent loop</div>
-        <figure class="loop-diagram dark-loop">
-          <svg viewBox="0 0 420 360" role="img" aria-labelledby="loop-title loop-desc">
-            <title id="loop-title">The agent loop</title>
-            <desc id="loop-desc">
-              A cycle of Brief, Context, Change, Verify and Review around a coding agent.
-            </desc>
-            <defs>
-              <pattern id="wire-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
-              </pattern>
-            </defs>
-            <rect x="0" y="0" width="420" height="360" fill="url(#wire-grid)" />
-            <circle class="loop-path loop-path-flow" cx="210" cy="178" r="108" fill="none" />
-            <circle class="loop-path" cx="210" cy="178" r="108" fill="none" />
-            <circle class="loop-node loop-node-core" cx="210" cy="178" r="36" />
-            <text class="loop-label" x="210" y="174" text-anchor="middle">Agent</text>
-            <text class="loop-label" x="210" y="190" text-anchor="middle" opacity="0.7" font-size="9">loop</text>
-            <circle class="loop-node" cx="210" cy="70" r="22" />
-            <text class="loop-label" x="210" y="74" text-anchor="middle">Brief</text>
-            <circle class="loop-node" cx="312" cy="128" r="22" />
-            <text class="loop-label" x="312" y="132" text-anchor="middle">Context</text>
-            <circle class="loop-node" cx="292" cy="248" r="22" />
-            <text class="loop-label" x="292" y="252" text-anchor="middle">Change</text>
-            <circle class="loop-node" cx="128" cy="248" r="22" />
-            <text class="loop-label" x="128" y="252" text-anchor="middle">Verify</text>
-            <circle class="loop-node" cx="108" cy="128" r="22" />
-            <text class="loop-label" x="108" y="132" text-anchor="middle">Review</text>
-            <circle class="loop-dot" cx="268" cy="90" r="3" style="animation-delay: 0s" />
-            <circle class="loop-dot" cx="318" cy="190" r="3" style="animation-delay: 0.7s" />
-            <circle class="loop-dot" cx="210" cy="286" r="3" style="animation-delay: 1.4s" />
-            <circle class="loop-dot" cx="102" cy="190" r="3" style="animation-delay: 2.1s" />
-            <circle class="loop-dot" cx="152" cy="90" r="3" style="animation-delay: 2.8s" />
-          </svg>
-          <figcaption class="loop-caption">Brief → Context → Change → Verify → Review</figcaption>
-        </figure>
-      </div>
-
-      <div class="status-panel reveal">
-        <p class="section-label">§ 01 — What's in the Guide</p>
-        <h2 class="status-title">At a glance</h2>
-        <dl class="status-list">
-          {SYSTEM_STATUS.map((row) => (
-            <div class="status-row">
-              <dt>{row.label}</dt>
-              <dd>{row.value}</dd>
-            </div>
-          ))}
-        </dl>
-        <div class="actions">
-          <a class="button primary pill" href="/guide/">Open the Guide</a>
-          <a class="button" href="/downloads/">October 2026 PDF</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="explore">
+  <section class="section" id="latest">
     <div class="wrap">
-      <p class="section-label reveal">§ 02 — On this site</p>
-      <h2 class="reveal">What you'll find</h2>
-      <p class="lead reveal">
-        Practical work on coding agents. Measurements with stated limits. Views when I have
-        something worth saying.
-      </p>
-
-      <div class="bento">
-        {hasViews ? (
-          <div class="card card-wide reveal">
-            <span class="card-kicker">Views</span>
-            <h3 class="card-title">Industry trends and tools</h3>
-            <p class="card-desc">Latest posts on releases and practice.</p>
-            <ul class="card-list">
-              {latestViews.map((post) => (
-                <li>
-                  <a href={viewHref(post)}>{post.data.title}</a>
-                  <span>{formatViewDate(post.data.date)}</span>
-                </li>
-              ))}
-            </ul>
-            <a class="card-meta" href="/views/">All views →</a>
-          </div>
-        ) : (
-          <a class="card card-wide reveal" href="/views/">
-            <span class="card-kicker">Views</span>
-            <h3 class="card-title">Industry trends and tools</h3>
-            <p class="card-desc">
-              Short takes on industry trends and new tools. Nothing published yet.
-            </p>
-            <span class="card-meta">Open Views →</span>
+      <p class="section-label reveal">§ 01 — Latest</p>
+      <h2 class="reveal">Recently added</h2>
+      <p class="lead reveal">Across articles, experiments and guides.</p>
+      <div class="collection-grid">
+        {latest.map((item) => (
+          <a class="collection-card reveal" href={item.href}>
+            <span class="card-kicker">{item.tag}</span>
+            <time datetime={item.date.toISOString()}>{formatItemDate(item.date)}</time>
+            <h3 class="card-title">{item.title}</h3>
+            <p class="card-desc">{item.summary}</p>
+            <span class="card-meta">Open →</span>
           </a>
-        )}
-
-        <a class="card card-narrow reveal" href="/start/">
-          <span class="card-kicker">/start</span>
-          <h3 class="card-title">Where should I begin?</h3>
-          <p class="card-desc">
-            Say what you're dealing with. I'll point you at the right chapter.
-          </p>
-          <span class="card-meta">Open the table →</span>
-        </a>
-
-        <a class="card card-book reveal" href="/guide/">
-          <img
-            class="card-book-cover"
-            src="/book-cover.png"
-            width="1600"
-            height="2400"
-            alt=""
-            loading="lazy"
-          />
-          <div>
-            <span class="card-kicker">The book</span>
-            <h3 class="card-title">Programming the Loop</h3>
-            <p class="card-desc">
-              The whole book, free to read here. I'll keep it up to date as I learn more. The
-              October 2026 PDF is still there if you want it.
-            </p>
-            <span class="card-meta">Start reading</span>
-          </div>
-        </a>
-
-        <a class="card card-narrow reveal" href="/downloads/">
-          <span class="card-kicker">PDF</span>
-          <h3 class="card-title">October 2026 PDF</h3>
-          <p class="card-desc">
-            The first edition as a PDF. Share it unchanged and credit me as the author.
-          </p>
-          <span class="card-meta">Download PDF →</span>
-        </a>
-
-        <a class="card reveal" href={LINKS.workedExample} rel="noopener noreferrer">
-          <span class="card-kicker">Worked example</span>
-          <h3 class="card-title">Repository</h3>
-          <p class="card-desc">
-            The cross-repository API endpoint used through the Guide. Open an issue if something
-            is wrong.
-          </p>
-          <span class="card-meta">GitHub →</span>
-        </a>
-
-        <a class="card reveal" href={LINKS.feedbackIssue} rel="noopener noreferrer">
-          <span class="card-kicker">Feedback</span>
-          <h3 class="card-title">Open an issue</h3>
-          <p class="card-desc">Mistakes, gaps or questions. I want to know.</p>
-          <span class="card-meta">New issue →</span>
-        </a>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="section" id="elsewhere">
+  <section class="section" id="articles">
     <div class="wrap">
-      <p class="section-label reveal">§ 03 — Elsewhere</p>
-      <h2 class="reveal">Elsewhere</h2>
-      <ul class="link-list reveal">
-        <li>
-          <a href={LINKS.x}>X · @Mav1972</a>
-        </li>
-        <li>
-          <a href={LINKS.youtube}>YouTube · Frugal AI Engineer</a>
-        </li>
-        <li>
-          <a href={LINKS.githubSite}>Site source on GitHub</a>
-        </li>
-      </ul>
+      <p class="section-label reveal">§ 02 — Articles</p>
+      <h2 class="reveal">Articles</h2>
+      <p class="lead reveal">
+        Short writing on trends and tools. Empty for now — that is honest.
+      </p>
+      {articles.length === 0 ? (
+        <p class="empty-note reveal">
+          Nothing published yet. <a href="/articles/">Articles index →</a>
+        </p>
+      ) : (
+        <div class="collection-grid">
+          {articles.slice(0, 3).map((post) => (
+            <a class="collection-card reveal" href={articleHref(post)}>
+              <span class="card-kicker">Article</span>
+              <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
+              <h3 class="card-title">{post.data.title}</h3>
+              <p class="card-desc">{post.data.summary ?? post.data.description}</p>
+              <span class="card-meta">Read →</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section" id="experiments">
+    <div class="wrap">
+      <p class="section-label reveal">§ 03 — Experiments</p>
+      <h2 class="reveal">Experiments</h2>
+      <p class="lead reveal">Measured trials with limits stated.</p>
+      <div class="collection-grid">
+        {experiments.map((item) => (
+          <a class="collection-card reveal" href={experimentHref(item)}>
+            <span class="card-kicker">{item.data.type}</span>
+            <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
+            <h3 class="card-title">{item.data.title}</h3>
+            <p class="card-desc">{item.data.summary}</p>
+            <span class="card-meta">Open →</span>
+          </a>
+        ))}
+      </div>
+      <p class="section-more reveal">
+        <a href="/experiments/">All experiments →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="guides">
+    <div class="wrap">
+      <p class="section-label reveal">§ 04 — Guides</p>
+      <h2 class="reveal">Guides</h2>
+      <p class="lead reveal">Longer, multi-page guides. Each stands alone.</p>
+      <div class="collection-grid">
+        {guides.map((item) => (
+          <a class="collection-card reveal" href={item.data.href}>
+            <span class="card-kicker">Guide</span>
+            <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
+            <h3 class="card-title">{item.data.title}</h3>
+            <p class="card-desc">{item.data.summary}</p>
+            <span class="card-meta">Open →</span>
+          </a>
+        ))}
+      </div>
+      <p class="section-more reveal">
+        <a href="/guides/">All guides →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <p class="section-label reveal">§ 05 — About</p>
+      <h2 class="reveal">About and feedback</h2>
+      <p class="lead reveal">
+        I write as Garry Meaburn. Findings are measured; recommendations are judgement. If a
+        number is wrong, <a href={LINKS.feedbackIssue}>open an issue</a>.
+      </p>
+      <div class="actions reveal">
+        <a class="button primary pill" href="/about/">About</a>
+        <a class="button" href={LINKS.feedbackIssue}>Open an issue</a>
+      </div>
     </div>
   </section>
 </BaseLayout>

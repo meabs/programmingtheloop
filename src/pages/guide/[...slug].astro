@@ -1,0 +1,44 @@
+---
+/**
+ * Compatibility redirects from /guide/... to /guides/programming-the-loop/...
+ */
+import { getCollection } from 'astro:content';
+
+type Path = { params: { slug?: string | undefined } };
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  const prefix = 'guides/programming-the-loop/';
+  const paths: Path[] = [{ params: { slug: undefined } }];
+  for (const doc of docs) {
+    if (!doc.id.startsWith(prefix)) continue;
+    const rest = doc.id
+      .slice(prefix.length)
+      .replace(/\/index$/, '')
+      .replace(/\.mdx?$/, '');
+    if (!rest || rest === 'index') continue;
+    paths.push({ params: { slug: rest } });
+  }
+  paths.push({ params: { slug: 'start' } });
+  return paths;
+}
+
+const slug = Astro.params.slug;
+const dest = slug
+  ? `/guides/programming-the-loop/${slug}/`
+  : '/guides/programming-the-loop/';
+---
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <title>Moved</title>
+    <meta http-equiv="refresh" content={`0;url=${dest}`} />
+    <link rel="canonical" href={new URL(dest, 'https://programmingtheloop.com').href} />
+    <script is:inline define:vars={{ dest }}>
+      location.replace(dest);
+    </script>
+  </head>
+  <body>
+    <p>This page has moved to <a href={dest}>{dest}</a>.</p>
+  </body>
+</html>

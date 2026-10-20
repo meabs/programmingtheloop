@@ -12,7 +12,7 @@ BOOK = Path(
     "/home/ubuntu/.cursor/projects/workspace/uploads/"
     "Programming-the-Loop-1st-edition_8326.md"
 )
-GUIDE = Path("src/content/docs/guide")
+GUIDE = Path("src/content/docs/guides/programming-the-loop")
 REPORT = Path("docs/book-coverage-report.json")
 
 
@@ -116,6 +116,52 @@ def image_refs(text: str) -> list[str]:
     return re.findall(r"images/([\w.-]+\.png)", text)
 
 
+def extract_fact_numbers(text: str) -> list[str]:
+    """Distinctive measured numbers / ratios that must survive presentation edits."""
+    body = text
+    start = body.find("# Foreword:")
+    if start != -1:
+        body = body[start:]
+    patterns = [
+        r"\b\d{1,3}(?:,\d{3})+(?:\.\d+)?\b",  # 1,650 / 1,046k-style thousands
+        r"\b\d+\.\d+\b",  # decimals incl. p-values, ratios
+        r"\b\d+\s*[–—-]\s*\d+%?",  # 35–48 / 18–19
+        r"\b\+?\d+(?:\.\d+)?%",  # percentages
+        r"\b\d+\s+of\s+\d+\b",  # 14 of 16
+        r"\bp\s*=\s*[\d.]+",  # p = 0.52
+        r"\bp\s*≈\s*[\d.]+",  # p ≈ 0.002
+        r"\b\d+k\b",  # 401k tokens
+    ]
+    found: list[str] = []
+    seen: set[str] = set()
+    for pat in patterns:
+        for m in re.finditer(pat, body, flags=re.I):
+            token = re.sub(r"\s+", " ", m.group(0).strip().lower())
+            token = token.replace("—", "–").replace("-", "–")
+            if token in seen:
+                continue
+            # Skip lone chapter/list counters that are not evidence
+            if re.fullmatch(r"\d+", token) and int(token) <= 21:
+                continue
+            seen.add(token)
+            found.append(token)
+    return found
+
+
+def extract_citations(text: str) -> list[str]:
+    """URLs and github.com/meabs paths that must still appear on the site."""
+    urls = re.findall(r"https?://[^\s\)\]\>\"']+", text)
+    cleaned: list[str] = []
+    seen: set[str] = set()
+    for u in urls:
+        u = u.rstrip(".,);]")
+        if u in seen:
+            continue
+        seen.add(u)
+        cleaned.append(u)
+    return cleaned
+
+
 def main() -> int:
     book = BOOK.read_text()
     # Include guide/index.md (licence / about-the-guide) plus chapter pages.
@@ -126,6 +172,8 @@ def main() -> int:
 
     book_paras = paragraphs(book)
     guide_norm = normalize(guide_text)
+    guide_fold = re.sub(r"\s+", " ", guide_text).lower()
+    guide_fold = guide_fold.replace("—", "–").replace("-", "–")
 
     missing_paras: list[str] = []
     for p in book_paras:
@@ -152,12 +200,19 @@ def main() -> int:
     # references: count numbered refs 1–21
     ref_count_book = len(re.findall(r"^\d+\.\s+", book[book.find("# References") :], re.M))
     ref_count_guide = len(
-        re.findall(r"^\d+\.\s+", Path("src/content/docs/guide/references.md").read_text(), re.M)
+        re.findall(r"^\d+\.\s+", (GUIDE / "references.md").read_text(), re.M)
     )
+
+    book_numbers = extract_fact_numbers(book)
+    missing_numbers = [n for n in book_numbers if n not in guide_fold]
+    book_cites = extract_citations(book)
+    missing_cites = [c for c in book_cites if c not in guide_text]
 
     para_cov = 1 - len(missing_paras) / max(len(book_paras), 1)
     check_cov = 1 - len(missing_checks) / max(len(book_checks), 1)
     img_cov = 1 - len(missing_imgs) / max(len(book_imgs), 1)
+    num_cov = 1 - len(missing_numbers) / max(len(book_numbers), 1)
+    cite_cov = 1 - len(missing_cites) / max(len(book_cites), 1)
 
     report = {
         "book_paragraphs": len(book_paras),
@@ -171,6 +226,12 @@ def main() -> int:
         "missing_image_refs": missing_imgs,
         "missing_image_files": missing_img_files,
         "image_coverage": round(img_cov, 4),
+        "book_fact_numbers": len(book_numbers),
+        "missing_fact_numbers": missing_numbers[:40],
+        "fact_number_coverage": round(num_cov, 4),
+        "book_citations": len(book_cites),
+        "missing_citations": missing_cites[:20],
+        "citation_coverage": round(cite_cov, 4),
         "reference_lines_book": ref_count_book,
         "reference_lines_guide": ref_count_guide,
         "intentional_omissions": [
@@ -178,23 +239,54 @@ def main() -> int:
             "Copyright © line: ebook / PDF-or-EPUB wording adapted for the web (guide + pages / October 2026 PDF); Quoted material and Disclaimer kept verbatim",
             "Pandoc `{.unnumbered}` / `{.pdf-only}` / `{.epub-only}` / `{.checklist}` / `{.keep}` / `{.refs}` attributes (converted for web; content kept)",
             "Bare 'Chapter N' strings turned into internal links (prose unchanged aside from link markup)",
+            "Web presentation edits (Heavy/Lean labels, What it shows/doesn't → Limits, figure captions, bold mini-headings → ###) may lower exact paragraph match; fact-number and citation coverage are the gate",
         ],
         "missing_paragraph_samples": missing_paras[:25],
     }
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(report, indent=2))
-    print(json.dumps({k: report[k] for k in report if k != "missing_paragraph_samples"}, indent=2))
+    summary_keys = [
+        "book_paragraphs",
+        "missing_paragraphs",
+        "paragraph_coverage",
+        "book_checklist_items",
+        "guide_checklist_items",
+        "missing_checklist_items",
+        "checklist_coverage",
+        "missing_image_refs",
+        "missing_image_files",
+        "image_coverage",
+        "book_fact_numbers",
+        "missing_fact_numbers",
+        "fact_number_coverage",
+        "book_citations",
+        "missing_citations",
+        "citation_coverage",
+        "reference_lines_book",
+        "reference_lines_guide",
+        "intentional_omissions",
+    ]
+    print(json.dumps({k: report[k] for k in summary_keys}, indent=2))
     print(f"\nWrote {REPORT}")
-    print(f"Paragraph coverage: {para_cov:.1%} ({len(book_paras) - len(missing_paras)}/{len(book_paras)})")
+    print(f"Paragraph coverage: {para_cov:.1%} ({len(book_paras) - len(missing_paras)}/{len(book_paras)}) [informational when presentation edits]")
     print(f"Checklist coverage: {check_cov:.1%} ({len(book_checks) - len(missing_checks)}/{len(book_checks)})")
     print(f"Image coverage: {img_cov:.1%}")
+    print(f"Fact-number coverage: {num_cov:.1%} ({len(book_numbers) - len(missing_numbers)}/{len(book_numbers)})")
+    print(f"Citation coverage: {cite_cov:.1%} ({len(book_cites) - len(missing_cites)}/{len(book_cites)})")
     if missing_paras:
         print(f"\nFirst missing paragraph probes ({min(5, len(missing_paras))}):")
         for s in missing_paras[:5]:
             print(" -", s[:140])
+    if missing_numbers:
+        print(f"\nMissing fact numbers ({len(missing_numbers)}):", ", ".join(missing_numbers[:20]))
+    if missing_cites:
+        print(f"\nMissing citations ({len(missing_cites)}):")
+        for c in missing_cites[:10]:
+            print(" -", c)
     ok = (
-        para_cov >= 0.98
-        and check_cov >= 0.99
+        check_cov >= 0.99
+        and num_cov >= 0.995
+        and cite_cov >= 0.99
         and not missing_imgs
         and not missing_img_files
         and ref_count_guide >= ref_count_book

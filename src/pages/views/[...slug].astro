@@ -1,0 +1,27 @@
+---
+/**
+ * Compatibility redirects from /views/... to /articles/...
+ */
+export function getStaticPaths() {
+  // No published articles yet; keep an index redirect only.
+  // When articles exist, extend this list from the articles collection.
+  return [{ params: { slug: undefined } }];
+}
+
+const slug = Astro.params.slug;
+const dest = slug ? `/articles/${slug}/` : '/articles/';
+---
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <title>Moved</title>
+    <meta http-equiv="refresh" content={`0;url=${dest}`} />
+    <link rel="canonical" href={new URL(dest, 'https://programmingtheloop.com').href} />
+    <script is:inline define:vars={{ dest }}>
+      location.replace(dest);
+    </script>
+  </head>
+  <body>
+    <p>This page has moved to <a href={dest}>{dest}</a>.</p>
+  </body>
+</html>

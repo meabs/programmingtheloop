@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedGuides, formatItemDate } from '../../lib/collections';
+
+const items = await getPublishedGuides();
+---
+<BaseLayout
+  title="Guides"
+  description="Longer guides on working with coding agents. Programming the Loop is the first."
+  canonicalPath="/guides/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">§ 03 — Guides</p>
+      <h1>Guides</h1>
+      <p>
+        Multi-page guides. Each one stands on its own. Programming the Loop is the first.
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <div class="collection-grid">
+        {items.map((item) => (
+          <a class="collection-card reveal" href={item.data.href}>
+            <span class="card-kicker">Guide</span>
+            <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
+            <h2 class="card-title">{item.data.title}</h2>
+            <p class="card-desc">{item.data.summary}</p>
+            <span class="card-meta">Open →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
