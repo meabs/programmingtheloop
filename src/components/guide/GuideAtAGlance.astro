@@ -1,0 +1,14 @@
+---
+import { getGuideLandingStats } from '../../lib/findings';
+
+const stats = await getGuideLandingStats();
+---
+<div class="guide-stats" role="list">
+  {stats.map((stat) => (
+    <div class="guide-stat" role="listitem">
+      <span class="guide-stat-key">{stat.key}</span>
+      <span class="guide-stat-value">{stat.value}</span>
+      <span class="guide-stat-cap">{stat.caption}</span>
+    </div>
+  ))}
+</div>

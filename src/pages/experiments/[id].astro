@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FindingsTable from '../../components/experiments/FindingsTable.astro';
 import { SITE_OG_IMAGE } from '../../site';
 import { getPublishedExperiments, formatItemDate } from '../../lib/collections';
 import { render } from 'astro:content';
@@ -14,6 +15,7 @@ export async function getStaticPaths() {
 
 const { item } = Astro.props;
 const { Content } = await render(item);
+const findings = item.data.findings ?? [];
 ---
 <BaseLayout
   title={item.data.title}
@@ -43,6 +45,7 @@ const { Content } = await render(item);
   <div class="page-body">
     <div class="wrap view-prose">
       <Content />
+      <FindingsTable findings={findings} />
       <p class="view-back">
         <a href="/experiments/">← All experiments</a>
       </p>

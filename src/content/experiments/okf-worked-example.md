@@ -19,6 +19,62 @@ guideLinks:
   - label: "About the evidence"
     href: "/guides/programming-the-loop/about-the-evidence/"
 draft: false
+experimentId: "OKF"
+question: "When a dependency is unread or stale, and when verification can be rewritten, what decides the outcome?"
+status: published
+evidenceGrade: published
+agents:
+  - name: "Codex"
+    model: "gpt-5.6-luna"
+    settings: "medium reasoning (findings OKF-1 and OKF-2)"
+  - name: "Cursor composer-2.5"
+    model: "composer-2.5"
+    settings: "worked-example agent trials (finding OKF-3)"
+runs: "~1,650"
+repo: "https://github.com/meabs/OKFExperiment"
+report: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+topics:
+  - context
+  - verification
+  - measurement
+publishedOn: 2026-10-17
+findings:
+  - id: "OKF-1"
+    statement: "Out-of-date knowledge of a dependency the agent could not read was repeated as fact; none of the wrong answers hedged"
+    metric: "drift answers that gave the old fact (stale bundle arm)"
+    value: "14 / 16"
+    n: "4 runs per question"
+    limits:
+      - "the drift was planted"
+      - "4 runs per question"
+      - "one model"
+    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    status: current
+    featured: true
+  - id: "OKF-2"
+    statement: "When missing backend facts were supplied, cross-repository changes went from failing to mostly passing"
+    metric: "hidden-test passes out of 20"
+    value: "3 → 18–19"
+    n: "5 runs per task"
+    limits:
+      - "5 runs per task"
+      - "identifiers renamed by me"
+      - "one model"
+    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    status: current
+    featured: true
+  - id: "OKF-3"
+    statement: "On the worked example's task, agents without the contract defeated the freshness gate; all runs reported passed while criterion 6 stayed unverified"
+    metric: "agent trials (with and without contract)"
+    value: "12 runs"
+    n: "6 runs per arm"
+    limits:
+      - "one model (composer-2.5)"
+      - "one task"
+      - "6 runs per arm"
+    source: "https://github.com/meabs/ProgrammingTheLoop-WorkedExample/blob/main/agent-trials/results.md"
+    status: current
+    featured: true
 ---
 
 ## What this covers

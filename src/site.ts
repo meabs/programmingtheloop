@@ -69,55 +69,11 @@ export const NAV: readonly NavItem[] = [
 ];
 
 /**
- * Real counts from the Guide / first edition — never invent metrics for UI chrome.
- * Checklist items: 76 across the 11 chapter end-checklists. Figures: 13 guide images.
- * Controlled runs: “About 1,650” from the OKFExperiment row in the Chapter 1
- * evidence table (facts, checks and upkeep — repositories used in the book).
+ * Measured finding numbers live on experiment `findings[]` records
+ * (`src/lib/findings.ts`). Structural Guide counts (chapters / checklists /
+ * figures) are computed in `src/lib/guide-counts.ts`. Do not reintroduce
+ * SITE_STATS / FINDING_DASHBOARD / SYSTEM_STATUS hard-coded chrome.
  */
-export const SITE_STATS = [
-  { key: 'Chapters', value: '11', caption: 'In the Guide' },
-  { key: 'Checklist items', value: '76', caption: 'Across 11 chapter checklists' },
-  { key: 'Figures', value: '13', caption: 'Charts and diagrams' },
-  { key: 'Headline findings', value: '4', caption: 'Foreword, with limits stated' },
-  { key: 'Controlled runs', value: '~1,650', caption: 'OKFExperiment repo' },
-] as const;
-
-/** Finding numbers for the hero “live dashboard” card — all from the Foreword. */
-export const FINDING_DASHBOARD = [
-  {
-    id: 'F1',
-    label: 'Optimised repo tokens',
-    value: '+35–48%',
-    note: 'Finding 1 · no reliable correctness gain',
-  },
-  {
-    id: 'F2',
-    label: 'Stale answers repeated',
-    value: '14 / 16',
-    note: 'Finding 2 · no hedging',
-  },
-  {
-    id: 'F3',
-    label: 'Cross-repo with facts',
-    value: '3 → 18–19',
-    note: 'Finding 3 · of 20 passes',
-  },
-  {
-    id: 'F4',
-    label: 'Worked-example trials',
-    value: '12 runs',
-    note: 'Finding 4 · composer-2.5',
-  },
-] as const;
-
-/** Key–value status list — site facts only. */
-export const SYSTEM_STATUS = [
-  { label: 'Chapters', value: '11' },
-  { label: 'Checklist items', value: '76' },
-  { label: 'Figures', value: '13' },
-  { label: 'References', value: '21' },
-  { label: 'First edition', value: 'Oct 2026' },
-] as const;
 
 /** Ticker topics drawn from Guide chapter titles / thesis — not marketing fluff. */
 export const TOPIC_TICKER = [
