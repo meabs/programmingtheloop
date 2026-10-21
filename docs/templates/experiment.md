@@ -1,6 +1,6 @@
 ---
 # TEMPLATE — copy into src/content/experiments/ as short-slug.md
-# Keep draft: true until ready. Drafts are not published.
+# Keep draft: true until ready. Drafts are not published (not in listings, nav counts, or public routes).
 title: "Short clear title"
 description: "One sentence for cards and social previews."
 summary: "One-line card summary."
@@ -13,16 +13,34 @@ guideLinks:
   - label: "Chapter 3 — The right facts"
     href: "/guides/programming-the-loop/right-facts/"
 draft: true
+experimentId: "X"
+question: "One sentence."
+# status: planned | running | published | superseded  (omit until structured)
+# evidenceGrade: published | unpublished
+# report: "https://github.com/…/results/….md"
+# findings: []  # IDs <experimentId>-<n>; never reuse; leave empty rather than infer
 ---
 
-## What I asked
+## Question
 
 Plain words. Only claims you can point to in a Guide chapter or a published repo write-up.
 
-## What I measured
+## Prediction
 
-Numbers with limits. Link the Guide chapter and the source file.
+Link the pre-registration file if one exists. Otherwise say none was written down.
 
-## Where to read more
+## Set-up
 
-- [Chapter …](/guides/programming-the-loop/…)
+What was compared, on what repository, with which agent. Numbers only if the Guide or results file states them.
+
+## Results
+
+The structured findings table is generated from frontmatter `findings[]` below the body. Summarise here in plain prose; do not invent figures.
+
+## Limits
+
+From the source's own caveats, in first-person British English. No hype, no new claims.
+
+## Reproduce
+
+Repository link and commands **only** if the source gives them.
