@@ -1616,6 +1616,64 @@ html[data-theme='dark'] .accent-rose .start-chapter {
   margin: 0 0 1rem;
 }
 
+.view-prose h3 {
+  font-size: 1.05rem;
+  margin: 1.4rem 0 0.6rem;
+}
+
+.view-prose ul {
+  color: var(--ink-muted);
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+}
+
+.view-prose li {
+  margin: 0.25rem 0;
+}
+
+.view-prose table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: 0 0 1.25rem;
+}
+
+.view-prose th,
+.view-prose td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+}
+
+.view-prose th {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.view-prose .guide-figure {
+  margin: 1.5rem 0 1.75rem;
+}
+
+.view-prose .guide-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.view-prose .guide-figure figcaption {
+  margin-top: 0.65rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink-faint);
+}
+
 .view-back {
   margin-top: 2.25rem !important;
   padding-top: 1.15rem;
