@@ -2394,3 +2394,79 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
   margin: 0;
   color: var(--ink);
 }
+
+/* Tables with long text cells wrap like prose; on phones each row becomes a card. */
+.view-prose table.table-prose {
+  display: table;
+  width: 100%;
+  background: none;
+  table-layout: auto;
+}
+.view-prose table.table-prose th,
+.view-prose table.table-prose td {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+.view-prose table.table-prose td:first-child {
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--ink);
+}
+.view-prose table.table-prose td {
+  vertical-align: top;
+}
+
+@media (max-width: 640px) {
+  .view-prose table.table-prose,
+  .view-prose table.table-prose tbody,
+  .view-prose table.table-prose tr,
+  .view-prose table.table-prose td {
+    display: block;
+  }
+  .view-prose table.table-prose thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .view-prose table.table-prose tr {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .view-prose table.table-prose tr:first-child {
+    border-top: 1px solid var(--line-strong);
+  }
+  .view-prose table.table-prose tbody tr:last-child {
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .view-prose table.table-prose td,
+  .view-prose table.table-prose tbody tr:last-child td {
+    padding: 0.15rem 0;
+    border: 0;
+  }
+  .view-prose table.table-prose td:first-child {
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+  }
+  .view-prose table.table-prose td:not(:first-child) {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+  .view-prose table.table-prose td:not(:first-child)::before {
+    content: attr(data-label);
+    padding-top: 0.2rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+}
+
+/* Long unbroken strings (paths, patterns, identifiers) must wrap, not widen the page. */
+.view-prose p,
+.view-prose li,
+.view-prose blockquote {
+  overflow-wrap: anywhere;
+}

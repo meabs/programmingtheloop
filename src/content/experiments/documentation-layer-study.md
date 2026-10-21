@@ -72,7 +72,7 @@ Six documentation layouts on copies of one FastAPI and React application; four i
 
 ## Results
 
-Findings DOCLAYER-1 and DOCLAYER-2 are below. Guide also: lean cheaper than baseline in 7 of 8 rounds on both change tasks (two-sided binomial p = 0.07) — suggestive, not confirmed; external repos: comprehension cheaper in four of five, code-change cost both ways, three of five generated layers contained a task-relevant factual error.
+Findings DOCLAYER-1 and DOCLAYER-2 are above. Guide also: lean cheaper than baseline in 7 of 8 rounds on both change tasks (two-sided binomial p = 0.07) — suggestive, not confirmed; external repos: comprehension cheaper in four of five, code-change cost both ways, three of five generated layers contained a task-relevant factual error.
 
 ### The trial set-up
 

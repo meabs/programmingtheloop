@@ -90,7 +90,7 @@ AgentGraphWorkTree: deterministic code graph, no language model in the extractor
 
 ## Results
 
-Findings AGWT-1..3 are below. Further accuracy and audit figures are in Chapter 9 and EVALUATION.md.
+Findings AGWT-1..3 are above. Further accuracy and audit figures are in Chapter 9 and EVALUATION.md.
 
 The evaluation document, copied from the AgentGraphWorkTree repository.
 

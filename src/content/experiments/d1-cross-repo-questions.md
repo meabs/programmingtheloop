@@ -90,7 +90,7 @@ Mean tokens per run, in thousands.
 
 On `x7_reviews` the no-backend arm was cheaper than the source arm; the other seven questions go the other way. Token totals are not comparable between agents.
 
-Finding D1-1 is in the table above. (Foreword finding OKF-2 is about *change* tasks F/G, not these questions.)
+Finding D1-1 is at the top of the page. (Foreword finding OKF-2 is about *change* tasks F/G, not these questions.)
 
 Full report: [results/D1-cross-repo-fresh-shopizer.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/D1-cross-repo-fresh-shopizer.md) (pinned to commit `5a09027`).
 

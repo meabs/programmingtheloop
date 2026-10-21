@@ -61,3 +61,22 @@ const publishedOn = item.data.publishedOn;
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  // Tables with long text cells wrap like prose (class table-prose); on phones
+  // each row becomes a card, using each cell's column heading as its label.
+  const PROSE_CELL_CHARS = 48;
+  document.querySelectorAll<HTMLTableElement>('.view-prose table').forEach((table) => {
+    const rows = Array.from(table.rows);
+    if (rows.length === 0) return;
+    const labels = Array.from(rows[0].cells).map((c) => (c.textContent ?? '').trim());
+    let longest = 0;
+    for (const row of rows) {
+      Array.from(row.cells).forEach((cell, i) => {
+        longest = Math.max(longest, (cell.textContent ?? '').trim().length);
+        if (cell.tagName === 'TD' && labels[i]) cell.dataset.label = labels[i];
+      });
+    }
+    if (longest > PROSE_CELL_CHARS) table.classList.add('table-prose');
+  });
+</script>

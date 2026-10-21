@@ -137,7 +137,7 @@ Before any run, I checked every task three ways: the hidden tests fail on the or
 
 ## Results
 
-Findings SKT-1 to SKT-3 are listed at the foot of the page. In short:
+Findings SKT-1 to SKT-3 are at the top of the page. In short:
 
 | Arm | Runs passed | Tokens vs no skills | Average cost per run | Typical run time |
 | --- | --- | --- | --- | --- |
