@@ -10,7 +10,7 @@ Weekday GenAI / coding-agent roundups live in `src/content/news/`. A daily autom
 | Changed files | **Only** `src/content/news/*.md` (verified via the GitHub PR files API) |
 | Base | `main`, same repo (not a fork) |
 
-When those conditions hold, `.github/workflows/news-automerge.yml` runs `npm ci`, `check:content`, `test:content`, `guide:verify`, and the full build. If all pass it **squash-merges** the PR with `GITHUB_TOKEN`, deletes the branch, and **dispatches** `Deploy to GitHub Pages` (`workflow_dispatch` on `main`). Merges made with `GITHUB_TOKEN` do not fire `push` workflows; dispatch is the reliable way to redeploy without duplicating the deploy job.
+When those conditions hold, `.github/workflows/news-automerge.yml` runs `npm ci`, `check:content`, `test:content`, and the full build. (`guide:verify` is omitted: it needs the book master file that only exists in agent workspaces, and news PRs cannot change guide content.) If all pass it **squash-merges** the PR with `GITHUB_TOKEN`, deletes the branch, and **dispatches** `Deploy to GitHub Pages` (`workflow_dispatch` on `main`). Merges made with `GITHUB_TOKEN` do not fire `push` workflows; dispatch is the reliable way to redeploy without duplicating the deploy job.
 
 If the branch name is wrong, the PR touches any non-news path, checks fail, or the PR is from a fork, the workflow exits without merging.
 
