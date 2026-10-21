@@ -92,7 +92,7 @@ The three hypotheses:
 **Four ways of running the agent** (called *arms*), identical except for the skills installed:
 
 - **No skills**: the agent gets the task and nothing else. This is the baseline.
-- **Placebo skill**: one skill of generic working habits, called "careful engineering" (read the request twice, map the code before changing it, and so on). If the real packs only help because the agent has *some* skill to read, the placebo should help as much.
+- **Placebo skill**: one skill of generic working habits, called "careful engineering" (read the request twice, map the code before changing it, and so on). It is not inert: it holds real general advice. It shows what a short, generic piece of guidance does, so a specialist pack has to beat it to show its own value.
 - **Superpowers**: the full pack. It pushes the agent to plan, then write a failing test before changing code.
 - **Pocock**: Matt Pocock's pack.
 
@@ -154,7 +154,17 @@ The unit is the task, not the run, because some tasks are simply harder than oth
 
 Then the question is whether a pattern like that could easily happen by chance if the pack made no difference at all. The test I used flips the sign of each task's difference in every possible way and counts how often the total comes out at least as large as the real one. Because two packs were tested, the result is adjusted upwards (the Holm method) so that testing more than one thing does not make a lucky result more likely.
 
-For Pocock, the adjusted figure (the *p value*) is 0.38: a gap this size would turn up by chance roughly 4 times in 10, so it is not evidence that the pack helps. For Superpowers, the gap was zero. The 95% interval for Pocock's gain runs from −3 to +22 percentage points: the data fit anything from a small loss to a moderate gain.
+For Pocock, the adjusted figure (the *p value*) is 0.38: a gap this size would turn up by chance roughly 4 times in 10. The result is inconclusive, not evidence that the pack helps, and every gain was a single run on a task. For Superpowers, the gap was zero. The 95% interval for Pocock's gain runs from −3 to +22 percentage points: the data fit anything from a small loss to a moderate gain. So this shows no *measured* improvement; it does not show the packs are useless.
+
+The comparisons have less to work with than 16 tasks suggests. Six tasks were passed by every run and one was failed by every run, so only 9 tasks separate the arms at all.
+
+### Checks added after the results
+
+After an outside review, I added three checks that were not in the original plan. Because I chose them after seeing the data, they are leads, not results.
+
+- **Each pack against the placebo.** Pocock did better than the placebo on 4 tasks and worse on none. With only 4 tasks differing, though, chance cannot be ruled out (p = 0.125 at best). Superpowers was better on 3 tasks and worse on 4.
+- **Cost per correct change.** This charges failed runs to the arm that made them. A correct change cost $0.021 with no skills, $0.025 with Pocock and $0.051 with Superpowers. Superpowers is about 2.4 times dearer per correct change and takes about 2.3 times as long.
+- **Effort may matter more than skills.** HREVIEW passed both of its runs at high reasoning effort when I was choosing tasks, and failed all 8 runs at low effort here, whatever the skills. Two runs against eight is a clue, not a controlled comparison.
 
 <figure class="guide-figure">
 
@@ -188,11 +198,11 @@ For Pocock, the adjusted figure (the *p value*) is 0.38: a gap this size would t
 
 </figure>
 
-### Where writing tests helped, and where nothing did
+### Two tasks in detail
 
-**TAXRATE.** The obvious fix is to mark the tax rate field with "must be between 0 and 100" annotations. In this code nothing checks those annotations, so they change nothing: rates of 150 were still accepted. Both no-skills runs and both placebo runs made only that fix and failed. Both Superpowers runs made it too, but also wrote a test that calls the API and added a range check in the code that refuses bad rates; one of them is confirmed to have seen its test fail before the fix. It was the only task where any arm went from 0 of 2 to 2 of 2. On ADDR, CARTCALC and PAGE, Superpowers did worse than no skills.
+**TAXRATE.** The obvious fix is to mark the tax rate field with "must be between 0 and 100" annotations. In this code nothing checks those annotations, so they change nothing: rates of 150 were still accepted. Both no-skills runs and both placebo runs made only that fix and failed. Both Superpowers runs made it too, but also wrote a test that calls the API and added a range check in the code that refuses bad rates; one of them is confirmed to have seen its test fail before the fix. It was the only task where any arm went from 0 of 2 to 2 of 2. Testing against the running API is a plausible reason, not a proven one: the pack changed other behaviour too. On ADDR, CARTCALC and PAGE, Superpowers did worse than no skills.
 
-**HREVIEW.** All eight runs failed. In seven, the change broke *creating* a review, which had worked before. To support editing, the agent changed shared code to look up the existing review by its id; a new review has no id yet (it is 0), so the lookup fails, and the API turns that failure into a 503. None of the project's existing tests creates a review, so the agent's own checks stayed green. I made the same mistake when writing my own fix.
+**HREVIEW.** All eight runs failed. In seven, the change broke *creating* a review, which had worked before. To support editing, the agent changed shared code to look up the existing review by its id; a new review has no id yet (it is 0), so the lookup fails, and the API turns that failure into a 503. None of the project's existing tests creates a review, so the agent's own checks stayed green. I made the same mistake when writing my own fix. The lesson is not about skills: an agent can test the behaviour it is changing and still break a neighbouring one it never considered. Encouraging test-first work doesn't fix that; tests that cover the shared code's other uses would.
 
 ### The other failures
 
@@ -206,7 +216,7 @@ For Pocock, the adjusted figure (the *p value*) is 0.38: a gap this size would t
 
 ## Limits
 
-One codebase; one agent and model; low reasoning effort only. Sixteen tasks are too few to settle a difference the size of Pocock's: from how much the results varied between tasks, roughly 60 tasks would be needed to detect a gain of 9 points reliably. Two runs per task is coarse: the placebo, which should do nothing, moved 4 of 16 tasks by one run. I wrote the tasks, hidden tests and reference fixes; all are published for checking. My earlier [skills-impact](https://github.com/meabs/experiments/tree/main/2026-10-skills-impact) experiment ran the same packs on 3 tasks at high reasoning effort (162 runs). No pack raised the pass rate there either, and Superpowers also worked test-first at two to three times the tokens. Its pass rates are not comparable with these, because of the different effort setting, but the cost finding is the same.
+One codebase; one agent and model; low reasoning effort only. Sixteen tasks are too few to settle a difference the size of Pocock's: from how much the results varied between tasks, roughly 60 tasks would be needed to detect a gain of 9 points reliably. Two runs per task is coarse: the placebo, which has no specialist content, moved 4 of 16 tasks by one run. The packs were adapted to Codex, so this says nothing about how they do in their original Claude Code setting. I wrote the tasks, hidden tests and reference fixes; all are published for checking. My earlier [skills-impact](https://github.com/meabs/experiments/tree/main/2026-10-skills-impact) experiment ran the same packs on 3 tasks at high reasoning effort (162 runs). No pack raised the pass rate there either, and Superpowers also worked test-first at two to three times the tokens. Its pass rates are not comparable with these, because of the different effort setting, but the cost finding is the same.
 
 ## Reproduce
 
