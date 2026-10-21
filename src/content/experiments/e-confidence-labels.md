@@ -52,7 +52,7 @@ Storefront working repo; backend guide present; backend source not available; so
 
 ## Results
 
-Finding E-1 is in the table below.
+Finding E-1 is below.
 
 ## Limits
 

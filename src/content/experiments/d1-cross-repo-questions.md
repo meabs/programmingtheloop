@@ -55,7 +55,7 @@ Shopizer React storefront; Shopizer Java backend not available; question-relevan
 
 ## Results
 
-Finding D1-1 is in the table below. (Foreword finding OKF-2 is about *change* tasks F/G, not these questions.)
+Finding D1-1 is below. (Foreword finding OKF-2 is about *change* tasks F/G, not these questions.)
 
 ## Limits
 

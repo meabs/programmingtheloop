@@ -65,7 +65,7 @@ Harder change tasks again; five arms (nothing, OpenAPI contract, hand-written 3 
 
 ## Results
 
-Findings H1-1 and H1-2 are in the table below.
+Findings H1-1 and H1-2 are below.
 
 ## Limits
 

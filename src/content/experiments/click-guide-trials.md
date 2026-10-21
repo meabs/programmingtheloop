@@ -54,7 +54,7 @@ Click, with and without a generated guide, including a default guide and a thinn
 
 ## Results
 
-Findings are in the table below.
+Findings are below.
 
 ## Limits
 

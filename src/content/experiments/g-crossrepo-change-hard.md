@@ -55,7 +55,7 @@ Four harder tasks; arms include no OKF, backend source, OKF, OKF with labels. Co
 
 ## Results
 
-Finding G-1 is in the table below. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers F and is not redefined here.
+Finding G-1 is below. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers F and is not redefined here.
 
 ## Limits
 

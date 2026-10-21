@@ -56,7 +56,7 @@ Four small ES-module tasks; hidden Node tests; arms include no OKF, OKF, OKF wit
 
 ## Results
 
-Finding F-1 is in the table below. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers G and is not redefined here.
+Finding F-1 is below. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers G and is not redefined here.
 
 ## Limits
 

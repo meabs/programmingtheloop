@@ -35,7 +35,7 @@ What was compared, on what repository, with which agent. Numbers only if the Gui
 
 ## Results
 
-One-line lead-in to the generated findings table (or cards on small screens). Do not repeat the finding numbers here; put unique caveats in Limits.
+One-line lead-in to the generated findings (table on desktop; cards on small screens). Do not repeat the finding numbers here; put unique caveats in Limits.
 
 ## Limits
 

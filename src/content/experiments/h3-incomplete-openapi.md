@@ -49,7 +49,7 @@ Guide recommendation (Chapter 3): supply a versioned API contract listing every 
 
 ## Results
 
-Finding H3-1 is in the table below. I have left `value` and `n` empty rather than pull a pass count from H3-runnable-service.md that may not be the same claim.
+Finding H3-1 is below. I have left `value` and `n` empty rather than pull a pass count from H3-runnable-service.md that may not be the same claim.
 
 ## Limits
 

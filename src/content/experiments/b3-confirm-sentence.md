@@ -52,7 +52,7 @@ Same bundle as the "no flags" arm in the B series, same efficiency prompt, with 
 
 ## Results
 
-Finding B3-1 is in the table below.
+Finding B3-1 is below.
 
 ## Limits
 
