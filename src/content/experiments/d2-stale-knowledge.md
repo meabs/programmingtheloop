@@ -4,6 +4,7 @@ description: "After planted backend renames, a stale guide gave the old answer i
 date: 2026-10-17
 summary: "Headline finding lives once as OKF-1 on the published okf-worked-example record. This page is the D2 trial write-up."
 type: "Controlled trial"
+plainTitle: "What an agent does when its guide to the backend is out of date. Headline result: OKF-1."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

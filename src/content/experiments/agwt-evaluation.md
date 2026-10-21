@@ -4,6 +4,7 @@ description: "Code-graph accuracy and agent token cost: multi-hop questions chea
 date: 2026-10-17
 summary: "Graph facts are mostly correct when sampled; multi-hop callers of callers cut tokens; simple lookups were level or dearer overall."
 type: "Evaluation"
+plainTitle: "AGWT = AgentGraphWorkTree: a code graph the agent can query for who-calls-what."
 github:
   - label: "AgentGraphWorkTree"
     href: "https://github.com/meabs/AgentGraphWorkTree"

@@ -4,6 +4,7 @@ description: "Harder cross-repo changes: 3 of 20 with nothing, 18 of 20 with a b
 date: 2026-10-17
 summary: "Harder cross-repo changes: 3 of 20 with nothing, 18 of 20 with a guide, level with readable source. Foreword composite OKF-2 also covers F."
 type: "Controlled trial"
+plainTitle: "The same question on harder tasks. Part of the OKF-2 result."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

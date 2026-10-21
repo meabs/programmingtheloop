@@ -4,6 +4,7 @@ description: "Where the agent could read the code, one sentence cut stale answer
 date: 2026-10-17
 summary: "Where the agent could read the code, “read the source to confirm…” cut stale answers from 8 of 12 to 0 of 12 at the same cost."
 type: "Controlled trial"
+plainTitle: "Does one sentence telling the agent to confirm in source stop it trusting a stale guide?"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

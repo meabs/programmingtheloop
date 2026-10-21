@@ -4,6 +4,7 @@ description: "Hidden-test passes on small cross-repo changes: 3 of 20 with nothi
 date: 2026-10-17
 summary: "Small cross-repo changes: 3 of 20 with nothing, 19 of 20 with a backend guide. Foreword composite OKF-2 also covers G."
 type: "Controlled trial"
+plainTitle: "Does a guide to the backend help an agent change code that depends on it? Small tasks."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

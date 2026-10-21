@@ -4,6 +4,7 @@ description: "For internal call-structure questions, only the guide and the sour
 date: 2026-10-17
 summary: "Internal call-structure questions: guide and source 21 of 24 each; contract 8; note 0 of 24."
 type: "Controlled trial"
+plainTitle: "The same four kinds of facts, tested on questions about the backend’s internals."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

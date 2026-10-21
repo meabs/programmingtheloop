@@ -77,6 +77,7 @@ const experimentSchema = z.object({
   supersededBy: z.string().optional(),
   evidenceGrade: z.enum(['published', 'unpublished']).optional(),
   agents: z.array(agentSchema).optional(),
+  plainTitle: z.string().optional(),
   runs: z.union([z.number(), z.string()]).optional(),
   repo: z.string().url().optional(),
   report: z.string().url().optional(),

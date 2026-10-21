@@ -4,6 +4,7 @@ description: "Controlled trials on facts across a repository boundary, stale kno
 date: 2026-10-17
 summary: "Where the agent can't read a dependency, the right facts decide the outcome. Stale facts get repeated. Agents without a contract defeated the freshness gate."
 type: "Controlled trials"
+plainTitle: "OKF = Open Knowledge Format: a guide to a backend repository the agent cannot read."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

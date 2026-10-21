@@ -4,6 +4,7 @@ description: "On Click, a generated guide did not improve correctness and cost m
 date: 2026-10-17
 summary: "On Click, agents were already near ceiling with or without a guide; the default guide cost 1.30× then 1.07× tokens, and the thinnest guide was dearest (1.26 to 1.42×)."
 type: "Controlled trial"
+plainTitle: "Does a generated guide to the Click library make agents cheaper or more correct?"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

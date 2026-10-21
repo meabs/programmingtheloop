@@ -4,6 +4,7 @@ description: "On harder cross-repo changes, contract, note, guide and source all
 date: 2026-10-17
 summary: "Harder changes, five arms: nothing 4/16; contract 13; note 14; guide 14; source 14 of 16. The note was cheapest (~128k tokens)."
 type: "Controlled trial"
+plainTitle: "Which kind of backend facts helps most: an API contract, a short note, an OKF guide or the source?"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

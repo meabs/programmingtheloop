@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import StartHere from '../components/home/StartHere.astro';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_OG_IMAGE, LINKS, PDF_PATH } from '../site';
 import {
   getHomepageSelection, getPublishedArticles, getPublishedExperiments,
@@ -10,12 +11,14 @@ const { featured, recent } = await getHomepageSelection();
 const [articles, experiments, guides, news] = await Promise.all([
   getPublishedArticles(), getPublishedExperiments(), getPublishedGuides(), getPublishedNews(),
 ]);
-const sections = [
+const allSections = [
   { name: 'Articles', href: '/articles/', description: 'Technical opinions, analysis and commentary.', count: articles.length },
   { name: 'Experiments', href: '/experiments/', description: 'Original research, prototypes and measured findings.', count: experiments.length },
   { name: 'Guides', href: '/guides/', description: 'Deeper practical writing and reference material.', count: guides.length },
   { name: 'News', href: '/news/', description: 'Relevant technical developments and their implications.', count: news.length },
 ];
+// Sections with nothing published are left out rather than shown as "Coming soon".
+const sections = allSections.filter((s) => s.count > 0);
 ---
 <BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE}>
   <section class="publication-hero">
@@ -38,18 +41,16 @@ const sections = [
     </div>
   </section>
 
+  <StartHere />
+
   <section class="publication-section" id="explore" aria-labelledby="explore-title">
     <div class="wrap">
       <div class="publication-heading"><h2 id="explore-title">Explore the site</h2><p>Choose a route into the work.</p></div>
       <div class="explore-list">
-        {sections.map((section, i) => section.count > 0 ? (
+        {sections.map((section, i) => (
           <a class="explore-item" href={section.href}>
             <span class="explore-number">0{i + 1}</span><span><strong>{section.name}</strong><small>{section.description}</small></span><span aria-hidden="true">↗</span>
           </a>
-        ) : (
-          <div class="explore-item is-empty">
-            <span class="explore-number">0{i + 1}</span><span><strong>{section.name}</strong><small>Nothing published here yet.</small></span><span class="coming-soon">Coming soon</span>
-          </div>
         ))}
       </div>
     </div>

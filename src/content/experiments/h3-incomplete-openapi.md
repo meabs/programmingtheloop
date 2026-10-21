@@ -4,6 +4,7 @@ description: "A contract that listed only one success code led agents to treat t
 date: 2026-10-17
 summary: "Guide recommendation note: an incomplete success-code list in a contract led agents to treat another success code as an error."
 type: "Controlled trial"
+plainTitle: "What an agent does when the API contract leaves out a success code."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

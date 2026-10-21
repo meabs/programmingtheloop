@@ -4,6 +4,7 @@ description: "Labels with a disclose-guesses instruction raised disclosure; accu
 date: 2026-10-17
 summary: "With an instruction to disclose guesses, agents said they relied on a guess in 6 of 16 answers instead of 0 of 16; accuracy did not reliably improve."
 type: "Controlled trial"
+plainTitle: "Do [high] and [medium] labels on guide entries make agents more careful?"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

@@ -4,6 +4,7 @@ description: "With the backend unread, agents answered 1 of 24 storefront-to-bac
 date: 2026-10-17
 summary: "With nothing, agents answered 1 of 24 cross-repo questions correctly at about 785k tokens per question; a guide or source reached 24 of 24."
 type: "Controlled trial"
+plainTitle: "Can an agent answer storefront-to-backend questions when it cannot read the backend?"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"
