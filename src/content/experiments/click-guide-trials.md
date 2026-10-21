@@ -77,7 +77,7 @@ Click, with and without a generated guide, including a default guide and a thinn
 
 ## Results
 
-Findings A-1 and A-2 are below.
+Findings A-1 and A-2 are above.
 
 ### Run 1: pointer told the agent to confirm in the source (v1)
 

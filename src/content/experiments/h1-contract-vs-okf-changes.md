@@ -75,7 +75,7 @@ Harder change tasks again; five arms (nothing, OpenAPI contract, hand-written 3 
 
 ## Results
 
-Findings H1-1 and H1-2 are below.
+Findings H1-1 and H1-2 are above.
 
 Baseline arm: **none**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 

@@ -59,7 +59,7 @@ Storefront working repo; backend guide present; backend source not available; so
 
 ## Results
 
-Finding E-1 is below.
+Finding E-1 is above.
 
 Baseline arm: **plain**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 

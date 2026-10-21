@@ -61,7 +61,7 @@ Same knowledge arms as H1; questions about internal call structure. Codex. Chapt
 
 ## Results
 
-Finding H2-1 is below. Chapter 9 notes that with network access on, 56 of 120 runs cloned the public repository; all 8 of the contract arm's correct answers were among them (README, H2).
+Finding H2-1 is above. Chapter 9 notes that with network access on, 56 of 120 runs cloned the public repository; all 8 of the contract arm's correct answers were among them (README, H2).
 
 Baseline arm: **none**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 

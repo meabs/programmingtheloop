@@ -58,7 +58,7 @@ Same bundle as the "no flags" arm in the B series, same efficiency prompt, with 
 
 ## Results
 
-Finding B3-1 is below.
+Finding B3-1 is above.
 
 Baseline arm: **noflag_confirm**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 

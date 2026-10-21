@@ -62,7 +62,7 @@ Four harder tasks; arms include no OKF, backend source, OKF, OKF with labels. Co
 
 ## Results
 
-Finding G-1 is below. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers F and is not redefined here.
+Finding G-1 is above. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers F and is not redefined here.
 
 Baseline arm: **no_okf**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 
