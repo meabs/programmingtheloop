@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import StartHere from '../components/home/StartHere.astro';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_OG_IMAGE, LINKS, PDF_PATH } from '../site';
 import {
   getHomepageSelection, getPublishedArticles, getPublishedExperiments,
@@ -28,7 +27,8 @@ const sections = allSections.filter((s) => s.count > 0);
         <h1>Exploring how technology <em>really works.</em></h1>
         <p>Practical thinking on AI, software engineering, architecture and the tools we build with. Articles, experiments, projects and guides. What I've learned, what I've measured and what I think.</p>
         <div class="actions">
-          <a class="button primary" href="#explore">Explore the site</a>
+          <a class="button primary" href="/findings/">Start here →</a>
+          <a class="button" href="#explore">Explore the site</a>
           <a class="button" href="/guides/programming-the-loop/">Read the guide →</a>
         </div>
       </div>
@@ -40,8 +40,6 @@ const sections = allSections.filter((s) => s.count > 0);
       </article>}
     </div>
   </section>
-
-  <StartHere />
 
   <section class="publication-section" id="explore" aria-labelledby="explore-title">
     <div class="wrap">

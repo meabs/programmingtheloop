@@ -22,6 +22,7 @@
 /experiments/h2-contract-vs-okf-questions/
 /experiments/h3-incomplete-openapi/
 /experiments/okf-worked-example/
+/findings/
 /guide/
 /guide/about-the-author/
 /guide/about-the-evidence/
