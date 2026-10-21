@@ -1,6 +1,18 @@
 # News posting format
 
-Weekday GenAI / coding-agent roundups live in `src/content/news/`. A daily automation should add **one** markdown file and open a PR — no other site files need editing for a normal post.
+Weekday GenAI / coding-agent roundups live in `src/content/news/`. A daily automation should add **one** markdown file on a dedicated branch and open a PR against `main` — no other site files need editing for a normal post.
+
+## Branch and auto-merge
+
+| | |
+| --- | --- |
+| Branch name | `news/YYYY-MM-DD` (must start with `news/`) |
+| Changed files | **Only** `src/content/news/*.md` (verified via the GitHub PR files API) |
+| Base | `main`, same repo (not a fork) |
+
+When those conditions hold, `.github/workflows/news-automerge.yml` runs `npm ci`, `check:content`, `test:content`, `guide:verify`, and the full build. If all pass it **squash-merges** the PR with `GITHUB_TOKEN`, deletes the branch, and **dispatches** `Deploy to GitHub Pages` (`workflow_dispatch` on `main`). Merges made with `GITHUB_TOKEN` do not fire `push` workflows; dispatch is the reliable way to redeploy without duplicating the deploy job.
+
+If the branch name is wrong, the PR touches any non-news path, checks fail, or the PR is from a fork, the workflow exits without merging.
 
 ## Path and filename
 
@@ -8,7 +20,7 @@ Weekday GenAI / coding-agent roundups live in `src/content/news/`. A daily autom
 src/content/news/YYYY-MM-DD.md
 ```
 
-Use the **publish date** (UK calendar day the roundup goes live), e.g. `2026-10-22.md`. The content-collection id is the filename without `.md`, so the public URL is `/news/YYYY-MM-DD/`.
+Use the **publish date** (UK calendar day the roundup goes live), e.g. `2026-10-22.md`. The content-collection id is the filename without `.md`, so the public URL is `/news/YYYY-MM-DD/`. Match the branch date to the filename (`news/2026-10-22` → `src/content/news/2026-10-22.md`).
 
 ## Frontmatter schema
 
