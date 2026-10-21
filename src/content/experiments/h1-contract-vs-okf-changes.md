@@ -27,10 +27,15 @@ topics:
   - measurement
 findings:
   - id: "H1-1"
-    statement: "On harder change tasks, nothing passed 4 of 16; contract 13, note 14, guide 14 and source 14 of 16 — the four knowledge arms beat nothing and did not differ reliably from each other"
+    statement: "On harder change tasks with nothing, 4 of 16 runs passed the hidden tests; with a contract 13, a hand-written note 14, a guide 14 and the backend source 14 of 16. The four knowledge arms beat nothing and did not differ reliably from each other."
     metric: "hidden-test passes of 16"
     value: "nothing 4/16; contract 13; note 14; guide 14; source 14 of 16"
     n: "16 runs per arm"
+    detail:
+      - "Tokens per run: nothing 277k; contract 192k; note 128k; guide 282k; source 334k. 16 runs per arm, 80 in all."
+      - "Nothing against contract: 4 of 16 against 13 of 16 (Fisher exact p = 0.004). Nothing against guide: 4 against 14 (p = 0.001). Every pair among the four knowledge arms: p = 1.000."
+      - "By task (nothing, contract, note, guide, source, of 4 runs): delete item 4, 4, 2, 4, 4; add voucher 0, 4, 4, 4, 3; checkout request 0, 1, 4, 2, 4; orders list 0, 4, 4, 4, 3."
+      - "The network was on: 2 of 80 runs, both in the nothing arm, cloned the public repository."
     limits:
       - "I wrote the note knowing the tasks, which favours it"
       - "contract generated from source by a script"
@@ -40,10 +45,14 @@ findings:
     status: current
     featured: false
   - id: "H1-2"
-    statement: "Among knowledge arms on those change tasks, the hand-written 3 KB note was cheapest at about 128k tokens per run"
+    statement: "Among the four knowledge arms on those change tasks, the hand-written 3 KB note was cheapest at about 128k tokens per run, against 192k for the contract, 282k for the guide and 334k for the backend source (277k with nothing)."
     metric: "mean tokens per run"
     value: "~128k"
     n: "16 runs (notes arm)"
+    detail:
+      - "Relative cost against nothing: note 0.52 (95% CI 0.44 to 0.61, cheaper); contract 0.79 (0.65 to 0.92, cheaper); guide 1.21 (0.93 to 1.54, no clear difference); source 1.35 (1.07 to 1.63, dearer)."
+      - "The note passed 14 of 16 and the contract 13 of 16, so the cheaper arms were not less correct."
+      - "The note was written by the experimenter knowing the tasks, which favours it."
     limits:
       - "same H1 limits as H1-1"
       - "token totals favour the note I wrote knowing the tasks"

@@ -32,7 +32,7 @@ topics:
 publishedOn: 2026-10-17
 findings:
   - id: "J-1"
-    statement: "A fully agent-optimised repository cost more tokens with no reliable correctness gain"
+    statement: "On a 1,173-file Java backend, the copy set up for agents (generated guide, code graph, three skills, configured AGENTS.md) used 35–48% more tokens per run than the plain copy, and its pass rate was not reliably different."
     metric: "relative token cost vs plain arm"
     value: "+35–48%"
     interval:
@@ -40,6 +40,12 @@ findings:
       high: "1.60"
       method: "bootstrap 95% CI on relative cost (task-equalized mean 1.48×)"
     n: 112
+    detail:
+      - "Tokens per run: plain 297k, optimised 401k. Relative cost 1.48 (95% CI 1.38 to 1.60), 56 runs per arm."
+      - "Four change tasks: plain passed 28 of 32, optimised 29 of 32 (p = 1.000). Tokens 407k against 526k."
+      - "Three structure questions: plain passed 16 of 24, optimised 19 of 24 (p = 0.517). Tokens 150k against 234k."
+      - "Hardest task, renaming an entity and deleting it (j7): plain 4 of 8, optimised 6 of 8, at 1,046k against 1,278k tokens. The first grader missed four AspectJ pointcut strings that every run had updated, so j7 is re-scored."
+      - "The set-up was used: the graph tool ran and the okf/ guide was opened in all 56 optimised runs."
     limits:
       - "one repository"
       - "one model"
@@ -97,9 +103,10 @@ Token totals are not comparable between agents (see adapters.py). Treat a verdic
 
 ### Analysis (`python scripts/analyse_j.py`, with j7 re-scored by `scripts/regrade_j.py`)
 
-```
-## changes
+#### Changes
+
 plain 28/32 (407k tokens); optimised 29/32 (526k, 1.29 times); p = 1.000
+
 | Task | plain | optimised | tokens plain | tokens optimised |
 | --- | --- | --- | --- | --- |
 | j1_rename_payment_method | 8/8 | 8/8 | 117k | 188k |
@@ -107,8 +114,10 @@ plain 28/32 (407k tokens); optimised 29/32 (526k, 1.29 times); p = 1.000
 | j3_remove_unused_param | 8/8 | 8/8 | 231k | 277k |
 | j7_rename_entity_delete | 4/8 | 6/8 | 1046k | 1278k |
 
-## questions
+#### Questions
+
 plain 16/24 (150k tokens); optimised 19/24 (234k, 1.56 times); p = 0.517
+
 | Task | plain | optimised | tokens plain | tokens optimised |
 | --- | --- | --- | --- | --- |
 | j4_overload_callers | 1/8 | 3/8 | 98k | 186k |
@@ -116,10 +125,12 @@ plain 16/24 (150k tokens); optimised 19/24 (234k, 1.56 times); p = 0.517
 | j6_checkout_path | 8/8 | 8/8 | 203k | 297k |
 
 Adoption in the optimised arm (56 runs): ran kg 56; opened okf/ 56; read navigate 55, change 32, check 34; read no skill 0
+
 plain: network runs 0; runs with a refused access 4
+
 optimised: network runs 0; runs with a refused access 6
+
 optimised runs that used kg: passed 48 of 56; did not: 0 of 0
-```
 
 Full report: [results/J-optimised-repo.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/J-optimised-repo.md) (pinned to commit `5a09027`). Design and deviations: [docs/EXPERIMENT_J.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/EXPERIMENT_J.md).
 

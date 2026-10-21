@@ -27,10 +27,15 @@ topics:
   - measurement
 findings:
   - id: "A-1"
-    statement: "On Click, the default guide cost more tokens than no guide in one run and was near level in a rerun (accuracy already at ceiling with or without a guide)"
+    statement: "On Click, the default guide did not make agents cheaper: against no guide it cost 1.30× the tokens in the first run and 1.07× when rerun without the confirm-in-source sentence. Accuracy was already at ceiling with or without a guide."
     metric: "relative token cost vs no-guide arm (default guide)"
     value: "1.30× (run 1); 1.07× (rerun)"
     n: "24 runs per arm (v1); 24 per arm (v2)"
+    detail:
+      - "Default guide, relative cost against no guide: 1.30 (95% CI 1.14 to 1.47, dearer) in run 1; 1.07 (0.99 to 1.16, no clear difference) in the rerun. 24 runs per arm in each."
+      - "Code graph only: 1.15 (1.03 to 1.28) then 1.14 (0.99 to 1.32). No call edges: 1.21 (1.08 to 1.37) then 1.10 (0.97 to 1.25)."
+      - "Accuracy: 14 or 15 of 15 questions and 8 or 9 of 9 change tasks verified in every arm, with or without a guide, so the comparison is about cost."
+      - "Removing the sentence moved the default arm from 1.30 to 1.07. The two runs were not simultaneous, so treat the size as indicative."
     limits:
       - "one repository (Click)"
       - "one model"
@@ -40,10 +45,14 @@ findings:
     status: current
     featured: false
   - id: "A-2"
-    statement: "On Click, the thinnest (names-only) guide was reliably the dearest"
+    statement: "On Click, the thinnest guide (types and function names only, with no citations, links, call edges or index) was the dearest in both runs: 1.42× the no-guide cost, then 1.26× once the confirm-in-source sentence was removed."
     metric: "relative token cost vs no-guide arm (minimal / names-only guide)"
     value: "1.26–1.42×"
     n: "24 runs per arm (v1); 24 per arm (v2)"
+    detail:
+      - "Minimal guide, relative cost against no guide: 1.42 (95% CI 1.25 to 1.59, dearer) in run 1; 1.26 (1.14 to 1.39, dearer) in the rerun. 24 runs per arm in each."
+      - "Without citations and links the agent still has to search, so the guide is extra reading."
+      - "Per-package concepts, a missing index and full call edges did not beat the default guide (run 1 only): 1.26, 1.22 and 1.30, all dearer."
     limits:
       - "one repository (Click)"
       - "one model"

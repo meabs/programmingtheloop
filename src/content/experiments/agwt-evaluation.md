@@ -25,9 +25,15 @@ topics:
   - measurement
 findings:
   - id: "AGWT-1"
-    statement: "On Shopizer, high-confidence Java call links matched bytecode 13,380 of 13,380; medium-confidence 8,947 of 8,957"
+    statement: "Java call links in the graph matched the compiled bytecode: all 13,380 high-confidence links on Shopizer, and 8,947 of 8,957 medium-confidence ones."
     metric: "call links correct vs bytecode"
     value: "13,380 / 13,380 high; 8,947 / 8,957 medium"
+    n: "Shopizer: 13,380 high and 8,957 medium call links"
+    detail:
+      - "spring-petclinic: 324 of 324 high-confidence and 233 of 233 medium-confidence links matched."
+      - "Python (Click, tests run under a call tracer): 378 of the 433 call edges whose caller ran (87%) were seen at runtime. The rest were real branches the tests do not reach, or dynamic dispatch. The graph holds 60% of the caller-to-callee pairs the run observed."
+      - "TypeScript and JavaScript: 32 randomly chosen edges from Express, zustand, Next-js-Boilerplate and the NestJS starter were all correct."
+      - "kgen audit precision: Click 300 of 300, Express 55 of 55. Recall is the weak side: 74% on Click (131 of 177 call sites) and 18% on Express (36 of 202), because calls on values of unknown type produce no edge."
     limits:
       - "Java figures carried over from an earlier project and not re-derived for EVALUATION.md"
       - "two Java projects in the write-up"
@@ -35,10 +41,15 @@ findings:
     status: current
     featured: false
   - id: "AGWT-2"
-    statement: "For callers-of-callers questions, the graph cut tokens sharply (Codex 84k against 196k; Cursor 121k against 414k; Copilot 161k against 181k)"
+    statement: "On callers-of-callers questions (Click and Express, 36 runs) the graph cut tokens for Codex (84k against 196k) and Cursor (121k against 414k), and was close to level for Copilot (161k against 181k). One-hop lookups were level or dearer."
     metric: "tokens per question (callers --depth)"
     value: "Codex 84k vs 196k; Cursor 121k vs 414k; Copilot 161k vs 181k"
     n: "36 runs across Click and Express (Guide fig. 3.3)"
+    detail:
+      - "Tokens per question, graph against plain, using kg callers --depth (0.3.5): Codex 84k vs 196k, Cursor 121k vs 414k, Copilot 161k vs 181k."
+      - "Follow-up on Click, callers up to three levels of iter_params_for_processing, 8 runs per arm per agent (48 runs): Codex 95k vs 255k (relative cost 0.37, interval 0.33 to 0.42); Cursor 122k vs 358k (0.34, 0.26 to 0.43); Copilot 178k vs 158k (1.13, 1.00 to 1.26, dearer)."
+      - "Copilot reads the repository cheaply with its own tools, and the kg output added to it."
+      - "One-hop lookups were level or up to 80% dearer with the graph, for example Express res.send for Cursor: 95k against 52k."
     limits:
       - "token totals are not comparable between agents"
       - "provisional cells with few runs per arm in places"
@@ -47,10 +58,16 @@ findings:
     status: current
     featured: false
   - id: "AGWT-3"
-    statement: "Across 192 runs on Python and TypeScript repositories the graph did not reduce tokens overall; agents ran kg and then checked with grep"
+    statement: "Across 192 controlled runs on Python and TypeScript repositories the graph did not reduce tokens overall: agents ran kg and then, as the instructions suggest for medium-confidence results, checked it with grep. Every run was correct, so these questions measure cost only."
     metric: "overall token cost vs plain"
     value: "did not reduce tokens overall"
     n: 192
+    detail:
+      - "Small repositories (Click, Next-js-Boilerplate; 48 runs, 48 of 48 correct): Claude Code 70k with the graph against 76k plain; Codex 74k against 63k."
+      - "Large repositories (Celery 443 files, NestJS 2,012 files; 48 runs, 48 of 48): Claude Code 91k against 83k; Codex 98k against 84k."
+      - "Multi-hop hierarchy and call-chain questions (72 runs, 72 of 72): Claude Code 84k against 81k; Codex 136k against 107k."
+      - "Hierarchy questions with kg subclasses (24 runs, 24 of 24): Codex 90k against 106k plain; Claude Code 82k against 79k."
+      - "With the instruction block, agents ran kg in every graph run; without it, none did."
     limits:
       - "accuracy at ceiling in those arms"
       - "questions chosen to have clean checkable answers"

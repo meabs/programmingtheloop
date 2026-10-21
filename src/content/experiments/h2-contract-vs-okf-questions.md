@@ -29,10 +29,15 @@ topics:
   - measurement
 findings:
   - id: "H2-1"
-    statement: "For internal call-structure questions, only the guide and the source worked, 21 of 24 each, against 8 for the contract and 0 for the note"
+    statement: "On six internal call-structure questions, the guide and the backend source each answered 21 of 24 correctly, against 8 of 24 for the contract, 0 of 24 for the hand-written note and 1 of 24 with nothing."
     metric: "correct of 24"
     value: "guide/source 21/24; contract 8/24; note 0/24"
     n: "24 runs per arm"
+    detail:
+      - "Tokens per run: nothing 447k; contract 464k; note 476k; guide 170k; source 207k. Relative cost against nothing: guide 0.40 (95% CI 0.35 to 0.46), source 0.47 (0.42 to 0.52); contract and note no clear difference."
+      - "Guide against contract (21 of 24 against 8 of 24) and against note (21 against 0): p < 0.001. Nothing against contract: p = 0.023."
+      - "Contamination: the network was on, and 56 of 120 runs cloned the public Shopizer repository (nothing 19 of 24, contract 18, note 19, guide and source none). All 8 contract passes were among them."
+      - "Without those 56 runs: nothing 1 of 5, contract 0 of 6, note 0 of 5, guide 21 of 24, source 21 of 24."
     limits:
       - "measured answers, not better changes"
       - "one model"

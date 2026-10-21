@@ -29,10 +29,16 @@ topics:
   - measurement
 findings:
   - id: "G-1"
-    statement: "On harder cross-repository change tasks, hidden-test passes went from 3 of 20 with nothing to 18 of 20 with a backend guide, level with readable source (18 of 20)"
+    statement: "On four harder cross-repository change tasks, hidden-test passes went from 3 of 20 with no guide to 18 of 20 with a guide to the backend, level with the agent being able to read the backend source (18 of 20)."
     metric: "hidden-test passes of 20"
     value: "3 / 20 → 18 / 20"
     n: "5 runs per task × 4 tasks"
+    detail:
+      - "Four tasks: fix deleteFromCart (the backend identifies the cart line by SKU), add an optional promoCode to addToCart, write a checkout request using six backend field names (some defined in parent classes), and normalise an orders-list response whose paging fields are in a parent class. Hidden Node tests, 5 runs per task per condition."
+      - "Passes of 20: no guide 3; backend source 18; guide 18; guide with labels 17. Tokens per run: 294k, 333k, 301k, 308k."
+      - "By task (g1 delete, g2 voucher, g3 checkout, g4 orders list), no guide: 3, 0, 0, 0 of 5. Guide: 5, 5, 3, 5. Source: 5, 4, 4, 5."
+      - "The 3 passes without a guide were all on g1, where the SKU could be guessed. Where the name was not guessable, no-guide agents passed 0 of 15 here, and 0 of 30 across F and G."
+      - "g3 (checkout) was hardest in every condition. Guide against source: 18 against 18 of 20 (p = 1.0). Both beat no guide (p < 0.001)."
     limits:
       - "5 runs per task"
       - "extra renames on inherited fields"
