@@ -65,7 +65,7 @@ Harder change tasks again; five arms (nothing, OpenAPI contract, hand-written 3 
 
 ## Results
 
-Guide: all four beat nothing (**4 of 16**) and didn't differ reliably from each other: contract **13**, note **14**, guide **14**, source **14** of 16. Note cheapest at about **128k** tokens per run (contract 192k, guide 282k, source 334k). Findings H1-1 and H1-2 are in the generated table below.
+Findings H1-1 and H1-2 are in the table below.
 
 ## Limits
 

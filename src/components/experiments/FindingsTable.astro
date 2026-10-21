@@ -7,10 +7,36 @@ interface Props {
 
 const { findings } = Astro.props;
 const rows = findings.filter((f) => f.status !== 'superseded');
+
+function displayN(n: string | number | undefined | null): string {
+  return n !== undefined && n !== null ? String(n) : '—';
+}
 ---
 {rows.length > 0 && (
   <section class="findings-block" aria-labelledby="findings-heading">
     <h2 id="findings-heading">Findings</h2>
+
+    <ul class="findings-cards">
+      {rows.map((f) => (
+        <li class="finding-card">
+          <header class="finding-card-head">
+            <code class="finding-id">{f.id}</code>
+            <span class="finding-value">{f.value ?? '—'}</span>
+          </header>
+          <p class="finding-statement">{f.statement}</p>
+          <p class="finding-n"><span class="finding-label">n</span> {displayN(f.n)}</p>
+          <ul class="findings-limits">
+            {f.limits.map((lim) => (
+              <li>{lim}</li>
+            ))}
+          </ul>
+          <p class="finding-source">
+            <a href={f.source} rel="noopener noreferrer">Source</a>
+          </p>
+        </li>
+      ))}
+    </ul>
+
     <div class="findings-table-wrap">
       <table class="findings-table">
         <thead>
@@ -29,7 +55,7 @@ const rows = findings.filter((f) => f.status !== 'superseded');
               <td><code>{f.id}</code></td>
               <td>{f.statement}</td>
               <td>{f.value ?? '—'}</td>
-              <td>{f.n !== undefined && f.n !== null ? String(f.n) : '—'}</td>
+              <td>{displayN(f.n)}</td>
               <td>
                 <ul class="findings-limits">
                   {f.limits.map((lim) => (
@@ -54,9 +80,74 @@ const rows = findings.filter((f) => f.status !== 'superseded');
     padding-top: 1.5rem;
     border-top: 1px solid var(--line, #d8d2c8);
   }
+
+  /* Mobile: stacked cards. Desktop: table. */
+  .findings-cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
   .findings-table-wrap {
+    display: none;
     overflow-x: auto;
   }
+
+  @media (min-width: 641px) {
+    .findings-cards {
+      display: none;
+    }
+    .findings-table-wrap {
+      display: block;
+    }
+  }
+
+  .finding-card {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line, #d8d2c8);
+  }
+  .finding-card:first-child {
+    padding-top: 0.25rem;
+  }
+  .finding-card:last-child {
+    border-bottom: none;
+  }
+  .finding-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .finding-id {
+    font-size: 0.95rem;
+  }
+  .finding-value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .finding-statement {
+    margin: 0 0 0.65rem;
+    line-height: 1.45;
+  }
+  .finding-n {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: var(--ink-faint, #6b7280);
+  }
+  .finding-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.35rem;
+  }
+  .finding-source {
+    margin: 0.65rem 0 0;
+    font-size: 0.9rem;
+  }
+
   .findings-table {
     width: 100%;
     border-collapse: collapse;

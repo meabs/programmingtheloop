@@ -54,7 +54,7 @@ Click, with and without a generated guide, including a default guide and a thinn
 
 ## Results
 
-The Guide: agents answered 14 or 15 of 15 questions and made 8 or 9 of 9 changes correctly with or without a guide; the default guide cost 1.30 times the tokens in one run and 1.07 in a rerun; the thinnest guide was reliably the dearest, 1.26 to 1.42 times. Structured finding A-1 is in the generated table below.
+Findings are in the table below.
 
 ## Limits
 

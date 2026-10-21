@@ -44,9 +44,7 @@ Backend renamed after the guide was generated; agent had the stale guide and no 
 
 ## Results
 
-**Finding defined once:** [OKF-1](/experiments/okf-worked-example/) on the published okf-worked-example record (Foreword finding 2): stale-guide arm gave the old answer in **14 of 16** drift answers; none of the wrong answers hedged. This draft does not redefine that finding.
-
-Guide also: source arm 0 of 16 old answers; confirm sentence or `stale_after` still 16 of 16 old answers without source; controls 16 of 16 correct in every arm.
+**Finding defined once:** [OKF-1](/experiments/okf-worked-example/) on the published okf-worked-example record. This draft does not redefine that finding. Guide also reports the source-arm, confirm-sentence, `stale_after`, and control arms — see RESULTS.md section D2.
 
 ## Limits
 

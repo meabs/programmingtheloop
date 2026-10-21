@@ -55,9 +55,7 @@ Four harder tasks; arms include no OKF, backend source, OKF, OKF with labels. Co
 
 ## Results
 
-Guide / results: **3 of 20** with nothing, **18 of 20** with OKF, **18 of 20** with source. Finding G-1 is in the generated table below.
-
-**Foreword composite:** [OKF-2](/experiments/okf-worked-example/) is not redefined here.
+Finding G-1 is in the table below. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers F and is not redefined here.
 
 ## Limits
 

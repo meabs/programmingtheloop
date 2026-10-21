@@ -72,7 +72,7 @@ AgentGraphWorkTree: deterministic code graph, no language model in the extractor
 
 ## Results
 
-Guide Ch. 9: Java high **13,380 of 13,380**, medium **8,947 of 8,957**; Click runtime **378 of 433** edges whose caller ran (87%); TS/JS hand sample **32 of 32**; audit precision 100% on samples, recall 74% Click / 18% Express. Ch. 3: multi-hop cheaper; simple lookups level or up to 80% dearer; 192 runs no overall token reduction. Findings AGWT-1..3 are in the generated table below.
+Findings AGWT-1..3 are in the table below. Further accuracy and audit figures are in Chapter 9 and EVALUATION.md.
 
 ## Limits
 

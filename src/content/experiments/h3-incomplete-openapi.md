@@ -49,7 +49,7 @@ Guide recommendation (Chapter 3): supply a versioned API contract listing every 
 
 ## Results
 
-Guide: "In one small trial, a contract that listed only one success code led agents to treat the service's other success code as an error." Finding H3-1 records that claim. I have left `value` and `n` empty rather than pull a pass count from H3-runnable-service.md that may not be the same claim.
+Finding H3-1 is in the table below. I have left `value` and `n` empty rather than pull a pass count from H3-runnable-service.md that may not be the same claim.
 
 ## Limits
 

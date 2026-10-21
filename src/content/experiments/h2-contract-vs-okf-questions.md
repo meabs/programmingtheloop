@@ -55,7 +55,7 @@ Same knowledge arms as H1; questions about internal call structure. Codex. Chapt
 
 ## Results
 
-Guide: guide and source **21 of 24** each; contract **8**; note **0**. Finding H2-1 is in the generated table below. Chapter 9 notes that with network access on, 56 of 120 runs cloned the public repository; all 8 of the contract arm's correct answers were among them (README, H2).
+Finding H2-1 is in the table below. Chapter 9 notes that with network access on, 56 of 120 runs cloned the public repository; all 8 of the contract arm's correct answers were among them (README, H2).
 
 ## Limits
 

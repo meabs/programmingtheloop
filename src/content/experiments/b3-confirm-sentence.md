@@ -52,7 +52,7 @@ Same bundle as the "no flags" arm in the B series, same efficiency prompt, with 
 
 ## Results
 
-The Guide: that one sentence cut stale answers from 8 of 12 to 0 of 12 at the same cost (77k against 79k tokens in RESULTS.md). Finding B3-1 is in the generated table below.
+Finding B3-1 is in the table below.
 
 ## Limits
 

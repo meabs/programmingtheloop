@@ -35,7 +35,7 @@ What was compared, on what repository, with which agent. Numbers only if the Gui
 
 ## Results
 
-The structured findings table is generated from frontmatter `findings[]` below the body. Summarise here in plain prose; do not invent figures.
+One-line lead-in to the generated findings table (or cards on small screens). Do not repeat the finding numbers here; put unique caveats in Limits.
 
 ## Limits
 

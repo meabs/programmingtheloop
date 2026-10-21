@@ -52,7 +52,7 @@ Storefront working repo; backend guide present; backend source not available; so
 
 ## Results
 
-Guide: disclosure rose from **0 of 16** to **6 of 16** with labels plus the instruction; wrong answers **11 to 8 of 16** (not reliable). Finding E-1 is in the generated table below.
+Finding E-1 is in the table below.
 
 ## Limits
 

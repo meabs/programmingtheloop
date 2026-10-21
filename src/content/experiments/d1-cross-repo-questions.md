@@ -55,7 +55,7 @@ Shopizer React storefront; Shopizer Java backend not available; question-relevan
 
 ## Results
 
-Guide: with nothing, **1 of 24** correct at about **785k** tokens per question; with source or bundle, **24 of 24**. Finding D1-1 is in the generated table below. (Foreword finding OKF-2 is about *change* tasks F/G, not these questions.)
+Finding D1-1 is in the table below. (Foreword finding OKF-2 is about *change* tasks F/G, not these questions.)
 
 ## Limits
 

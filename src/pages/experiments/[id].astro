@@ -21,6 +21,7 @@ const { item } = Astro.props;
 const { Content } = await render(item);
 const findings = item.data.findings ?? [];
 const isDraft = item.data.draft === true;
+const publishedOn = item.data.publishedOn;
 ---
 <BaseLayout
   title={item.data.title}
@@ -32,7 +33,9 @@ const isDraft = item.data.draft === true;
   <header class="page-head">
     <div class="wrap">
       <p class="section-label">
-        {item.data.type} · {formatItemDate(item.data.date)}
+        {publishedOn
+          ? `${item.data.type} · ${formatItemDate(publishedOn)}`
+          : item.data.type}
       </p>
       <h1>{item.data.title}</h1>
       <p>{item.data.description}</p>

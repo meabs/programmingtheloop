@@ -56,9 +56,7 @@ Four small ES-module tasks; hidden Node tests; arms include no OKF, OKF, OKF wit
 
 ## Results
 
-Guide / results: **3 of 20** with nothing, **19 of 20** with OKF. Finding F-1 is in the generated table below.
-
-**Foreword composite:** [OKF-2](/experiments/okf-worked-example/) states **3 → 18–19** of 20 across F and G and is not redefined here.
+Finding F-1 is in the table below. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers G and is not redefined here.
 
 ## Limits
 
