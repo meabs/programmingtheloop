@@ -29,10 +29,15 @@ topics:
   - measurement
 findings:
   - id: "F-1"
-    statement: "On small cross-repository change tasks, hidden-test passes went from 3 of 20 with nothing to 19 of 20 with a backend guide"
+    statement: "On four small cross-repository change tasks, hidden-test passes went from 3 of 20 with no guide to 19 of 20 with a guide to the backend, at about half the tokens (242k against 482k per run)."
     metric: "hidden-test passes of 20"
     value: "3 / 20 → 19 / 20"
     n: "5 runs per task × 4 tasks"
+    detail:
+      - "Four tasks, each to create a small storefront module using a fact only the backend states: the discount-code field on an add-to-cart request, the backend's paging names (size, offset), the reviews path (product/{id}/reviews), and the purchase flag in the public config response (purchasingEnabled). Hidden Node tests, 5 runs per task per condition."
+      - "Passes by task (f1, f2, f3, f4): no guide 3, 0, 0, 0; guide 5, 5, 4, 5; guide with confidence labels 5, 3, 2, 5."
+      - "The 3 passes without a guide were all on the first task, where the field name (voucher) is a word an agent can guess. No guide against guide: 3 against 19 of 20, p < 0.001."
+      - "Labels did not help: 15 of 20 against 19 of 20 for the plain guide (p about 0.18, not a reliable difference), at 235k tokens per run."
     limits:
       - "5 runs per task"
       - "identifiers renamed by me"

@@ -27,6 +27,14 @@ function displayN(n: string | number | undefined | null): string | null {
           </div>
           <p class="finding-statement">{f.statement}</p>
 
+          {f.detail && f.detail.length > 0 && (
+            <ul class="finding-detail">
+              {f.detail.map((d) => (
+                <li>{d}</li>
+              ))}
+            </ul>
+          )}
+
           {(f.metric || f.interval || displayN(f.n)) && (
             <dl class="finding-meta">
               {f.metric && (
@@ -128,6 +136,18 @@ function displayN(n: string | number | undefined | null): string | null {
     font-size: 1.05rem;
     line-height: 1.45;
     color: var(--ink, #12151c);
+  }
+
+  .findings-block .finding-detail {
+    margin: 0 0 1rem;
+    padding: 0 0 0 1.1rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--ink-muted, #4a5160);
+  }
+  .findings-block .finding-detail li {
+    margin: 0.35rem 0;
+    overflow-wrap: anywhere;
   }
 
   .findings-block .finding-meta {

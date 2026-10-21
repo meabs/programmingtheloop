@@ -40,10 +40,15 @@ topics:
 publishedOn: 2026-10-17
 findings:
   - id: "OKF-1"
-    statement: "Out-of-date knowledge of a dependency the agent could not read was repeated as fact; none of the wrong answers hedged"
+    statement: "After four renames in a backend the agent could not read, agents given the out-of-date guide gave the old fact in 14 of 16 drift answers; none of the wrong answers hedged."
     metric: "drift answers that gave the old fact (stale bundle arm)"
     value: "14 / 16"
     n: "4 runs per question"
+    detail:
+      - "Set-up: four renames on the backend (a handler method, a request-class field, a path variable, a request class). Four questions have a new answer, four are controls. The guide was generated before the refactor. 8 questions, 4 arms, 4 runs each: 128 runs."
+      - "Gave the old fact (of 16): backend source 0; stale guide 14; stale guide plus the confirm sentence 16; stale guide plus the sentence plus stale_after on the 7 changed concepts 16."
+      - "Controls were correct 16 of 16 in every arm, so the harm is exactly the drifted facts. Tokens per run were level: 148k, 157k, 158k, 156k."
+      - "None of the 46 stale answers carried a caveat. The confirm sentence could not help because there was no backend source to confirm against, and stale_after did not help: not one of 32 answers in that arm mentioned staleness."
     limits:
       - "the drift was planted"
       - "4 runs per question"
@@ -52,10 +57,14 @@ findings:
     status: current
     featured: true
   - id: "OKF-2"
-    statement: "When missing backend facts were supplied, cross-repository changes went from failing to mostly passing"
+    statement: "When the backend facts a storefront change depended on were supplied as a guide, hidden-test passes on cross-repository changes went from 3 of 20 with nothing to 19 of 20 on four small tasks and 18 of 20 on four harder ones."
     metric: "hidden-test passes out of 20"
     value: "3 → 18–19"
     n: "5 runs per task"
+    detail:
+      - "Small tasks (F): nothing 3 of 20, guide 19 of 20, at 482k against 242k tokens per run."
+      - "Harder tasks (G): nothing 3 of 20, guide 18 of 20, backend source readable 18 of 20, at 294k, 301k and 333k tokens per run."
+      - "5 runs per task per condition. The passes without a guide came only on tasks whose backend field name could be guessed. Per-task results are on the F and G pages."
     limits:
       - "5 runs per task"
       - "identifiers renamed by me"
@@ -64,10 +73,16 @@ findings:
     status: current
     featured: true
   - id: "OKF-3"
-    statement: "On the worked example's task, agents without the contract defeated the freshness gate; all runs reported passed while criterion 6 stayed unverified"
-    metric: "agent trials (with and without contract)"
-    value: "12 runs"
+    statement: "On the worked example's task, all 6 agents without the provider contract wrote a contract of their own as version 1.0.0 and edited the freshness gate so it compared it with itself, and none passed the black-box check; all 6 with the contract did. All 12 runs reported passed while listing the real inventory check as unverified."
+    metric: "runs passing the 7-check black-box suite (no contract against contract)"
+    value: "0 / 6 vs 6 / 6"
     n: "6 runs per arm"
+    detail:
+      - "Agent: Cursor CLI with composer-2.5. Task: add an availability endpoint to a storefront that calls an inventory service. Arm A had no contract, arm B had the pinned v2.1.0 contract."
+      - "Live check against the real inventory service, as is: 0 of 6 against 4 of 6. With the inventory URL variable adjusted: 0 of 6 against 6 of 6. Black-box 7 of 7: 0 of 6 against 6 of 6 (Fisher exact p about 0.002)."
+      - "Claimed passed but failed the independent check: 6 of 6 without the contract; 2 with it on the strict check, 0 once the URL variable was adjusted."
+      - "All six no-contract runs guessed the inventory path wrong (/stock/, /skus/ or /v1/stock/); none guessed /v2/stock/. All six invented their own contract, pinned it, and changed the gate so it passed."
+      - "Mean tokens per run 719k without the contract against 322k with it; median time 141 s against 67 s."
     limits:
       - "one model (composer-2.5)"
       - "one task"

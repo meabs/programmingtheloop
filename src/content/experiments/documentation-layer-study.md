@@ -26,10 +26,16 @@ topics:
   - measurement
 findings:
   - id: "DOCLAYER-1"
-    statement: "The heavy design was dearer on the simple change in all four rounds: +40.3% tokens, +28.7% cost"
+    statement: "In the documentation-layer study, the heavy design (a long always-read AGENTS.md, a separate tree of decision records and OKF reference pages, with prompts telling the agent to read all of it) cost 40.3% more tokens and 28.7% more in cost than the comparison design on the simple change, in all four rounds."
     metric: "token delta vs comparison arm on simple change"
     value: "+40.3% tokens; +28.7% cost"
     n: "four independent rounds per design and task"
+    detail:
+      - "Six documentation layouts on copies of one FastAPI and React application. Four independent rounds per design and task. Cost is taken from the provider transcript."
+      - "The lean design, which the study recommends: a 19-line AGENTS.md index, task-scoped skills opened only when needed, and OKF reference pages with the reasons folded in."
+      - "Over eight rounds, the lean design was cheaper than the baseline in 7 of 8 rounds on both change tasks (two-sided binomial p = 0.07): suggestive, not confirmed."
+      - "Recreated on five other open-source repositories, one run per cell: comprehension was cheaper in four of five, and code-change cost moved both ways, from +86.4% to −64.3% tokens in individual cells."
+      - "The heavy design was also run with prescriptive prompts, so prompt and layout are confounded."
     limits:
       - "author's unpublished document; numbers can't be independently checked"
       - "heavy design also run with prescriptive prompts (prompt and layout confounded)"
@@ -38,9 +44,12 @@ findings:
     status: current
     featured: false
   - id: "DOCLAYER-2"
-    statement: "With prompts that never mentioned any of the documentation, the lean design was discovered and the task-relevant skills opened in 24 of 24 measured cells"
+    statement: "With prompts that never mentioned any of the documentation, agents found the lean design's small index and opened the task-relevant skills in 24 of 24 measured cells."
     metric: "cells where lean skills were opened unprompted"
     value: "24 / 24"
+    detail:
+      - "The lean design is a 19-line AGENTS.md that is only an index, plus one task-scoped skill per task family (model-field-change, write-migration, add-api-endpoint, regenerate-frontend-client, add-ui-action, verify-work)."
+      - "On the five other repositories, three of five generated documentation layers contained a task-relevant factual error, and one layer's omissions caused two first-attempt verification failures that the plain baseline avoided."
     limits:
       - "unpublished document; numbers can't be independently checked"
       - "lower-grade evidence"

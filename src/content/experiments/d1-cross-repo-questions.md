@@ -33,6 +33,12 @@ findings:
     metric: "correct answers of 24 (no-backend arm)"
     value: "1 / 24"
     n: "3 runs per question × 8 questions"
+    detail:
+      - "Eight questions, each tracing one storefront call to the backend: the controller method, the request class, and a field or path variable. The backend is 1,173 Java files with 325 routes. Question-relevant identifiers were renamed so answers cannot come from memory of the public repository."
+      - "24 runs per arm. Correct and tokens per run: no backend 1 of 24 at 785k; backend source 24 of 24 at 181k; guide with the confirm sentence 24 of 24 at 189k; guide without it 24 of 24 at 169k."
+      - "Cost against no backend: source 0.43 (95% CI 0.25 to 0.65), guide with sentence 0.41 (0.26 to 0.61), guide without 0.34 (0.24 to 0.45). The no-backend cost is the cost of failing."
+      - "The no-backend runs varied from 55k to 3.0M tokens (median 722k), so the intervals on the ratios are wide; the accuracy gap is not in doubt."
+      - "Contamination: 3 of 24 no-backend runs searched the disk. One found another run's guide in its work folder and answered correctly (the 1 of 24), so that arm is if anything flattered. Two found copies of the backend source and still answered wrongly."
     limits:
       - "identifiers renamed so answers cannot come from memory of the public repo"
       - "one model"

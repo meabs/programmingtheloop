@@ -32,7 +32,7 @@ topics:
 publishedOn: 2026-10-17
 findings:
   - id: "J-1"
-    statement: "A fully agent-optimised repository cost more tokens with no reliable correctness gain"
+    statement: "On a 1,173-file Java backend, the copy set up for agents (generated guide, code graph, three skills, configured AGENTS.md) used 35–48% more tokens per run than the plain copy, and its pass rate was not reliably different."
     metric: "relative token cost vs plain arm"
     value: "+35–48%"
     interval:
@@ -40,6 +40,12 @@ findings:
       high: "1.60"
       method: "bootstrap 95% CI on relative cost (task-equalized mean 1.48×)"
     n: 112
+    detail:
+      - "Tokens per run: plain 297k, optimised 401k. Relative cost 1.48 (95% CI 1.38 to 1.60), 56 runs per arm."
+      - "Four change tasks: plain passed 28 of 32, optimised 29 of 32 (p = 1.000). Tokens 407k against 526k."
+      - "Three structure questions: plain passed 16 of 24, optimised 19 of 24 (p = 0.517). Tokens 150k against 234k."
+      - "Hardest task, renaming an entity and deleting it (j7): plain 4 of 8, optimised 6 of 8, at 1,046k against 1,278k tokens. The first grader missed four AspectJ pointcut strings that every run had updated, so j7 is re-scored."
+      - "The set-up was used: the graph tool ran and the okf/ guide was opened in all 56 optimised runs."
     limits:
       - "one repository"
       - "one model"

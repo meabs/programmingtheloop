@@ -26,10 +26,16 @@ topics:
   - verification
 findings:
   - id: "E-1"
-    statement: "With an instruction to disclose guesses, agents said they relied on a guess in 6 of 16 answers instead of 0 of 16; wrong answers fell only a little (11 to 8 of 16), not a reliable accuracy gain"
+    statement: "When some entries in a backend guide were deliberately wrong and the source could not be checked, labelling facts [high] or [medium] and telling the agent to say when it relied on a guess raised disclosure from 0 of 16 answers to 6 of 16. Wrong answers fell only from 11 to 8 of 16, which is not reliable."
     metric: "disclosure of [medium] guess (of 16)"
     value: "0/16 → 6/16"
     n: "4 runs per question"
+    detail:
+      - "Set-up: storefront as the working repository, backend guide copied in, backend source unavailable. 7 questions: 4 where a [medium] call entry was made wrong on purpose (a plausible name from elsewhere in the guide), 3 unchanged controls. 4 runs per question per condition, 112 runs."
+      - "Followed the wrong entry (of 16): no labels 11; labels, no instruction 10; labels with the instruction 8; wrong entries marked [high] 10."
+      - "Said it relied on a [medium] guess (of 16): 0, 0, 6 and 0. Disclosure 6 against 0 is reliable (Fisher exact p about 0.02); the drop in wrong answers is not (p about 0.47)."
+      - "Marking the wrong entries [high] removed all disclosure: agents trusted the label."
+      - "On the three control questions (12 answers per condition) the agent hedged on 0, 0, 2 and 3, so labels cost a little over-caution."
     limits:
       - "one model"
       - "backend source not available"

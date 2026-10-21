@@ -26,11 +26,19 @@ topics:
   - verification
 findings:
   - id: "H3-1"
-    statement: "A contract that listed only one success code led agents to treat the service's other success code as an error"
+    statement: "A contract that listed only one success code (201) led agents to treat the service's other success code as an error: on the retry task the contract arm passed 0 of 4 runs, while the other four arms passed 4 of 4."
+    metric: "retry-task passes of 4 (contract arm)"
+    value: "0 / 4"
+    n: "4 runs per arm on the retry task"
+    detail:
+      - "H3 is four change tasks against a small runnable FastAPI service, five arms (nothing, contract, notes, guide, source), 16 runs per arm."
+      - "On the retry task: nothing 4 of 4, contract 0 of 4, notes 4 of 4, guide 4 of 4, source 4 of 4. In the table of clean runs only, the contract arm is 0 of 3."
+      - "Overall passes of 16: nothing 11, contract 11, notes 10, guide 15, source 16. No reliable difference between any pair, and the price-rule task was solved only by arms that read the service."
+      - "H3 was contaminated: 15 non-source runs opened the service, the tests or other arms' files. The success-code result is one clear case, not a pass-rate claim."
     limits:
       - "described in the Guide as one small trial"
       - "one model (OKF series)"
-      - "pass-rate tables in results/H3-runnable-service.md measure a broader H3 harness; the success-code claim is cited from the README / Guide recommendation, not restated as a pass count here"
+      - "H3 was contaminated (15 non-source runs opened the service, the tests or other arms' files), so the overall pass rates are not claimed; this finding rests on one task"
     source: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
     status: current
     featured: false
@@ -50,7 +58,7 @@ Guide recommendation (Chapter 3): supply a versioned API contract listing every 
 
 ## Results
 
-Finding H3-1 is below. I have left `value` and `n` empty rather than pull a pass count from H3-runnable-service.md that may not be the same claim.
+Finding H3-1 is above. Its figure is the retry task only (contract arm 0 of 4, every other arm 4 of 4); the overall pass counts below are not claimed, because H3 was contaminated.
 
 Baseline arm: **none**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 

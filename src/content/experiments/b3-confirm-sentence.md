@@ -26,10 +26,15 @@ topics:
   - verification
 findings:
   - id: "B3-1"
-    statement: "Where the agent could read the code, the sentence “read the source to confirm before you rely on it” cut stale answers from 8 of 12 to 0 of 12 at the same cost"
+    statement: "On Click after three planted refactors, an agent under an efficiency prompt followed the out-of-date guide in 8 of 12 drift answers. Adding one sentence to the pointer, to read the source to confirm before relying on it, cut that to 0 of 12 at the same cost (77k against 79k tokens)."
     metric: "followed-stale answers of 12"
     value: "8/12 → 0/12"
     n: "12 drift answers per arm"
+    detail:
+      - "The drifts: a renamed function (_resolve_context became _resolve_completion_context), a new intermediate base class (PositionalParameter), and a call moved behind a helper (_ordered_params). 12 drift answers per arm: 3 questions, 4 runs each."
+      - "Followed the stale guide: 8 of 12 without the sentence, 0 of 12 with it (Fisher exact, two-sided, p about 0.001). With no guide at all the same prompt gave 0 of 12."
+      - "Nothing else changed between the two arms: same guide, same efficiency prompt."
+      - "Tags, banners and provenance fields did not help (pooled 26 of 36 followed stale, against 8 of 12 with no flags, p = 0.77). stale_after helped a little in a post-hoc pooled comparison (p = 0.025): suggestive, not settled."
     limits:
       - "planted drift on Click (same series as B)"
       - "one model"

@@ -35,6 +35,8 @@ const findingSchema = z.object({
     })
     .optional(),
   n: z.union([z.number(), z.string()]).optional(),
+  /** Supporting figures: what was compared and the numbers per arm. */
+  detail: z.array(z.string()).optional(),
   limits: z.array(z.string()).min(1),
   source: z.string().url(),
   status: z.enum(['current', 'superseded']).default('current'),
