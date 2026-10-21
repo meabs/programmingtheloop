@@ -10,11 +10,12 @@ github:
 guideLinks:
   - label: "Chapter 3 — The right facts"
     href: "/guides/programming-the-loop/right-facts/"
-draft: true
+draft: false
 experimentId: "H3"
 question: "What goes wrong if a provider contract lists only one of the service's success codes?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-13
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"

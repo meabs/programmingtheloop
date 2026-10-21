@@ -12,11 +12,12 @@ guideLinks:
     href: "/guides/programming-the-loop/right-facts/"
   - label: "Chapter 9 — Tools and honest measurement"
     href: "/guides/programming-the-loop/tools-measurement/"
-draft: true
+draft: false
 experimentId: "D1"
 question: "When a storefront change depends on a backend the agent cannot read, can it answer questions that need backend facts?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"

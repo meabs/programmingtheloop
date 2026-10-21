@@ -2,7 +2,7 @@
 title: "Stale knowledge across a boundary (experiment D2)"
 description: "After planted backend renames, a stale guide gave the old answer in 14 of 16 drift answers."
 date: 2026-10-17
-summary: "Headline finding lives once as OKF-1 on the published okf-worked-example record. This draft is the D2 trial page."
+summary: "Headline finding lives once as OKF-1 on the published okf-worked-example record. This page is the D2 trial write-up."
 type: "Controlled trial"
 github:
   - label: "OKFExperiment"
@@ -14,11 +14,12 @@ guideLinks:
     href: "/guides/programming-the-loop/foreword/"
   - label: "Published record (OKF-1)"
     href: "/experiments/okf-worked-example/"
-draft: true
+draft: false
 experimentId: "D2"
 question: "When a guide is stale and the agent cannot read the dependency, does it repeat old facts?"
 status: planned
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"
@@ -44,7 +45,7 @@ Backend renamed after the guide was generated; agent had the stale guide and no 
 
 ## Results
 
-**Finding defined once:** [OKF-1](/experiments/okf-worked-example/) on the published okf-worked-example record. This draft does not redefine that finding. Guide also reports the source-arm, confirm-sentence, `stale_after`, and control arms — see RESULTS.md section D2.
+**Finding defined once:** [OKF-1](/experiments/okf-worked-example/) on the published okf-worked-example record. This page does not redefine that finding. Guide also reports the source-arm, confirm-sentence, `stale_after`, and control arms — see RESULTS.md section D2.
 
 ## Limits
 

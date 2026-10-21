@@ -12,11 +12,12 @@ guideLinks:
     href: "/guides/programming-the-loop/right-facts/"
   - label: "Published composite (OKF-2)"
     href: "/experiments/okf-worked-example/"
-draft: true
+draft: false
 experimentId: "F"
 question: "When the agent must change the storefront using facts only the backend states, how much does a backend guide help?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"

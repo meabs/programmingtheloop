@@ -12,11 +12,12 @@ guideLinks:
     href: "/guides/programming-the-loop/right-facts/"
   - label: "Chapter 9 — Tools and honest measurement"
     href: "/guides/programming-the-loop/tools-measurement/"
-draft: true
+draft: false
 experimentId: "H2"
 question: "For questions about internal call structure across a boundary, which knowledge kind works?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"

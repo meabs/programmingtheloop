@@ -10,11 +10,12 @@ github:
 guideLinks:
   - label: "Chapter 3 — The right facts"
     href: "/guides/programming-the-loop/right-facts/"
-draft: true
+draft: false
 experimentId: "E"
 question: "Do confidence labels change what agents do when some guide entries are wrong and the source is unread?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"

@@ -12,11 +12,12 @@ guideLinks:
     href: "/guides/programming-the-loop/right-facts/"
   - label: "Chapter 9 — Tools and honest measurement"
     href: "/guides/programming-the-loop/tools-measurement/"
-draft: true
+draft: false
 experimentId: "AGWT"
 question: "Are the graph's facts correct, and when does the graph reduce agent tokens?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-11
 repo: "https://github.com/meabs/AgentGraphWorkTree"
 report: "https://github.com/meabs/AgentGraphWorkTree/blob/main/docs/EVALUATION.md"
 topics:

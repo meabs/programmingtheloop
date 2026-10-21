@@ -10,11 +10,12 @@ github:
 guideLinks:
   - label: "Chapter 3 — The right facts"
     href: "/guides/programming-the-loop/right-facts/"
-draft: true
+draft: false
 experimentId: "H1"
 question: "For harder cross-repo changes, what kind of facts help — contract, short note, guide, or source?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"
