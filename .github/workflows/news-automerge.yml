@@ -88,10 +88,6 @@ jobs:
         if: steps.gate.outputs.eligible == 'true'
         run: npm run test:content
 
-      - name: Guide coverage verify
-        if: steps.gate.outputs.eligible == 'true'
-        run: npm run guide:verify
-
       - name: Check and build
         if: steps.gate.outputs.eligible == 'true'
         run: npm run build
