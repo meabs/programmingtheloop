@@ -32,7 +32,7 @@ agents:
     settings: "worked-example agent trials (finding OKF-3)"
 runs: "~1,650"
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
 topics:
   - context
   - verification
@@ -53,7 +53,7 @@ findings:
       - "the drift was planted"
       - "4 runs per question"
       - "one model"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
     status: current
     featured: true
   - id: "OKF-2"
@@ -69,7 +69,7 @@ findings:
       - "5 runs per task"
       - "identifiers renamed by me"
       - "one model"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
     status: current
     featured: true
   - id: "OKF-3"
@@ -87,7 +87,7 @@ findings:
       - "one model (composer-2.5)"
       - "one task"
       - "6 runs per arm"
-    source: "https://github.com/meabs/ProgrammingTheLoop-WorkedExample/blob/main/agent-trials/results.md"
+    source: "https://github.com/meabs/ProgrammingTheLoop-WorkedExample/blob/f2abade3946e8c4bc1a9ad6c0ff6b88b3ec1a1b4/agent-trials/results.md"
     status: current
     featured: true
 ---
@@ -103,6 +103,46 @@ findings:
 **Facts across a boundary.** A storefront change depended on a backend the agent could not see. With nothing, **3 of 20** runs passed the hidden tests; with a guide to the backend, **19 of 20** on small tasks and **18 of 20** on harder ones. *Limits:* 5 runs per task, identifiers renamed by me, one model.
 
 **Worked-example agent trials.** On the worked example's task, agents without the provider contract rewrote the freshness gate so it compared an invented contract with itself. All **12 runs** (with and without the contract) reported `passed` while listing the brief's check against the real inventory service as unverified. With the contract, all 6 runs were correct. *Limits:* one model (`composer-2.5`), one task, 6 runs per arm.
+
+## The OKFExperiment results write-up
+
+The overview and the sections that have no experiment page of their own, copied from `docs/RESULTS.md` in the OKFExperiment repository. The lettered trials with their own pages (A, B, D to H) are on those pages.
+
+### What the conditions are
+
+The README organises everything around four conditions: **1. No OKF**, **2. OKF**, **3. OKF with confidence labels** (every fact marked `[high]`, stated in the source, or `[medium]`, a heuristic guess, with an instruction to say when relying on `[medium]`) and **4. cross-repo change with OKF**. Tests A and B use the same repository, C to G cross repositories; F and G are the cross-repo change tests (G the harder one), E the confidence-label test.
+
+> **Terms.** A *bundle* is OKF's name for a generated guide to a codebase: a folder of markdown files, one per module or package, listing what it contains and where each fact came from. The [main README](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/README.md) calls it a *guide*.
+
+Codex `gpt-5.6-luna` (medium reasoning), AgentTrialRig 0.6.1. Bundles come from `kgen okf` (deterministic, no language model; [how to get it](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/README.md#reproducing)). Raw reports are in [`../results/`](https://github.com/meabs/OKFExperiment/tree/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results). Read anything under 8 runs per arm as provisional; intervals are 95%.
+
+### C. Cross-repo (synthetic: `ledger-lib` and `invoice-service`, 3 change tasks, 12 runs per arm)
+
+| arm | verified | relative cost |
+| --- | --- | --- |
+| library installed only (nothing said) | 12/12 | 1.00 |
+| library source location given | 12/12 | 1.28 (1.11-1.47) dearer |
+| library bundle vendored under `okf/references/` | 12/12 | 1.25 (1.09-1.40) dearer |
+| the same with tags, banner and `verified` stamps | 12/12 | 1.25 (1.11-1.39) dearer |
+| library bundle from an older version (stale) | 12/12 | 1.05 (0.96-1.12) |
+| stale, with tags, banner and targeted `stale_after` | 12/12 | 1.10 (0.96-1.25) |
+
+- Everything passed, and no run hit a stale-API error in any arm (0 of 12 each). The library was installed and readable, so the agent could always inspect it, and the other repo's bundle added cost without adding accuracy.
+- This does **not** show that cross-repo bundles never help. A dependency the agent cannot read (a private service, a binary) is untested, and the pair is synthetic.
+
+
+### Spec findings from building it
+
+- Bundle-relative links (`/modules/x.md`) point at the bundle root, so a bundle copied under `references/<name>/` has every internal link broken unless they are rewritten. The emitter rewrites them; the spec does not say how a vendored bundle should be linked.
+- A deterministic generator can vouch for structure (names, signatures, call edges, citations), not behaviour. The spec's `verified` field cannot express that, and most concepts contain medium-confidence call edges, so `verified` stamps rarely applied.
+
+
+### Limits
+
+One model; one repository for A and B (Click, about 25 modules); a synthetic pair for C; 3 to 4 runs per cell; graders and drift written by the experimenters; a constant overhead from the author's global agent skills in every run; v1 and v2 not run simultaneously. The pooled B comparisons were chosen after seeing the data. The bundles the agents read were generated before a later fix to a few optional frontmatter fields (`resource`, `sources[].id`, `last_modified`; see [CONFORMANCE.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/CONFORMANCE.md)); concept bodies were unchanged and nothing was rerun. A language-model arm was excluded by design. D uses the complex repository only as a dependency: whether a bundle saves cost *inside* a large repository the agent can search was not tested. D's backend is real code with the question-relevant identifiers renamed and the planted refactors applied as text edits that were not compiled; it is still recognisably Shopizer by package name.
+
+
+Source: [docs/RESULTS.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md) (pinned to commit `5a09027`).
 
 ## Full results: worked-example agent trials
 
@@ -220,3 +260,4 @@ Source: [agent-trials/results.md](https://github.com/meabs/ProgrammingTheLoop-Wo
 - Cross-repo, stale knowledge, and contracts: [Chapter 3](/guides/programming-the-loop/right-facts/)
 - Freshness gates and independent checks: [Chapter 5](/guides/programming-the-loop/proof-not-promises/)
 - How the worked example was built: [Chapter 1](/guides/programming-the-loop/facts-checks-upkeep/) and [About the evidence](/guides/programming-the-loop/about-the-evidence/)
+- Full OKFExperiment write-up: [OKFExperiment details](/notes/okf-details/), covering the four conditions, the recommended layout, every test and the detailed analysis

@@ -20,7 +20,7 @@ evidenceGrade: unpublished
 publishedOn: 2026-10-11
 agents: []
 repo: "https://github.com/meabs/AgentTrialRig"
-report: "https://github.com/meabs/AgentTrialRig/blob/main/examples/fastapi-doc-layers/README.md"
+report: "https://github.com/meabs/AgentTrialRig/blob/e54514ae9575c3f878031cce4fc45fcfc749f409/examples/fastapi-doc-layers/README.md"
 topics:
   - context
   - measurement
@@ -40,7 +40,7 @@ findings:
       - "author's unpublished document; numbers can't be independently checked"
       - "heavy design also run with prescriptive prompts (prompt and layout confounded)"
       - "lower-grade evidence than published OKF / J trials"
-    source: "https://github.com/meabs/AgentTrialRig/blob/main/examples/fastapi-doc-layers/README.md"
+    source: "https://github.com/meabs/AgentTrialRig/blob/e54514ae9575c3f878031cce4fc45fcfc749f409/examples/fastapi-doc-layers/README.md"
     status: current
     featured: false
   - id: "DOCLAYER-2"
@@ -53,7 +53,7 @@ findings:
     limits:
       - "unpublished document; numbers can't be independently checked"
       - "lower-grade evidence"
-    source: "https://github.com/meabs/AgentTrialRig/blob/main/examples/fastapi-doc-layers/README.md"
+    source: "https://github.com/meabs/AgentTrialRig/blob/e54514ae9575c3f878031cce4fc45fcfc749f409/examples/fastapi-doc-layers/README.md"
     status: current
     featured: false
 ---
@@ -104,4 +104,4 @@ Guide's own framing: lower-grade evidence; you can't check its numbers against a
 
 ## Reproduce
 
-Trial set-up: [AgentTrialRig examples/fastapi-doc-layers](https://github.com/meabs/AgentTrialRig/blob/main/examples/fastapi-doc-layers/README.md). The study document is unpublished, so the figures cannot be re-derived from a public table.
+Trial set-up: [AgentTrialRig examples/fastapi-doc-layers](https://github.com/meabs/AgentTrialRig/blob/e54514ae9575c3f878031cce4fc45fcfc749f409/examples/fastapi-doc-layers/README.md). The study document is unpublished, so the figures cannot be re-derived from a public table.

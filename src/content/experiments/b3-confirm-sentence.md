@@ -20,7 +20,7 @@ agents:
   - name: "Codex"
     model: "gpt-5.6-luna"
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
 topics:
   - context
   - verification
@@ -39,7 +39,7 @@ findings:
       - "planted drift on Click (same series as B)"
       - "one model"
       - "4 runs per question"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
     status: current
     featured: false
 ---
@@ -60,15 +60,45 @@ Same bundle as the "no flags" arm in the B series, same efficiency prompt, with 
 
 Finding B3-1 is above.
 
+### B. Confidence flags (Click after three planted refactors; the bundle is from before them)
+
+Drifts: a renamed function (`_resolve_context` to `_resolve_completion_context`), a new intermediate base class (`PositionalParameter`) and a call moved behind a helper (`_ordered_params`). Two further questions were unchanged (controls). 12 drift answers per arm (3 questions x 4 runs). "Followed stale" = the answer gives the old fact and not the new one.
+
+**v1 (the pointer told the agent to confirm in source): 1 of 84 drift answers followed a stale claim across all seven bundle arms.** The flags could not be compared, because every arm already had a verification instruction.
+
+**v2 (that sentence removed, and an efficiency prompt: "use the repository knowledge ... avoid unnecessary file reads"):**
+
+| arm | followed stale (of 12) | correct on the 2 control questions | relative cost |
+| --- | --- | --- | --- |
+| no bundle | 0 | 7/8 | 1.00 |
+| bundle, no flags | **8** | 7/8 | 1.42 |
+| + OKF-native fields (`generated`, `sources`, `status`) and a trust-tier sentence | 9 | 8/8 | 1.25 |
+| + per-line `[high]/[medium]` tags | 8 | 7/8 | 1.31 |
+| + banner telling the reader to check the source | 10 | 6/8 | 1.28 |
+| + tags, banner and `verified` stamps | 8 | 8/8 | 1.32 |
+| + `stale_after` only on concepts whose source changed | 5 | 8/8 | 1.29 |
+| + `stale_after` on every concept | 6 | 8/8 | 1.34 |
+
+- An unflagged bundle is harmful under efficiency pressure: 8/12 against 0/12 with no bundle (Fisher exact, two-sided p about 0.001).
+- Tags, banners and OKF-native provenance did not help (pooled 26/36 against 8/12, p = 0.77). The banner arm was the worst.
+- `stale_after` helped a little: 11/24 against 43/60 for the arms without it (one-sided, post-hoc pooled, p = 0.025). Targeted against no flags was 5/12 against 8/12 (p = 0.21). Suggestive, not settled.
+- The renamed function was followed most often: agents answered from the bundle without searching for the new name.
+
+**B3, the clean test of the sentence** (same bundle as "no flags", same efficiency prompt, one sentence added to the pointer: "read the source to confirm before you rely on it"): **0 of 12 followed stale, against 8 of 12 without it** (p about 0.001), at the same cost (77k against 79k tokens). Nothing else changed.
+
+Source: [docs/RESULTS.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md) (pinned to commit `5a09027`).
+
+### Trial report (raw output)
+
 Baseline arm: **noflag_confirm**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 
-### codex
+#### codex
 
 | arm | runs | correct | tokens per run (95% CI) | relative cost (95% CI) | verdict | turns | used tool | seconds |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | noflag_confirm | 20 | 19/20 | 77k (70k to 84k) | 1.00 | baseline | 3.1 | 20/20 | 17 |
 
-### Tokens by question (mean, thousands)
+#### Tokens by question (mean, thousands)
 
 | question | codex/noflag_confirm |
 | --- | --- |
@@ -89,3 +119,5 @@ Planted drift; one model; 4 runs per question. The Guide's D2 case study notes t
 ## Reproduce
 
 [OKFExperiment](https://github.com/meabs/OKFExperiment); see repository README. Guide chapter does not list commands.
+
+Longer write-up: [Test B in the OKFExperiment details](/notes/okf-details/#test-b-same-repo-guide-out-of-date-a-guide-made-agents-repeat-old-facts-and-one-sentence-fixed-it).

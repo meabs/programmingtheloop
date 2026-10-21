@@ -20,7 +20,7 @@ agents:
   - name: "Codex"
     model: "gpt-5.6-luna"
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/README.md"
 topics:
   - context
   - verification
@@ -39,7 +39,7 @@ findings:
       - "described in the Guide as one small trial"
       - "one model (OKF series)"
       - "H3 was contaminated (15 non-source runs opened the service, the tests or other arms' files), so the overall pass rates are not claimed; this finding rests on one task"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/README.md"
     status: current
     featured: false
 ---
@@ -180,3 +180,5 @@ Guide frames it as one small trial. See also RESULTS / README Limits for the OKF
 ## Reproduce
 
 [OKFExperiment](https://github.com/meabs/OKFExperiment) README (experiment H3). Guide does not list commands.
+
+Longer write-up: [Test H in the OKFExperiment details](/notes/okf-details/#test-h-does-a-guide-add-anything-beyond-an-api-contract-yes-for-call-structure-no-for-field-names).

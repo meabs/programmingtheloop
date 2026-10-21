@@ -6,7 +6,7 @@ summary: "On 16 bug fixes and features in a Java online-shop backend, neither Su
 type: "Controlled trial"
 github:
   - label: "experiments"
-    href: "https://github.com/meabs/experiments/tree/main/2026-10-skills-tasks"
+    href: "https://github.com/meabs/experiments/tree/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks"
 draft: false
 experimentId: "SKT"
 question: "On a varied set of real change tasks, do Superpowers or Matt Pocock's skills raise the share of changes that pass independent acceptance tests, and at what cost in tokens?"
@@ -18,8 +18,8 @@ agents:
     settings: "low reasoning, isolation on"
 runs: 128
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/REPORT.md"
-prediction: "https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/README.md"
+report: "https://github.com/meabs/experiments/blob/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks/REPORT.md"
+prediction: "https://github.com/meabs/experiments/blob/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks/README.md"
 topics:
   - verification
   - measurement
@@ -38,7 +38,7 @@ findings:
       - "one repository"
       - "one model at low reasoning effort"
       - "16 tasks, 2 runs per task per arm"
-    source: "https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks/REPORT.md"
     status: current
     featured: false
   - id: "SKT-2"
@@ -53,7 +53,7 @@ findings:
     limits:
       - "one repository"
       - "one model at low reasoning effort"
-    source: "https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks/REPORT.md"
     status: current
     featured: false
   - id: "SKT-3"
@@ -64,7 +64,7 @@ findings:
     limits:
       - "the agent could not see the hidden tests"
       - "one model at low reasoning effort"
-    source: "https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks/REPORT.md"
     status: current
     featured: false
 ---
@@ -75,7 +75,7 @@ Skill packs are sets of written instructions that a coding agent reads before it
 
 ## Prediction
 
-Before any measured run I wrote down the design, the hypotheses, how tasks would be chosen and how the results would be compared, and published it ([README.md](https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/README.md)). Fixing the plan first stops me choosing, after seeing the results, whichever comparison looks best.
+Before any measured run I wrote down the design, the hypotheses, how tasks would be chosen and how the results would be compared, and published it ([README.md](https://github.com/meabs/experiments/blob/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks/README.md)). Fixing the plan first stops me choosing, after seeing the results, whichever comparison looks best.
 
 The three hypotheses:
 
@@ -216,8 +216,8 @@ After an outside review, I added three checks that were not in the original plan
 
 ## Limits
 
-One codebase; one agent and model; low reasoning effort only. Sixteen tasks are too few to settle a difference the size of Pocock's: from how much the results varied between tasks, roughly 60 tasks would be needed to detect a gain of 9 points reliably. Two runs per task is coarse: the placebo, which has no specialist content, moved 4 of 16 tasks by one run. The packs were adapted to Codex, so this says nothing about how they do in their original Claude Code setting. I wrote the tasks, hidden tests and reference fixes; all are published for checking. My earlier [skills-impact](https://github.com/meabs/experiments/tree/main/2026-10-skills-impact) experiment ran the same packs on 3 tasks at high reasoning effort (162 runs). No pack raised the pass rate there either, and Superpowers also worked test-first at two to three times the tokens. Its pass rates are not comparable with these, because of the different effort setting, but the cost finding is the same.
+One codebase; one agent and model; low reasoning effort only. Sixteen tasks are too few to settle a difference the size of Pocock's: from how much the results varied between tasks, roughly 60 tasks would be needed to detect a gain of 9 points reliably. Two runs per task is coarse: the placebo, which has no specialist content, moved 4 of 16 tasks by one run. The packs were adapted to Codex, so this says nothing about how they do in their original Claude Code setting. I wrote the tasks, hidden tests and reference fixes; all are published for checking. My earlier [skills-impact](https://github.com/meabs/experiments/tree/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-impact) experiment ran the same packs on 3 tasks at high reasoning effort (162 runs). No pack raised the pass rate there either, and Superpowers also worked test-first at two to three times the tokens. Its pass rates are not comparable with these, because of the different effort setting, but the cost finding is the same.
 
 ## Reproduce
 
-Everything is in [experiments/2026-10-skills-tasks](https://github.com/meabs/experiments/tree/main/2026-10-skills-tasks): the task prompts (`tasks/`), hidden tests (`hidden/`), raw runs (`results/stage1`), the analysis script (`scripts/analyse.py`) and the chart script (`scripts/charts.py`). The commands are in REPORT.md, section Reproducing.
+Everything is in [experiments/2026-10-skills-tasks](https://github.com/meabs/experiments/tree/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks): the task prompts (`tasks/`), hidden tests (`hidden/`), raw runs (`results/stage1`), the analysis script (`scripts/analyse.py`) and the chart script (`scripts/charts.py`). The commands are in REPORT.md, section Reproducing.

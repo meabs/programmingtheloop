@@ -24,7 +24,7 @@ agents:
   - name: "Codex"
     model: "gpt-5.6-luna"
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
 topics:
   - context
   - verification
@@ -47,9 +47,32 @@ Backend renamed after the guide was generated; agent had the stale guide and no 
 
 **Finding defined once:** [OKF-1](/experiments/okf-worked-example/) on the published okf-worked-example record. This page does not redefine that finding. Guide also reports the source-arm, confirm-sentence, `stale_after`, and control arms — see RESULTS.md section D2.
 
+#### D2. Backend refactored after the bundle was generated (128 runs: 8 questions x 4 arms x 4 runs)
+
+Four renames on the backend (a handler method, a request-class field, a path variable, a request class): four questions have a new answer, four are controls. The bundle is from before the refactor. Efficiency prompt ("use the repository knowledge ... avoid unnecessary file reads"), as in B2.
+
+| Arm | Gave the **old** fact | Gave the new fact | Controls correct | Tokens per run |
+| --- | --- | --- | --- | --- |
+| Backend source (refactored) | 0 / 16 | 16 / 16 | 16 / 16 | 148k |
+| Stale bundle | **14 / 16** | 0 / 16 | 16 / 16 | 157k |
+| Stale bundle + the confirm sentence | **16 / 16** | 0 / 16 | 16 / 16 | 158k |
+| Stale bundle + the sentence + `stale_after` on the 7 changed concepts | **16 / 16** | 0 / 16 | 16 / 16 | 156k |
+
+- Every drift answer from a bundle arm was wrong, and none of the 46 stale answers carried a caveat.
+- The confirm sentence could not help: there was no backend source to confirm against.
+- `stale_after` did not help either. The seven marked concepts included the routes concept and the packages the questions touched, the pointer explained the field, and still not one of 32 answers in that arm mentioned staleness.
+- Unchanged facts stayed correct (controls 16/16 in every arm), so the harm is exactly the drifted facts.
+- No run in D2 reached outside its own workspace.
+
+The set-up (the storefront, the renamed backend and the eight questions) is described under [D1](/experiments/d1-cross-repo-questions/).
+
+Source: [docs/RESULTS.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md) (pinned to commit `5a09027`).
+
+### Trial report (raw output)
+
 Baseline arm: **source_drift**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 
-### codex
+#### codex
 
 | arm | runs | correct | tokens per run (95% CI) | relative cost (95% CI) | verdict | turns | used tool | seconds |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -60,7 +83,7 @@ Baseline arm: **source_drift**. Relative cost is each run's tokens divided by th
 
 Run-to-run spread (coefficient of variation of relative cost) is 0.46. To detect a 20% difference with 80% power you would need about **83 runs per arm** (larger differences need fewer); this trial has 32.
 
-### Tokens by question (mean, thousands)
+#### Tokens by question (mean, thousands)
 
 | question | codex/bundle_nosent | codex/bundle_sent | codex/bundle_t_sent | codex/source_drift |
 | --- | --- | --- | --- | --- |
@@ -84,3 +107,5 @@ Planted drift; 4 runs per question; one model. From the Guide's own caveat: the 
 ## Reproduce
 
 [OKFExperiment](https://github.com/meabs/OKFExperiment); RESULTS.md section D2 and results/D2-cross-repo-stale-shopizer.md.
+
+Longer write-up: [Test D in the OKFExperiment details](/notes/okf-details/#test-d-cross-repo-questions-dependency-unreadable-a-guide-makes-the-difference-and-an-out-of-date-one-is-the-worst-case).

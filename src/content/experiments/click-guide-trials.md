@@ -21,7 +21,7 @@ agents:
     model: "gpt-5.6-luna"
     settings: "medium reasoning"
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
 topics:
   - context
   - measurement
@@ -41,7 +41,7 @@ findings:
       - "one model"
       - "accuracy already at ceiling in every arm"
       - "v1 and v2 not run simultaneously"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
     status: current
     featured: false
   - id: "A-2"
@@ -58,7 +58,7 @@ findings:
       - "one model"
       - "accuracy already at ceiling in every arm"
       - "v1 and v2 not run simultaneously"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
     status: current
     featured: false
 ---
@@ -78,6 +78,29 @@ Click, with and without a generated guide, including a default guide and a thinn
 ## Results
 
 Findings A-1 and A-2 are above.
+
+### A. Which bundle shape? (Click, 5 questions and 3 change tasks)
+
+**Accuracy was at the ceiling in every arm** (questions 14 or 15 of 15, change tasks 8 or 9 of 9 verified, with or without a bundle). So the question is cost.
+
+| arm (what it contains) | v1: pointer told the agent to confirm in source (24 runs/arm) | v2: no such sentence (24 runs/arm) |
+| --- | --- | --- |
+| none | 1.00 | 1.00 |
+| minimal (types and function names only; no citations, links, call edges or index) | 1.42 (1.25-1.59) dearer | 1.26 (1.14-1.39) dearer |
+| no call edges | 1.21 (1.08-1.37) dearer | 1.10 (0.97-1.25) no clear difference |
+| default (citations, links, cross-module calls, routing index) | 1.30 (1.14-1.47) dearer | 1.07 (0.99-1.16) no clear difference |
+| all calls / one concept per package / no index | 1.30 / 1.26 / 1.22, all dearer | not rerun |
+| code graph only (`kg`) | 1.15 (1.03-1.28) dearer | 1.14 (0.99-1.32) no clear difference |
+
+Relative cost = tokens divided by the no-bundle mean for the same question (1.00 = equal).
+
+- No bundle beat having none on tokens. The best (default, v2) was level on questions (0.99) and about 21% dearer on change tasks.
+- The thinnest bundle was always the dearest: without citations and links the agent still has to search, so the bundle is extra reading.
+- Per-package concepts, a missing index and full call edges did not beat the default (v1 only).
+- **The "read the source to confirm" sentence moved the cost**: the default arm fell from 1.30 to 1.07 when it was removed. The two runs were not simultaneous, so treat the size as indicative.
+- The graph is dearer here because most of these are one-hop lookups, which matches earlier results (it pays off on multi-level callers).
+
+Source: [docs/RESULTS.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md) (pinned to commit `5a09027`).
 
 ### Run 1: pointer told the agent to confirm in the source (v1)
 
@@ -155,3 +178,5 @@ One repository, one model, and accuracy already at the ceiling in every arm, so 
 ## Reproduce
 
 Repository: [OKFExperiment](https://github.com/meabs/OKFExperiment). Commands are not given in the Guide chapter; see the repository README for how to reproduce OKF trials.
+
+Longer write-up: [Test A in the OKFExperiment details](/notes/okf-details/#test-a-same-repo-can-search-a-guide-did-not-help).
