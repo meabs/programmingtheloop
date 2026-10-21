@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StartHere from '../components/home/StartHere.astro';
+import { SITE_NAME, SITE_OG_IMAGE } from '../site';
+---
+<BaseLayout
+  title={`Start here — ${SITE_NAME}`}
+  description="Five findings from the experiments, including the friction loop, each with its limits."
+  canonicalPath="/findings/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Start here</p>
+      <h1>Five findings from the experiments</h1>
+      <p>The shortest version of what the trials show about when context helps and when it hurts.</p>
+      <p>
+        <a class="button primary" href="/experiments/">All experiments →</a>
+        <a class="button" href="/guides/programming-the-loop/">Read the guide</a>
+        <a class="button" href="/guides/programming-the-loop/start/">Which chapter first?</a>
+      </p>
+    </div>
+  </header>
+  <StartHere heading="The five findings" level="h2" />
+</BaseLayout>

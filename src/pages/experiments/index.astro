@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import StartHere from '../../components/home/StartHere.astro';
 import { SITE_OG_IMAGE } from '../../site';
 import {
   getPublishedExperiments,
@@ -24,9 +23,9 @@ const items = await getPublishedExperiments();
         Each item is one write-up: what I asked, what I measured, and where to read the full
         numbers. Limits stay with the numbers.
       </p>
+      <p><a class="button primary" href="/findings/">Start here: five findings →</a></p>
     </div>
   </header>
-  <StartHere heading="Start here: five findings" level="h2" />
   <div class="page-body">
     <div class="wrap">
       <div class="collection-grid">
