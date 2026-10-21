@@ -41,6 +41,17 @@ describe('check:content pinned evidence links', () => {
   });
 });
 
+describe('check:content guide chapters', () => {
+  it('flags an unpinned link in a guide chapter', () => {
+    const { errors } = runChecks({
+      skipRoutes: true,
+      skipLanding: true,
+      guidesDir: join(fixtures, 'unpinned-link'),
+    });
+    assert.ok(errors.some((e) => /blob\/main/.test(e)), errors.join('\n'));
+  });
+});
+
 describe('check:content fixtures', () => {
   it('clean set passes experiment rules', () => {
     const experiments = loadExperiments(join(fixtures, 'clean'));

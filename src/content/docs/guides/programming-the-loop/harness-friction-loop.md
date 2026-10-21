@@ -49,7 +49,7 @@ Each note has an **origin**, which decides who can fix it: `repository-discovery
 
 ## One recurring problem, from first note to elimination
 
-Here is the full walk-through of a single recurring problem, the FastAPI test database that had no tables until migrations ran, from first symptom to the note disappearing. It combines my Friction Loop assessment report (30 September 2026; unpublished), the [AgentFrictionLoop README](https://github.com/meabs/AgentFrictionLoop/blob/main/README.md) and the [AgentTrialRig README](https://github.com/meabs/AgentTrialRig/blob/main/README.md). Every note quoted is agent-written, copied from the stored records.
+Here is the full walk-through of a single recurring problem, the FastAPI test database that had no tables until migrations ran, from first symptom to the note disappearing. It combines my Friction Loop assessment report (30 September 2026; unpublished), the [AgentFrictionLoop README](https://github.com/meabs/AgentFrictionLoop/blob/fa2412f66ab3c86be6c9772e30c6b021735683d2/README.md) and the [AgentTrialRig README](https://github.com/meabs/AgentTrialRig/blob/e54514ae9575c3f878031cce4fc45fcfc749f409/README.md). Every note quoted is agent-written, copied from the stored records.
 
 **Step 1: the first signal was mislabelled.** The first version offered seven overlapping categories. The same root cause was filed as *environment* three times and *setup* once. That's the damaging case: "environment" means no document could have helped, so three of four notes pointed *away* from a real documentation gap. *Fix to the instrument, not the repository:* one test question, "would one sentence in AGENTS.md or the docs have prevented this?", and five options instead of seven.
 

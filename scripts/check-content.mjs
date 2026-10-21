@@ -21,6 +21,7 @@
  *   EXPERIMENTS_DIR — override experiments folder (fixtures)
  *   NEWS_DIR — override news folder (fixtures)
  *   NOTES_DIR — override notes folder (fixtures)
+ *   GUIDES_DIR — override guide chapters folder (fixtures)
  *   SKIP_ROUTES=1 — skip route baseline (fixture unit tests)
  *   SKIP_LANDING=1 — skip home/guide-landing finding-number scan
  *   LANDING_HTML_DIR — optional dir of HTML fixtures for landing scan
@@ -34,6 +35,7 @@ const EXPERIMENTS_DIR =
   process.env.EXPERIMENTS_DIR || join(ROOT, 'src/content/experiments');
 const NEWS_DIR = process.env.NEWS_DIR || join(ROOT, 'src/content/news');
 const NOTES_DIR = process.env.NOTES_DIR || join(ROOT, 'src/content/docs/notes');
+const GUIDES_DIR = process.env.GUIDES_DIR || join(ROOT, 'src/content/docs/guides');
 const BASELINE = join(ROOT, 'docs/route-baseline.txt');
 const ASTRO_CONFIG = join(ROOT, 'astro.config.mjs');
 const SKIP_ROUTES = process.env.SKIP_ROUTES === '1';
@@ -731,6 +733,7 @@ export function runChecks({
   experimentsDir = EXPERIMENTS_DIR,
   newsDir = NEWS_DIR,
   notesDir = NOTES_DIR,
+  guidesDir = GUIDES_DIR,
   skipRoutes = SKIP_ROUTES,
   skipLanding = SKIP_LANDING,
   landingHtmlDir = LANDING_HTML_DIR,
@@ -739,7 +742,7 @@ export function runChecks({
   const expResult = checkExperiments(experiments);
   const news = loadNews(newsDir);
   const newsResult = checkNews(news);
-  const linkResult = checkPinnedLinks([...experiments, ...loadPages(notesDir)]);
+  const linkResult = checkPinnedLinks([...experiments, ...loadPages(notesDir), ...loadPages(guidesDir)]);
   const errors = [...expResult.errors, ...newsResult.errors, ...linkResult.errors];
   const warnings = [...expResult.warnings, ...newsResult.warnings];
 

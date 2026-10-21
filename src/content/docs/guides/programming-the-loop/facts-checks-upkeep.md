@@ -69,7 +69,7 @@ The example is a **reproducible engineering demonstration of the failure modes t
 
 Before you adopt any agent practice, including mine, ask three questions. *What facts does this give the agent that it couldn't get for itself? How will the agent prove its work, with something that runs? And what will this cost to maintain?* If you can't answer the third, you don't yet know what you're signing up for.
 
-Distrust any claim based on a single run, including your own. In one of my trials, run-to-run spread was large enough that about 131 runs per arm would have been needed to detect a 20% cost difference; the trial had 16 ([results/H1-contract-vs-okf-changes.md](https://github.com/meabs/OKFExperiment/blob/main/results/H1-contract-vs-okf-changes.md)). When someone tells you a prompt trick doubled their productivity, ask how many runs. Usually the answer is one, on a Tuesday, with a following wind.
+Distrust any claim based on a single run, including your own. In one of my trials, run-to-run spread was large enough that about 131 runs per arm would have been needed to detect a 20% cost difference; the trial had 16 ([results/H1-contract-vs-okf-changes.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/H1-contract-vs-okf-changes.md)). When someone tells you a prompt trick doubled their productivity, ask how many runs. Usually the answer is one, on a Tuesday, with a following wind.
 
 ## Try this on your repository
 
