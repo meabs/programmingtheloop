@@ -63,6 +63,8 @@
 /guide/take-home-kit/
 /guide/tools-measurement/
 /guide/verifiable-change/
+/news/
+/news/rss.xml
 /notes/
 /resources/
 /resources/ebook/

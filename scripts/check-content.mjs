@@ -11,11 +11,13 @@
  * 5. Superseded experiments have supersededBy pointing at a known experimentId
  * 6. Route baseline: every baseline path is still declared (page, Starlight doc, or redirect)
  * 7. Home / guide-landing HTML must not hard-code finding numbers absent from records
+ * 8. News items: each needs https? sourceUrl, releasedOn, and non-empty body
  *
  * Practice citation rules are stubbed until practices exist (Phase later).
  *
  * Env:
  *   EXPERIMENTS_DIR — override experiments folder (fixtures)
+ *   NEWS_DIR — override news folder (fixtures)
  *   SKIP_ROUTES=1 — skip route baseline (fixture unit tests)
  *   SKIP_LANDING=1 — skip home/guide-landing finding-number scan
  *   LANDING_HTML_DIR — optional dir of HTML fixtures for landing scan
@@ -27,6 +29,7 @@ import { pathToFileURL } from 'node:url';
 const ROOT = process.cwd();
 const EXPERIMENTS_DIR =
   process.env.EXPERIMENTS_DIR || join(ROOT, 'src/content/experiments');
+const NEWS_DIR = process.env.NEWS_DIR || join(ROOT, 'src/content/news');
 const BASELINE = join(ROOT, 'docs/route-baseline.txt');
 const ASTRO_CONFIG = join(ROOT, 'astro.config.mjs');
 const SKIP_ROUTES = process.env.SKIP_ROUTES === '1';
@@ -63,23 +66,45 @@ export function parseFrontmatter(raw) {
     }
     const key = m[1];
     let val = m[2];
-    if (val === '' || val === '|' || val === '>') {
+    if (val === '|' || val === '>') {
+      const { text: block, next } = readYamlBlock(lines, i + 1, 0);
+      data[key] = block;
+      i = next;
+      continue;
+    }
+    if (val === '') {
       // nested block or list follows
       if (i + 1 < lines.length && /^\s+- /.test(lines[i + 1])) {
         const list = [];
         i += 1;
         while (i < lines.length && /^\s+- /.test(lines[i])) {
           const itemLine = lines[i];
-          if (/^\s+- id:/.test(itemLine) || /^\s+- name:/.test(itemLine) || /^\s+- label:/.test(itemLine)) {
-            // object list item
+          if (/^\s+- \w+:/.test(itemLine)) {
+            // object list item (findings, agents, news items, …)
             const obj = {};
             const first = itemLine.match(/^\s+- (\w+):\s*(.*)$/);
-            if (first) obj[first[1]] = unquote(first[2]);
-            i += 1;
+            if (first) {
+              if (first[2] === '|' || first[2] === '>') {
+                const { text: block, next } = readYamlBlock(lines, i + 1, itemLine.match(/^(\s+)/)?.[1].length ?? 0);
+                obj[first[1]] = block;
+                i = next;
+              } else {
+                obj[first[1]] = unquote(first[2]);
+                i += 1;
+              }
+            } else {
+              i += 1;
+            }
             while (i < lines.length && /^\s{2,}\w+:/.test(lines[i])) {
               const km = lines[i].match(/^(\s+)(\w+):\s*(.*)$/);
               if (km) {
                 const indent = km[1].length;
+                if (km[3] === '|' || km[3] === '>') {
+                  const { text: block, next } = readYamlBlock(lines, i + 1, indent);
+                  obj[km[2]] = block;
+                  i = next;
+                  continue;
+                }
                 if (km[3] === '' && i + 1 < lines.length && /^\s+- /.test(lines[i + 1])) {
                   // nested list e.g. limits:
                   const nested = [];
@@ -143,6 +168,26 @@ function unquote(s) {
   return t;
 }
 
+/** Read a YAML `|` / `>` indented block; returns text and next line index. */
+function readYamlBlock(lines, start, parentIndent) {
+  const parts = [];
+  let i = start;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.trim() === '') {
+      parts.push('');
+      i += 1;
+      continue;
+    }
+    const m = line.match(/^(\s*)(.*)$/);
+    const indent = m ? m[1].length : 0;
+    if (indent <= parentIndent) break;
+    parts.push(m[2]);
+    i += 1;
+  }
+  return { text: parts.join('\n').replace(/\s+$/, ''), next: i };
+}
+
 function listMarkdownFiles(dir) {
   if (!existsSync(dir)) return [];
   const out = [];
@@ -161,6 +206,66 @@ export function loadExperiments(dir = EXPERIMENTS_DIR) {
     const { data } = parseFrontmatter(raw);
     return { file: relative(ROOT, file), data };
   });
+}
+
+export function loadNews(dir = NEWS_DIR) {
+  return listMarkdownFiles(dir).map((file) => {
+    const raw = readFileSync(file, 'utf8');
+    const { data } = parseFrontmatter(raw);
+    return { file: relative(ROOT, file), data };
+  });
+}
+
+/**
+ * News integrity: every non-draft post's items need sourceUrl (http/https),
+ * releasedOn, and a non-empty body.
+ */
+export function checkNews(posts) {
+  const errors = [];
+  const warnings = [];
+
+  for (const post of posts) {
+    const { file, data } = post;
+    if (data.draft === true) continue;
+    if (!data.title) errors.push(`News post ${file} needs a title`);
+    if (!data.date) errors.push(`News post ${file} needs a date`);
+    if (!data.summary) errors.push(`News post ${file} needs a summary`);
+
+    const items = Array.isArray(data.items) ? data.items : [];
+    if (items.length < 1) {
+      errors.push(`News post ${file} needs ≥1 item`);
+      continue;
+    }
+    items.forEach((item, idx) => {
+      if (!item || typeof item !== 'object') {
+        errors.push(`News post ${file} item ${idx + 1} is not an object`);
+        return;
+      }
+      const label = item.title || item.vendor || `#${idx + 1}`;
+      if (!item.sourceUrl || !/^https?:\/\//i.test(String(item.sourceUrl))) {
+        errors.push(
+          `News post ${file} item "${label}" needs an http(s) sourceUrl`,
+        );
+      }
+      if (!item.releasedOn || !String(item.releasedOn).trim()) {
+        errors.push(`News post ${file} item "${label}" needs releasedOn`);
+      }
+      if (!item.body || !String(item.body).trim()) {
+        errors.push(`News post ${file} item "${label}" needs a non-empty body`);
+      }
+      if (!item.vendor || !String(item.vendor).trim()) {
+        errors.push(`News post ${file} item "${label}" needs a vendor`);
+      }
+      if (!item.title || !String(item.title).trim()) {
+        errors.push(`News post ${file} item ${idx + 1} needs a title`);
+      }
+      if (!item.sourceLabel || !String(item.sourceLabel).trim()) {
+        errors.push(`News post ${file} item "${label}" needs a sourceLabel`);
+      }
+    });
+  }
+
+  return { errors, warnings };
 }
 
 export function checkExperiments(experiments) {
@@ -297,7 +402,7 @@ export function declaredSourceRoutes() {
   }
   walkPages(join(ROOT, 'src/pages'));
 
-  // Known dynamic experiment/article routes from content (drafts are not public routes)
+  // Known dynamic experiment/article/news routes from content (drafts are not public routes)
   for (const f of listMarkdownFiles(join(ROOT, 'src/content/experiments'))) {
     const id = relative(join(ROOT, 'src/content/experiments'), f).replace(/\.(md|mdx)$/, '');
     if (id.includes('do-not-publish') || id.startsWith('.')) continue;
@@ -311,6 +416,16 @@ export function declaredSourceRoutes() {
   for (const f of listMarkdownFiles(join(ROOT, 'src/content/articles'))) {
     const id = relative(join(ROOT, 'src/content/articles'), f).replace(/\.(md|mdx)$/, '');
     if (!id.includes('do-not-publish')) routes.add(`/articles/${id}/`);
+  }
+  routes.add('/news/');
+  routes.add('/news/rss.xml');
+  for (const f of listMarkdownFiles(join(ROOT, 'src/content/news'))) {
+    const id = relative(join(ROOT, 'src/content/news'), f).replace(/\.(md|mdx)$/, '');
+    if (id.includes('do-not-publish') || id.startsWith('.')) continue;
+    const raw = readFileSync(f, 'utf8');
+    const { data } = parseFrontmatter(raw);
+    if (data.draft === true) continue;
+    routes.add(`/news/${id}/`);
   }
 
   // Starlight docs
@@ -562,14 +677,17 @@ export function checkLandingFindingNumbers({
 
 export function runChecks({
   experimentsDir = EXPERIMENTS_DIR,
+  newsDir = NEWS_DIR,
   skipRoutes = SKIP_ROUTES,
   skipLanding = SKIP_LANDING,
   landingHtmlDir = LANDING_HTML_DIR,
 } = {}) {
   const experiments = loadExperiments(experimentsDir);
   const expResult = checkExperiments(experiments);
-  const errors = [...expResult.errors];
-  const warnings = [...expResult.warnings];
+  const news = loadNews(newsDir);
+  const newsResult = checkNews(news);
+  const errors = [...expResult.errors, ...newsResult.errors];
+  const warnings = [...expResult.warnings, ...newsResult.warnings];
 
   if (!skipRoutes) {
     const routeResult = checkRouteBaseline();
@@ -581,21 +699,30 @@ export function runChecks({
     errors.push(...landingResult.errors);
   }
 
-  return { errors, warnings, experimentCount: experiments.length };
+  return {
+    errors,
+    warnings,
+    experimentCount: experiments.length,
+    newsCount: news.length,
+  };
 }
 
 function main() {
-  const { errors, warnings, experimentCount } = runChecks();
+  const { errors, warnings, experimentCount, newsCount } = runChecks();
   if (warnings.length) {
     console.warn('Warnings:');
     for (const w of warnings) console.warn(' -', w);
   }
   if (errors.length) {
-    console.error(`check:content failed (${errors.length} error(s), ${experimentCount} experiment file(s)):`);
+    console.error(
+      `check:content failed (${errors.length} error(s), ${experimentCount} experiment file(s), ${newsCount} news file(s)):`,
+    );
     for (const e of errors) console.error(' -', e);
     process.exit(1);
   }
-  console.log(`check:content ok (${experimentCount} experiment file(s))`);
+  console.log(
+    `check:content ok (${experimentCount} experiment file(s), ${newsCount} news file(s))`,
+  );
 }
 
 const isDirect =

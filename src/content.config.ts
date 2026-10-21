@@ -91,6 +91,30 @@ const guideSchema = z.object({
   draft: z.boolean().default(false),
 });
 
+/**
+ * One release / announcement inside a weekday news roundup.
+ * `releasedOn` is the source’s own wording (UK time when given).
+ */
+const newsItemSchema = z.object({
+  vendor: z.string().min(1),
+  /** Product or release title as the source names it. */
+  title: z.string().min(1),
+  releasedOn: z.string().min(1),
+  body: z.string().min(1),
+  whoItAffects: z.string().optional(),
+  sourceUrl: z.string().url(),
+  sourceLabel: z.string().min(1),
+});
+
+const newsSchema = z.object({
+  title: z.string(),
+  date: z.coerce.date(),
+  summary: z.string(),
+  /** Default false — weekday posts go live automatically. */
+  draft: z.boolean().default(false),
+  items: z.array(newsItemSchema).min(1),
+});
+
 const articles = defineCollection({
   loader: glob({
     pattern: '**/*.{md,mdx}',
@@ -115,9 +139,18 @@ const guides = defineCollection({
   schema: guideSchema,
 });
 
+const news = defineCollection({
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/news',
+  }),
+  schema: newsSchema,
+});
+
 export const collections = {
   docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
   articles,
   experiments,
   guides,
+  news,
 };

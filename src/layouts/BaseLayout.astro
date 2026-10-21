@@ -33,6 +33,7 @@ const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}
 const path = Astro.url.pathname;
 const nav = await getVisibleNav();
 const showArticles = await isCollectionNavVisible('articles');
+const showNews = await isCollectionNavVisible('news');
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -154,6 +155,7 @@ const showArticles = await isCollectionNavVisible('articles');
         </div>
         <div class="footer-links">
           {showArticles && <a href="/articles/">Articles</a>}
+          {showNews && <a href="/news/">News</a>}
           <a href="/experiments/">Experiments</a>
           <a href="/guides/">Guides</a>
           <a href="/about/">About</a>

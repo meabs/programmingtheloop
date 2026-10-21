@@ -1,0 +1,120 @@
+# Auto-merge weekday news PRs once content checks pass, then redeploy Pages.
+# Only same-repo branches named news/* that touch only src/content/news/*.md.
+name: News PR auto-merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: news-automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  automerge:
+    name: Gate, check, squash-merge, deploy
+    runs-on: ubuntu-latest
+    # Fork PRs never auto-merge.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Gate on branch name and changed files
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH: ${{ github.head_ref }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          echo "branch=${BRANCH}"
+
+          if [[ "${BRANCH}" != news/* ]]; then
+            echo "Branch does not start with news/ — skipping."
+            echo "eligible=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          mapfile -t FILES < <(
+            gh api "repos/${REPO}/pulls/${PR_NUMBER}/files" --paginate \
+              --jq '.[].filename'
+          )
+
+          if [[ ${#FILES[@]} -eq 0 ]]; then
+            echo "PR has no changed files — skipping."
+            echo "eligible=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          echo "Changed files:"
+          for f in "${FILES[@]}"; do
+            echo "  - ${f}"
+            if [[ ! "${f}" =~ ^src/content/news/[^/]+\.md$ ]]; then
+              echo "File is outside src/content/news/*.md — skipping auto-merge."
+              echo "eligible=false" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+          done
+
+          echo "eligible=true" >> "${GITHUB_OUTPUT}"
+
+      - name: Checkout
+        if: steps.gate.outputs.eligible == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Node
+        if: steps.gate.outputs.eligible == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.0
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.gate.outputs.eligible == 'true'
+        run: npm ci
+
+      - name: Content integrity
+        if: steps.gate.outputs.eligible == 'true'
+        run: npm run check:content
+
+      - name: Content fixture tests
+        if: steps.gate.outputs.eligible == 'true'
+        run: npm run test:content
+
+      - name: Guide coverage verify
+        if: steps.gate.outputs.eligible == 'true'
+        run: npm run guide:verify
+
+      - name: Check and build
+        if: steps.gate.outputs.eligible == 'true'
+        run: npm run build
+
+      - name: Squash-merge and delete branch
+        if: steps.gate.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          gh pr merge "${PR_NUMBER}" --squash --delete-branch \
+            --subject "News: merge #${PR_NUMBER}" \
+            --body "Auto-merged by news-automerge after checks passed."
+
+      - name: Dispatch Pages deploy
+        if: steps.gate.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # GITHUB_TOKEN merges do not fire push workflows; workflow_dispatch does
+          # create a new run (GitHub docs exception). Prefer dispatch over
+          # workflow_call so Deploy to GitHub Pages stays the single deploy path.
+          gh workflow run "Deploy to GitHub Pages" --ref main
+          echo "Dispatched Deploy to GitHub Pages on main."

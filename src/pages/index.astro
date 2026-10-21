@@ -13,8 +13,10 @@ import {
   getPublishedArticles,
   getPublishedExperiments,
   getPublishedGuides,
+  getPublishedNews,
   articleHref,
   experimentHref,
+  newsHref,
   formatItemDate,
 } from '../lib/collections';
 import { collectionIsVisible } from '../lib/nav-gate';
@@ -23,10 +25,12 @@ const latest = await getLatestItems(5);
 const articles = await getPublishedArticles();
 const experiments = await getPublishedExperiments();
 const guides = await getPublishedGuides();
+const news = await getPublishedNews();
 const counts = await getNavCollectionCounts();
 const showArticles = collectionIsVisible('articles', counts);
 const showExperiments = collectionIsVisible('experiments', counts);
 const showGuides = collectionIsVisible('guides', counts);
+const showNews = collectionIsVisible('news', counts);
 const ticker = [...TOPIC_TICKER, ...TOPIC_TICKER];
 
 const siteStats = [
@@ -39,6 +43,11 @@ const siteStats = [
     key: 'Experiments',
     value: String(experiments.length),
     caption: experiments.length ? 'Published write-ups' : 'None yet',
+  },
+  showNews && {
+    key: 'News',
+    value: String(news.length),
+    caption: news.length ? 'Weekday roundups' : 'None yet',
   },
   showArticles && {
     key: 'Articles',
@@ -62,8 +71,8 @@ const siteStats = [
           <span class="headline-line loop">with coding agents</span>
         </h1>
         <p class="subtitle">
-          Articles, experiments and guides on working with coding agents. What I measured, and
-          what I think.
+          Articles, news, experiments and guides on working with coding agents. What I measured,
+          and what I think.
         </p>
         <div class="actions">
           <a class="button primary pill" href="/guides/">Browse guides</a>
@@ -121,7 +130,7 @@ const siteStats = [
     <div class="wrap">
       <p class="section-label reveal">§ 01 — Latest</p>
       <h2 class="reveal">Recently added</h2>
-      <p class="lead reveal">Across articles, experiments and guides.</p>
+      <p class="lead reveal">Across articles, news, experiments and guides.</p>
       <div class="collection-grid">
         {latest.map((item) => (
           <a class="collection-card reveal" href={item.href}>
@@ -161,6 +170,30 @@ const siteStats = [
             ))}
           </div>
         )}
+      </div>
+    </section>
+  )}
+
+  {showNews && (
+    <section class="section" id="news">
+      <div class="wrap">
+        <p class="section-label reveal">§ — News</p>
+        <h2 class="reveal">News</h2>
+        <p class="lead reveal">Weekday GenAI and coding-agent release roundups.</p>
+        <div class="collection-grid">
+          {news.slice(0, 3).map((post) => (
+            <a class="collection-card reveal" href={newsHref(post)}>
+              <span class="card-kicker">News</span>
+              <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
+              <h3 class="card-title">{post.data.title}</h3>
+              <p class="card-desc">{post.data.summary}</p>
+              <span class="card-meta">Open →</span>
+            </a>
+          ))}
+        </div>
+        <p class="section-more reveal">
+          <a href="/news/">All news →</a>
+        </p>
       </div>
     </section>
   )}
