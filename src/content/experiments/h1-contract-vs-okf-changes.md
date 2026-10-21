@@ -28,7 +28,7 @@ findings:
   - id: "H1-1"
     statement: "On harder change tasks, nothing passed 4 of 16; contract 13, note 14, guide 14 and source 14 of 16 — the four knowledge arms beat nothing and did not differ reliably from each other"
     metric: "hidden-test passes of 16"
-    value: "4 / 16 → 13–14 / 16"
+    value: "nothing 4/16; contract 13; note 14; guide 14; source 14 of 16"
     n: "16 runs per arm"
     limits:
       - "I wrote the note knowing the tasks, which favours it"

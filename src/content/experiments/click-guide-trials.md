@@ -2,7 +2,7 @@
 title: "Click guide trials (experiment A)"
 description: "On Click, a generated guide did not improve correctness and cost more tokens."
 date: 2026-10-17
-summary: "On Click, agents were already near ceiling with or without a guide; the default guide cost 1.07–1.30× tokens, and the thinnest guide was dearest."
+summary: "On Click, agents were already near ceiling with or without a guide; the default guide cost 1.30× then 1.07× tokens, and the thinnest guide was dearest (1.26 to 1.42×)."
 type: "Controlled trial"
 github:
   - label: "OKFExperiment"
@@ -26,9 +26,22 @@ topics:
   - measurement
 findings:
   - id: "A-1"
-    statement: "On Click, agents answered near ceiling with or without a guide; the default guide cost more tokens, and the thinnest (names-only) guide was reliably the dearest"
-    metric: "relative token cost vs no-guide arm"
-    value: "1.07–1.42×"
+    statement: "On Click, the default guide cost more tokens than no guide in one run and was near level in a rerun (accuracy already at ceiling with or without a guide)"
+    metric: "relative token cost vs no-guide arm (default guide)"
+    value: "1.30× (run 1); 1.07× (rerun)"
+    n: "24 runs per arm (v1); 24 per arm (v2)"
+    limits:
+      - "one repository (Click)"
+      - "one model"
+      - "accuracy already at ceiling in every arm"
+      - "v1 and v2 not run simultaneously"
+    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    status: current
+    featured: false
+  - id: "A-2"
+    statement: "On Click, the thinnest (names-only) guide was reliably the dearest"
+    metric: "relative token cost vs no-guide arm (minimal / names-only guide)"
+    value: "1.26–1.42×"
     n: "24 runs per arm (v1); 24 per arm (v2)"
     limits:
       - "one repository (Click)"
@@ -54,7 +67,7 @@ Click, with and without a generated guide, including a default guide and a thinn
 
 ## Results
 
-Findings are below.
+Findings A-1 and A-2 are below.
 
 ## Limits
 

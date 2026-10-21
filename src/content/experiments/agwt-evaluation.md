@@ -36,7 +36,7 @@ findings:
   - id: "AGWT-2"
     statement: "For callers-of-callers questions, the graph cut tokens sharply (Codex 84k against 196k; Cursor 121k against 414k; Copilot 161k against 181k)"
     metric: "tokens per question (callers --depth)"
-    value: "Codex 84k vs 196k"
+    value: "Codex 84k vs 196k; Cursor 121k vs 414k; Copilot 161k vs 181k"
     n: "36 runs across Click and Express (Guide fig. 3.3)"
     limits:
       - "token totals are not comparable between agents"
@@ -48,7 +48,7 @@ findings:
   - id: "AGWT-3"
     statement: "Across 192 runs on Python and TypeScript repositories the graph did not reduce tokens overall; agents ran kg and then checked with grep"
     metric: "overall token cost vs plain"
-    value: "no overall reduction"
+    value: "did not reduce tokens overall"
     n: 192
     limits:
       - "accuracy at ceiling in those arms"

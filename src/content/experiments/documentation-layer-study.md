@@ -27,7 +27,7 @@ findings:
   - id: "DOCLAYER-1"
     statement: "The heavy design was dearer on the simple change in all four rounds: +40.3% tokens, +28.7% cost"
     metric: "token delta vs comparison arm on simple change"
-    value: "+40.3% tokens"
+    value: "+40.3% tokens; +28.7% cost"
     n: "four independent rounds per design and task"
     limits:
       - "author's unpublished document; numbers can't be independently checked"
