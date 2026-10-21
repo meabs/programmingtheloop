@@ -297,13 +297,14 @@ export function declaredSourceRoutes() {
   }
   walkPages(join(ROOT, 'src/pages'));
 
-  // Known dynamic experiment/article routes from content
+  // Known dynamic experiment/article routes from content (drafts are not public routes)
   for (const f of listMarkdownFiles(join(ROOT, 'src/content/experiments'))) {
     const id = relative(join(ROOT, 'src/content/experiments'), f).replace(/\.(md|mdx)$/, '');
-    if (!id.includes('do-not-publish') && !id.startsWith('.')) {
-      // include drafts too for route presence of slug pattern — actual HTML only for non-draft at build
-      routes.add(`/experiments/${id}/`);
-    }
+    if (id.includes('do-not-publish') || id.startsWith('.')) continue;
+    const raw = readFileSync(f, 'utf8');
+    const { data } = parseFrontmatter(raw);
+    if (data.draft === true) continue;
+    routes.add(`/experiments/${id}/`);
   }
   routes.add('/experiments/');
   routes.add('/articles/');

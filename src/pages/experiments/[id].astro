@@ -2,11 +2,15 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FindingsTable from '../../components/experiments/FindingsTable.astro';
 import { SITE_OG_IMAGE } from '../../site';
-import { getPublishedExperiments, formatItemDate } from '../../lib/collections';
-import { render } from 'astro:content';
+import { formatItemDate } from '../../lib/collections';
+import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const items = await getPublishedExperiments();
+  // Public builds omit draft:true. Set PREVIEW_DRAFTS=1 for local preview only.
+  const previewDrafts = process.env.PREVIEW_DRAFTS === '1';
+  const items = await getCollection('experiments', ({ data }) =>
+    previewDrafts ? true : data.draft !== true,
+  );
   return items.map((item) => ({
     params: { id: item.id },
     props: { item },
@@ -16,17 +20,22 @@ export async function getStaticPaths() {
 const { item } = Astro.props;
 const { Content } = await render(item);
 const findings = item.data.findings ?? [];
+const isDraft = item.data.draft === true;
+const publishedOn = item.data.publishedOn;
 ---
 <BaseLayout
   title={item.data.title}
   description={item.data.description}
   canonicalPath={`/experiments/${item.id}/`}
   ogImage={SITE_OG_IMAGE}
+  noindex={isDraft}
 >
   <header class="page-head">
     <div class="wrap">
       <p class="section-label">
-        {item.data.type} · {formatItemDate(item.data.date)}
+        {publishedOn
+          ? `${item.data.type} · ${formatItemDate(publishedOn)}`
+          : item.data.type}
       </p>
       <h1>{item.data.title}</h1>
       <p>{item.data.description}</p>
