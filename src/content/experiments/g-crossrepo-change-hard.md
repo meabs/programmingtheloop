@@ -12,11 +12,12 @@ guideLinks:
     href: "/guides/programming-the-loop/right-facts/"
   - label: "Published composite (OKF-2)"
     href: "/experiments/okf-worked-example/"
-draft: true
+draft: false
 experimentId: "G"
 question: "Does a backend guide still help on harder cross-repo changes that need several facts or parent-class fields?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"

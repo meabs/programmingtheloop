@@ -12,11 +12,12 @@ guideLinks:
     href: "/guides/programming-the-loop/right-facts/"
   - label: "Chapter 9 — Tools and honest measurement"
     href: "/guides/programming-the-loop/tools-measurement/"
-draft: true
+draft: false
 experimentId: "DOCLAYER"
 question: "Given that you have some documentation for agents, which layout costs least, and do agents find the right parts unprompted?"
-status: planned
+status: published
 evidenceGrade: unpublished
+publishedOn: 2026-10-11
 agents: []
 repo: "https://github.com/meabs/AgentTrialRig"
 report: "https://github.com/meabs/AgentTrialRig/blob/main/examples/fastapi-doc-layers/README.md"

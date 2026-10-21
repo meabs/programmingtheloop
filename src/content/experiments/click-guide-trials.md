@@ -10,11 +10,12 @@ github:
 guideLinks:
   - label: "Chapter 3 — The right facts"
     href: "/guides/programming-the-loop/right-facts/"
-draft: true
+draft: false
 experimentId: "A"
 question: "On a smaller library the agent can read, does a generated guide improve answers or change cost?"
-status: planned
+status: published
 evidenceGrade: published
+publishedOn: 2026-10-12
 agents:
   - name: "Codex"
     model: "gpt-5.6-luna"

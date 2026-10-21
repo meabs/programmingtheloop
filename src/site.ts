@@ -60,9 +60,7 @@ export const NAV: readonly NavItem[] = [
   { num: '00', label: 'Home', href: '/', always: true },
   // Empty/sparse sections wait for NAV_MIN_ITEMS (default 3).
   { num: '01', label: 'Articles', href: '/articles/', collection: 'articles' },
-  // Transitional: two live experiments already exist — show once ≥1 published.
-  // Raise to NAV_MIN_ITEMS (omit minItems) when a third experiment ships.
-  { num: '02', label: 'Experiments', href: '/experiments/', collection: 'experiments', minItems: 1 },
+  { num: '02', label: 'Experiments', href: '/experiments/', collection: 'experiments' },
   // Book hub: show once at least one guide is published.
   { num: '03', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
   { num: '04', label: 'About', href: '/about/', always: true },
