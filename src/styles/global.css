@@ -2293,3 +2293,104 @@ body > .site-header { z-index: 100; }
 /* Editorial content is never hidden behind scroll-triggered JavaScript. */
 html.js-motion .reveal,
 html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
+
+/* Experiment and reading pages: structure for long write-ups and data tables. */
+.view-prose h3 {
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin: 2.25rem 0 0.7rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.view-prose h4 {
+  font-size: 1rem;
+  line-height: 1.35;
+  margin: 1.75rem 0 0.6rem;
+  color: var(--ink);
+}
+.view-prose h5,
+.view-prose h6 {
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--ink-faint);
+}
+.view-prose h2 code,
+.view-prose h3 code,
+.view-prose h4 code,
+.view-prose h5 code,
+.view-prose h6 code {
+  font-size: 0.78em;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.view-prose h2,
+.view-prose h3,
+.view-prose h4 {
+  overflow-wrap: anywhere;
+}
+.view-prose p code,
+.view-prose li code,
+.view-prose td code,
+.view-prose th code {
+  font-size: 0.86em;
+  overflow-wrap: anywhere;
+}
+
+/* Wide tables scroll sideways; edge shadows show there is more to see. */
+.view-prose table {
+  --scroll-shade: rgba(18, 21, 28, 0.18);
+  background:
+    linear-gradient(to right, var(--bg) 30%, transparent) left / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--bg) 30%, transparent) right / 2.5rem 100% no-repeat local,
+    linear-gradient(to right, var(--scroll-shade), transparent) left / 0.9rem 100% no-repeat scroll,
+    linear-gradient(to left, var(--scroll-shade), transparent) right / 0.9rem 100% no-repeat scroll;
+  font-variant-numeric: tabular-nums;
+  -webkit-overflow-scrolling: touch;
+}
+:root[data-theme='dark'] .view-prose table {
+  --scroll-shade: rgba(0, 0, 0, 0.55);
+}
+.view-prose th,
+.view-prose td {
+  white-space: nowrap;
+}
+.view-prose th {
+  line-height: 1.3;
+  border-bottom: 1px solid var(--line-strong);
+}
+.view-prose td:first-child,
+.view-prose th:first-child {
+  padding-left: 0;
+}
+.view-prose tbody tr:last-child td {
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.view-prose pre {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.view-prose pre code {
+  font-size: inherit;
+  overflow-wrap: normal;
+}
+.view-prose blockquote {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+}
+.view-prose blockquote p {
+  margin: 0;
+  color: var(--ink);
+}

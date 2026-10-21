@@ -97,9 +97,10 @@ Token totals are not comparable between agents (see adapters.py). Treat a verdic
 
 ### Analysis (`python scripts/analyse_j.py`, with j7 re-scored by `scripts/regrade_j.py`)
 
-```
-## changes
+#### Changes
+
 plain 28/32 (407k tokens); optimised 29/32 (526k, 1.29 times); p = 1.000
+
 | Task | plain | optimised | tokens plain | tokens optimised |
 | --- | --- | --- | --- | --- |
 | j1_rename_payment_method | 8/8 | 8/8 | 117k | 188k |
@@ -107,8 +108,10 @@ plain 28/32 (407k tokens); optimised 29/32 (526k, 1.29 times); p = 1.000
 | j3_remove_unused_param | 8/8 | 8/8 | 231k | 277k |
 | j7_rename_entity_delete | 4/8 | 6/8 | 1046k | 1278k |
 
-## questions
+#### Questions
+
 plain 16/24 (150k tokens); optimised 19/24 (234k, 1.56 times); p = 0.517
+
 | Task | plain | optimised | tokens plain | tokens optimised |
 | --- | --- | --- | --- | --- |
 | j4_overload_callers | 1/8 | 3/8 | 98k | 186k |
@@ -116,10 +119,12 @@ plain 16/24 (150k tokens); optimised 19/24 (234k, 1.56 times); p = 0.517
 | j6_checkout_path | 8/8 | 8/8 | 203k | 297k |
 
 Adoption in the optimised arm (56 runs): ran kg 56; opened okf/ 56; read navigate 55, change 32, check 34; read no skill 0
+
 plain: network runs 0; runs with a refused access 4
+
 optimised: network runs 0; runs with a refused access 6
+
 optimised runs that used kg: passed 48 of 56; did not: 0 of 0
-```
 
 Full report: [results/J-optimised-repo.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/J-optimised-repo.md) (pinned to commit `5a09027`). Design and deviations: [docs/EXPERIMENT_J.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/EXPERIMENT_J.md).
 
