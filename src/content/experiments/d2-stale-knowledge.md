@@ -47,6 +47,36 @@ Backend renamed after the guide was generated; agent had the stale guide and no 
 
 **Finding defined once:** [OKF-1](/experiments/okf-worked-example/) on the published okf-worked-example record. This page does not redefine that finding. Guide also reports the source-arm, confirm-sentence, `stale_after`, and control arms — see RESULTS.md section D2.
 
+Baseline arm: **source_drift**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
+
+### codex
+
+| arm | runs | correct | tokens per run (95% CI) | relative cost (95% CI) | verdict | turns | used tool | seconds |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| source_drift | 32 | 31/32 | 148k (128k to 171k) | 1.00 | baseline | 4.1 | 32/32 | 21 |
+| bundle_nosent | 32 | 16/32 | 157k (132k to 187k) | 1.08 (0.91 to 1.26) | no clear difference | 4.4 | 32/32 | 20 |
+| bundle_sent | 32 | 16/32 | 158k (132k to 187k) | 1.07 (0.92 to 1.24) | no clear difference | 4.5 | 32/32 | 21 |
+| bundle_t_sent | 32 | 16/32 | 156k (127k to 191k) | 1.04 (0.89 to 1.23) | no clear difference | 4.3 | 32/32 | 21 |
+
+Run-to-run spread (coefficient of variation of relative cost) is 0.46. To detect a 20% difference with 80% power you would need about **83 runs per arm** (larger differences need fewer); this trial has 32.
+
+### Tokens by question (mean, thousands)
+
+| question | codex/bundle_nosent | codex/bundle_sent | codex/bundle_t_sent | codex/source_drift |
+| --- | --- | --- | --- | --- |
+| x1_cart_add | 182k | 154k | 116k | 108k |
+| x2_cart_update | 106k | 115k | 114k | 119k |
+| x3_cart_delete | 103k | 72k | 93k | 146k |
+| x4_login | 113k | 157k | 162k | 122k |
+| x5_search | 223k | 160k | 136k | 162k |
+| x6_config | 254k | 227k | 299k | 181k |
+| x7_reviews | 103k | 126k | 102k | 117k |
+| x8_shipping | 173k | 252k | 227k | 232k |
+
+Token totals are not comparable between agents (see adapters.py). Treat a verdict as evidence only when the interval excludes 1.00, and as provisional below 8 runs per arm.
+
+Full report: [results/D2-cross-repo-stale-shopizer.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/D2-cross-repo-stale-shopizer.md) (pinned to commit `5a09027`).
+
 ## Limits
 
 Planted drift; 4 runs per question; one model. From the Guide's own caveat: the drift was planted, so it tells you nothing about how often drift happens in real pipelines.
