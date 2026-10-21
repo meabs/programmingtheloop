@@ -7,13 +7,13 @@ type: "Controlled trial"
 draft: true
 experimentId: "DUPB"
 status: "published"
-report: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
+report: "https://github.com/meabs/OKFExperiment/blob/0123456789abcdef0123456789abcdef01234567/README.md"
 findings:
   - id: "DUPA-1"
     statement: "Same id as Dup A — must fail."
     limits:
       - "Fixture."
-    source: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/0123456789abcdef0123456789abcdef01234567/README.md"
 github: []
 guideLinks: []
 ---

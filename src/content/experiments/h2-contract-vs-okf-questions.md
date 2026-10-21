@@ -4,6 +4,7 @@ description: "For internal call-structure questions, only the guide and the sour
 date: 2026-10-17
 summary: "Internal call-structure questions: guide and source 21 of 24 each; contract 8; note 0 of 24."
 type: "Controlled trial"
+plainTitle: "The same four kinds of facts, tested on questions about the backend’s internals."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"
@@ -23,7 +24,7 @@ agents:
     model: "gpt-5.6-luna"
 runs: 120
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/results/H2-contract-vs-okf-questions.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/H2-contract-vs-okf-questions.md"
 topics:
   - context
   - measurement
@@ -42,7 +43,7 @@ findings:
       - "measured answers, not better changes"
       - "one model"
       - "network-clone contamination noted for related H runs (Chapter 9)"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/results/H2-contract-vs-okf-questions.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/H2-contract-vs-okf-questions.md"
     status: current
     featured: false
 ---
@@ -153,3 +154,5 @@ Guide: that measured answers, not better changes. One model. Contamination under
 ## Reproduce
 
 [OKFExperiment](https://github.com/meabs/OKFExperiment). See repository README.
+
+Longer write-up: [Test H in the OKFExperiment details](/notes/okf-details/#test-h-does-a-guide-add-anything-beyond-an-api-contract-yes-for-call-structure-no-for-field-names).

@@ -13,7 +13,7 @@ npm run dev
 
 - `npm run build` — type-check and build into `dist/`
 - `npm run preview` — serve the production build
-- `npm run check:content` — experiment finding IDs, published/superseded rules, topics, route baseline
+- `npm run check:content` — experiment finding IDs, published/superseded rules, topics, route baseline, and that evidence links to other GitHub repos name a commit SHA rather than a branch
 - `npm run test:content` — fixture tests for check:content failures
 - `npm run guide:verify` — book fact-number / citation / checklist coverage (`scripts/verify_book_coverage.py`)
 - `python3 scripts/build_guide_from_book.py` — regenerate Programming the Loop guide pages from the book Markdown master
@@ -33,6 +33,7 @@ Node 22 is used in CI (see `.github/workflows/deploy.yml`).
 | `/guides/programming-the-loop/` | Multi-page guide (Starlight) | Via Guides |
 | `/guides/programming-the-loop/start/` | Chapter routing table | Inside the guide |
 | `/about/` | About | Yes |
+| `/notes/` | Long-form notes outside the Guide (e.g. `/notes/okf-details/`) | No |
 | `/updates/` | Site changelog | Footer |
 | `/downloads/` | October 2026 PDF | Footer |
 

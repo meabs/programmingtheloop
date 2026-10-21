@@ -1,4 +1,5 @@
 ---
+import StartHere from '../../../components/home/StartHere.astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES, type StartThenPart } from '../../../site';
 
@@ -25,6 +26,7 @@ function isThenLink(part: StartThenPart): part is { label: string; href: string 
       <a class="more-link" href="/guides/programming-the-loop/">Full Guide contents →</a>
     </div>
 
+    <StartHere heading="The five findings behind the routes" level="h2" />
     <div class="wrap">
       <div class="start-table" role="table" aria-label="Guide routing by situation">
         <div class="start-row start-head-row" role="row">

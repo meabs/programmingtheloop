@@ -4,6 +4,7 @@ description: "On harder cross-repo changes, contract, note, guide and source all
 date: 2026-10-17
 summary: "Harder changes, five arms: nothing 4/16; contract 13; note 14; guide 14; source 14 of 16. The note was cheapest (~128k tokens)."
 type: "Controlled trial"
+plainTitle: "Which kind of backend facts helps most: an API contract, a short note, an OKF guide or the source?"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"
@@ -21,7 +22,7 @@ agents:
     model: "gpt-5.6-luna"
 runs: 80
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/results/H1-contract-vs-okf-changes.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/H1-contract-vs-okf-changes.md"
 topics:
   - context
   - measurement
@@ -41,7 +42,7 @@ findings:
       - "contract generated from source by a script"
       - "with 16 runs per arm, gaps under about 30 points can't be separated"
       - "one model"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/results/H1-contract-vs-okf-changes.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/H1-contract-vs-okf-changes.md"
     status: current
     featured: false
   - id: "H1-2"
@@ -56,7 +57,7 @@ findings:
     limits:
       - "same H1 limits as H1-1"
       - "token totals favour the note I wrote knowing the tasks"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/results/H1-contract-vs-okf-changes.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/H1-contract-vs-okf-changes.md"
     status: current
     featured: false
 ---
@@ -163,3 +164,5 @@ From the Guide: I wrote the note knowing the tasks, which favours it; the contra
 ## Reproduce
 
 [OKFExperiment](https://github.com/meabs/OKFExperiment). See repository README; Guide does not list commands.
+
+Longer write-up: [Test H in the OKFExperiment details](/notes/okf-details/#test-h-does-a-guide-add-anything-beyond-an-api-contract-yes-for-call-structure-no-for-field-names).

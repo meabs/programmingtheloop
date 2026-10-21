@@ -4,6 +4,7 @@ description: "Code-graph accuracy and agent token cost: multi-hop questions chea
 date: 2026-10-17
 summary: "Graph facts are mostly correct when sampled; multi-hop callers of callers cut tokens; simple lookups were level or dearer overall."
 type: "Evaluation"
+plainTitle: "AGWT = AgentGraphWorkTree: a code graph the agent can query for who-calls-what."
 github:
   - label: "AgentGraphWorkTree"
     href: "https://github.com/meabs/AgentGraphWorkTree"
@@ -19,7 +20,7 @@ status: published
 evidenceGrade: published
 publishedOn: 2026-10-11
 repo: "https://github.com/meabs/AgentGraphWorkTree"
-report: "https://github.com/meabs/AgentGraphWorkTree/blob/main/docs/EVALUATION.md"
+report: "https://github.com/meabs/AgentGraphWorkTree/blob/aa98666dedd9eb3a2a2c9d3f0b89547f59c57988/docs/EVALUATION.md"
 topics:
   - context
   - measurement
@@ -37,7 +38,7 @@ findings:
     limits:
       - "Java figures carried over from an earlier project and not re-derived for EVALUATION.md"
       - "two Java projects in the write-up"
-    source: "https://github.com/meabs/AgentGraphWorkTree/blob/main/docs/EVALUATION.md"
+    source: "https://github.com/meabs/AgentGraphWorkTree/blob/aa98666dedd9eb3a2a2c9d3f0b89547f59c57988/docs/EVALUATION.md"
     status: current
     featured: false
   - id: "AGWT-2"
@@ -54,7 +55,7 @@ findings:
       - "token totals are not comparable between agents"
       - "provisional cells with few runs per arm in places"
       - "one question type"
-    source: "https://github.com/meabs/AgentGraphWorkTree/blob/main/docs/EVALUATION.md"
+    source: "https://github.com/meabs/AgentGraphWorkTree/blob/aa98666dedd9eb3a2a2c9d3f0b89547f59c57988/docs/EVALUATION.md"
     status: current
     featured: false
   - id: "AGWT-3"
@@ -71,7 +72,7 @@ findings:
     limits:
       - "accuracy at ceiling in those arms"
       - "questions chosen to have clean checkable answers"
-    source: "https://github.com/meabs/AgentGraphWorkTree/blob/main/docs/EVALUATION.md"
+    source: "https://github.com/meabs/AgentGraphWorkTree/blob/aa98666dedd9eb3a2a2c9d3f0b89547f59c57988/docs/EVALUATION.md"
     status: current
     featured: false
 ---

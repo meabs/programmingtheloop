@@ -12,7 +12,7 @@ findings:
     statement: "Has a finding but no report field."
     limits:
       - "Fixture."
-    source: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/0123456789abcdef0123456789abcdef01234567/README.md"
 github: []
 guideLinks: []
 ---

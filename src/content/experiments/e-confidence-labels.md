@@ -4,6 +4,7 @@ description: "Labels with a disclose-guesses instruction raised disclosure; accu
 date: 2026-10-17
 summary: "With an instruction to disclose guesses, agents said they relied on a guess in 6 of 16 answers instead of 0 of 16; accuracy did not reliably improve."
 type: "Controlled trial"
+plainTitle: "Do [high] and [medium] labels on guide entries make agents more careful?"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"
@@ -20,7 +21,7 @@ agents:
   - name: "Codex"
     model: "gpt-5.6-luna"
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
 topics:
   - context
   - verification
@@ -40,7 +41,7 @@ findings:
       - "one model"
       - "backend source not available"
       - "accuracy change not reliable (Guide / RESULTS.md)"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/docs/RESULTS.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md"
     status: current
     featured: false
 ---
@@ -61,9 +62,32 @@ Storefront working repo; backend guide present; backend source not available; so
 
 Finding E-1 is above.
 
+### E. Cross-repo questions where the guide has wrong `[medium]` entries (112 runs)
+
+**Question tested:** does marking each fact with a confidence level (and telling the agent to say when it relies on a guess) change what an agent does when some entries are wrong and it cannot check the source?
+
+**Setup.** The working repository is the storefront; the backend's guide is copied in; the backend source is not available. Each of 7 questions starts from a storefront request, asks which backend handler serves it (a `[high]` entry: a route and a declared method), and asks what that handler calls (a `[medium]` entry: a call target the generator resolves heuristically). In four questions we made the call entry wrong on purpose, using a plausible name from elsewhere in the same guide (for example, the login handler "calling" `CustomerFacade.registerCustomer`). Three questions are unchanged controls. 4 runs per question per condition.
+
+| Condition | Followed the wrong entry (of 16) | True answer | Something else | Said it relied on a `[medium]` guess |
+| --- | --- | --- | --- | --- |
+| 2. OKF, no labels | **11** | 4 | 1 | 0 |
+| OKF with labels, no instruction | 10 | 4 | 2 | 0 |
+| **3. OKF with labels and the instruction** | **8** | 3 | 5 | **6** |
+| Labels and instruction, but the wrong entries marked `[high]` | 10 | 5 | 1 | 0 |
+
+- Wrong answers fell only a little (11 to 8 of 16; Fisher exact p≈0.47, not reliable). Disclosure rose clearly: 6 of 16 against 0 of 16 (p≈0.02). Of the 8 wrong answers in condition 3, 6 said the answer rested on a `[medium]` entry.
+- Mislabelling the wrong entries `[high]` removed all disclosure: agents trusted the label.
+- Controls (three unchanged questions, 12 answers per condition): 10, 8, 8 and 9 correct; the agent hedged on 0, 0, 2 and 3 of them. Labels cost a little over-caution.
+- "Disclosure" is a keyword match on the answer ("medium", "heuristic", "guess", "unverified", "inferred", and similar); a sample of the matches was read and they were genuine.
+- No run reached outside its own workspace (`scripts/leak_check.py`; one flagged path was the author's global skill file, the constant overhead noted under Limits).
+
+Source: [docs/RESULTS.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md) (pinned to commit `5a09027`).
+
+### Trial report (raw output)
+
 Baseline arm: **plain**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 
-### codex
+#### codex
 
 | arm | runs | correct | tokens per run (95% CI) | relative cost (95% CI) | verdict | turns | used tool | seconds |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -74,7 +98,7 @@ Baseline arm: **plain**. Relative cost is each run's tokens divided by the basel
 
 Run-to-run spread (coefficient of variation of relative cost) is 0.29. To detect a 20% difference with 80% power you would need about **34 runs per arm** (larger differences need fewer); this trial has 28.
 
-### Tokens by question (mean, thousands)
+#### Tokens by question (mean, thousands)
 
 | question | codex/labels | codex/labels_rule | codex/mislabelled_rule | codex/plain |
 | --- | --- | --- | --- | --- |
@@ -97,3 +121,5 @@ One model; unread backend; planted wrong entries. Guide: labels did not prevent 
 ## Reproduce
 
 [OKFExperiment](https://github.com/meabs/OKFExperiment). See repository README.
+
+Longer write-up: [Test E in the OKFExperiment details](/notes/okf-details/#test-e-cross-repo-questions-with-wrong-medium-entries-labels-make-the-agent-disclose-a-guess-not-avoid-it).

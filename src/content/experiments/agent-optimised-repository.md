@@ -24,8 +24,8 @@ agents:
     settings: "medium reasoning, isolation on"
 runs: 112
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/results/J-optimised-repo.md"
-prediction: "https://github.com/meabs/OKFExperiment/blob/main/docs/EXPERIMENT_J.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/J-optimised-repo.md"
+prediction: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/EXPERIMENT_J.md"
 topics:
   - context
   - measurement
@@ -52,7 +52,7 @@ findings:
       - "mechanical edits and structure questions"
       - "8 runs per task per arm"
       - "four ingredients tested together"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/results/J-optimised-repo.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/J-optimised-repo.md"
     status: current
     featured: true
 ---
@@ -138,4 +138,5 @@ Full report: [results/J-optimised-repo.md](https://github.com/meabs/OKFExperimen
 
 - Full write-up and charts: [Chapter 3](/guides/programming-the-loop/right-facts/)
 - Headline finding: [Foreword](/guides/programming-the-loop/foreword/)
-- Source tables: [OKFExperiment, results/J-optimised-repo.md](https://github.com/meabs/OKFExperiment/blob/main/results/J-optimised-repo.md)
+- Source tables: [OKFExperiment, results/J-optimised-repo.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/J-optimised-repo.md)
+- Longer write-up: [Test J in the OKFExperiment details](/notes/okf-details/#test-j-a-repository-set-up-for-agents-against-one-left-as-it-is-no-reliable-gain-and-about-48-more-tokens)

@@ -1,0 +1,71 @@
+---
+import { getCurrentFindings, type FindingWithExperiment } from '../../lib/findings';
+
+interface Props {
+  heading?: string;
+  level?: 'h2' | 'h3';
+}
+const { heading = 'Start here: five findings from the experiments', level = 'h2' } = Astro.props;
+const Heading = level;
+
+const all = await getCurrentFindings();
+const byId = new Map<string, FindingWithExperiment>(all.map((f) => [f.id, f]));
+
+// Measured values and limits are read from the finding records so they cannot drift.
+// The rule titles and one-line readings are my wording, not measurements.
+const picks = [
+  { id: 'OKF-2', rule: 'Give the agent the facts it cannot see', reading: 'When the code a change depends on lives in another repository, a guide to it is the difference between mostly failing and mostly passing.' },
+  { id: 'OKF-1', rule: 'A stale guide is worse than none', reading: 'Out-of-date facts get repeated with confidence. One sentence telling the agent to confirm in source cut the repeated errors from 8 of 12 to 0 of 12 (B3-1).' },
+  { id: 'J-1', rule: 'More set-up is not a better result', reading: 'A repository fitted out the recommended way cost more per run without a reliable gain in correctness.' },
+  { id: 'SKT-3', rule: 'Do not take “it works” on trust', reading: 'Most failed runs ended with the agent saying the change worked. Check with something the agent does not control.' },
+] as const;
+---
+<section class="start-here" aria-labelledby="start-here-title">
+  <div class="wrap">
+    <Heading id="start-here-title">{heading}</Heading>
+    <p class="start-here-lede">The experiments tell one story about when context helps and when it hurts. These five are the shortest version. Each links to the write-up with its limits.</p>
+    <ol class="start-here-list">
+      {picks.map((p, i) => {
+        const f = byId.get(p.id);
+        return f ? (
+          <li class="start-here-item">
+            <span class="start-here-num">{i + 1}</span>
+            <div>
+              <strong class="start-here-rule">{p.rule}</strong>
+              <span class="start-here-value">{f.value}</span>
+              <p>{p.reading}</p>
+              <p class="start-here-limit"><span>Limit</span> {f.limits.join("; ")}</p>
+              <a href={f.experimentHref}>{f.experimentTitle} ({f.id}) →</a>
+            </div>
+          </li>
+        ) : null;
+      })}
+      <li class="start-here-item">
+        <span class="start-here-num">5</span>
+        <div>
+          <strong class="start-here-rule">Run a friction loop, and fix causes in code before prose</strong>
+          <span class="start-here-value">15.3 → 7.7 turns</span>
+          <p>Ask agents to record what blocked them, review the notes weekly, and fix the repeated cause as high up as you can. In one trial, documenting the test order still left a note in 1 of 3 runs; a script that ran the migrations first left none, and the runs used about half the tokens (647k to 314k).</p>
+          <p class="start-here-limit"><span>Limit</span> One FastAPI task, Codex, three runs per arm; the scripted arm was run after the others and no interval excluded “no difference”.</p>
+          <a href="/guides/programming-the-loop/harness-friction-loop/">Chapter 6, the harness and the friction loop →</a>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style>
+  .start-here { padding: 3rem 0; border-bottom: 1px solid var(--line, #d8d2c8); }
+  .start-here :global(h2), .start-here :global(h3) { margin-top: 0; }
+  .start-here-lede { max-width: 42rem; color: var(--ink-muted, #4a5160); }
+  .start-here-list { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 1rem; counter-reset: none; }
+  .start-here-item { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; margin: 0; padding: 1.1rem 1.15rem; background: var(--surface, #fffcf8); border: 1px solid var(--line, #d8d2c8); border-left: 3px solid var(--accent, #0d7a72); border-radius: 10px; }
+  .start-here-num { font-weight: 700; color: var(--accent, #0d7a72); font-variant-numeric: tabular-nums; }
+  .start-here-rule { display: block; font-size: 1.1rem; line-height: 1.3; }
+  .start-here-value { display: block; margin: .3rem 0 .5rem; font-size: 1.25rem; font-weight: 700; line-height: 1.25; color: var(--accent, #0d7a72); overflow-wrap: anywhere; }
+  .start-here-item p { margin: 0 0 .5rem; font-size: .95rem; line-height: 1.5; overflow-wrap: anywhere; }
+  .start-here-limit { color: var(--ink-muted, #4a5160); font-size: .85rem !important; }
+  .start-here-limit span { text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; color: var(--ink-faint, #6b7280); margin-right: .35rem; }
+  .start-here-item a { font-weight: 600; font-size: .9rem; }
+  @media (min-width: 900px) { .start-here-list { grid-template-columns: 1fr 1fr; } .start-here-item:last-child { grid-column: 1 / -1; } }
+</style>

@@ -4,6 +4,7 @@ description: "Hidden-test passes on small cross-repo changes: 3 of 20 with nothi
 date: 2026-10-17
 summary: "Small cross-repo changes: 3 of 20 with nothing, 19 of 20 with a backend guide. Foreword composite OKF-2 also covers G."
 type: "Controlled trial"
+plainTitle: "Does a guide to the backend help an agent change code that depends on it? Small tasks."
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"
@@ -23,7 +24,7 @@ agents:
     model: "gpt-5.6-luna"
 runs: 60
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/results/F-crossrepo-change-tasks.md"
+report: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/F-crossrepo-change-tasks.md"
 topics:
   - context
   - measurement
@@ -43,7 +44,7 @@ findings:
       - "identifiers renamed by me"
       - "one model"
       - "task wording ambiguity noted for one prefix case (RESULTS.md F)"
-    source: "https://github.com/meabs/OKFExperiment/blob/main/results/F-crossrepo-change-tasks.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/results/F-crossrepo-change-tasks.md"
     status: current
     featured: false
 ---
@@ -64,9 +65,35 @@ Four small ES-module tasks; hidden Node tests; arms include no OKF, OKF, OKF wit
 
 Finding F-1 is above. Foreword composite [OKF-2](/experiments/okf-worked-example/) also covers G and is not redefined here.
 
+### F. Cross-repo change tasks (60 runs)
+
+**Question tested:** when the agent must change the storefront using facts that only the backend states, how much does the backend's guide help, and do confidence labels change that?
+
+**Setup.** Four tasks, each "create this small ES module in the storefront", each checked by a hidden Node test that was shown to fail on the unchanged storefront and pass on a reference solution:
+1. `buildAddToCartRequest`: add the backend's field for a discount code (`voucher`, renamed from the real name).
+2. `buildSearchRequest`: use the backend's names for page size and offset (`size`, `offset`).
+3. `buildReviewsRequest`: use the path the backend declares (`product/{id}/reviews`; the storefront's own code uses `products/...`).
+4. `canPurchaseOnline`: read the backend's purchase flag from its public config response (`purchasingEnabled`).
+
+5 runs per task per condition.
+
+| Condition | Passed (of 20) | f1 | f2 | f3 | f4 | Tokens per run (95% CI) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1. No OKF | **3** | 3 | 0 | 0 | 0 | 482k (301k to 681k) |
+| 2. OKF | **19** | 5 | 5 | 4 | 5 | 242k (203k to 286k) |
+| 3. OKF with confidence labels | **15** | 5 | 3 | 2 | 5 | 235k (205k to 270k) |
+
+- No OKF against OKF: 3 against 19 of 20 (p<0.001), at about half the tokens. The 3 passes without a guide were all on task 1, where the backend's field name (`voucher`) is a common word an agent can guess.
+- OKF against OKF with labels: 19 against 15 of 20 (p≈0.18), not a reliable difference at this size. The labelled condition's five failures were two wrong paging field names (`start`/`startIndex` for `offset`) and three on the reviews path, one of which added a `/api/v1` prefix that the task did not clearly rule out. The plain guide failed once, on the same task. The task wording should have been clearer about the prefix.
+- One task (4) was ambiguous in the first draft: the backend has an internal setting and a public response field with similar meanings. The wording was fixed before any real run.
+
+Source: [docs/RESULTS.md](https://github.com/meabs/OKFExperiment/blob/5a090274481d1386ed96e75fa2a90d47c2d4a7c4/docs/RESULTS.md) (pinned to commit `5a09027`).
+
+### Trial report (raw output)
+
 Baseline arm: **no_okf**. Relative cost is each run's tokens divided by the baseline's mean for the same question; 1.00 means equal, lower is cheaper.
 
-### codex
+#### codex
 
 | arm | runs | correct | tokens per run (95% CI) | relative cost (95% CI) | verdict | turns | used tool | seconds |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -76,7 +103,7 @@ Baseline arm: **no_okf**. Relative cost is each run's tokens divided by the base
 
 Run-to-run spread (coefficient of variation of relative cost) is 0.87. To detect a 20% difference with 80% power you would need about **296 runs per arm** (larger differences need fewer); this trial has 20.
 
-### Tokens by question (mean, thousands)
+#### Tokens by question (mean, thousands)
 
 | question | codex/no_okf | codex/okf | codex/okf_confidence |
 | --- | --- | --- | --- |
@@ -96,3 +123,5 @@ Full report: [results/F-crossrepo-change-tasks.md](https://github.com/meabs/OKFE
 ## Reproduce
 
 [OKFExperiment](https://github.com/meabs/OKFExperiment). See repository README.
+
+Longer write-up: [Test F in the OKFExperiment details](/notes/okf-details/#test-f-cross-repo-change-small-tasks-with-a-guide-changes-pass-without-it-they-do-not).

@@ -10,7 +10,7 @@ question: "Does the checker accept a well-formed published experiment?"
 status: "published"
 evidenceGrade: "published"
 repo: "https://github.com/meabs/OKFExperiment"
-report: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
+report: "https://github.com/meabs/OKFExperiment/blob/0123456789abcdef0123456789abcdef01234567/README.md"
 topics:
   - measurement
 agents:
@@ -22,7 +22,7 @@ findings:
     value: "n/a"
     limits:
       - "Fixture only; not from the Guide."
-    source: "https://github.com/meabs/OKFExperiment/blob/main/README.md"
+    source: "https://github.com/meabs/OKFExperiment/blob/0123456789abcdef0123456789abcdef01234567/README.md"
     status: "current"
     featured: false
 github: []

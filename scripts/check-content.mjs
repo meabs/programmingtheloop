@@ -12,12 +12,15 @@
  * 6. Route baseline: every baseline path is still declared (page, Starlight doc, or redirect)
  * 7. Home / guide-landing HTML must not hard-code finding numbers absent from records
  * 8. News items: each needs https? sourceUrl, releasedOn, and non-empty body
+ * 9. Evidence links: GitHub blob/tree links to other repos (frontmatter and body, outside
+ *    code fences) must name a commit SHA, not a branch, so a claim cannot drift
  *
  * Practice citation rules are stubbed until practices exist (Phase later).
  *
  * Env:
  *   EXPERIMENTS_DIR — override experiments folder (fixtures)
  *   NEWS_DIR — override news folder (fixtures)
+ *   NOTES_DIR — override notes folder (fixtures)
  *   SKIP_ROUTES=1 — skip route baseline (fixture unit tests)
  *   SKIP_LANDING=1 — skip home/guide-landing finding-number scan
  *   LANDING_HTML_DIR — optional dir of HTML fixtures for landing scan
@@ -30,6 +33,7 @@ const ROOT = process.cwd();
 const EXPERIMENTS_DIR =
   process.env.EXPERIMENTS_DIR || join(ROOT, 'src/content/experiments');
 const NEWS_DIR = process.env.NEWS_DIR || join(ROOT, 'src/content/news');
+const NOTES_DIR = process.env.NOTES_DIR || join(ROOT, 'src/content/docs/notes');
 const BASELINE = join(ROOT, 'docs/route-baseline.txt');
 const ASTRO_CONFIG = join(ROOT, 'astro.config.mjs');
 const SKIP_ROUTES = process.env.SKIP_ROUTES === '1';
@@ -204,8 +208,56 @@ export function loadExperiments(dir = EXPERIMENTS_DIR) {
   return listMarkdownFiles(dir).map((file) => {
     const raw = readFileSync(file, 'utf8');
     const { data } = parseFrontmatter(raw);
-    return { file: relative(ROOT, file), data };
+    return { file: relative(ROOT, file), data, raw };
   });
+}
+
+/** Plain pages (e.g. Notes) checked only for link rules. */
+export function loadPages(dir) {
+  return listMarkdownFiles(dir).map((file) => ({
+    file: relative(ROOT, file),
+    raw: readFileSync(file, 'utf8'),
+  }));
+}
+
+/** Own repository: its links may follow main. */
+const SITE_REPO = 'meabs/programmingtheloop';
+const GITHUB_FILE_LINK =
+  /https:\/\/github\.com\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)\/(?:blob|tree|raw|blame)\/([^/\s)"'>\]]+)(?:\/[^\s)"'>\]]*)?/g;
+const COMMIT_SHA = /^[0-9a-f]{7,40}$/i;
+
+/**
+ * GitHub file/tree links to other repositories whose ref is not a commit SHA.
+ * Text inside fenced code blocks is ignored (it shows example output, not links).
+ */
+export function findUnpinnedGithubLinks(text) {
+  const found = new Set();
+  let fenced = false;
+  for (const line of String(text).split('\n')) {
+    if (/^\s*```/.test(line)) {
+      fenced = !fenced;
+      continue;
+    }
+    if (fenced) continue;
+    for (const m of line.matchAll(GITHUB_FILE_LINK)) {
+      const [url, owner, repo, ref] = m;
+      if (`${owner}/${repo}`.toLowerCase() === SITE_REPO) continue;
+      if (!COMMIT_SHA.test(ref)) found.add(url);
+    }
+  }
+  return [...found];
+}
+
+export function checkPinnedLinks(pages) {
+  const errors = [];
+  for (const { file, raw } of pages) {
+    for (const url of findUnpinnedGithubLinks(raw)) {
+      errors.push(
+        `Unpinned GitHub link in ${file}: ${url} (use a commit SHA instead of a branch, so the evidence cannot change under the claim)`,
+      );
+    }
+  }
+  return { errors };
 }
 
 export function loadNews(dir = NEWS_DIR) {
@@ -678,6 +730,7 @@ export function checkLandingFindingNumbers({
 export function runChecks({
   experimentsDir = EXPERIMENTS_DIR,
   newsDir = NEWS_DIR,
+  notesDir = NOTES_DIR,
   skipRoutes = SKIP_ROUTES,
   skipLanding = SKIP_LANDING,
   landingHtmlDir = LANDING_HTML_DIR,
@@ -686,7 +739,8 @@ export function runChecks({
   const expResult = checkExperiments(experiments);
   const news = loadNews(newsDir);
   const newsResult = checkNews(news);
-  const errors = [...expResult.errors, ...newsResult.errors];
+  const linkResult = checkPinnedLinks([...experiments, ...loadPages(notesDir)]);
+  const errors = [...expResult.errors, ...newsResult.errors, ...linkResult.errors];
   const warnings = [...expResult.warnings, ...newsResult.warnings];
 
   if (!skipRoutes) {

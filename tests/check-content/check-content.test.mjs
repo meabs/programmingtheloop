@@ -7,12 +7,39 @@ import {
   checkExperiments,
   checkNews,
   checkLandingFindingNumbers,
+  checkPinnedLinks,
+  findUnpinnedGithubLinks,
   loadExperiments,
   loadNews,
 } from '../../scripts/check-content.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(here, 'fixtures');
+
+describe('check:content pinned evidence links', () => {
+  it('flags frontmatter and body links that follow a branch', () => {
+    const experiments = loadExperiments(join(fixtures, 'unpinned-link'));
+    const { errors } = checkPinnedLinks(experiments);
+    assert.equal(errors.length, 3, errors.join('\n'));
+    assert.ok(errors.some((e) => /OKFExperiment\/blob\/main\/README\.md/.test(e)), 'report link');
+    assert.ok(errors.some((e) => /OKFExperiment\/tree\/main\/results/.test(e)), 'finding source');
+    assert.ok(errors.some((e) => /AgentTrialRig\/blob\/master\/README\.md/.test(e)), 'body link');
+  });
+
+  it('accepts commit-pinned links, repo roots, the site repo and code fences', () => {
+    const experiments = loadExperiments(join(fixtures, 'pinned-link'));
+    const { errors } = checkPinnedLinks(experiments);
+    assert.deepEqual(errors, []);
+  });
+
+  it('treats tags and short non-hex refs as unpinned', () => {
+    assert.deepEqual(
+      findUnpinnedGithubLinks('https://github.com/a/b/blob/v1.0/x.md https://github.com/a/b/blob/abc12/x.md'),
+      ['https://github.com/a/b/blob/v1.0/x.md', 'https://github.com/a/b/blob/abc12/x.md'],
+    );
+    assert.deepEqual(findUnpinnedGithubLinks('https://github.com/a/b/blob/abcdef1/x.md'), []);
+  });
+});
 
 describe('check:content fixtures', () => {
   it('clean set passes experiment rules', () => {

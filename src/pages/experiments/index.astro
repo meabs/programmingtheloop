@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import StartHere from '../../components/home/StartHere.astro';
 import { SITE_OG_IMAGE } from '../../site';
 import {
   getPublishedExperiments,
@@ -25,6 +26,7 @@ const items = await getPublishedExperiments();
       </p>
     </div>
   </header>
+  <StartHere heading="Start here: five findings" level="h2" />
   <div class="page-body">
     <div class="wrap">
       <div class="collection-grid">
@@ -33,6 +35,7 @@ const items = await getPublishedExperiments();
             <span class="card-kicker">{item.data.type}</span>
             <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
             <h2 class="card-title">{item.data.title}</h2>
+            {item.data.plainTitle && <p class="card-plain">{item.data.plainTitle}</p>}
             <p class="card-desc">{item.data.summary}</p>
             <span class="card-meta">Open →</span>
           </a>
