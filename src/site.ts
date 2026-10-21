@@ -32,11 +32,11 @@ export const CF_WEB_ANALYTICS_BEACON = `{"token": "${CF_WEB_ANALYTICS_TOKEN}"}`;
 /**
  * Minimum published items before a collection-gated nav section appears.
  * Home and About always show. Guides uses minItems: 1 (book hub).
- * Articles / Experiments use NAV_MIN_ITEMS.
+ * Articles / Experiments / News use NAV_MIN_ITEMS.
  */
 export const NAV_MIN_ITEMS = 3;
 
-export type NavCollection = 'articles' | 'experiments' | 'guides';
+export type NavCollection = 'articles' | 'experiments' | 'guides' | 'news';
 
 export type NavItem = {
   num: string;
@@ -60,10 +60,11 @@ export const NAV: readonly NavItem[] = [
   { num: '00', label: 'Home', href: '/', always: true },
   // Empty/sparse sections wait for NAV_MIN_ITEMS (default 3).
   { num: '01', label: 'Articles', href: '/articles/', collection: 'articles' },
-  { num: '02', label: 'Experiments', href: '/experiments/', collection: 'experiments' },
+  { num: '02', label: 'News', href: '/news/', collection: 'news' },
+  { num: '03', label: 'Experiments', href: '/experiments/', collection: 'experiments' },
   // Book hub: show once at least one guide is published.
-  { num: '03', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
-  { num: '04', label: 'About', href: '/about/', always: true },
+  { num: '04', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
+  { num: '05', label: 'About', href: '/about/', always: true },
 ];
 
 /**

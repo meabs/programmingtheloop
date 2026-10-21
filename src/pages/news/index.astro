@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import {
+  getPublishedNews,
+  newsHref,
+  formatItemDate,
+} from '../../lib/collections';
+
+const items = await getPublishedNews();
+---
+<BaseLayout
+  title="News"
+  description="Weekday roundups of GenAI and coding-agent releases, with sources linked."
+  canonicalPath="/news/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">News</p>
+      <h1>News</h1>
+      <p>
+        Short weekday roundups of GenAI and coding-agent releases. Every item links to its
+        source.
+      </p>
+      <p class="page-head-meta">
+        <a href="/news/rss.xml">RSS</a>
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      {items.length === 0 ? (
+        <p class="empty-note">Nothing published yet.</p>
+      ) : (
+        <div class="collection-grid news-grid">
+          {items.map((item) => (
+            <a class="collection-card news-card reveal" href={newsHref(item)}>
+              <span class="card-kicker">News</span>
+              <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
+              <h2 class="card-title">{item.data.title}</h2>
+              <p class="card-desc">{item.data.summary}</p>
+              <span class="card-meta">
+                {item.data.items.length} {item.data.items.length === 1 ? 'item' : 'items'} →
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-head-meta {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+  }
+  .news-grid {
+    gap: 0.85rem;
+  }
+  @media (max-width: 640px) {
+    .news-card {
+      padding: 1rem 1.05rem;
+    }
+  }
+</style>

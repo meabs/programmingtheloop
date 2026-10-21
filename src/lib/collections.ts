@@ -9,9 +9,10 @@ import {
 export type Article = CollectionEntry<'articles'>;
 export type Experiment = CollectionEntry<'experiments'>;
 export type GuideEntry = CollectionEntry<'guides'>;
+export type NewsPost = CollectionEntry<'news'>;
 
 export type LatestItem = {
-  kind: 'article' | 'experiment' | 'guide';
+  kind: 'article' | 'experiment' | 'guide' | 'news';
   title: string;
   summary: string;
   date: Date;
@@ -42,6 +43,11 @@ export async function getPublishedGuides(): Promise<GuideEntry[]> {
   return items.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
+export async function getPublishedNews(): Promise<NewsPost[]> {
+  const items = await getCollection('news', ({ data }) => data.draft !== true);
+  return items.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+}
+
 export function articleHref(post: Article): string {
   return `/articles/${post.id}/`;
 }
@@ -50,17 +56,23 @@ export function experimentHref(item: Experiment): string {
   return `/experiments/${item.id}/`;
 }
 
+export function newsHref(post: NewsPost): string {
+  return `/news/${post.id}/`;
+}
+
 /** Published counts used to gate collection nav sections. */
 export async function getNavCollectionCounts(): Promise<NavCounts> {
-  const [articles, experiments, guides] = await Promise.all([
+  const [articles, experiments, guides, news] = await Promise.all([
     getPublishedArticles(),
     getPublishedExperiments(),
     getPublishedGuides(),
+    getPublishedNews(),
   ]);
   return {
     articles: articles.length,
     experiments: experiments.length,
     guides: guides.length,
+    news: news.length,
   };
 }
 
@@ -80,12 +92,13 @@ export async function isCollectionNavVisible(
   return collectionIsVisible(collection, await getNavCollectionCounts());
 }
 
-/** Newest items across articles, experiments and guides. */
+/** Newest items across articles, news, experiments and guides. */
 export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
-  const [articles, experiments, guides] = await Promise.all([
+  const [articles, experiments, guides, news] = await Promise.all([
     getPublishedArticles(),
     getPublishedExperiments(),
     getPublishedGuides(),
+    getPublishedNews(),
   ]);
 
   const items: LatestItem[] = [
@@ -96,6 +109,14 @@ export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
       date: a.data.date,
       href: articleHref(a),
       tag: 'Article',
+    })),
+    ...news.map((n) => ({
+      kind: 'news' as const,
+      title: n.data.title,
+      summary: n.data.summary,
+      date: n.data.date,
+      href: newsHref(n),
+      tag: 'News',
     })),
     ...experiments.map((e) => ({
       kind: 'experiment' as const,

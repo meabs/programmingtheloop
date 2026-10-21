@@ -5,8 +5,10 @@ import { fileURLToPath } from 'node:url';
 import {
   runChecks,
   checkExperiments,
+  checkNews,
   checkLandingFindingNumbers,
   loadExperiments,
+  loadNews,
 } from '../../scripts/check-content.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -68,5 +70,17 @@ describe('check:content fixtures', () => {
       errors.some((e) => /Hard-coded finding number "44 \/ 44"/.test(e)),
       errors.join('\n'),
     );
+  });
+
+  it('valid news post passes news rules', () => {
+    const posts = loadNews(join(fixtures, 'news-valid'));
+    const { errors } = checkNews(posts);
+    assert.deepEqual(errors, []);
+  });
+
+  it('catches news item missing sourceUrl', () => {
+    const posts = loadNews(join(fixtures, 'news-missing-source'));
+    const { errors } = checkNews(posts);
+    assert.ok(errors.some((e) => /sourceUrl/.test(e)), errors.join('\n'));
   });
 });

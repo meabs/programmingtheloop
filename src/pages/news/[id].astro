@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedNews, formatItemDate } from '../../lib/collections';
+import { renderMarkdown } from '../../lib/markdown';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedNews();
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const items = post.data.items.map((item) => ({
+  ...item,
+  bodyHtml: renderMarkdown(item.body),
+}));
+---
+<BaseLayout
+  title={post.data.title}
+  description={post.data.summary}
+  canonicalPath={`/news/${post.id}/`}
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">News · {formatItemDate(post.data.date)}</p>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.summary}</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <ol class="news-items">
+        {items.map((item) => (
+          <li class="news-item">
+            <a class="news-item-link" href={item.sourceUrl} rel="noopener noreferrer">
+              <header class="news-item-head">
+                <p class="news-item-vendor">{item.vendor}</p>
+                <h2 class="news-item-title">{item.title}</h2>
+                <p class="news-item-released">
+                  <span class="news-item-label">Released</span> {item.releasedOn}
+                </p>
+              </header>
+              <div class="news-item-body view-prose" set:html={item.bodyHtml} />
+              {item.whoItAffects && (
+                <p class="news-item-affects">
+                  <span class="news-item-label">Who it affects</span> {item.whoItAffects}
+                </p>
+              )}
+              <p class="news-item-source">
+                Source: {item.sourceLabel} ↗
+              </p>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <p class="view-back">
+        <a href="/news/">← All news</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .news-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .news-item-link {
+    display: block;
+    padding: 1.1rem 1.15rem;
+    border: 1px solid var(--line, #d8d2c8);
+    border-radius: 0;
+    text-decoration: none;
+    color: inherit;
+    background: var(--paper, #f7f4ef);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .news-item-link:hover,
+  .news-item-link:focus-visible {
+    border-color: var(--accent, #0f6b5c);
+    background: var(--paper-raised, #fffdf9);
+  }
+  .news-item-vendor {
+    margin: 0 0 0.35rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint, #6b7280);
+  }
+  .news-item-title {
+    margin: 0 0 0.45rem;
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+  .news-item-released,
+  .news-item-affects,
+  .news-item-source {
+    margin: 0.65rem 0 0;
+    font-size: 0.92rem;
+  }
+  .news-item-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint, #6b7280);
+    margin-right: 0.4rem;
+  }
+  .news-item-body {
+    margin-top: 0.75rem;
+  }
+  .news-item-body :global(p:first-child) {
+    margin-top: 0;
+  }
+  .news-item-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .news-item-source {
+    color: var(--accent, #0f6b5c);
+    font-weight: 600;
+  }
+  @media (max-width: 640px) {
+    .news-item-link {
+      padding: 1rem;
+    }
+  }
+</style>

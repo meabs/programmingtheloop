@@ -93,5 +93,6 @@ export function readNavCollectionCountsSync(
     articles: countPublishedInDir(path.join(contentRoot, 'articles')),
     experiments: countPublishedInDir(path.join(contentRoot, 'experiments')),
     guides: countPublishedInDir(path.join(contentRoot, 'guides')),
+    news: countPublishedInDir(path.join(contentRoot, 'news')),
   };
 }
