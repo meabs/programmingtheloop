@@ -13,10 +13,10 @@ npm run dev
 
 - `npm run build` — type-check and build into `dist/`
 - `npm run preview` — serve the production build
-- `npm run check:content` — experiment finding IDs, published/superseded rules, topics, route baseline, and that evidence links to other GitHub repos name a commit SHA rather than a branch
+- `npm run check:content` — experiment finding IDs, published/superseded rules, topics, route baseline, and that evidence links to other GitHub repos (in experiments, Notes and Guide chapters) name a commit SHA rather than a branch
 - `npm run test:content` — fixture tests for check:content failures
 - `npm run guide:verify` — book fact-number / citation / checklist coverage (`scripts/verify_book_coverage.py`)
-- `python3 scripts/build_guide_from_book.py` — regenerate Programming the Loop guide pages from the book Markdown master
+- `python3 scripts/build_guide_from_book.py` — legacy: regenerates the Guide pages from a book Markdown master that is not kept in this repo. Guide pages are now edited directly; running it would overwrite the commit-pinned links, which `check:content` would then flag
 
 `check:content` and `guide:verify` are separate: the former guards collection integrity; the latter guards Guide facts against the book.
 
