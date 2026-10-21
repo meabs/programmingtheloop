@@ -7,7 +7,7 @@ type: "Controlled trial"
 github:
   - label: "experiments"
     href: "https://github.com/meabs/experiments/tree/main/2026-10-skills-tasks"
-draft: true
+draft: false
 experimentId: "SKT"
 question: "On a varied set of real change tasks, do Superpowers or Matt Pocock's skills raise the share of changes that pass independent acceptance tests, and at what cost in tokens?"
 status: published
