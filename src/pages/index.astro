@@ -1,259 +1,98 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_NAME, SITE_DESCRIPTION, SITE_OG_IMAGE, LINKS, PDF_PATH } from '../site';
 import {
-  SITE_NAME,
-  SITE_DESCRIPTION,
-  SITE_OG_IMAGE,
-  TOPIC_TICKER,
-  LINKS,
-} from '../site';
-import {
-  getLatestItems,
-  getNavCollectionCounts,
-  getPublishedArticles,
-  getPublishedExperiments,
-  getPublishedGuides,
-  getPublishedNews,
-  articleHref,
-  experimentHref,
-  newsHref,
-  formatItemDate,
+  getHomepageSelection, getPublishedArticles, getPublishedExperiments,
+  getPublishedGuides, getPublishedNews, experimentHref, formatItemDate,
 } from '../lib/collections';
-import { collectionIsVisible } from '../lib/nav-gate';
 
-const latest = await getLatestItems(5);
-const articles = await getPublishedArticles();
-const experiments = await getPublishedExperiments();
-const guides = await getPublishedGuides();
-const news = await getPublishedNews();
-const counts = await getNavCollectionCounts();
-const showArticles = collectionIsVisible('articles', counts);
-const showExperiments = collectionIsVisible('experiments', counts);
-const showGuides = collectionIsVisible('guides', counts);
-const showNews = collectionIsVisible('news', counts);
-const ticker = [...TOPIC_TICKER, ...TOPIC_TICKER];
-
-const siteStats = [
-  showGuides && {
-    key: 'Guides',
-    value: String(guides.length),
-    caption: guides.length === 1 ? guides[0].data.title : 'Published',
-  },
-  showExperiments && {
-    key: 'Experiments',
-    value: String(experiments.length),
-    caption: experiments.length ? 'Published write-ups' : 'None yet',
-  },
-  showNews && {
-    key: 'News',
-    value: String(news.length),
-    caption: news.length ? 'Weekday roundups' : 'None yet',
-  },
-  showArticles && {
-    key: 'Articles',
-    value: String(articles.length),
-    caption: articles.length ? 'Published' : 'None yet',
-  },
-].filter(Boolean) as { key: string; value: string; caption: string }[];
+const { featured, recent } = await getHomepageSelection();
+const [articles, experiments, guides, news] = await Promise.all([
+  getPublishedArticles(), getPublishedExperiments(), getPublishedGuides(), getPublishedNews(),
+]);
+const sections = [
+  { name: 'Articles', href: '/articles/', description: 'Technical opinions, analysis and commentary.', count: articles.length },
+  { name: 'Experiments', href: '/experiments/', description: 'Original research, prototypes and measured findings.', count: experiments.length },
+  { name: 'Guides', href: '/guides/', description: 'Deeper practical writing and reference material.', count: guides.length },
+  { name: 'News', href: '/news/', description: 'Relevant technical developments and their implications.', count: news.length },
+];
 ---
-<BaseLayout
-  title={`${SITE_NAME} — Building software with coding agents`}
-  description={SITE_DESCRIPTION}
-  canonicalPath="/"
-  ogImage={SITE_OG_IMAGE}
->
-  <section class="hero-spec">
-    <div class="wrap hero-spec-grid">
-      <div class="hero-main">
-        <p class="section-label">§ 00 — What this is</p>
-        <h1 class="hero-headline" data-headline>
-          <span class="headline-line">Building software</span>
-          <span class="headline-line loop">with coding agents</span>
-        </h1>
-        <p class="subtitle">
-          Articles, news, experiments and guides on working with coding agents. What I measured,
-          and what I think.
-        </p>
+<BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE}>
+  <section class="publication-hero">
+    <div class="wrap publication-hero-grid">
+      <div class="publication-intro">
+        <p class="section-label">An independent technical publication</p>
+        <h1>Exploring how technology <em>really works.</em></h1>
+        <p>Practical thinking on AI, software engineering, architecture and the tools we build with. Articles, experiments, projects and guides. What I've learned, what I've measured and what I think.</p>
         <div class="actions">
-          <a class="button primary pill" href="/guides/">Browse guides</a>
-          <a class="button" href="/experiments/">See experiments →</a>
+          <a class="button primary" href="#explore">Explore the site</a>
+          <a class="button" href="/guides/programming-the-loop/">Read the guide →</a>
         </div>
       </div>
-
-      <aside class="hero-abstract" aria-label="Latest">
-        <p class="abstract-label">Latest</p>
-        <ul class="latest-list">
-          {latest.map((item) => (
-            <li>
-              <a href={item.href}>
-                <span class="latest-tag">{item.tag}</span>
-                <span class="latest-title">{item.title}</span>
-                <span class="latest-meta">{formatItemDate(item.date)}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div class="abstract-cta">
-          {showArticles && (
-            <a class="button primary pill" href="/articles/">Articles</a>
-          )}
-          <a class="button" href="/about/">About</a>
-        </div>
-      </aside>
-    </div>
-
-    <div class="stats-strip" role="list" aria-label="What is on this site">
-      {siteStats.map((stat) => (
-        <div class="stat-cell" role="listitem">
-          <span class="stat-key">{stat.key}</span>
-          <span
-            class="stat-value"
-            data-count={stat.value}
-            data-count-label={stat.value}
-          >{stat.value}</span>
-          <span class="stat-caption">{stat.caption}</span>
-        </div>
-      ))}
+      {featured && <article class="editorial-feature">
+        <div class="feature-meta"><span>Featured {featured.tag}</span><time datetime={featured.date.toISOString()}>{formatItemDate(featured.date)}</time></div>
+        <h2><a href={featured.href}>{featured.title}</a></h2>
+        <p>{featured.summary}</p>
+        <a class="text-link" href={featured.href}>Read the {featured.kind} →</a>
+      </article>}
     </div>
   </section>
 
-  <div class="ticker-band" aria-hidden="true">
-    <div class="ticker-track">
-      {ticker.map((topic) => (
-        <span>{topic}</span>
-      ))}
-    </div>
-  </div>
-  <p class="visually-hidden">Topics: {TOPIC_TICKER.join(', ')}.</p>
-
-  <section class="section" id="latest">
+  <section class="publication-section" id="explore" aria-labelledby="explore-title">
     <div class="wrap">
-      <p class="section-label reveal">§ 01 — Latest</p>
-      <h2 class="reveal">Recently added</h2>
-      <p class="lead reveal">Across articles, news, experiments and guides.</p>
-      <div class="collection-grid">
-        {latest.map((item) => (
-          <a class="collection-card reveal" href={item.href}>
-            <span class="card-kicker">{item.tag}</span>
-            <time datetime={item.date.toISOString()}>{formatItemDate(item.date)}</time>
-            <h3 class="card-title">{item.title}</h3>
-            <p class="card-desc">{item.summary}</p>
-            <span class="card-meta">Open →</span>
+      <div class="publication-heading"><h2 id="explore-title">Explore the site</h2><p>Choose a route into the work.</p></div>
+      <div class="explore-list">
+        {sections.map((section, i) => section.count > 0 ? (
+          <a class="explore-item" href={section.href}>
+            <span class="explore-number">0{i + 1}</span><span><strong>{section.name}</strong><small>{section.description}</small></span><span aria-hidden="true">↗</span>
           </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  {showArticles && (
-    <section class="section" id="articles">
-      <div class="wrap">
-        <p class="section-label reveal">§ 02 — Articles</p>
-        <h2 class="reveal">Articles</h2>
-        <p class="lead reveal">
-          Short writing on trends and tools. Empty for now — that is honest.
-        </p>
-        {articles.length === 0 ? (
-          <p class="empty-note reveal">
-            Nothing published yet. <a href="/articles/">Articles index →</a>
-          </p>
         ) : (
-          <div class="collection-grid">
-            {articles.slice(0, 3).map((post) => (
-              <a class="collection-card reveal" href={articleHref(post)}>
-                <span class="card-kicker">Article</span>
-                <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
-                <h3 class="card-title">{post.data.title}</h3>
-                <p class="card-desc">{post.data.summary ?? post.data.description}</p>
-                <span class="card-meta">Read →</span>
-              </a>
-            ))}
+          <div class="explore-item is-empty">
+            <span class="explore-number">0{i + 1}</span><span><strong>{section.name}</strong><small>Nothing published here yet.</small></span><span class="coming-soon">Coming soon</span>
           </div>
-        )}
-      </div>
-    </section>
-  )}
-
-  {showNews && (
-    <section class="section" id="news">
-      <div class="wrap">
-        <p class="section-label reveal">§ — News</p>
-        <h2 class="reveal">News</h2>
-        <p class="lead reveal">Weekday GenAI and coding-agent release roundups.</p>
-        <div class="collection-grid">
-          {news.slice(0, 3).map((post) => (
-            <a class="collection-card reveal" href={newsHref(post)}>
-              <span class="card-kicker">News</span>
-              <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
-              <h3 class="card-title">{post.data.title}</h3>
-              <p class="card-desc">{post.data.summary}</p>
-              <span class="card-meta">Open →</span>
-            </a>
-          ))}
-        </div>
-        <p class="section-more reveal">
-          <a href="/news/">All news →</a>
-        </p>
-      </div>
-    </section>
-  )}
-
-  <section class="section" id="experiments">
-    <div class="wrap">
-      <p class="section-label reveal">§ 03 — Experiments</p>
-      <h2 class="reveal">Experiments</h2>
-      <p class="lead reveal">Measured trials with limits stated.</p>
-      <div class="collection-grid">
-        {experiments.map((item) => (
-          <a class="collection-card reveal" href={experimentHref(item)}>
-            <span class="card-kicker">{item.data.type}</span>
-            <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
-            <h3 class="card-title">{item.data.title}</h3>
-            <p class="card-desc">{item.data.summary}</p>
-            <span class="card-meta">Open →</span>
-          </a>
         ))}
       </div>
-      <p class="section-more reveal">
-        <a href="/experiments/">All experiments →</a>
-      </p>
     </div>
   </section>
 
-  <section class="section" id="guides">
-    <div class="wrap">
-      <p class="section-label reveal">§ 04 — Guides</p>
-      <h2 class="reveal">Guides</h2>
-      <p class="lead reveal">Longer, multi-page guides. Each stands alone.</p>
-      <div class="collection-grid">
-        {guides.map((item) => (
-          <a class="collection-card reveal" href={item.data.href}>
-            <span class="card-kicker">Guide</span>
-            <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
-            <h3 class="card-title">{item.data.title}</h3>
-            <p class="card-desc">{item.data.summary}</p>
-            <span class="card-meta">Open →</span>
-          </a>
-        ))}
+  {guides.length > 0 && <section class="publication-section guide-feature" aria-labelledby="guide-feature-title">
+    <div class="wrap guide-feature-grid">
+      <img src="/book-cover.png" alt="Cover of Programming the Loop: What I Measured with Coding Agents" width="260" height="390" loading="lazy" />
+      <div>
+        <p class="section-label">Featured guide · Free ebook</p>
+        <h2 id="guide-feature-title">Programming the Loop</h2>
+        <p class="guide-subtitle">What I Measured with Coding Agents</p>
+        <p>Eleven chapters of practical engineering judgement and small controlled trials, with the evidence and its limits close to each conclusion. Read it online or keep the first edition PDF.</p>
+        <div class="actions"><a class="button primary" href="/guides/programming-the-loop/">Read online</a><a class="button" href={PDF_PATH} download>Download PDF ↓</a></div>
       </div>
-      <p class="section-more reveal">
-        <a href="/guides/">All guides →</a>
-      </p>
     </div>
-  </section>
+  </section>}
 
-  <section class="section" id="about">
+  {recent.length > 0 && <section class="publication-section" aria-labelledby="recent-title">
     <div class="wrap">
-      <p class="section-label reveal">§ 05 — About</p>
-      <h2 class="reveal">About and feedback</h2>
-      <p class="lead reveal">
-        I write as Garry Meaburn. Findings are measured; recommendations are judgement. If a
-        number is wrong, <a href={LINKS.feedbackIssue}>open an issue</a>.
-      </p>
-      <div class="actions reveal">
-        <a class="button primary pill" href="/about/">About</a>
-        <a class="button" href={LINKS.feedbackIssue}>Open an issue</a>
+      <div class="publication-heading"><h2 id="recent-title">Recently published</h2><p>New writing and work across the publication.</p></div>
+      <div class="publication-feed">
+        {recent.map((item) => <article class="feed-item">
+          <div class="feed-meta"><span>{item.tag}</span><time datetime={item.date.toISOString()}>{formatItemDate(item.date)}</time></div>
+          <div><h3><a href={item.href}>{item.title}</a></h3><p>{item.summary}</p></div>
+          <a class="feed-arrow" href={item.href} aria-label={`Read ${item.title}`}>↗</a>
+        </article>)}
       </div>
     </div>
+  </section>}
+
+  {experiments.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="publication-heading"><div><h2 id="work-title">Original work</h2><p>Experiments and prototypes, with the methods and limitations visible.</p></div><a class="text-link" href="/experiments/">All experiments →</a></div>
+      <div class="work-list">{experiments.slice(0, 3).map((item) => <article>
+        <div class="feed-meta"><span>{item.data.type}</span><time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time></div>
+        <h3><a href={experimentHref(item)}>{item.data.title}</a></h3><p>{item.data.summary}</p>
+        <a class="text-link" href={experimentHref(item)}>Read the work →</a>
+      </article>)}</div>
+    </div>
+  </section>}
+
+  <section class="publication-section publication-about" aria-labelledby="about-title">
+    <div class="wrap about-grid"><h2 id="about-title">About the publication</h2><div><p>I'm Garry Meaburn. I use this space to work through practical technical questions, share original work and offer evidence-based opinions. Findings are measured; recommendations are judgement.</p><div class="about-links"><a href="/about/">More about me →</a><a href={LINKS.githubAuthor}>GitHub ↗</a><a href={LINKS.x}>X ↗</a></div></div></div>
   </section>
 </BaseLayout>

@@ -11,17 +11,16 @@ const posts = await getPublishedArticles();
 ---
 <BaseLayout
   title="Articles"
-  description="Garry Meaburn on industry trends, tools and practice with coding agents."
+  description="Technical opinions, analysis and commentary by Garry Meaburn."
   canonicalPath="/articles/"
   ogImage={SITE_OG_IMAGE}
 >
   <header class="page-head">
     <div class="wrap">
-      <p class="section-label">§ 01 — Articles</p>
+      <p class="section-label">Writing</p>
       <h1>Articles</h1>
       <p>
-        Short writing on trends, tools and practice. Not part of a guide. Nothing published yet
-        means an empty shelf, not a fake post.
+        Technical opinions, analysis and commentary on the engineering choices behind the tools we use.
       </p>
     </div>
   </header>
@@ -29,8 +28,7 @@ const posts = await getPublishedArticles();
     <div class="wrap">
       {posts.length === 0 ? (
         <p class="empty-note">
-          Nothing here yet. When I publish an article, it will show up on this page and in Latest
-          on the home page.
+          Nothing published here yet. New articles will appear on this page and in the homepage feed.
         </p>
       ) : (
         <div class="collection-grid">

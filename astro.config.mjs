@@ -33,7 +33,7 @@ export default defineConfig({
     starlight({
       title: 'Programming the Loop',
       description:
-        "Articles, experiments and guides on working with coding agents. What I've measured, and what I think.",
+        'Practical thinking on AI, software engineering, architecture and the tools we build with.',
       favicon: '/favicon.svg',
       head: [
         {

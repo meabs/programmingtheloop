@@ -10,6 +10,7 @@ import {
   type NavCollection,
   type NavItem,
 } from '../site';
+import { navItemIsVisible, visibleNavigation } from './nav-visibility.mjs';
 
 export type NavCounts = Record<NavCollection, number>;
 
@@ -23,10 +24,7 @@ export function collectionMeetsThreshold(
 
 /** Whether a nav item should appear given published counts. */
 export function isNavItemVisible(item: NavItem, counts: NavCounts): boolean {
-  if (item.always) return true;
-  if (!item.collection) return true;
-  const need = item.minItems ?? NAV_MIN_ITEMS;
-  return collectionMeetsThreshold(counts[item.collection], need);
+  return navItemIsVisible(item, counts, NAV_MIN_ITEMS);
 }
 
 /**
@@ -50,12 +48,7 @@ export function visibleNavFromCounts(
   nav: readonly NavItem[],
   counts: NavCounts,
 ): NavItem[] {
-  return nav
-    .filter((item) => isNavItemVisible(item, counts))
-    .map((item, index) => ({
-      ...item,
-      num: String(index).padStart(2, '0'),
-    }));
+  return visibleNavigation(nav, counts, NAV_MIN_ITEMS);
 }
 
 /** Starlight “Site” sidebar links — same gate as main nav. */
@@ -69,7 +62,7 @@ export function siteSidebarItems(
 }
 
 /** Count published (non-draft) markdown entries in a content directory. */
-function countPublishedInDir(dir: string): number {
+function countPublishedInDir(dir: string, excludeUnfinished = false): number {
   if (!fs.existsSync(dir)) return 0;
   let n = 0;
   for (const name of fs.readdirSync(dir)) {
@@ -77,6 +70,7 @@ function countPublishedInDir(dir: string): number {
     const text = fs.readFileSync(path.join(dir, name), 'utf8');
     const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
     if (fm && /^draft:\s*true\s*$/m.test(fm[1])) continue;
+    if (excludeUnfinished && fm && /^status:\s*(planned|running)\s*$/m.test(fm[1])) continue;
     n += 1;
   }
   return n;
@@ -91,7 +85,7 @@ export function readNavCollectionCountsSync(
 ): NavCounts {
   return {
     articles: countPublishedInDir(path.join(contentRoot, 'articles')),
-    experiments: countPublishedInDir(path.join(contentRoot, 'experiments')),
+    experiments: countPublishedInDir(path.join(contentRoot, 'experiments'), true),
     guides: countPublishedInDir(path.join(contentRoot, 'guides')),
     news: countPublishedInDir(path.join(contentRoot, 'news')),
   };

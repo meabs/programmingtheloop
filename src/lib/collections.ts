@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { NAV, type NavItem, type NavCollection } from '../site';
+import { selectFeatured, selectRecent } from './editorial.mjs';
 import {
   collectionIsVisible,
   visibleNavFromCounts,
@@ -18,6 +19,7 @@ export type LatestItem = {
   date: Date;
   href: string;
   tag: string;
+  featured: boolean;
 };
 
 export function formatItemDate(date: Date): string {
@@ -34,7 +36,9 @@ export async function getPublishedArticles(): Promise<Article[]> {
 }
 
 export async function getPublishedExperiments(): Promise<Experiment[]> {
-  const items = await getCollection('experiments', ({ data }) => data.draft !== true);
+  const items = await getCollection('experiments', ({ data }) =>
+    data.draft !== true && data.status !== 'planned' && data.status !== 'running',
+  );
   return items.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
@@ -92,8 +96,8 @@ export async function isCollectionNavVisible(
   return collectionIsVisible(collection, await getNavCollectionCounts());
 }
 
-/** Newest items across articles, news, experiments and guides. */
-export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
+/** Published material for homepage editorial selection. */
+export async function getHomepageItems(): Promise<LatestItem[]> {
   const [articles, experiments, guides, news] = await Promise.all([
     getPublishedArticles(),
     getPublishedExperiments(),
@@ -109,6 +113,7 @@ export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
       date: a.data.date,
       href: articleHref(a),
       tag: 'Article',
+      featured: a.data.featured,
     })),
     ...news.map((n) => ({
       kind: 'news' as const,
@@ -117,6 +122,7 @@ export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
       date: n.data.date,
       href: newsHref(n),
       tag: 'News',
+      featured: n.data.featured,
     })),
     ...experiments.map((e) => ({
       kind: 'experiment' as const,
@@ -125,6 +131,7 @@ export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
       date: e.data.date,
       href: experimentHref(e),
       tag: e.data.type,
+      featured: e.data.featured,
     })),
     ...guides.map((g) => ({
       kind: 'guide' as const,
@@ -133,8 +140,24 @@ export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
       date: g.data.date,
       href: g.data.href,
       tag: 'Guide',
+      featured: g.data.featured,
     })),
   ];
 
+  return items;
+}
+
+export async function getHomepageSelection(limit = 6): Promise<{
+  featured: LatestItem | undefined;
+  recent: LatestItem[];
+}> {
+  const items = await getHomepageItems();
+  const featured = selectFeatured(items) as LatestItem | undefined;
+  return { featured, recent: selectRecent(items, featured?.href, limit) as LatestItem[] };
+}
+
+/** Newest items across articles, news, experiments and guides. */
+export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
+  const items = await getHomepageItems();
   return items.sort((a, b) => b.date.valueOf() - a.date.valueOf()).slice(0, limit);
 }

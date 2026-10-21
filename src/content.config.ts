@@ -10,6 +10,8 @@ const articleSchema = z.object({
   date: z.coerce.date(),
   /** One-line card summary; falls back to description. */
   summary: z.string().optional(),
+  /** Optional homepage editorial pick. */
+  featured: z.boolean().default(false),
   /** Set true to keep a file without publishing it. */
   draft: z.boolean().default(false),
 });
@@ -58,6 +60,7 @@ const experimentSchema = z.object({
   summary: z.string(),
   /** Short type tag shown on cards, e.g. "Controlled trial". */
   type: z.string(),
+  featured: z.boolean().default(false),
   draft: z.boolean().default(false),
   github: z.array(z.object({ label: z.string(), href: z.string().url() })).default([]),
   guideLinks: z
@@ -88,6 +91,7 @@ const guideSchema = z.object({
   summary: z.string(),
   /** Public path to the multi-page guide. */
   href: z.string(),
+  featured: z.boolean().default(false),
   draft: z.boolean().default(false),
 });
 
@@ -110,6 +114,7 @@ const newsSchema = z.object({
   title: z.string(),
   date: z.coerce.date(),
   summary: z.string(),
+  featured: z.boolean().default(false),
   /** Default false — weekday posts go live automatically. */
   draft: z.boolean().default(false),
   items: z.array(newsItemSchema).min(1),

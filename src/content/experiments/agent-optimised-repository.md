@@ -13,6 +13,7 @@ guideLinks:
   - label: "Chapter 3 — The right facts"
     href: "/guides/programming-the-loop/right-facts/"
 draft: false
+featured: true
 experimentId: "J"
 question: "Does a repository set up for agents do better than the same repository left as it is?"
 status: published

@@ -35,22 +35,15 @@ function isThenLink(part: StartThenPart): part is { label: string; href: string 
         </div>
         {START_ROUTES.map((row) => (
           <article class={`start-row accent-${row.accent} reveal`} role="row">
-            <a
-              class="start-route-hit"
-              href={row.startWith.href}
-              aria-label={`Read first: ${row.startWith.label}, ${row.startWith.detail}`}
-            >
-              <span class="visually-hidden">
-                Read first: {row.startWith.label}, {row.startWith.detail}
-              </span>
-            </a>
             <div role="cell" class="start-have">
               <span class="start-have-text">{row.have}</span>
             </div>
             <div role="cell" class="start-with">
               <span class="start-field-label">Read first</span>
-              <span class="start-chapter">{row.startWith.label}</span>
-              <span class="start-detail">{row.startWith.detail}</span>
+              <a class="start-primary-link" href={row.startWith.href}>
+                <span class="start-chapter">{row.startWith.label}</span>
+                <span class="start-detail">{row.startWith.detail}</span>
+              </a>
               <span class="start-chips">
                 {row.chips.map((chip) => (
                   <span class="chip">{chip}</span>
@@ -69,8 +62,8 @@ function isThenLink(part: StartThenPart): part is { label: string; href: string 
                 )}
               </span>
             </div>
-            <div role="cell" class="start-action" aria-hidden="true">
-              <span class="start-action-arrow">→</span>
+            <div role="cell" class="start-action">
+              <a href={row.startWith.href} aria-label={`Read ${row.startWith.label}`} class="start-action-arrow">→</a>
             </div>
           </article>
         ))}

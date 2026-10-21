@@ -3,7 +3,7 @@ export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
 export const SITE_DESCRIPTION =
-  "Articles, experiments and guides on working with coding agents. What I've measured, and what I think.";
+  "Practical thinking on AI, software engineering, architecture and the tools we build with. Articles, experiments, projects and guides.";
 
 /** Base path for the Programming the Loop multi-page guide. */
 export const PTL_GUIDE_HREF = '/guides/programming-the-loop/';
@@ -34,7 +34,7 @@ export const CF_WEB_ANALYTICS_BEACON = `{"token": "${CF_WEB_ANALYTICS_TOKEN}"}`;
  * Home and About always show. Guides uses minItems: 1 (book hub).
  * Articles / Experiments / News use NAV_MIN_ITEMS.
  */
-export const NAV_MIN_ITEMS = 3;
+export const NAV_MIN_ITEMS = 1;
 
 export type NavCollection = 'articles' | 'experiments' | 'guides' | 'news';
 
@@ -58,7 +58,7 @@ export type NavItem = {
  */
 export const NAV: readonly NavItem[] = [
   { num: '00', label: 'Home', href: '/', always: true },
-  // Empty/sparse sections wait for NAV_MIN_ITEMS (default 3).
+  // Each section appears with its first published item.
   { num: '01', label: 'Articles', href: '/articles/', collection: 'articles' },
   { num: '02', label: 'News', href: '/news/', collection: 'news' },
   { num: '03', label: 'Experiments', href: '/experiments/', collection: 'experiments' },

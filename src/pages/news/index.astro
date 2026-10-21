@@ -11,7 +11,7 @@ const items = await getPublishedNews();
 ---
 <BaseLayout
   title="News"
-  description="Weekday roundups of GenAI and coding-agent releases, with sources linked."
+  description="Technical developments and their implications, with primary sources linked."
   canonicalPath="/news/"
   ogImage={SITE_OG_IMAGE}
 >
@@ -20,15 +20,14 @@ const items = await getPublishedNews();
       <p class="section-label">News</p>
       <h1>News</h1>
       <p>
-        Short weekday roundups of GenAI and coding-agent releases. Every item links to its
-        source.
+        Technical developments worth examining, with context and links to primary sources.
       </p>
       <p class="page-head-meta">
         <a href="/news/rss.xml">RSS</a>
       </p>
     </div>
   </header>
-  <div class="page-body">
+  <div class="page-body news-listing">
     <div class="wrap">
       {items.length === 0 ? (
         <p class="empty-note">Nothing published yet.</p>
