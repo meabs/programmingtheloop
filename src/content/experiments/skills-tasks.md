@@ -75,7 +75,13 @@ Skill packs are sets of written instructions that a coding agent reads before it
 
 ## Prediction
 
-Before any measured run I wrote down the design, the hypotheses and how tasks would be chosen ([README.md](https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/README.md)). The hypotheses: Superpowers raises the pass rate; Pocock's skills raise the pass rate; a placebo skill (below) does not.
+Before any measured run I wrote down the design, the hypotheses, how tasks would be chosen and how the results would be compared, and published it ([README.md](https://github.com/meabs/experiments/blob/main/2026-10-skills-tasks/README.md)). Fixing the plan first stops me choosing, after seeing the results, whichever comparison looks best.
+
+The three hypotheses:
+
+- Superpowers raises the share of runs that pass.
+- Pocock's skills raise the share of runs that pass.
+- A placebo skill (described below) does not. This is a check on the other two: a pack only counts as helping if it does better than the placebo.
 
 ## Set-up
 
@@ -131,7 +137,24 @@ Before any run, I checked every task three ways: the hidden tests fail on the or
 
 ## Results
 
-Findings SKT-1 to SKT-3 are below; the charts show what sits behind them.
+Findings SKT-1 to SKT-3 are listed at the foot of the page. In short:
+
+| Arm | Runs passed | Tokens vs no skills | Average cost per run | Typical run time |
+| --- | --- | --- | --- | --- |
+| No skills | 24 of 32 | 1.00× | $0.016 | 43 s |
+| Placebo skill | 23 of 32 | 1.09× | $0.017 | 47 s |
+| Superpowers | 24 of 32 | 3.07× | $0.038 | 105 s |
+| Pocock | 27 of 32 | 1.57× | $0.021 | 54 s |
+
+Costs are estimates at list prices; all 128 runs together cost about $3. Run time is the median.
+
+### How the arms were compared
+
+The unit is the task, not the run, because some tasks are simply harder than others. For each task I took the number of passing runs in an arm (0, 1 or 2) and subtracted the number for no skills. Pocock, for example, did better than no skills on 4 tasks, worse on 1 and the same on 11.
+
+Then the question is whether a pattern like that could easily happen by chance if the pack made no difference at all. The test I used flips the sign of each task's difference in every possible way and counts how often the total comes out at least as large as the real one. Because two packs were tested, the result is adjusted upwards (the Holm method) so that testing more than one thing does not make a lucky result more likely.
+
+For Pocock, the adjusted figure (the *p value*) is 0.38: a gap this size would turn up by chance roughly 4 times in 10, so it is not evidence that the pack helps. For Superpowers, the gap was zero. The 95% interval for Pocock's gain runs from −3 to +22 percentage points: the data fit anything from a small loss to a moderate gain.
 
 <figure class="guide-figure">
 
@@ -171,9 +194,19 @@ Findings SKT-1 to SKT-3 are below; the charts show what sits behind them.
 
 **HREVIEW.** All eight runs failed. In seven, the change broke *creating* a review, which had worked before. To support editing, the agent changed shared code to look up the existing review by its id; a new review has no id yet (it is 0), so the lookup fails, and the API turns that failure into a 503. None of the project's existing tests creates a review, so the agent's own checks stayed green. I made the same mistake when writing my own fix.
 
+### The other failures
+
+| Task | Runs failed (of 8) | What the failing runs got wrong |
+| --- | --- | --- |
+| ADDR | 5 | Fixed only part of a chain of copy-and-paste slips: the delivery street still came back as the billing street, and in two runs the state stayed empty |
+| NOTFOUND | 3 | A missing product still answered 400 instead of 404, because the code underneath throws an error instead of returning nothing |
+| CATCOUNT | 3 | A product in several subcategories was counted once per subcategory, not once |
+| HCUST | 2 | Every search request answered 500: the change broke the customer list itself |
+| CONTENT, CUSTDUP, PAGE, CARTCALC | 1 each | Single runs that missed one of the cases the hidden tests check |
+
 ## Limits
 
-One codebase; one agent and model; low reasoning effort only. Sixteen tasks are too few to settle a difference the size of Pocock's: roughly 60 would be needed. Two runs per task is coarse: the placebo, which should do nothing, moved 4 of 16 tasks by one run. I wrote the tasks, hidden tests and reference fixes; all are published for checking. Pass rates are not comparable with my earlier [skills-impact](https://github.com/meabs/experiments/tree/main/2026-10-skills-impact) experiment, which ran at high effort; the extra token cost of Superpowers matches it.
+One codebase; one agent and model; low reasoning effort only. Sixteen tasks are too few to settle a difference the size of Pocock's: from how much the results varied between tasks, roughly 60 tasks would be needed to detect a gain of 9 points reliably. Two runs per task is coarse: the placebo, which should do nothing, moved 4 of 16 tasks by one run. I wrote the tasks, hidden tests and reference fixes; all are published for checking. My earlier [skills-impact](https://github.com/meabs/experiments/tree/main/2026-10-skills-impact) experiment ran the same packs on 3 tasks at high reasoning effort (162 runs). No pack raised the pass rate there either, and Superpowers also worked test-first at two to three times the tokens. Its pass rates are not comparable with these, because of the different effort setting, but the cost finding is the same.
 
 ## Reproduce
 
