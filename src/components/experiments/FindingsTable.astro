@@ -1,0 +1,85 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  findings: NonNullable<CollectionEntry<'experiments'>['data']['findings']>;
+}
+
+const { findings } = Astro.props;
+const rows = findings.filter((f) => f.status !== 'superseded');
+---
+{rows.length > 0 && (
+  <section class="findings-block" aria-labelledby="findings-heading">
+    <h2 id="findings-heading">Findings</h2>
+    <div class="findings-table-wrap">
+      <table class="findings-table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Statement</th>
+            <th scope="col">Value</th>
+            <th scope="col">n</th>
+            <th scope="col">Limits</th>
+            <th scope="col">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((f) => (
+            <tr>
+              <td><code>{f.id}</code></td>
+              <td>{f.statement}</td>
+              <td>{f.value ?? '—'}</td>
+              <td>{f.n !== undefined && f.n !== null ? String(f.n) : '—'}</td>
+              <td>
+                <ul class="findings-limits">
+                  {f.limits.map((lim) => (
+                    <li>{lim}</li>
+                  ))}
+                </ul>
+              </td>
+              <td>
+                <a href={f.source} rel="noopener noreferrer">Results</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+)}
+
+<style>
+  .findings-block {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line, #d8d2c8);
+  }
+  .findings-table-wrap {
+    overflow-x: auto;
+  }
+  .findings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .findings-table th,
+  .findings-table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--line, #d8d2c8);
+  }
+  .findings-table th {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint, #6b7280);
+  }
+  .findings-limits {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+  .findings-limits li {
+    margin: 0.15rem 0;
+  }
+</style>

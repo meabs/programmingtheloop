@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Content integrity checks (Phase 1).
+ * Content integrity checks (Phase 1 + Phase 6 landing acceptance idea).
  * Run: npm run check:content
  *
  * Checks:
@@ -10,12 +10,15 @@
  * 4. Published (status) experiments have report + ≥1 finding
  * 5. Superseded experiments have supersededBy pointing at a known experimentId
  * 6. Route baseline: every baseline path is still declared (page, Starlight doc, or redirect)
+ * 7. Home / guide-landing HTML must not hard-code finding numbers absent from records
  *
  * Practice citation rules are stubbed until practices exist (Phase later).
  *
  * Env:
  *   EXPERIMENTS_DIR — override experiments folder (fixtures)
  *   SKIP_ROUTES=1 — skip route baseline (fixture unit tests)
+ *   SKIP_LANDING=1 — skip home/guide-landing finding-number scan
+ *   LANDING_HTML_DIR — optional dir of HTML fixtures for landing scan
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -27,6 +30,8 @@ const EXPERIMENTS_DIR =
 const BASELINE = join(ROOT, 'docs/route-baseline.txt');
 const ASTRO_CONFIG = join(ROOT, 'astro.config.mjs');
 const SKIP_ROUTES = process.env.SKIP_ROUTES === '1';
+const SKIP_LANDING = process.env.SKIP_LANDING === '1';
+const LANDING_HTML_DIR = process.env.LANDING_HTML_DIR || '';
 
 const TOPIC_IDS = new Set([
   'context',
@@ -72,9 +77,10 @@ export function parseFrontmatter(raw) {
             if (first) obj[first[1]] = unquote(first[2]);
             i += 1;
             while (i < lines.length && /^\s{2,}\w+:/.test(lines[i])) {
-              const km = lines[i].match(/^\s+(\w+):\s*(.*)$/);
+              const km = lines[i].match(/^(\s+)(\w+):\s*(.*)$/);
               if (km) {
-                if (km[2] === '' && i + 1 < lines.length && /^\s+- /.test(lines[i + 1])) {
+                const indent = km[1].length;
+                if (km[3] === '' && i + 1 < lines.length && /^\s+- /.test(lines[i + 1])) {
                   // nested list e.g. limits:
                   const nested = [];
                   i += 1;
@@ -82,10 +88,27 @@ export function parseFrontmatter(raw) {
                     nested.push(unquote(lines[i].replace(/^\s+- /, '')));
                     i += 1;
                   }
-                  obj[km[1]] = nested;
+                  obj[km[2]] = nested;
                   continue;
                 }
-                obj[km[1]] = unquote(km[2]);
+                if (
+                  km[3] === '' &&
+                  i + 1 < lines.length &&
+                  new RegExp(`^\\s{${indent + 1},}\\w+:`).test(lines[i + 1])
+                ) {
+                  // nested object e.g. interval: { low, high, method }
+                  const nestedObj = {};
+                  i += 1;
+                  while (i < lines.length) {
+                    const nm = lines[i].match(/^(\s+)(\w+):\s*(.*)$/);
+                    if (!nm || nm[1].length <= indent) break;
+                    nestedObj[nm[2]] = unquote(nm[3]);
+                    i += 1;
+                  }
+                  obj[km[2]] = nestedObj;
+                  continue;
+                }
+                obj[km[2]] = unquote(km[3]);
               }
               i += 1;
             }
@@ -384,7 +407,164 @@ export function checkRouteBaseline(baselinePath = BASELINE) {
   return { errors, baselineCount: baseline.length, declaredCount: routes.size };
 }
 
-export function runChecks({ experimentsDir = EXPERIMENTS_DIR, skipRoutes = SKIP_ROUTES } = {}) {
+/**
+ * Finding-shaped number tokens that belong on home / guide landing only when
+ * they appear in a finding record (or as computed structural counts / runs).
+ */
+const FINDING_SHAPED = [
+  /\+\d+[–—-]\d+%/g, // +35–48%
+  /\d+\s*\/\s*\d+/g, // 14 / 16
+  /\d+\s*[→⟶]\s*\d+[–—-]\d+/g, // 3 → 18–19
+  /\d+\s*[→⟶]\s*\d+/g, // 3 → 18
+  /~\d{1,3}(?:,\d{3})+/g, // ~1,650
+  /\b\d+\s+runs\b/gi, // 12 runs
+];
+
+function normalizeFindingToken(s) {
+  return String(s)
+    .toLowerCase()
+    .replace(/[—–]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Collect tokens that may appear in landing chrome because they come from records/counts. */
+export function sourcedLandingTokens(experiments) {
+  const tokens = new Set();
+  const add = (v) => {
+    if (v === undefined || v === null || v === '') return;
+    tokens.add(normalizeFindingToken(v));
+  };
+
+  for (const exp of experiments) {
+    add(exp.data.runs);
+    for (const f of exp.data.findings || []) {
+      add(f.value);
+      add(f.n);
+      if (f.interval) {
+        add(f.interval.low);
+        add(f.interval.high);
+        add(`${f.interval.low}-${f.interval.high}`);
+      }
+      // Pull finding-shaped spans out of value + statement (covers partial regex hits)
+      for (const blob of [f.value, f.statement, f.n !== undefined ? String(f.n) : '']) {
+        if (!blob) continue;
+        for (const re of FINDING_SHAPED) {
+          re.lastIndex = 0;
+          for (const m of String(blob).matchAll(re)) add(m[0]);
+        }
+      }
+    }
+  }
+
+  // Structural Guide counts (same rules as src/lib/guide-counts.ts)
+  const guideDocs = join(ROOT, 'src/content/docs/guides/programming-the-loop');
+  const guideImages = join(ROOT, 'public/guide-images');
+  if (existsSync(guideDocs)) {
+    let checklistItems = 0;
+    let chapterFiles = 0;
+    for (const name of readdirSync(guideDocs)) {
+      if (!/\.(md|mdx)$/.test(name)) continue;
+      const text = readFileSync(join(guideDocs, name), 'utf8');
+      if (/^## Checklist\s*$/m.test(text)) chapterFiles += 1;
+      for (const line of text.split('\n')) {
+        if (/^- \[ \]\s+/.test(line)) checklistItems += 1;
+      }
+    }
+    // CHAPTERS in site.ts is the authoritative chapter count (11)
+    add('11');
+    add(String(checklistItems));
+    add(String(chapterFiles));
+  }
+  if (existsSync(guideImages)) {
+    const figures = readdirSync(guideImages).filter(
+      (n) => /\.(png|svg|webp|jpe?g)$/i.test(n) && !n.startsWith('.'),
+    ).length;
+    add(String(figures));
+  }
+  const featured = experiments
+    .flatMap((e) => e.data.findings || [])
+    .filter((f) => f.featured && f.status !== 'superseded');
+  add(String(featured.length));
+
+  return tokens;
+}
+
+function extractFindingShaped(text) {
+  const found = [];
+  for (const re of FINDING_SHAPED) {
+    re.lastIndex = 0;
+    for (const m of text.matchAll(re)) found.push(m[0]);
+  }
+  return found;
+}
+
+function collectLandingTexts({ landingHtmlDir = LANDING_HTML_DIR } = {}) {
+  const files = [];
+  const addIf = (p) => {
+    if (existsSync(p) && statSync(p).isFile()) files.push(p);
+  };
+
+  if (landingHtmlDir) {
+    if (existsSync(landingHtmlDir)) {
+      for (const name of readdirSync(landingHtmlDir)) {
+        if (/\.html?$/i.test(name)) addIf(join(landingHtmlDir, name));
+      }
+    }
+    return files.map((file) => ({ file: relative(ROOT, file), text: readFileSync(file, 'utf8') }));
+  }
+
+  // Source that renders home + guide landing chrome (not site.ts — START_ROUTES
+  // chips may cite finding numbers in prose elsewhere; landing must not hard-code them).
+  addIf(join(ROOT, 'src/pages/index.astro'));
+  addIf(join(ROOT, 'src/content/docs/guides/programming-the-loop/index.mdx'));
+  addIf(join(ROOT, 'src/content/docs/guides/programming-the-loop/index.md'));
+  addIf(join(ROOT, 'src/components/guide/GuideAtAGlance.astro'));
+  addIf(join(ROOT, 'src/components/guide/GuideForewordFindings.astro'));
+  // Built HTML when present (post-build). Stale dist from before findings
+  // attach will fail until rebuilt — that is intentional.
+  addIf(join(ROOT, 'dist/index.html'));
+  addIf(join(ROOT, 'dist/guides/programming-the-loop/index.html'));
+
+  return files.map((file) => ({ file: relative(ROOT, file), text: readFileSync(file, 'utf8') }));
+}
+
+/**
+ * Fail if home / guide-landing HTML (or its source) hard-codes a finding-shaped
+ * number that is not present on any finding / runs / structural count record.
+ */
+export function checkLandingFindingNumbers({
+  experiments,
+  landingHtmlDir = LANDING_HTML_DIR,
+} = {}) {
+  const errors = [];
+  const allowed = sourcedLandingTokens(experiments);
+  const texts = collectLandingTexts({ landingHtmlDir });
+
+  for (const { file, text } of texts) {
+    // Strip component/script import noise somewhat; keep string literals + HTML text
+    const shaped = extractFindingShaped(text);
+    for (const raw of shaped) {
+      const norm = normalizeFindingToken(raw);
+      if (allowed.has(norm)) continue;
+      // Allow "N runs" when N matches a finding n / value
+      const runsMatch = norm.match(/^(\d+) runs$/);
+      if (runsMatch && [...allowed].some((t) => t.includes(runsMatch[1]))) continue;
+      errors.push(
+        `Hard-coded finding number "${raw}" in ${file} is not sourced from a finding record (or structural/runs count)`,
+      );
+    }
+  }
+
+  return { errors, scanned: texts.map((t) => t.file), allowed: [...allowed] };
+}
+
+export function runChecks({
+  experimentsDir = EXPERIMENTS_DIR,
+  skipRoutes = SKIP_ROUTES,
+  skipLanding = SKIP_LANDING,
+  landingHtmlDir = LANDING_HTML_DIR,
+} = {}) {
   const experiments = loadExperiments(experimentsDir);
   const expResult = checkExperiments(experiments);
   const errors = [...expResult.errors];
@@ -393,6 +573,11 @@ export function runChecks({ experimentsDir = EXPERIMENTS_DIR, skipRoutes = SKIP_
   if (!skipRoutes) {
     const routeResult = checkRouteBaseline();
     errors.push(...routeResult.errors);
+  }
+
+  if (!skipLanding) {
+    const landingResult = checkLandingFindingNumbers({ experiments, landingHtmlDir });
+    errors.push(...landingResult.errors);
   }
 
   return { errors, warnings, experimentCount: experiments.length };

@@ -2,7 +2,12 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runChecks, checkExperiments, loadExperiments } from '../../scripts/check-content.mjs';
+import {
+  runChecks,
+  checkExperiments,
+  checkLandingFindingNumbers,
+  loadExperiments,
+} from '../../scripts/check-content.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const fixtures = join(here, 'fixtures');
@@ -47,5 +52,21 @@ describe('check:content fixtures', () => {
   it('real content tree passes (skip routes in unit isolation optional)', () => {
     const { errors } = runChecks({ skipRoutes: false });
     assert.deepEqual(errors, [], errors.join('\n'));
+  });
+
+  it('catches hard-coded finding number on landing HTML not in records', () => {
+    const experiments = loadExperiments(join(fixtures, 'clean'));
+    const { errors } = checkLandingFindingNumbers({
+      experiments,
+      landingHtmlDir: join(fixtures, 'landing-hardcoded'),
+    });
+    assert.ok(
+      errors.some((e) => /Hard-coded finding number "\+99/.test(e)),
+      errors.join('\n'),
+    );
+    assert.ok(
+      errors.some((e) => /Hard-coded finding number "44 \/ 44"/.test(e)),
+      errors.join('\n'),
+    );
   });
 });

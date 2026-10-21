@@ -1,0 +1,18 @@
+---
+import { getFeaturedFindings, findingDisplayValue } from '../../lib/findings';
+
+const findings = await getFeaturedFindings();
+---
+{findings.length === 0 ? (
+  <p>No featured findings published yet.</p>
+) : (
+  <ol>
+    {findings.map((f, i) => (
+      <li>
+        <strong>{findingDisplayValue(f)}</strong>
+        {f.statement ? <> — {f.statement}</> : null}
+        {' '}(Finding {i + 1}).
+      </li>
+    ))}
+  </ol>
+)}
