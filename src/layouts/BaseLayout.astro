@@ -17,6 +17,8 @@ interface Props {
   noindex?: boolean;
   ogImage?: string;
   preloadCover?: boolean;
+  /** Include this page in the site search index (Pagefind). */
+  searchable?: boolean;
 }
 
 const {
@@ -26,6 +28,7 @@ const {
   noindex = false,
   ogImage = SITE_OG_IMAGE,
   preloadCover = false,
+  searchable = false,
 } = Astro.props;
 
 const canonical = new URL(canonicalPath, SITE_URL).href;
@@ -117,6 +120,9 @@ const showNews = await isCollectionNavVisible('news');
           })}
         </nav>
         <div class="nav-tools">
+          <a class="theme-toggle search-link" href="/search/" aria-label="Search the site">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14" stroke-linecap="round"/></svg>
+          </a>
           <button
             type="button"
             class="theme-toggle"
@@ -142,10 +148,11 @@ const showNews = await isCollectionNavVisible('news');
               <span class="nav-num">[ {item.num} ]</span> {item.label}
             </a>;
           })}
+        <a href="/search/">Search</a>
         </nav>
       </div>
     </header>
-    <main id="main">
+    <main id="main" data-pagefind-body={searchable ? '' : undefined}>
       <slot />
     </main>
     <footer class="footer">
