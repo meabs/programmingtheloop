@@ -118,6 +118,11 @@ export default defineConfig({
           label: 'X',
           href: 'https://x.com/Mav1972',
         },
+        {
+          icon: 'linkedin',
+          label: 'LinkedIn',
+          href: 'https://uk.linkedin.com/in/garrymeaburn',
+        },
       ],
       editLink: {
         baseUrl: 'https://github.com/meabs/programmingtheloop/edit/main/',

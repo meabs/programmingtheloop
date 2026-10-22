@@ -366,6 +366,7 @@ export const LINKS = {
   githubSite: 'https://github.com/meabs/programmingtheloop',
   githubAuthor: 'https://github.com/meabs',
   x: 'https://x.com/Mav1972',
+  linkedin: 'https://uk.linkedin.com/in/garrymeaburn',
   youtube: 'https://www.youtube.com/@FrugalAIEngineer',
 } as const;
 
