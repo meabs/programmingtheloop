@@ -20,8 +20,12 @@ export const BOOK_DESCRIPTION =
   'Programming the Loop: What I Measured with Coding Agents by Garry Meaburn. Free to read on the web. Small controlled trials on coding agents, with limits stated.';
 
 export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
-export const BOOK_OG_IMAGE = `${SITE_URL}/og-cover.png`;
-export const SITE_OG_IMAGE = `${SITE_URL}/og-cover.png`;
+/** Default link-preview image (1200×630 typographic, light theme). */
+export const SITE_OG_IMAGE = `${SITE_URL}/og/default.png`;
+export const SITE_OG_IMAGE_ALT =
+  'Programming the Loop: Building software with coding agents';
+/** @deprecated Use SITE_OG_IMAGE; kept as an alias so older imports keep working. */
+export const BOOK_OG_IMAGE = SITE_OG_IMAGE;
 
 /** Cloudflare Web Analytics — public site beacon token (cookie-free page views). */
 export const CF_WEB_ANALYTICS_TOKEN = '0db0c13715df4bfda2115c9f12310d14';

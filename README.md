@@ -72,7 +72,7 @@ Licence: free to read; share unchanged with attribution and the copyright notice
 ## SEO and sharing
 
 - `site` in `astro.config.mjs` is `https://programmingtheloop.com`.
-- Absolute `https://programmingtheloop.com/og-cover.png` for social images (book cover OG is fine on the guide; home uses the same site OG).
+- Absolute `https://programmingtheloop.com/og/default.png` for social images (1200×630 typographic preview; book cover stays on the page, not in OG tags).
 - `public/CNAME` must remain `programmingtheloop.com`.
 
 ## Analytics

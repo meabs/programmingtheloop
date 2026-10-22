@@ -5,6 +5,7 @@ import {
   SITE_NAME,
   SITE_DESCRIPTION,
   SITE_OG_IMAGE,
+  SITE_OG_IMAGE_ALT,
   CF_WEB_ANALYTICS_SRC,
   CF_WEB_ANALYTICS_BEACON,
 } from '../site';
@@ -16,6 +17,7 @@ interface Props {
   canonicalPath?: string;
   noindex?: boolean;
   ogImage?: string;
+  ogImageAlt?: string;
   preloadCover?: boolean;
   /** Include this page in the site search index (Pagefind). */
   searchable?: boolean;
@@ -27,6 +29,7 @@ const {
   canonicalPath = '/',
   noindex = false,
   ogImage = SITE_OG_IMAGE,
+  ogImageAlt = SITE_OG_IMAGE_ALT,
   preloadCover = false,
   searchable = false,
 } = Astro.props;
@@ -75,6 +78,7 @@ const showNews = await isCollectionNavVisible('news');
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
