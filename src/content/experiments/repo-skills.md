@@ -190,11 +190,13 @@ Above all, this tests guidance the agent may choose to read. It read most of it,
 
 ## What comes next
 
-The obvious question is what happens when the agent is **told to use the skills**. A follow-up experiment, [explicit-skills](https://github.com/meabs/experiments/tree/6224f3b0ba00eb043bb961be37e2505315ab29ce/2026-10-explicit-skills), is running now. It uses the same guidance, byte for byte, with three arms run side by side:
+The obvious question is what happens when the agent is **told to use the skills**. A follow-up experiment, [telling the agent to use its skills](/experiments/explicit-skills/), has now tested this. It uses the same guidance, byte for byte, with three arms run side by side:
 
 - no guidance;
 - the guidance left to discover, repeating this experiment;
 - the guidance explicitly called. The prompt starts by telling the agent to read the change and test skills before it starts, and to follow the verification skill before it says it is done.
+
+A fourth arm put the instruction in `AGENTS.md` instead. Told, the agent read the verification skill every time, but mostly ran a smoke test rather than testing its change, and the gain was not measurable.
 
 That separates two questions this experiment could not: whether the guidance helps when it is followed, and whether the agent follows it when it is only available.
 
