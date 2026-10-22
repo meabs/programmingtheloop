@@ -1,8 +1,8 @@
 ---
 title: "Verification, skills or effort? (experiment VVS)"
-description: "Letting the agent think a little longer made its changes more often correct; an instruction to verify and a skill pack did not."
+description: "Letting the agent think a little longer made its changes more often correct. Telling it to verify, without giving it a way to run the app, did not, and nor did a skill pack."
 date: 2026-10-22
-summary: "On 20 tasks in a Java online-shop backend, Codex at medium reasoning effort passed 49 of 60 runs against 36 of 60 at low effort; an instruction to check against the running app (39) and the Superpowers pack (37) made no measurable difference."
+summary: "On 20 tasks in a Java online-shop backend, Codex at medium reasoning effort passed 49 of 60 runs against 36 of 60 at low effort; an instruction to check against the running app, with no scripts or set-up to do so (39), and the Superpowers pack (37) made no measurable difference."
 type: "Controlled trial"
 github:
   - label: "experiments"
