@@ -12,7 +12,7 @@ import {
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og/default.png`;
-const ogImageAlt = 'Programming the Loop — Building software with coding agents.';
+const ogImageAlt = 'Programming the Loop: Building software with coding agents';
 const guideBase = '/guides/programming-the-loop';
 const navCounts = readNavCollectionCountsSync();
 const siteNavSidebar = siteSidebarItems(navCounts);

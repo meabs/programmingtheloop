@@ -23,7 +23,7 @@ export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
 /** Default link-preview image (1200×630 typographic, light theme). */
 export const SITE_OG_IMAGE = `${SITE_URL}/og/default.png`;
 export const SITE_OG_IMAGE_ALT =
-  'Programming the Loop — Building software with coding agents.';
+  'Programming the Loop: Building software with coding agents';
 /** @deprecated Use SITE_OG_IMAGE; kept as an alias so older imports keep working. */
 export const BOOK_OG_IMAGE = SITE_OG_IMAGE;
 
