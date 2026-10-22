@@ -1,0 +1,73 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { TOPICS, isTopicId } from '../../data/topics';
+import { formatItemDate, experimentHref } from '../../lib/collections';
+
+interface Props {
+  item: CollectionEntry<'experiments'>;
+}
+
+const { item } = Astro.props;
+const d = item.data;
+const finding =
+  (d.findings ?? []).filter((f) => f.status !== 'superseded').find((f) => f.featured) ??
+  (d.findings ?? []).filter((f) => f.status !== 'superseded')[0];
+const topics = (d.topics ?? []).filter(isTopicId);
+const label = d.experimentId ?? '';
+---
+<article class="exp-card" data-topics={topics.join(' ')}>
+  <div class:list={['exp-preview', { 'has-image': !!d.previewImage }]}>
+    {d.previewImage ? (
+      <img src={d.previewImage} alt={d.previewAlt ?? ''} loading="lazy" width="1800" height="920" />
+    ) : finding?.value ? (
+      <p class:list={['exp-figure', { 'is-long': finding.value.length > 20 }]}>{finding.value}</p>
+    ) : (
+      <p class="exp-figure is-long">{d.type}</p>
+    )}
+  </div>
+  <div class="exp-body">
+    <p class="exp-meta">
+      <span>{d.type}{label && <> · {label}</>}</span>
+      <time datetime={d.date.toISOString()}>{formatItemDate(d.date)}</time>
+    </p>
+    <h2 class="exp-title"><a href={experimentHref(item)}>{d.title}</a></h2>
+    {d.question && <p class="exp-question">{d.question}</p>}
+    {finding && ((d.previewImage && finding.value) || finding.metric) && (
+      <p class="exp-finding">
+        {finding.value && d.previewImage && <strong>{finding.value}</strong>}
+        <span>{finding.metric ?? ''}</span>
+      </p>
+    )}
+    {d.plainTitle?.includes(' = ') && <p class="exp-plain">{d.plainTitle}</p>}
+    {topics.length > 0 && (
+      <ul class="exp-topics">
+        {topics.map((t) => <li>{TOPICS[t].title}</li>)}
+      </ul>
+    )}
+    <span class="exp-open" aria-hidden="true">Read the experiment ↗</span>
+  </div>
+</article>
+
+<style>
+  .exp-card { position: relative; display: flex; flex-direction: column; min-width: 0; background: var(--surface); border: 1px solid var(--line); transition: border-color .18s ease; }
+  .exp-card:hover, .exp-card:focus-within { border-color: var(--accent); }
+  .exp-preview { aspect-ratio: 2 / 1; display: grid; place-items: center; overflow: hidden; border-bottom: 1px solid var(--line); background: var(--accent-soft, rgba(13,122,114,.1)); }
+  .exp-preview.has-image { background: #fff; }
+  .exp-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .exp-figure { margin: 0; padding: 1rem 1.25rem; text-align: center; font-size: clamp(2rem, 6vw, 2.75rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .exp-figure.is-long { font-size: 1.25rem; letter-spacing: -.01em; line-height: 1.3; }
+  .exp-body { display: flex; flex-direction: column; gap: .5rem; padding: 1rem 1.1rem 1.15rem; flex: 1; }
+  .exp-meta { display: flex; justify-content: space-between; gap: .75rem; margin: 0; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .exp-title { margin: 0; font-size: 1.15rem; line-height: 1.3; }
+  .exp-title a { color: var(--ink); text-decoration: none; }
+  .exp-title a::after { content: ''; position: absolute; inset: 0; }
+  .exp-title a:focus-visible { outline: none; }
+  .exp-card:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .exp-question { margin: 0; font-size: .95rem; line-height: 1.45; color: var(--ink); overflow-wrap: anywhere; }
+  .exp-finding { margin: 0; padding-top: .55rem; border-top: 1px solid var(--line); font-size: .88rem; line-height: 1.4; color: var(--ink-muted); overflow-wrap: anywhere; }
+  .exp-finding strong { display: block; color: var(--accent); font-variant-numeric: tabular-nums; font-size: .95rem; }
+  .exp-plain { margin: 0; font-size: .85rem; line-height: 1.4; color: var(--ink-faint); }
+  .exp-topics { list-style: none; display: flex; flex-wrap: wrap; gap: .35rem; margin: .15rem 0 0; padding: 0; }
+  .exp-topics li { margin: 0; padding: .1rem .5rem; font-size: .75rem; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-muted); }
+  .exp-open { margin-top: auto; padding-top: .5rem; font-size: .88rem; font-weight: 600; color: var(--accent); }
+</style>

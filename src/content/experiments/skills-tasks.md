@@ -4,6 +4,8 @@ description: "Two popular skill packs for coding agents did not reliably make th
 date: 2026-10-21
 summary: "On 16 bug fixes and features in a Java online-shop backend, neither Superpowers nor Matt Pocock's skills reliably raised the pass rate; Superpowers used 3.07× the tokens."
 type: "Controlled trial"
+previewImage: "/guide-images/chart-skt-passes.png"
+previewAlt: "Chart of hidden tests passed, by task and arm"
 github:
   - label: "experiments"
     href: "https://github.com/meabs/experiments/tree/766313eaf42070cbaaf565b95d6e33ed0c1986d2/2026-10-skills-tasks"

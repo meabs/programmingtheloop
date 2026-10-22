@@ -4,6 +4,8 @@ description: "Letting the agent think a little longer made its changes more ofte
 date: 2026-10-22
 summary: "On 20 tasks in a Java online-shop backend, Codex at medium reasoning effort passed 49 of 60 runs against 36 of 60 at low effort; an instruction to check against the running app (39) and the Superpowers pack (37) made no measurable difference."
 type: "Controlled trial"
+previewImage: "/guide-images/chart-vvs-passes.png"
+previewAlt: "Chart of hidden tests passed, by task and arm"
 github:
   - label: "experiments"
     href: "https://github.com/meabs/experiments/tree/9580d4aa95ec23e581026741afb909e820d5af51/2026-10-verify-vs-skills"
