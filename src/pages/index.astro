@@ -1,23 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ExperimentCard from '../components/experiments/ExperimentCard.astro';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_OG_IMAGE, LINKS, PDF_PATH } from '../site';
 import {
   getHomepageSelection, getPublishedArticles, getPublishedExperiments,
-  getPublishedGuides, getPublishedNews, experimentHref, formatItemDate,
+  getPublishedGuides, getPublishedNews, articleHref, newsHref, formatItemDate,
 } from '../lib/collections';
 
-const { featured, recent } = await getHomepageSelection();
+const { featured } = await getHomepageSelection();
 const [articles, experiments, guides, news] = await Promise.all([
   getPublishedArticles(), getPublishedExperiments(), getPublishedGuides(), getPublishedNews(),
 ]);
-const allSections = [
-  { name: 'Articles', href: '/articles/', description: 'Technical opinions, analysis and commentary.', count: articles.length },
-  { name: 'Experiments', href: '/experiments/', description: 'Original research, prototypes and measured findings.', count: experiments.length },
-  { name: 'Guides', href: '/guides/', description: 'Deeper practical writing and reference material.', count: guides.length },
-  { name: 'News', href: '/news/', description: 'Relevant technical developments and their implications.', count: news.length },
-];
-// Sections with nothing published are left out rather than shown as "Coming soon".
-const sections = allSections.filter((s) => s.count > 0);
+// Original work leads. The featured item already has the hero, so the lists skip it.
+const latestExperiments = experiments.filter((e) => `/experiments/${e.id}/` !== featured?.href).slice(0, 3);
+const latestArticles = articles.slice(0, 3);
+const latestNews = news.slice(0, 3);
 ---
 <BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE}>
   <section class="publication-hero">
@@ -40,18 +37,12 @@ const sections = allSections.filter((s) => s.count > 0);
     </div>
   </section>
 
-  <section class="publication-section" id="explore" aria-labelledby="explore-title">
+  {latestExperiments.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
     <div class="wrap">
-      <div class="publication-heading"><h2 id="explore-title">Explore the site</h2><p>Choose a route into the work.</p></div>
-      <div class="explore-list">
-        {sections.map((section, i) => (
-          <a class="explore-item" href={section.href}>
-            <span class="explore-number">0{i + 1}</span><span><strong>{section.name}</strong><small>{section.description}</small></span><span aria-hidden="true">↗</span>
-          </a>
-        ))}
-      </div>
+      <div class="publication-heading"><div><h2 id="work-title">Latest experiments</h2><p>Original trials with the method, measures and limits on the page.</p></div><a class="text-link" href="/experiments/">All {experiments.length} experiments →</a></div>
+      <div class="home-exp-grid">{latestExperiments.map((item) => <ExperimentCard item={item} />)}</div>
     </div>
-  </section>
+  </section>}
 
   {guides.length > 0 && <section class="publication-section guide-feature" aria-labelledby="guide-feature-title">
     <div class="wrap guide-feature-grid">
@@ -66,27 +57,28 @@ const sections = allSections.filter((s) => s.count > 0);
     </div>
   </section>}
 
-  {recent.length > 0 && <section class="publication-section" aria-labelledby="recent-title">
+  {latestArticles.length > 0 && <section class="publication-section" aria-labelledby="articles-title">
     <div class="wrap">
-      <div class="publication-heading"><h2 id="recent-title">Recently published</h2><p>New writing and work across the publication.</p></div>
+      <div class="publication-heading"><div><h2 id="articles-title">Latest articles</h2></div><a class="text-link" href="/articles/">All articles →</a></div>
       <div class="publication-feed">
-        {recent.map((item) => <article class="feed-item">
-          <div class="feed-meta"><span>{item.tag}</span><time datetime={item.date.toISOString()}>{formatItemDate(item.date)}</time></div>
-          <div><h3><a href={item.href}>{item.title}</a></h3><p>{item.summary}</p></div>
-          <a class="feed-arrow" href={item.href} aria-label={`Read ${item.title}`}>↗</a>
+        {latestArticles.map((post) => <article class="feed-item">
+          <div class="feed-meta"><span>Article</span><time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time></div>
+          <div><h3><a href={articleHref(post)}>{post.data.title}</a></h3><p>{post.data.summary ?? post.data.description}</p></div>
+          <a class="feed-arrow" href={articleHref(post)} aria-label={`Read ${post.data.title}`}>↗</a>
         </article>)}
       </div>
     </div>
   </section>}
 
-  {experiments.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
+  {latestNews.length > 0 && <section class="publication-section news-strip" aria-labelledby="news-title">
     <div class="wrap">
-      <div class="publication-heading"><div><h2 id="work-title">Original work</h2><p>Experiments and prototypes, with the methods and limitations visible.</p></div><a class="text-link" href="/experiments/">All experiments →</a></div>
-      <div class="work-list">{experiments.slice(0, 3).map((item) => <article>
-        <div class="feed-meta"><span>{item.data.type}</span><time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time></div>
-        <h3><a href={experimentHref(item)}>{item.data.title}</a></h3><p>{item.data.summary}</p>
-        <a class="text-link" href={experimentHref(item)}>Read the work →</a>
-      </article>)}</div>
+      <div class="publication-heading"><div><h2 id="news-title">News</h2><p>Relevant developments, kept short.</p></div><a class="text-link" href="/news/">All news →</a></div>
+      <ul class="news-strip-list">
+        {latestNews.map((post) => <li>
+          <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
+          <a href={newsHref(post)}>{post.data.title}</a>
+        </li>)}
+      </ul>
     </div>
   </section>}
 
