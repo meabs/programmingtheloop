@@ -54,15 +54,25 @@ import { SITE_OG_IMAGE } from '../site';
     return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   }
 
+  /** Drop hits whose only mark spans are 1–2 characters (single-letter noise). */
+  function hasSubstantialHit(excerptHtml: string): boolean {
+    const marks = [...excerptHtml.matchAll(/<mark[^>]*>(.*?)<\/mark>/gi)].map((m) =>
+      m[1].replace(/<[^>]+>/g, '').trim(),
+    );
+    if (marks.length === 0) return true; // no excerpt marks — keep title-only hits
+    return marks.some((t) => t.length >= 3);
+  }
+
   async function run(q: string) {
     list.innerHTML = '';
     if (q.trim().length < 2) { status.textContent = ''; return; }
     const pf = await load();
     if (!pf) return;
     const search = await pf.search(q);
-    const results = await Promise.all(search.results.slice(0, 20).map((r: any) => r.data()));
-    status.textContent = results.length === 0 ? `No results for “${q}”.` : `${search.results.length} ${search.results.length === 1 ? 'result' : 'results'}`;
-    list.innerHTML = results.map((r: any) =>
+    const raw = await Promise.all(search.results.slice(0, 40).map((r: any) => r.data()));
+    const results = raw.filter((r: any) => hasSubstantialHit(String(r.excerpt ?? '')));
+    status.textContent = results.length === 0 ? `No results for “${q}”.` : `${results.length} ${results.length === 1 ? 'result' : 'results'}`;
+    list.innerHTML = results.slice(0, 20).map((r: any) =>
       `<li><a href="${esc(r.url)}">${esc(r.meta?.title ?? r.url)}</a><p>${r.excerpt}</p></li>`).join('');
     history.replaceState(null, '', `?q=${encodeURIComponent(q)}`);
   }

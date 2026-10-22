@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import sitemap from '@astrojs/sitemap';
 import {
   CF_WEB_ANALYTICS_SRC,
   CF_WEB_ANALYTICS_BEACON,
@@ -12,7 +13,8 @@ import {
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og-cover.png`;
 const guideBase = '/guides/programming-the-loop';
-const siteNavSidebar = siteSidebarItems(readNavCollectionCountsSync());
+const navCounts = readNavCollectionCountsSync();
+const siteNavSidebar = siteSidebarItems(navCounts);
 
 export default defineConfig({
   site,
@@ -30,6 +32,15 @@ export default defineConfig({
     '/contents/': `${guideBase}/`,
   },
   integrations: [
+    // Register before Starlight so Starlight does not add a second sitemap integration.
+    sitemap({
+      filter: (page) => {
+        if (page.includes('/search')) return false;
+        // Hide the empty Articles section until something is published.
+        if (navCounts.articles < 1 && /\/articles(\/|$)/.test(page)) return false;
+        return true;
+      },
+    }),
     starlight({
       title: 'Programming the Loop',
       description:

@@ -1,11 +1,11 @@
 ---
 title: "Telling the agent to use its skills (experiment ESK)"
-description: "Told to use the repository's skills, the agent read them every time, but mostly ran a smoke test instead of testing its change. Reading an instruction is not the same as carrying it out."
+description: "Told to use the repository's skills, the agent read the verification skill every time, but mostly ran a smoke test instead of testing its change. Reading an instruction is not the same as carrying it out."
 date: 2026-10-22
 summary: "On 20 tasks in a Java online-shop backend, telling Codex to use its repository skills, in the prompt or in AGENTS.md, made it read the verification skill in every run (against 3 of 60 when left to find it), but a test of its change was detected in only 10 to 15 runs; the pass rate rose from 37 to 42 or 43 of 60, too little to rule out chance."
 type: "Controlled trial"
 github:
-  - label: "experiments"
+  - label: "Data and code on GitHub"
     href: "https://github.com/meabs/experiments/tree/65df2e973c3c136c9489e896e8dab48fd96ce2af/2026-10-explicit-skills"
 draft: false
 experimentId: "ESK"
@@ -38,12 +38,12 @@ findings:
     featured: false
   - id: "ESK-2"
     statement: "Telling the agent to use its skills did not measurably raise the pass rate: 42 of 60 runs passed when told in the prompt and 43 when told in AGENTS.md, against 37 with no guidance and 39 with the guidance left to discover"
-    metric: "told in AGENTS.md vs none, mean per-task difference in pass rate"
-    value: "+10.0 pts"
+    metric: "prompt vs none +8.3 pts; AGENTS.md vs none +10.0 pts (neither significant)"
+    value: "+8 to +10 pts, not significant"
     interval:
       low: "−5.0 pts"
       high: "+26.7 pts"
-      method: "bootstrap 95% CI over 20 tasks"
+      method: "bootstrap 95% CI over 20 tasks (AGENTS.md vs none; prompt vs none was −5.0 to +23.3)"
     n: 240
     limits:
       - "one repository"
@@ -116,18 +116,22 @@ The `AGENTS.md` arm was added while the first three were running, before I had l
 
 The instruction at the start of the prompt:
 
-> Use this repository's skills in .agents/skills for this task:
-> 1. Before you change any code, read and follow .agents/skills/safe-change/SKILL.md.
-> 2. To build and run tests, follow .agents/skills/build-test/SKILL.md.
-> 3. Before you say you are done, read and follow .agents/skills/verify-api/SKILL.md, and check your change through the API as it says.
->
-> The task:
+```text
+Use this repository's skills in .agents/skills for this task:
+1. Before you change any code, read and follow .agents/skills/safe-change/SKILL.md.
+2. To build and run tests, follow .agents/skills/build-test/SKILL.md.
+3. Before you say you are done, read and follow .agents/skills/verify-api/SKILL.md, and check your change through the API as it says.
+
+The task:
+```
 
 The entry added to `AGENTS.md` uses the same words as step 3:
 
-> ## Before you finish
->
-> Before you say you are done, read and follow `.agents/skills/verify-api/SKILL.md`, and check your change through the API as it says.
+```text
+## Before you finish
+
+Before you say you are done, read and follow .agents/skills/verify-api/SKILL.md, and check your change through the API as it says.
+```
 
 It names only the verification skill, because the agent already read the other two in every run when left to discover them.
 
@@ -172,27 +176,27 @@ This is the main result. Telling the agent to use the skills changed what it rea
 
 <figure class="guide-figure">
 
-![Read the skill, wrote a test, passed, across both experiments](/guide-images/chart-esk-readdo.png)
+<img src="/guide-images/chart-esk-readdo.png" alt="Across both experiments, runs out of 60: read verify-api 0, 8, 0, 3, 60, 60; API test detected in the change 0, 2, 0, 0, 15, 10; passed the hidden tests 38, 40, 37, 39, 42, 43" width="1800" height="920" loading="lazy" />
 
-<figcaption>Runs out of 60 per arm, in the repository skills experiment (top two rows) and this one. Told to use the skills, the agent read the verification skill in every run. A test of its change was detected in 15 and 10 runs. The pass rate barely moved.</figcaption>
+<figcaption>Runs out of 60 per arm, in the repository skills experiment (top two rows) and this one. Told to use the skills, the agent read the verification skill in every run. A test of its change was detected in 15 and 10 runs. The pass rate barely moved. Source: github.com/meabs/experiments, 2026-10-explicit-skills/results (Codex gpt-5.6-luna, low reasoning). Top two rows: 2026-10-repo-skills. Test detected from the change (diff), not checked by hand.</figcaption>
 
 </figure>
 
 <figure class="guide-figure">
 
-![What the agent did, by arm](/guide-images/chart-esk-process.png)
+<img src="/guide-images/chart-esk-process.png" alt="What the agent did, runs out of 60 per arm: read verify-api skill 0, 3, 60, 60; ran Maven tests 6, 16, 60, 59; API test detected in the change 0, 0, 15, 10" width="1800" height="920" loading="lazy" />
 
-<figcaption>Told to use the skills, in the prompt or in AGENTS.md, the agent read the verification skill and ran tests in almost every run. A test of its own change was detected in only 15 and 10 runs.</figcaption>
+<figcaption>What the agent did once told to use the skills: it opened the verification skill and ran Maven tests in almost every run, then usually took the skill's smoke-test shortcut rather than adding a test of its change.</figcaption>
 
 </figure>
 
 - **It read the skill.** Told, in either place, the agent opened `verify-api` in all 60 runs. Left to discover it, 3.
 - **It took the shortcut.** Most runs then ran the skill's smoke test, which checks only that the shop starts. It ran in 49 runs told in the prompt and 47 told in `AGENTS.md`. In 23 and 37 runs it was the only test the agent ran. The step the skill asks for next, writing a test of the change, was detected in 15 and 10 runs.
 - **It did not ignore the skill.** It took the action in it that looked like verification and was easiest, rather than the one that checks the change.
-- **It said so.** Its end-of-run notes often admitted the gap, for example: "the specific customer address PATCH/GET flow was not covered by an existing integration test". It still reported success.
+- **It said so.** In some runs, its notes admitted the gap, for example: "the specific customer address PATCH/GET flow was not covered by an existing integration test". It still reported success.
 - **A test went with passing.** Runs with a test of their change passed 13 of 15 (prompt) and 9 of 10 (`AGENTS.md`), against 29 of 45 and 34 of 50 that did not. This does not show that the test caused the pass: the agent may write one more readily when it already understands the task.
 - **What it claimed.** Every failed run, in all four arms (79 runs), still said its change worked.
-- **Neighbour breaks.** Being told to use `safe-change`, which says to check every other user of shared code, did not prevent them: 4 to 5 runs broke a neighbouring feature in each arm.
+- **Neighbour breaks.** Being told to use `safe-change`, which says to check every other user of shared code, did not prevent them: 4 to 5 runs broke a neighbouring feature in each arm, of the 6 neighbour-break runs.
 
 How a test was counted: the change the agent left adds a test that calls the API (using `TestRestTemplate`, `ServicesTestSupport` or `MockMvc`). This is an automatic check of the code, not a reading of each test by hand. It shows a test was added, not that it exercised the change.
 
@@ -213,7 +217,7 @@ Told in the prompt and told in `AGENTS.md` gave similar results: 42 and 43 runs,
 
 <figure class="guide-figure">
 
-![Hidden tests passed, by task and arm](/guide-images/chart-esk-passes.png)
+<img src="/guide-images/chart-esk-passes.png" alt="Hidden tests passed by task and arm, runs out of 3 per cell" width="1800" height="920" loading="lazy" />
 
 <figcaption>Runs passed of 3, per task and arm. Most tasks came out the same in every arm. Being told helped most on SUPERDEL (1 to 3 of 3) and TAXRATE (0 to 3 of 3). On CUSTREVIEW, every arm with guidance passed 0 of 3, against 2 without; in the repository skills experiment, the guidance arm passed it 2 of 3.</figcaption>
 
@@ -251,7 +255,7 @@ Before writing up, I checked these counts against the record of every command th
 | Repository guidance, told in `AGENTS.md` | 43 vs 37 of 60 | 1.8 times |
 | Medium reasoning effort, nothing else | 49 vs 36 of 60 (significant) | 1.4 times |
 
-Telling the agent to use the guidance gave the largest gain of anything written down so far, but still not a measurable one, and it doubled the cost per correct change. Letting the agent think a little longer gained more, for less.
+Telling the agent gave the highest pass counts of the written instructions so far (42 and 43 of 60, against 37), but the difference could be chance. Each correct change cost 1.8 to 2.0 times as much. In an earlier experiment on the same tasks, medium reasoning effort did better (49 against 36 of 60, a real difference) at 1.4 times the cost.
 
 If you want your agent to read a skill, one line in `AGENTS.md` was enough here. Getting it followed is a different matter: the agent read the instruction to write a test, and mostly ran the example instead.
 

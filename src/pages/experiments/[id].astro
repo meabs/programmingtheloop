@@ -130,21 +130,42 @@ const evidence = [
 </BaseLayout>
 
 <script>
-  // Tables with long text cells wrap like prose (class table-prose); on phones
-  // each row becomes a card, using each cell's column heading as its label.
-  const PROSE_CELL_CHARS = 48;
+  // Every prose table stacks as cards on phones (label + values), including
+  // numeric result tables that used to show only the first column at 390px.
   document.querySelectorAll<HTMLTableElement>('.view-prose table').forEach((table) => {
     const rows = Array.from(table.rows);
     if (rows.length === 0) return;
     const labels = Array.from(rows[0].cells).map((c) => (c.textContent ?? '').trim());
-    let longest = 0;
     for (const row of rows) {
       Array.from(row.cells).forEach((cell, i) => {
-        longest = Math.max(longest, (cell.textContent ?? '').trim().length);
         if (cell.tagName === 'TD' && labels[i]) cell.dataset.label = labels[i];
+        // Wrap mixed text/code children so stacked layout does not split them
+        // into separate grid items (e.g. `AGENTS.md` on its own label row).
+        if (cell.tagName === 'TD' && cell.childNodes.length > 1) {
+          const wrap = document.createElement('span');
+          wrap.className = 'table-cell-text';
+          while (cell.firstChild) wrap.appendChild(cell.firstChild);
+          cell.appendChild(wrap);
+        }
       });
     }
-    if (longest > PROSE_CELL_CHARS) table.classList.add('table-prose');
+    table.classList.add('table-prose');
+  });
+
+  // Charts: wrap each figure image in a link to the full-size file (tap to enlarge).
+  document.querySelectorAll<HTMLImageElement>('.view-prose .guide-figure img').forEach((img) => {
+    if (img.closest('a')) return;
+    const href = img.currentSrc || img.src;
+    if (!href) return;
+    const link = document.createElement('a');
+    link.href = href;
+    link.className = 'guide-figure-link';
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
+    link.setAttribute('aria-label', 'Open full-size chart');
+    img.replaceWith(link);
+    link.appendChild(img);
+    if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
   });
 </script>
 
@@ -158,14 +179,20 @@ const evidence = [
   .exp-facts dt { font: .7rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
   .exp-facts dd { margin: 0; color: var(--ink-muted); overflow-wrap: anywhere; }
   .exp-jump { margin: 0 0 2rem; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-  .exp-jump ul { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; margin: 0; padding: 0; }
+  .exp-jump ul { list-style: none; display: flex; flex-wrap: wrap; gap: .15rem .5rem; margin: 0; padding: 0; }
   .exp-jump li { margin: 0; }
-  .exp-jump a { font-size: .92rem; font-weight: 600; }
+  .exp-jump a { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .55rem; font-size: .92rem; font-weight: 600; }
   .exp-evidence, .exp-related { margin: 2.5rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--line); }
   .exp-evidence h2, .exp-related h2 { margin-top: 0; font-size: 1.35rem; }
   .exp-evidence ul, .exp-related ul { list-style: none; margin: .75rem 0 0; padding: 0; display: grid; gap: .6rem; }
   .exp-evidence li, .exp-related li { margin: 0; }
   .exp-related li { display: grid; gap: .15rem; }
   .exp-related li a { font-weight: 600; }
+  .exp-topic-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.2rem 0.35rem;
+  }
   .exp-related li span { font-size: .9rem; color: var(--ink-muted); overflow-wrap: anywhere; }
 </style>

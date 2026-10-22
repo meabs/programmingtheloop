@@ -39,13 +39,13 @@ function displayN(n: string | number | undefined | null): string | null {
             <dl class="finding-meta">
               {f.metric && (
                 <div>
-                  <dt>Measure</dt>
+                  <dt>Measure:</dt>
                   <dd>{f.metric}</dd>
                 </div>
               )}
               {f.interval && (
                 <div>
-                  <dt>Interval</dt>
+                  <dt>Interval:</dt>
                   <dd>
                     {f.interval.low} to {f.interval.high}
                     <span class="finding-method">{f.interval.method}</span>
@@ -54,7 +54,7 @@ function displayN(n: string | number | undefined | null): string | null {
               )}
               {displayN(f.n) && (
                 <div>
-                  <dt>Runs</dt>
+                  <dt>Runs:</dt>
                   <dd>{displayN(f.n)}</dd>
                 </div>
               )}
@@ -62,7 +62,7 @@ function displayN(n: string | number | undefined | null): string | null {
           )}
 
           <div class="finding-limits">
-            <span class="finding-limits-label">Limits</span>
+            <span class="finding-limits-label">Limits:</span>
             <ul class="findings-limits">
               {f.limits.map((lim) => (
                 <li>{lim}</li>
@@ -201,7 +201,10 @@ function displayN(n: string | number | undefined | null): string | null {
   }
   .findings-block .findings-limits li {
     margin: 0;
-    padding: 0.2rem 0.6rem;
+    padding: 0.45rem 0.7rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
     font-size: 0.82rem;
     line-height: 1.35;
     color: var(--ink-muted, #4a5160);

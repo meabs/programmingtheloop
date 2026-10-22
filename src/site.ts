@@ -3,7 +3,7 @@ export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
 export const SITE_DESCRIPTION =
-  "Practical thinking on AI, software engineering, architecture and the tools we build with. Articles, experiments, projects and guides.";
+  "Practical thinking on AI, software engineering, architecture and the tools we build with. Experiments, projects and guides.";
 
 /** Base path for the Programming the Loop multi-page guide. */
 export const PTL_GUIDE_HREF = '/guides/programming-the-loop/';
