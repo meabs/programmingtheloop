@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../site';
+---
+<BaseLayout
+  title="Search"
+  description="Search experiments, news, notes and the guide."
+  canonicalPath="/search/"
+  ogImage={SITE_OG_IMAGE}
+  noindex
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Search</p>
+      <h1>Search the site</h1>
+      <p>Experiments, news, notes, the findings page and every chapter of the guide.</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap search-wrap">
+      <form role="search" id="site-search" autocomplete="off">
+        <label for="q" class="visually-hidden">Search</label>
+        <input id="q" type="search" name="q" placeholder="Search, for example: stale guide" />
+      </form>
+      <p id="search-status" class="search-status" role="status" aria-live="polite"></p>
+      <ol id="search-results" class="search-results"></ol>
+      <noscript><p>Search needs JavaScript. You can browse <a href="/experiments/">experiments</a>, <a href="/topics/">topics</a> or the <a href="/guides/programming-the-loop/">guide</a> instead.</p></noscript>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // Pagefind's index is built after the site build, so it is loaded at runtime.
+  const form = document.getElementById('site-search') as HTMLFormElement;
+  const input = document.getElementById('q') as HTMLInputElement;
+  const status = document.getElementById('search-status')!;
+  const list = document.getElementById('search-results')!;
+  let pagefind: any;
+  let timer: number | undefined;
+
+  async function load() {
+    if (!pagefind) {
+      try {
+        const url = '/pagefind/pagefind.js';
+        pagefind = await import(/* @vite-ignore */ url);
+      } catch {
+        status.textContent = 'Search is not available in this preview. It works on the built site.';
+      }
+    }
+    return pagefind;
+  }
+
+  function esc(s: string) {
+    return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  }
+
+  async function run(q: string) {
+    list.innerHTML = '';
+    if (q.trim().length < 2) { status.textContent = ''; return; }
+    const pf = await load();
+    if (!pf) return;
+    const search = await pf.search(q);
+    const results = await Promise.all(search.results.slice(0, 20).map((r: any) => r.data()));
+    status.textContent = results.length === 0 ? `No results for “${q}”.` : `${search.results.length} ${search.results.length === 1 ? 'result' : 'results'}`;
+    list.innerHTML = results.map((r: any) =>
+      `<li><a href="${esc(r.url)}">${esc(r.meta?.title ?? r.url)}</a><p>${r.excerpt}</p></li>`).join('');
+    history.replaceState(null, '', `?q=${encodeURIComponent(q)}`);
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); run(input.value); });
+  input.addEventListener('input', () => { window.clearTimeout(timer); timer = window.setTimeout(() => run(input.value), 200); });
+  const initial = new URLSearchParams(location.search).get('q');
+  if (initial) { input.value = initial; run(initial); }
+</script>
+
+<style>
+  .search-wrap { max-width: 46rem; }
+  #q { width: 100%; padding: .8rem 1rem; font: inherit; font-size: 1.1rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; }
+  .search-status { margin: .75rem 0; color: var(--ink-muted); font-size: .92rem; }
+  .search-results { list-style: none; margin: 0; padding: 0; }
+  .search-results :global(li) { margin: 0; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  .search-results :global(a) { font-weight: 600; font-size: 1.08rem; }
+  .search-results :global(p) { margin: .3rem 0 0; color: var(--ink-muted); font-size: .95rem; overflow-wrap: anywhere; }
+  .search-results :global(mark) { background: var(--accent-soft); color: inherit; padding: 0 .1em; }
+</style>

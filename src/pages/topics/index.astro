@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getTopicsWithContent } from '../../lib/topics';
+
+const topics = await getTopicsWithContent();
+---
+<BaseLayout
+  title="Topics"
+  description="Browse the experiments by topic."
+  canonicalPath="/topics/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Browse</p>
+      <h1>Topics</h1>
+      <p>The same work, grouped by the question it helps answer. A topic appears here once it has published work.</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <ul class="topic-list">
+        {topics.map((t) => (
+          <li>
+            <a href={`/topics/${t.id}/`}>
+              <strong>{t.title}</strong>
+              <span>{t.description}</span>
+              <small>{t.experiments.length} {t.experiments.length === 1 ? 'experiment' : 'experiments'}</small>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .topic-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .topic-list li { margin: 0; border-bottom: 1px solid var(--line); }
+  .topic-list a { display: grid; gap: .25rem; padding: 1.25rem .25rem; color: var(--ink); text-decoration: none; }
+  .topic-list a:hover { background: var(--accent-soft); }
+  .topic-list strong { font-size: 1.3rem; letter-spacing: -.02em; }
+  .topic-list span { color: var(--ink-muted); max-width: 62ch; }
+  .topic-list small { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+</style>

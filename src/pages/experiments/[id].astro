@@ -50,6 +50,8 @@ const evidence = [
   canonicalPath={`/experiments/${item.id}/`}
   ogImage={SITE_OG_IMAGE}
   noindex={isDraft}
+
+  searchable
 >
   <header class="page-head">
     <div class="wrap">
@@ -60,6 +62,9 @@ const evidence = [
       </p>
       <h1>{item.data.title}</h1>
       <p>{item.data.description}</p>
+      {mine.size > 0 && (
+        <p class="exp-topic-links">Topics: {[...mine].map((t, i) => <><a href={`/topics/${t}/`}>{TOPICS[t as keyof typeof TOPICS].title}</a>{i < mine.size - 1 ? ', ' : ''}</>)}</p>
+      )}
       {(item.data.github.length > 0 || item.data.guideLinks.length > 0) && (
         <div class="actions">
           {item.data.guideLinks.map((link) => (
