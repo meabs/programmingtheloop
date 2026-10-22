@@ -2,7 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FindingsTable from '../../components/experiments/FindingsTable.astro';
 import { SITE_OG_IMAGE } from '../../site';
-import { formatItemDate } from '../../lib/collections';
+import { formatItemDate, getPublishedExperiments, experimentHref } from '../../lib/collections';
+import { TOPICS, isTopicId } from '../../data/topics';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -18,10 +19,30 @@ export async function getStaticPaths() {
 }
 
 const { item } = Astro.props;
-const { Content } = await render(item);
+const { Content, headings } = await render(item);
 const findings = item.data.findings ?? [];
 const isDraft = item.data.draft === true;
 const publishedOn = item.data.publishedOn;
+const d = item.data;
+
+// Headings of the write-up, for the jump links (the source reports use one H2 per stage).
+const sections = headings.filter((h) => h.depth === 2);
+
+// Related: most shared topics first, then newest. Never invented, only published experiments.
+const mine = new Set((d.topics ?? []).filter(isTopicId));
+const related = (await getPublishedExperiments())
+  .filter((e) => e.id !== item.id)
+  .map((e) => ({ e, shared: (e.data.topics ?? []).filter((t) => mine.has(t as never)).length }))
+  .filter((x) => x.shared > 0)
+  .sort((a, b) => b.shared - a.shared || b.e.data.date.valueOf() - a.e.data.date.valueOf())
+  .slice(0, 3)
+  .map((x) => x.e);
+
+const evidence = [
+  d.report && { label: 'Full trial report', href: d.report },
+  d.prediction && { label: 'Prediction, written before the runs', href: d.prediction },
+  d.repo && { label: 'Source repository', href: d.repo },
+].filter(Boolean) as { label: string; href: string }[];
 ---
 <BaseLayout
   title={item.data.title}
@@ -53,8 +74,49 @@ const publishedOn = item.data.publishedOn;
   </header>
   <div class="page-body">
     <div class="wrap view-prose">
+      {(d.question || d.agents || d.runs) && (
+        <section class="exp-brief" aria-label="At a glance">
+          {d.question && (
+            <div class="exp-question-panel">
+              <p class="exp-kicker">The question</p>
+              <p class="exp-question-text">{d.question}</p>
+            </div>
+          )}
+          <dl class="exp-facts">
+            {d.experimentId && <div><dt>Experiment</dt><dd>{d.experimentId}</dd></div>}
+            {d.runs !== undefined && d.runs !== null && d.runs !== '' && <div><dt>Runs</dt><dd>{d.runs}</dd></div>}
+            {d.agents && d.agents.length > 0 && (
+              <div><dt>Agents</dt><dd>{d.agents.map((a) => a.model ? `${a.name} (${a.model})` : a.name).join(', ')}</dd></div>
+            )}
+          </dl>
+        </section>
+      )}
       <FindingsTable findings={findings} />
+      {sections.length > 2 && (
+        <nav class="exp-jump" aria-label="Sections of this write-up">
+          <span class="exp-kicker">In this write-up</span>
+          <ul>{sections.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+        </nav>
+      )}
       <Content />
+      {evidence.length > 0 && (
+        <section class="exp-evidence" aria-labelledby="exp-evidence-title">
+          <h2 id="exp-evidence-title">Evidence and reproducibility</h2>
+          <p>Every link is pinned to the commit the figures on this page were read from.</p>
+          <ul>{evidence.map((l) => <li><a href={l.href} rel="noopener noreferrer">{l.label} ↗</a></li>)}</ul>
+        </section>
+      )}
+      {related.length > 0 && (
+        <section class="exp-related" aria-labelledby="exp-related-title">
+          <h2 id="exp-related-title">Related experiments</h2>
+          <ul>{related.map((e) => (
+            <li>
+              <a href={experimentHref(e)}>{e.data.title}</a>
+              {e.data.question && <span>{e.data.question}</span>}
+            </li>
+          ))}</ul>
+        </section>
+      )}
       <p class="view-back">
         <a href="/experiments/">← All experiments</a>
       </p>
@@ -80,3 +142,25 @@ const publishedOn = item.data.publishedOn;
     if (longest > PROSE_CELL_CHARS) table.classList.add('table-prose');
   });
 </script>
+
+<style>
+  .exp-brief { display: grid; gap: 1rem; margin: 0 0 2rem; }
+  .exp-kicker { margin: 0 0 .35rem; font: .7rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .exp-question-panel { padding: 1.25rem 1.35rem; background: var(--accent-soft, rgba(13,122,114,.1)); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; }
+  .exp-question-panel .exp-question-text { margin: 0; font-size: clamp(1.15rem, 2.4vw, 1.45rem); line-height: 1.4; letter-spacing: -.015em; color: var(--ink); overflow-wrap: anywhere; }
+  .exp-facts { display: flex; flex-wrap: wrap; gap: .5rem 2rem; margin: 0; padding: 0; font-size: .92rem; }
+  .exp-facts div { display: flex; gap: .5rem; align-items: baseline; }
+  .exp-facts dt { font: .7rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .exp-facts dd { margin: 0; color: var(--ink-muted); overflow-wrap: anywhere; }
+  .exp-jump { margin: 0 0 2rem; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  .exp-jump ul { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; margin: 0; padding: 0; }
+  .exp-jump li { margin: 0; }
+  .exp-jump a { font-size: .92rem; font-weight: 600; }
+  .exp-evidence, .exp-related { margin: 2.5rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+  .exp-evidence h2, .exp-related h2 { margin-top: 0; font-size: 1.35rem; }
+  .exp-evidence ul, .exp-related ul { list-style: none; margin: .75rem 0 0; padding: 0; display: grid; gap: .6rem; }
+  .exp-evidence li, .exp-related li { margin: 0; }
+  .exp-related li { display: grid; gap: .15rem; }
+  .exp-related li a { font-weight: 600; }
+  .exp-related li span { font-size: .9rem; color: var(--ink-muted); overflow-wrap: anywhere; }
+</style>
