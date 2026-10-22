@@ -4,6 +4,8 @@ description: "Experiment J: a fully set-up repository cost more tokens with no r
 date: 2026-10-17
 summary: "On a readable Java backend, the recommended agent set-up used 35–48% more tokens with no reliable correctness gain."
 type: "Controlled trial"
+previewImage: "/guide-images/chart-j-tokens.png"
+previewAlt: "Bar chart of mean tokens per run for each task, plain repository against the same repository set up for agents"
 github:
   - label: "OKFExperiment"
     href: "https://github.com/meabs/OKFExperiment"

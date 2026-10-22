@@ -1,13 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExperimentCard from '../../components/experiments/ExperimentCard.astro';
 import { SITE_OG_IMAGE } from '../../site';
-import {
-  getPublishedExperiments,
-  experimentHref,
-  formatItemDate,
-} from '../../lib/collections';
+import { getPublishedExperiments } from '../../lib/collections';
+import { TOPICS, isTopicId } from '../../data/topics';
 
 const items = await getPublishedExperiments();
+// Only topics that have published experiments get a filter.
+const counts = new Map<string, number>();
+for (const item of items) for (const t of item.data.topics ?? []) if (isTopicId(t)) counts.set(t, (counts.get(t) ?? 0) + 1);
+const filters = [...counts].sort((a, b) => b[1] - a[1]).map(([id, n]) => ({ id, n, title: TOPICS[id as keyof typeof TOPICS].title }));
 ---
 <BaseLayout
   title="Experiments"
@@ -28,18 +30,57 @@ const items = await getPublishedExperiments();
   </header>
   <div class="page-body">
     <div class="wrap">
-      <div class="collection-grid">
-        {items.map((item) => (
-          <a class="collection-card reveal" href={experimentHref(item)}>
-            <span class="card-kicker">{item.data.type}</span>
-            <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
-            <h2 class="card-title">{item.data.title}</h2>
-            {item.data.plainTitle && <p class="card-plain">{item.data.plainTitle}</p>}
-            <p class="card-desc">{item.data.summary}</p>
-            <span class="card-meta">Open →</span>
-          </a>
-        ))}
+      <div class="exp-toolbar">
+        <p class="exp-count"><span id="exp-shown">{items.length}</span> of {items.length} experiments</p>
+        {filters.length > 1 && (
+          <div class="exp-filters" role="group" aria-label="Filter by topic" hidden id="exp-filters">
+            <button type="button" class="exp-chip" data-filter="all" aria-pressed="true">All <span>{items.length}</span></button>
+            {filters.map((f) => (
+              <button type="button" class="exp-chip" data-filter={f.id} aria-pressed="false">{f.title} <span>{f.n}</span></button>
+            ))}
+          </div>
+        )}
+      </div>
+      <div class="exp-grid" id="exp-grid">
+        {items.map((item) => <ExperimentCard item={item} />)}
       </div>
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  // Progressive enhancement: without JavaScript every card stays visible and the chips stay hidden.
+  const bar = document.getElementById('exp-filters');
+  const cards = [...document.querySelectorAll<HTMLElement>('.exp-card')];
+  const shown = document.getElementById('exp-shown');
+  if (bar) {
+    bar.hidden = false;
+    bar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.exp-chip');
+      if (!btn) return;
+      const f = btn.dataset.filter;
+      bar.querySelectorAll('.exp-chip').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      let n = 0;
+      cards.forEach((c) => {
+        const ok = f === 'all' || (c.dataset.topics ?? '').split(' ').includes(f!);
+        c.hidden = !ok;
+        if (ok) n++;
+      });
+      if (shown) shown.textContent = String(n);
+    });
+  }
+</script>
+
+<style>
+  .exp-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1.5rem; margin-bottom: 1.25rem; }
+  .exp-count { margin: 0; font: .78rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .exp-filters { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .exp-chip { display: inline-flex; gap: .4rem; align-items: center; min-height: 2.5rem; padding: .35rem .85rem; font: inherit; font-size: .88rem; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; cursor: pointer; }
+  .exp-chip span { font-weight: 500; color: var(--ink-faint); }
+  .exp-chip[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .exp-chip[aria-pressed='true'] span { color: inherit; opacity: .85; }
+  .exp-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
+  .exp-grid :global(.exp-card[hidden]) { display: none; }
+  @media (min-width: 700px) { .exp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .exp-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

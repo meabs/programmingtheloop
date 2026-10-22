@@ -78,6 +78,9 @@ const experimentSchema = z.object({
   evidenceGrade: z.enum(['published', 'unpublished']).optional(),
   agents: z.array(agentSchema).optional(),
   plainTitle: z.string().optional(),
+  /** Existing chart from this experiment, shown on the listing card (path under /public). */
+  previewImage: z.string().optional(),
+  previewAlt: z.string().optional(),
   runs: z.union([z.number(), z.string()]).optional(),
   repo: z.string().url().optional(),
   report: z.string().url().optional(),
