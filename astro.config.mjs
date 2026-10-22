@@ -11,7 +11,8 @@ import {
 } from './src/lib/nav-gate.ts';
 
 const site = 'https://programmingtheloop.com';
-const ogImage = `${site}/og-cover.png`;
+const ogImage = `${site}/og/default.png`;
+const ogImageAlt = 'Programming the Loop — Building software with coding agents.';
 const guideBase = '/guides/programming-the-loop';
 const navCounts = readNavCollectionCountsSync();
 const siteNavSidebar = siteSidebarItems(navCounts);
@@ -58,6 +59,10 @@ export default defineConfig({
         {
           tag: 'meta',
           attrs: { property: 'og:image:height', content: '630' },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:image:alt', content: ogImageAlt },
         },
         {
           tag: 'meta',
