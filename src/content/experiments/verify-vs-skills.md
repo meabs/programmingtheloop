@@ -203,7 +203,7 @@ Six tasks gave the same result in every arm. Four were passed by every run, and 
 
 <figure class="guide-figure">
 
-![Hidden tests passed, by task and arm](/guide-images/chart-vvs-passes.png)
+<img src="/guide-images/chart-vvs-passes.png" alt="Hidden tests passed by task and arm, runs out of 3 per cell" width="1800" height="920" loading="lazy" />
 
 <figcaption>Runs passed of 3, per task and arm. Medium effort passed every run on 14 tasks; no arm passed REVEDIT or USERERR. The verify instruction's gains (ADDR, NOTFOUND, SUPERDEL) and losses (PAGE, CARTCALC, CONTENT, CUSTDUP) are mostly one or two runs each.</figcaption>
 
@@ -211,7 +211,7 @@ Six tasks gave the same result in every arm. Four were passed by every run, and 
 
 <figure class="guide-figure">
 
-![Cost per correct change, by arm](/guide-images/chart-vvs-cost.png)
+<img src="/guide-images/chart-vvs-cost.png" alt="Cost per correct change by arm in cents" width="1800" height="920" loading="lazy" />
 
 <figcaption>Total cost of an arm's 60 runs divided by its runs that passed. No skills at low effort is cheapest per correct change because its runs are cheap, not because it passes more. Medium effort passed the most and cost about the same per correct change as the verify instruction; Superpowers cost the most.</figcaption>
 
@@ -223,7 +223,7 @@ The verify instruction changed what the agent tried, much more than what it achi
 
 <figure class="guide-figure">
 
-![What the agent did, by arm](/guide-images/chart-vvs-process.png)
+<img src="/guide-images/chart-vvs-process.png" alt="What the agent did by arm: tried to start the app, got a reply, wrote API tests, ran project tests" width="1800" height="920" loading="lazy" />
 
 <figcaption>With the instruction, the agent tried to start the shop in 47 of 60 runs; no other arm ever tried. It got the shop to answer a request in 3. Superpowers wrote tests that call the API far more often (16 runs). Medium effort ran the project's tests in 37 runs without being asked, against 3 for the same agent at low effort.</figcaption>
 
@@ -237,7 +237,7 @@ So this experiment mostly measured the instruction against an app that is awkwar
 
 <figure class="guide-figure">
 
-![Runs that passed, or failed while saying they worked](/guide-images/chart-vvs-claims.png)
+<img src="/guide-images/chart-vvs-claims.png" alt="Runs that passed, or failed while saying they worked, by arm" width="1800" height="920" loading="lazy" />
 
 <figcaption>At the end of each run, the agent reports whether its change works. Nearly every failed run said it did, in every arm: 78 of 79 failed runs. The instruction to "say plainly if you could not check something" did not change that.</figcaption>
 

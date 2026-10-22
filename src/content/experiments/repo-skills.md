@@ -28,7 +28,7 @@ findings:
   - id: "RSK-1"
     statement: "Repository guidance left for the agent to discover did not measurably raise the pass rate: 40 of 60 runs passed, against 38 of 60 without it (p = 0.40)"
     metric: "guidance vs none, mean per-task difference in pass rate"
-    value: "+3.3 pts"
+    value: "40 vs 38 of 60 · not measurable"
     interval:
       low: "−8.3 pts"
       high: "+16.7 pts"
@@ -42,7 +42,7 @@ findings:
     status: current
     featured: false
   - id: "RSK-2"
-    statement: "The agent read the skills on building and on changing code in every run, but opened the skill on checking a change through the API in only 8 of 60, and wrote a test of its own change in 2"
+    statement: "The agent read the skills on building and on changing code in every run, but opened the skill on checking a change through the API in only 8 of 60, and a test of its own change was detected in 2"
     metric: "runs that read the verification skill"
     value: "8/60"
     n: 60
@@ -53,7 +53,7 @@ findings:
     status: current
     featured: false
   - id: "RSK-3"
-    statement: "The guidance cost little: each correct change cost 1.29 times as much as without it, against about 2.5 times for the Superpowers pack in earlier experiments"
+    statement: "Cost 1.29 times as much per correct change (1.01 to 1.55), against about 2.4 to 2.5 times for the Superpowers pack in earlier experiments"
     metric: "cost per run that passed, guidance vs none"
     value: "1.29×"
     interval:
@@ -153,7 +153,7 @@ The baseline was steady. Without guidance, the agent passed 38 of 60 runs here, 
 
 <figure class="guide-figure">
 
-![Hidden tests passed, by task and arm](/guide-images/chart-rsk-passes.png)
+<img src="/guide-images/chart-rsk-passes.png" alt="Hidden tests passed by task and arm: runs out of 3 per cell for no guidance and repository guidance" width="1800" height="680" loading="lazy" />
 
 <figcaption>Runs passed of 3, per task and arm. Ten tasks came out the same in both arms. Guidance helped most on SUPERDEL and CUSTREVIEW (0 to 2 of 3), and lost a single run on five tasks the agent nearly always passed without it.</figcaption>
 
@@ -163,9 +163,9 @@ The baseline was steady. Without guidance, the agent passed 38 of 60 runs here, 
 
 <figure class="guide-figure">
 
-![What the agent did, by arm](/guide-images/chart-rsk-process.png)
+<img src="/guide-images/chart-rsk-process.png" alt="What the agent did by arm, runs out of 60: with guidance, read build and change skills every time, read verify-api in 8, ran tests in 26 against 5, API test detected in the change in 2" width="1800" height="920" loading="lazy" />
 
-<figcaption>With guidance, every run began by reading the skills on changing code and on building and testing. Only 8 runs opened the skill on checking a change through the API. The agent ran tests far more often with guidance (26 runs against 5), but wrote a test of its own change in only 2.</figcaption>
+<figcaption>With guidance, every run began by reading the skills on changing code and on building and testing. Only 8 runs opened the skill on checking a change through the API. The agent ran tests far more often with guidance (26 runs against 5), but a test of its own change was detected in only 2.</figcaption>
 
 </figure>
 
@@ -188,17 +188,9 @@ One codebase; one agent and model; low reasoning effort only. One set of guidanc
 
 Above all, this tests guidance the agent may choose to read. It read most of it, but not the part about checking its work.
 
-## What comes next
+## Follow-up
 
-The obvious question is what happens when the agent is **told to use the skills**. A follow-up experiment, [telling the agent to use its skills](/experiments/explicit-skills/), has now tested this. It uses the same guidance, byte for byte, with three arms run side by side:
-
-- no guidance;
-- the guidance left to discover, repeating this experiment;
-- the guidance explicitly called. The prompt starts by telling the agent to read the change and test skills before it starts, and to follow the verification skill before it says it is done.
-
-A fourth arm put the instruction in `AGENTS.md` instead. Told, the agent read the verification skill every time, but mostly ran a smoke test rather than testing its change, and the gain was not measurable.
-
-That separates two questions this experiment could not: whether the guidance helps when it is followed, and whether the agent follows it when it is only available.
+In a follow-up, [telling the agent to use its skills](/experiments/explicit-skills/), the agent read the verification skill every time when told to, but mostly ran a smoke test rather than testing its change, and the pass rate did not rise measurably.
 
 ## Reproduce
 

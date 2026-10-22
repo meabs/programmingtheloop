@@ -14,7 +14,7 @@ export const TOPICS = {
   },
   verification: {
     title: 'Verification',
-    description: 'Proof, not promises: executable checks and independent judgement.',
+    description: 'Checking that a change works: executable checks and independent review.',
   },
   harness: {
     title: 'Harness',

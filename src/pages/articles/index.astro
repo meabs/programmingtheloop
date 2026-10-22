@@ -14,6 +14,7 @@ const posts = await getPublishedArticles();
   description="Technical opinions, analysis and commentary by Garry Meaburn."
   canonicalPath="/articles/"
   ogImage={SITE_OG_IMAGE}
+  noindex={posts.length === 0}
 >
   <header class="page-head">
     <div class="wrap">
