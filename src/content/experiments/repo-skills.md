@@ -190,7 +190,7 @@ Above all, this tests guidance the agent may choose to read. It read most of it,
 
 ## What comes next
 
-The obvious question is what happens when the agent is **told to use the skills**. A follow-up experiment, [explicit-skills](https://github.com/meabs/experiments/tree/main/2026-10-explicit-skills), is running now. It uses the same guidance, byte for byte, with three arms run side by side:
+The obvious question is what happens when the agent is **told to use the skills**. A follow-up experiment, [explicit-skills](https://github.com/meabs/experiments/tree/6224f3b0ba00eb043bb961be37e2505315ab29ce/2026-10-explicit-skills), is running now. It uses the same guidance, byte for byte, with three arms run side by side:
 
 - no guidance;
 - the guidance left to discover, repeating this experiment;
