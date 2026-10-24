@@ -28,6 +28,7 @@ Node 22 is used in CI (see `.github/workflows/deploy.yml`).
 | --- | --- | --- |
 | `/` | Site home | Yes |
 | `/articles/` | Short writing (collection) | Yes |
+| `/architecture/` | Architecture notes (collection) | Yes |
 | `/experiments/` | Experiment write-ups (collection) | Yes |
 | `/guides/` | Guide catalog | Yes |
 | `/guides/programming-the-loop/` | Multi-page guide (Starlight) | Via Guides |

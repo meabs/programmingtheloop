@@ -85,6 +85,7 @@ export function readNavCollectionCountsSync(
 ): NavCounts {
   return {
     articles: countPublishedInDir(path.join(contentRoot, 'articles')),
+    architecture: countPublishedInDir(path.join(contentRoot, 'architecture')),
     experiments: countPublishedInDir(path.join(contentRoot, 'experiments'), true),
     guides: countPublishedInDir(path.join(contentRoot, 'guides')),
     news: countPublishedInDir(path.join(contentRoot, 'news')),

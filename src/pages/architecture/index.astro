@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import {
+  getPublishedArchitecture,
+  architectureHref,
+  formatItemDate,
+} from '../../lib/collections';
+
+const posts = await getPublishedArchitecture();
+---
+<BaseLayout
+  title="Architecture"
+  description="Notes and experiments on how systems fit together, mostly from my own hobby projects."
+  canonicalPath="/architecture/"
+  ogImage={SITE_OG_IMAGE}
+  noindex={posts.length === 0}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Architecture</p>
+      <h1>Architecture</h1>
+      <p>
+        Notes and experiments on how systems fit together, mostly from my own hobby projects.
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      {posts.length === 0 ? (
+        <p class="empty-note">
+          Nothing published here yet. New notes will appear on this page and in the homepage feed.
+        </p>
+      ) : (
+        <ol class="article-list">
+          {posts.map((post) => (
+            <li class="article-item">
+              <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
+              <div>
+                <h2><a href={architectureHref(post)}>{post.data.title}</a></h2>
+                <p>{post.data.summary ?? post.data.description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .article-list { list-style: none; margin: 0; padding: 0; max-width: 52rem; border-top: 1px solid var(--line); }
+  .article-item { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: .25rem 1.5rem; margin: 0; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+  .article-item time { padding-top: .45rem; font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .article-item h2 { margin: 0 0 .4rem; font-size: clamp(1.4rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.03em; }
+  .article-item h2 a { color: var(--ink); text-decoration: none; }
+  .article-item h2 a:hover { color: var(--accent); }
+  .article-item p { margin: 0; max-width: 62ch; color: var(--ink-muted); line-height: 1.6; overflow-wrap: anywhere; }
+  @media (max-width: 640px) { .article-item { grid-template-columns: 1fr; } .article-item time { padding-top: 0; } }
+</style>
