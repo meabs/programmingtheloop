@@ -72,7 +72,7 @@ const latestNews = news.slice(0, 3);
         {latestWork.length > 1 && (
           <div class="latest-controls" hidden id="latest-controls">
             <button type="button" id="latest-prev" aria-label="Previous">←</button>
-            <span id="latest-pos" aria-hidden="true">1 / {latestWork.length}</span>
+            <span id="latest-pos" aria-hidden="true">1 of {latestWork.length}</span>
             <button type="button" id="latest-next" aria-label="Next">→</button>
           </div>
         )}
@@ -154,7 +154,7 @@ const latestNews = news.slice(0, 3);
     const update = () => {
       const w = (items[0]?.offsetWidth ?? 280) + 16;
       const i = Math.min(items.length - 1, Math.round(row.scrollLeft / w));
-      pos.textContent = `${i + 1} / ${items.length}`;
+      pos.textContent = `${i + 1} of ${items.length}`;
     };
     row.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
   }
