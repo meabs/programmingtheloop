@@ -1,7 +1,7 @@
 ---
 title: "WebMCP: Why I'm Interested in Agents Sharing the Browser"
 description: "Notes from building with WebMCP: humans and agents sharing the same browser state."
-date: 2026-10-24
+date: 2026-10-24T12:09:00+01:00
 summary: "Notes from building with WebMCP: humans and agents sharing the same browser state."
 draft: false
 ---

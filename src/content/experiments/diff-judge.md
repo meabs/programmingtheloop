@@ -1,7 +1,7 @@
 ---
 title: "Can an AI reviewer tell a broken change from a working one? (experiment DJ)"
 description: "Shown a task and a coding agent's change, gpt-5.6-luna called 57 of 96 right, no better than tossing a coin. The agent's own success report did not sway it, a doubtful one made it reject more of everything, and its confidence meant nothing."
-date: 2026-10-24
+date: 2026-10-24T08:32:00+01:00
 summary: "96 changes that coding agents made to a Java online-shop backend, half of which failed hidden tests, were shown to an AI judge (Codex gpt-5.6-luna). It caught 21 of the 48 broken changes and passed 36 of the 48 working ones: no measurable difference from guessing. Adding the agent's own report changed little; adding a doubtful one made it reject more working changes as well as broken ones."
 type: "Controlled trial"
 github:

@@ -1,7 +1,7 @@
 ---
 title: "Building GenAI on a Tight Northern Budget"
 description: "How I keep experimenting with GenAI without spending a fortune."
-date: 2026-10-24
+date: 2026-10-24T10:12:00+01:00
 summary: "How I keep experimenting with GenAI without spending a fortune."
 draft: false
 ---
