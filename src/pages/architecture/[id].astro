@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedArchitecture, formatItemDate } from '../../lib/collections';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedArchitecture();
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  canonicalPath={`/architecture/${post.id}/`}
+  ogImage={SITE_OG_IMAGE}
+
+  searchable
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Architecture · {formatItemDate(post.data.date)}</p>
+      <h1>{post.data.title}</h1>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap view-prose">
+      <Content />
+      <p class="view-back">
+        <a href="/architecture/">← All architecture</a>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

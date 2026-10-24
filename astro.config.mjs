@@ -27,6 +27,8 @@ export default defineConfig({
     '/start/': `${guideBase}/start/`,
     '/views': '/articles/',
     '/views/': '/articles/',
+    '/articles/webmcp-sharing-the-browser': '/architecture/webmcp-sharing-the-browser/',
+    '/articles/webmcp-sharing-the-browser/': '/architecture/webmcp-sharing-the-browser/',
     '/book': `${guideBase}/`,
     '/book/': `${guideBase}/`,
     '/contents': `${guideBase}/`,
@@ -37,8 +39,9 @@ export default defineConfig({
     sitemap({
       filter: (page) => {
         if (page.includes('/search')) return false;
-        // Hide the empty Articles section until something is published.
+        // Hide empty collection sections until something is published.
         if (navCounts.articles < 1 && /\/articles(\/|$)/.test(page)) return false;
+        if (navCounts.architecture < 1 && /\/architecture(\/|$)/.test(page)) return false;
         return true;
       },
     }),

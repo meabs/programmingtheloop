@@ -8,12 +8,13 @@ import {
 } from './nav-gate';
 
 export type Article = CollectionEntry<'articles'>;
+export type ArchitecturePost = CollectionEntry<'architecture'>;
 export type Experiment = CollectionEntry<'experiments'>;
 export type GuideEntry = CollectionEntry<'guides'>;
 export type NewsPost = CollectionEntry<'news'>;
 
 export type LatestItem = {
-  kind: 'article' | 'experiment' | 'guide' | 'news';
+  kind: 'article' | 'architecture' | 'experiment' | 'guide' | 'news';
   title: string;
   summary: string;
   date: Date;
@@ -32,6 +33,11 @@ export function formatItemDate(date: Date): string {
 
 export async function getPublishedArticles(): Promise<Article[]> {
   const posts = await getCollection('articles', ({ data }) => data.draft !== true);
+  return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+}
+
+export async function getPublishedArchitecture(): Promise<ArchitecturePost[]> {
+  const posts = await getCollection('architecture', ({ data }) => data.draft !== true);
   return posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
@@ -56,6 +62,10 @@ export function articleHref(post: Article): string {
   return `/articles/${post.id}/`;
 }
 
+export function architectureHref(post: ArchitecturePost): string {
+  return `/architecture/${post.id}/`;
+}
+
 export function experimentHref(item: Experiment): string {
   return `/experiments/${item.id}/`;
 }
@@ -66,14 +76,16 @@ export function newsHref(post: NewsPost): string {
 
 /** Published counts used to gate collection nav sections. */
 export async function getNavCollectionCounts(): Promise<NavCounts> {
-  const [articles, experiments, guides, news] = await Promise.all([
+  const [articles, architecture, experiments, guides, news] = await Promise.all([
     getPublishedArticles(),
+    getPublishedArchitecture(),
     getPublishedExperiments(),
     getPublishedGuides(),
     getPublishedNews(),
   ]);
   return {
     articles: articles.length,
+    architecture: architecture.length,
     experiments: experiments.length,
     guides: guides.length,
     news: news.length,
@@ -98,8 +110,9 @@ export async function isCollectionNavVisible(
 
 /** Published material for homepage editorial selection. */
 export async function getHomepageItems(): Promise<LatestItem[]> {
-  const [articles, experiments, guides, news] = await Promise.all([
+  const [articles, architecture, experiments, guides, news] = await Promise.all([
     getPublishedArticles(),
+    getPublishedArchitecture(),
     getPublishedExperiments(),
     getPublishedGuides(),
     getPublishedNews(),
@@ -113,6 +126,15 @@ export async function getHomepageItems(): Promise<LatestItem[]> {
       date: a.data.date,
       href: articleHref(a),
       tag: 'Article',
+      featured: a.data.featured,
+    })),
+    ...architecture.map((a) => ({
+      kind: 'architecture' as const,
+      title: a.data.title,
+      summary: a.data.summary ?? a.data.description,
+      date: a.data.date,
+      href: architectureHref(a),
+      tag: 'Architecture',
       featured: a.data.featured,
     })),
     ...news.map((n) => ({
@@ -156,7 +178,7 @@ export async function getHomepageSelection(limit = 6): Promise<{
   return { featured, recent: selectRecent(items, featured?.href, limit) as LatestItem[] };
 }
 
-/** Newest items across articles, news, experiments and guides. */
+/** Newest items across articles, architecture, news, experiments and guides. */
 export async function getLatestItems(limit = 5): Promise<LatestItem[]> {
   const items = await getHomepageItems();
   return items.sort((a, b) => b.date.valueOf() - a.date.valueOf()).slice(0, limit);

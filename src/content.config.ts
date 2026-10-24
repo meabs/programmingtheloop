@@ -134,6 +134,14 @@ const articles = defineCollection({
   schema: articleSchema,
 });
 
+const architecture = defineCollection({
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/architecture',
+  }),
+  schema: articleSchema,
+});
+
 const experiments = defineCollection({
   loader: glob({
     pattern: '**/*.{md,mdx}',
@@ -161,6 +169,7 @@ const news = defineCollection({
 export const collections = {
   docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
   articles,
+  architecture,
   experiments,
   guides,
   news,
