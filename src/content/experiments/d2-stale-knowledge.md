@@ -18,7 +18,7 @@ guideLinks:
 draft: false
 experimentId: "D2"
 question: "When a guide is stale and the agent cannot read the dependency, does it repeat old facts?"
-status: planned
+status: published
 evidenceGrade: published
 publishedOn: 2026-10-12
 agents:
