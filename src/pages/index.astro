@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ExperimentCard from '../components/experiments/ExperimentCard.astro';
+import PostCard from '../components/home/PostCard.astro';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_OG_IMAGE, LINKS, PDF_PATH } from '../site';
 import {
   getHomepageSelection, getPublishedArticles, getPublishedArchitecture,
@@ -13,10 +14,19 @@ const [articles, architecture, experiments, guides, news] = await Promise.all([
   getPublishedArticles(), getPublishedArchitecture(), getPublishedExperiments(),
   getPublishedGuides(), getPublishedNews(),
 ]);
-// Original work leads. The featured item already has the hero, so the lists skip it.
-const latestExperiments = experiments.filter((e) => `/experiments/${e.id}/` !== featured?.href).slice(0, 3);
-const latestArticles = articles.slice(0, 3);
-const latestArchitecture = architecture.slice(0, 3);
+// Original work leads. The featured item already has the hero. News and the guide have their own places.
+const LATEST_ROW = 5;
+const latestWork = [
+  ...experiments.map((e) => ({ kind: 'experiment' as const, date: e.data.date, href: `/experiments/${e.id}/`, entry: e })),
+  ...articles.map((a) => ({ kind: 'article' as const, date: a.data.date, href: articleHref(a), entry: a })),
+  ...architecture.map((a) => ({ kind: 'architecture' as const, date: a.data.date, href: architectureHref(a), entry: a })),
+]
+  .filter((x) => x.href !== featured?.href)
+  .sort((x, y) => y.date.valueOf() - x.date.valueOf() || x.href.localeCompare(y.href))
+  .slice(0, LATEST_ROW);
+const shown = new Set(latestWork.map((x) => x.href));
+const latestArticles = articles.filter((a) => !shown.has(articleHref(a))).slice(0, 3);
+const latestArchitecture = architecture.filter((a) => !shown.has(architectureHref(a))).slice(0, 3);
 const latestNews = news.slice(0, 3);
 ---
 <BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE}>
@@ -40,10 +50,33 @@ const latestNews = news.slice(0, 3);
     </div>
   </section>
 
-  {latestExperiments.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
+  {latestWork.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
     <div class="wrap">
-      <div class="publication-heading"><div><h2 id="work-title">Latest experiments</h2><p>Each one states its method and its limits.</p></div><a class="text-link" href="/experiments/">All {experiments.length} experiments →</a></div>
-      <div class="home-exp-grid">{latestExperiments.map((item) => <ExperimentCard item={item} />)}</div>
+      <div class="publication-heading"><div><h2 id="work-title">Latest work</h2><p>Experiments, articles and architecture. Each states its method and its limits.</p></div><a class="text-link" href="/experiments/">All {experiments.length} experiments →</a></div>
+      <div class="latest-row-wrap">
+        <ul class="latest-row" id="latest-row" role="region" aria-label="Latest work, scroll sideways for more" tabindex="0">
+          {latestWork.map((x) => (
+            <li class="latest-item">
+              {x.kind === 'experiment' ? <ExperimentCard item={x.entry} /> : (
+                <PostCard
+                  kind={x.kind === 'article' ? 'Article' : 'Architecture'}
+                  title={x.entry.data.title}
+                  summary={x.entry.data.summary ?? x.entry.data.description}
+                  href={x.href}
+                  date={x.date}
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+        {latestWork.length > 1 && (
+          <div class="latest-controls" hidden id="latest-controls">
+            <button type="button" id="latest-prev" aria-label="Previous">←</button>
+            <span id="latest-pos" aria-hidden="true">1 / {latestWork.length}</span>
+            <button type="button" id="latest-next" aria-label="Next">→</button>
+          </div>
+        )}
+      </div>
     </div>
   </section>}
 
@@ -102,3 +135,27 @@ const latestNews = news.slice(0, 3);
     <div class="wrap about-grid"><h2 id="about-title">About the publication</h2><div><p>I'm Garry Meaburn. I use this space to work through practical technical questions, share original work and offer evidence-based opinions. Findings are measured; recommendations are judgement.</p><div class="about-links"><a href="/about/">More about me →</a><a href={LINKS.githubAuthor}>GitHub ↗</a><a href={LINKS.x}>X ↗</a><a href={LINKS.linkedin}>LinkedIn ↗</a></div></div></div>
   </section>
 </BaseLayout>
+
+<script>
+  // Phone-only extras on the swipe row: previous / next buttons and a position count.
+  // The row scrolls and snaps without this; with no JavaScript the buttons stay hidden.
+  const row = document.getElementById('latest-row');
+  const controls = document.getElementById('latest-controls');
+  const pos = document.getElementById('latest-pos');
+  if (row && controls && pos) {
+    controls.hidden = false;
+    const items = Array.from(row.children) as HTMLElement[];
+    const step = (dir: number) => {
+      const w = (items[0]?.offsetWidth ?? 280) + 16;
+      row.scrollBy({ left: dir * w, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    };
+    document.getElementById('latest-prev')?.addEventListener('click', () => step(-1));
+    document.getElementById('latest-next')?.addEventListener('click', () => step(1));
+    const update = () => {
+      const w = (items[0]?.offsetWidth ?? 280) + 16;
+      const i = Math.min(items.length - 1, Math.round(row.scrollLeft / w));
+      pos.textContent = `${i + 1} / ${items.length}`;
+    };
+    row.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+  }
+</script>
