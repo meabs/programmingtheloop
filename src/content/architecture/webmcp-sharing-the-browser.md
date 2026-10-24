@@ -30,6 +30,8 @@ That doesn't mean every application needs it though. If all you need is to call 
 
 For the challenge I built something called Resilience Forge.
 
+The challenge was rather nerve-racking to be honest, because I also had to make a YouTube video for it. My old mother used to say I had the face for radio and the voice for silent movies 😂
+
 The idea was a simple architecture simulation workbench. A human could pick an architecture, change its configuration and apply constraints, and an AI agent could inspect the architecture, run stress tests, examine failures and recommend changes. I included three example architectures covering event-driven checkout, multi-region SaaS and LLM inference serving. The simulations underneath were deterministic rather than connected to real cloud infrastructure (which suited my wallet just fine), because I wasn't trying to prove an architecture would survive a production outage. It was really just to see how a human and an agent get on working on the same problem.
 
 And that's where it got interesting.
