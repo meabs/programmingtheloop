@@ -1,7 +1,7 @@
 ---
 title: "Do benchmark scores show real ability, or remembered answers? (experiment BT)"
 description: "I rewrote GSM8K and HumanEval items with new numbers, new names or a renamed function, and asked a model running on my desk and a hosted one to solve both versions. Neither scored measurably lower on the rewrites, and no wrong answer on a rewrite was the original's answer."
-date: 2026-10-24
+date: 2026-10-24T08:39:00+01:00
 summary: "184 GSM8K maths problems and 80 HumanEval coding problems, each with a 'twin' that changes the numbers, names or function name but not the logic. qwen3.8:27b running locally and gpt-5.6-luna hosted scored much the same on originals and twins: no measurable drop, and no sign of recalled answers."
 type: "Controlled trial"
 github:

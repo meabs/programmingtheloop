@@ -1,7 +1,7 @@
 ---
 title: "Does an AI's visible thinking drive its answer? I planted errors in it to find out (experiment PE)"
 description: "I edited a number in the middle of a local reasoning model's thinking on 144 maths problems. A third of the time it carried the error to a wrong answer without a flicker of doubt. It caught about half. And in 1 run in 10, its thinking concluded one answer while its reply quietly gave another."
-date: 2026-10-24
+date: 2026-10-24T11:05:00+01:00
 summary: "Planting a wrong intermediate number in qwen3.8:27b's thinking changed its final answer 35% of the time, nearly always with no sign of doubt. It caught 54% of the slips in its thinking. In 10% of runs the thinking ended on the wrong answer and the written reply silently fixed it, so the thinking was not a faithful record of how the answer was reached."
 type: "Controlled trial"
 github:

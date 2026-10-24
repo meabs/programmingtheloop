@@ -1,7 +1,7 @@
 ---
 title: "Does RAG keep an AI honest? I changed one number in its documents to find out (experiment RAG)"
 description: "I gave two local models a retrieval system over Wikipedia and changed one number in the paragraph that held each answer. Both repeated the wrong number more than 8 times in 10, even when the bigger model knew the right answer without any documents. When retrieval found nothing, they mostly said so."
-date: 2026-10-24
+date: 2026-10-24T21:08:00+01:00
 summary: "With the right paragraph retrieved, qwen3.8:27b answered 94% of questions right. With one number in that paragraph changed, it repeated the planted number 85% of the time (qwen3:8b: 82%), including 13 of 15 questions it had answered right with no documents, and rarely flagged it. When retrieval missed, both models replied NOT FOUND about 9 times in 10."
 type: "Controlled trial"
 github:
