@@ -7,7 +7,8 @@
  * 1. Duplicate finding IDs across experiments
  * 2. Finding IDs match <experimentId>-<n> when experimentId is set
  * 3. Unknown topic ids
- * 4. Published (status) experiments have report + ≥1 finding
+ * 4. Published (status) experiments have report + (≥1 finding, or a
+ *    guideLinks pointer to another /experiments/ record that owns the finding)
  * 5. Superseded experiments have supersededBy pointing at a known experimentId
  * 6. Route baseline: every baseline path is still declared (page, Starlight doc, or redirect)
  * 7. Home / guide-landing HTML must not hard-code finding numbers absent from records
@@ -389,7 +390,17 @@ export function checkExperiments(experiments) {
         errors.push(`Published experiment ${file} needs report URL`);
       }
       if (findings.length < 1) {
-        errors.push(`Published experiment ${file} needs ≥1 finding`);
+        // Trial write-ups may leave findings empty when the headline finding
+        // is owned by another experiment record (e.g. D2 → OKF-1).
+        const guideLinks = Array.isArray(data.guideLinks) ? data.guideLinks : [];
+        const defersFinding = guideLinks.some(
+          (l) =>
+            typeof l?.href === 'string' &&
+            /^\/experiments\/[^/]+\/?$/.test(l.href),
+        );
+        if (!defersFinding) {
+          errors.push(`Published experiment ${file} needs ≥1 finding`);
+        }
       }
       if (!data.experimentId) {
         errors.push(`Published experiment ${file} needs experimentId`);
