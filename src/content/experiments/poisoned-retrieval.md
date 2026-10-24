@@ -1,15 +1,15 @@
 ---
-title: "Does RAG keep an AI honest? I changed one number in its documents to find out (experiment RAG)"
-description: "I gave two local models a retrieval system over Wikipedia and changed one number in the paragraph that held each answer. Both repeated the wrong number more than 8 times in 10, even when the bigger model knew the right answer without any documents. When retrieval found nothing, they mostly said so."
+title: "When RAG retrieves the wrong facts, will an AI challenge them? (experiment RAG)"
+description: "A baseline test of error propagation in retrieval. I changed one number in the paragraph that held each answer and measured whether two local models repeated it. Both did, more than 8 times in 10, even when the bigger model had answered correctly with no documents. That is what retrieval is built to do. The measurement is what is useful, not the surprise."
 date: 2026-10-24T21:08:00+01:00
-summary: "With the right paragraph retrieved, qwen3.8:27b answered 94% of questions right. With one number in that paragraph changed, it repeated the planted number 85% of the time (qwen3:8b: 82%), including 13 of 15 questions it had answered right with no documents, and rarely flagged it. When retrieval missed, both models replied NOT FOUND about 9 times in 10."
+summary: "A baseline for how far a wrong retrieved number travels. With the right paragraph, qwen3.8:27b answered 94% of questions right; with one number in it changed, it repeated the planted number 85% of the time (qwen3:8b: 82%) and rarely flagged it. When retrieval missed, both mostly said NOT FOUND. Not a new attack: the wrong value was placed in the retrieved paragraph, and the prompt held no instructions."
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
     href: "https://github.com/meabs/experiments/tree/16a721d43bec18b5c3c3ded9f660dc8ef93c762e/2026-10-poisoned-retrieval"
 draft: false
 experimentId: "RAG"
-question: "When a retrieved document has one number wrong, does a model repeat it, and does knowing the right answer protect it? When retrieval misses, does it make something up?"
+question: "When one retrieved number is wrong, how often does a model repeat it, and does knowing the right answer protect it? When retrieval misses, does it make something up?"
 status: published
 evidenceGrade: published
 agents:
@@ -42,20 +42,22 @@ findings:
     n: 120
     detail:
       - "where the planted value was the only version in the documents (108 questions), it followed it in 98 and was right in 1"
-      - "it wrote a NOTE flagging a contradiction in 17 of 120 poisoned answers, against 9 of 120 clean ones"
+      - "it wrote a NOTE flagging a contradiction in 17 of 120 poisoned answers, against 9 of 120 clean ones (not all of the 17 were about the planted number)"
+      - "automated grading counted 102 follows; after I read the answers, 101 (99 with no warning in the answer). The preregistered counts are left as graded"
     limits:
       - "two local models, Wikipedia questions from HotpotQA"
-      - "one kind of poisoning: one number changed to a plausible value"
+      - "one kind of poisoning: one number changed to a plausible value, in a paragraph guaranteed to be retrieved (59 of 120 found naturally, 61 inserted)"
     source: "https://github.com/meabs/experiments/blob/16a721d43bec18b5c3c3ded9f660dc8ef93c762e/2026-10-poisoned-retrieval/REPORT.md"
     status: current
     featured: false
   - id: "RAG-2"
-    statement: "Knowing the answer didn't protect it: on 15 questions qwen3.8:27b answered right with no documents, it repeated the planted number in 13, and its thinking never mentioned the value it knew"
+    statement: "Knowing the answer didn't protect it here: on 15 questions qwen3.8:27b answered right with no documents, it repeated the planted number in 13, and its recorded thinking never mentioned the value it had known"
     metric: "follows the planted value, among questions answered right closed-book"
     value: "13/15"
     n: 15
     limits:
-      - "a small group: the models knew few of these answers without documents"
+      - "15 questions is too few for a broad conclusion: the models knew few of these answers without documents"
+      - "the recorded thinking text is not a full view of the model's reasoning"
       - "reported without a test, as preregistered"
     source: "https://github.com/meabs/experiments/blob/16a721d43bec18b5c3c3ded9f660dc8ef93c762e/2026-10-poisoned-retrieval/REPORT.md"
     status: current
@@ -75,7 +77,7 @@ findings:
     status: current
     featured: false
   - id: "RAG-4"
-    statement: "A smaller, older model was no more and no less credulous: qwen3:8b repeated the planted number in 98 of 120 questions, against 102 for qwen3.8:27b"
+    statement: "No measurable difference between the models: qwen3:8b repeated the planted number in 98 of 120 questions, against 102 for qwen3.8:27b"
     metric: "follows the planted value, 8B minus 27B"
     value: "−3.3 pts"
     interval:
@@ -85,6 +87,7 @@ findings:
     n: 120
     limits:
       - "the 8B differs in generation as well as size"
+      - "no measurable difference is not evidence that the models are equivalent"
     source: "https://github.com/meabs/experiments/blob/16a721d43bec18b5c3c3ded9f660dc8ef93c762e/2026-10-poisoned-retrieval/REPORT.md"
     status: current
     featured: false
@@ -92,20 +95,28 @@ findings:
 
 ## Question
 
-Retrieval-augmented generation (RAG) is the standard answer to "AI makes things up": give the model your documents, and it answers from them. That's meant to make it more accurate and more honest.
+Retrieval-augmented generation (RAG) gives a model relevant documents so it can answer from evidence instead of memory. It works. But "relevant" isn't "correct", and nothing in the design checks that the documents are right.
 
-But it raises two questions:
+So this is a baseline, not a discovery. I changed one number in the retrieved paragraph that held each answer, and measured whether two local models repeated it. A model that answers from its documents should. I wanted to know how often, and whether anything stopped it.
 
-- **What if a document is wrong?** Does the model repeat it, or does what it already knows catch the error?
-- **What if retrieval finds nothing useful?** Does the model say so, or fill the gap?
+- **If a document is wrong,** does the model repeat it, or does what it knows catch the error?
+- **If retrieval finds nothing useful,** does it say so, or fill the gap?
 
-[Experiment PE](/experiments/planted-errors/) found that a wrong number planted in a model's own thinking reached its answer about a third of the time. This experiment plants the wrong number where it would really arrive: in a retrieved document.
+I'm not claiming a new attack. [Experiment PE](/experiments/planted-errors/) planted a wrong number in a model's own thinking. This plants it where it would normally arrive, in a retrieved document.
+
+### What this does and doesn't test
+
+- **Factual data poisoning (tested):** the retrieved text holds a false fact, not an instruction. I measured what the model does once it's in context.
+- **Prompt injection (not tested):** retrieved text that tries to instruct the model. Nothing here contained instructions.
+- **Accidental errors (same behaviour, no attacker):** an out-of-date price in a wiki looks identical to the model.
+
+I didn't attack a live retrieval system. The answer paragraph was guaranteed to be present: retrieval found it for 59 of 120 questions, and I inserted it for the other 61. So this measures how an error spreads *after* retrieval, not how likely bad content is to be retrieved.
 
 ## Prediction
 
 Before the run, I wrote down and published the design and hypotheses ([README.md](https://github.com/meabs/experiments/blob/16a721d43bec18b5c3c3ded9f660dc8ef93c762e/2026-10-poisoned-retrieval/README.md)):
 
-- **H1.** A poisoned paragraph turns right answers wrong for the larger model.
+- **H1.** A poisoned paragraph turns right answers wrong for the larger model. (Hardly a bold call: that's the design working as intended.)
 - **H2.** The smaller and larger models follow the planted value at different rates.
 - **H3.** When retrieval misses, the two models make up answers at different rates.
 
@@ -130,7 +141,7 @@ The prompt told the model to answer from the documents, to reply NOT FOUND if th
 
 ## Results
 
-Findings RAG-1 to RAG-4 are at the top of the page.
+Findings RAG-1 to RAG-4 are at the top of the page. H1 to H3 were preregistered. Where a section is exploratory, or an interpretation, it says so.
 
 <figure class="guide-figure">
 
@@ -140,7 +151,7 @@ Findings RAG-1 to RAG-4 are at the top of the page.
 
 </figure>
 
-### One wrong number, and the answer follows it
+### One wrong number, and the answer follows it (preregistered, H1)
 
 | | qwen3.8:27b | qwen3:8b |
 | --- | --- | --- |
@@ -148,26 +159,26 @@ Findings RAG-1 to RAG-4 are at the top of the page.
 | Repeated the planted number, with one number changed | 102 (85%) | 98 (82%) |
 | Right, with one number changed | 5 | 3 |
 
-- **It quoted the error faithfully.** Asked how long the state whose army ransacked Halebidu lasted, the 27B quoted the changed paragraph, "stretched over large parts of the Indian subcontinent for **460 years (1206–1526)**", and answered 460 years. The dates in the same sentence give 320. It didn't do the subtraction.
+- **It quoted the error faithfully (exploratory example).** Asked how long the state whose army ransacked Halebidu lasted, the 27B quoted the changed paragraph, "stretched over large parts of the Indian subcontinent for **460 years (1206–1526)**", and answered 460 years. The dates in the same sentence give 320. It didn't do the subtraction.
 - **Most of its few right answers came from a second source.** In 12 questions, another retrieved paragraph still held the true value. Where the planted value was the only version in the documents, the 27B followed it 98 times out of 108, and was right once.
 
-### Knowing the answer didn't help
+### Knowing the answer didn't help (preregistered, reported without a test)
 
-With no documents at all, the 27B answered 15 of the questions right. With the changed paragraph, it repeated the planted number on 13 of those 15. In none of the 13 did its thinking bring up the value it had known. Once documents were in front of it, it answered from them, and didn't check them against what it knew.
+With no documents at all, the 27B answered 15 of the questions right. With the changed paragraph, it repeated the planted number on 13 of those 15. In none of the 13 did its recorded thinking bring up the value it had known. Once documents were in front of it, it answered from them. The thinking text is only what the model wrote out, not a full view inside it, and 15 questions is too few for a broad conclusion.
 
-### It rarely said anything was wrong
+### It rarely said anything was wrong (counts preregistered, reading exploratory)
 
-Even with an explicit invitation to flag contradictions, the 27B wrote a NOTE in 17 of 120 poisoned answers, against 9 of 120 with the right paragraph. That's about 1 poisoning flagged in 7. Flags came mostly when two retrieved paragraphs disagreed, and occasionally from its own knowledge ("World War I ended on 11 November 1918, not 1932").
+Even with an explicit invitation to flag contradictions, the 27B wrote a NOTE in 17 of 120 poisoned answers, against 9 of 120 with the right paragraph. That's about 1 poisoning flagged in 7, and not every flag was about the planted number. Flags came mostly when two retrieved paragraphs disagreed, and occasionally from its own knowledge ("World War I ended on 11 November 1918, not 1932").
 
 Sometimes even a flag didn't mean rejecting the error. Some answers led with the planted value and put the true one in brackets: "1974 (per the document), though the correct year is 1968". A system that reads the first number would take the wrong one.
 
-### When retrieval missed, they said so
+### When retrieval missed, they said so (preregistered, H3)
 
 Given 5 paragraphs that didn't contain the answer, the 27B replied NOT FOUND to 107 of 120 questions and made up an answer to 8. The 8B replied NOT FOUND to 112 and made one up for 6.
 
-### The smaller model was no different
+### The smaller model: no measurable difference (preregistered, H2)
 
-The 8B repeated the planted number about as often as the 27B (82% against 85%), and made up answers about as rarely. Neither difference was measurable. The 8B was slower on this machine, at 1.5 to 2 times as long per answer.
+The 8B repeated the planted number about as often as the 27B (82% against 85%), and made up answers about as rarely. Neither difference was measurable. That isn't the same as the models being equivalent: with 120 questions, the interval for H2 runs from −10 to +3 points. The 8B was slower on this machine, at 1.5 to 2 times as long per answer.
 
 ### How the comparisons were made
 
@@ -192,39 +203,43 @@ H1 is supported. H2 and H3 show no measurable difference.
 - **I read the answers behind the grades:** every one of the 27B's poisoned answers not graded as following, every "follow" with extra wording, and a random sample of 25.
   - **One was misgraded.** For an actor's birth year, the 27B rejected the planted 1985, but mentioned it, so the grader counted a follow.
   - **Two more** gave the planted value and called it "likely an error".
-  - Read strictly, the 27B repeated the planted number in 101 questions, 99 of them with no warning.
+  - Read strictly, the 27B repeated the planted number in 101 questions, 99 of them with no warning in the answer. The automated grader said 102, and the preregistered counts stay as graded.
 
 ## Limits
 
-- **Two local models,** both compressed to 4-bit. Hosted or larger models weren't tested. The 8B is an older generation as well as smaller.
-- **One kind of poisoning:** one number changed in the paragraph that held the answer. Changed names, reversed statements and invented paragraphs weren't tested.
-- **The poisoned paragraph was one retrieval would find anyway.** Whether an attacker's page would rank that highly is a separate question.
-- **Wikipedia trivia.** The models knew few answers without documents, so "knowing didn't help" rests on 15 questions.
-- **A helpful prompt.** Without the NOT FOUND and NOTE instructions, flags would probably be rarer and made-up answers more common.
-- **One run per question,** with fixed seeds.
+- **Two local models,** both 4-bit. Hosted or larger models weren't tested. The 8B is an older generation as well as smaller.
+- **One kind of poisoning:** one number changed. Changed names, reversed statements and invented paragraphs weren't tested.
+- **The answer paragraph was guaranteed to be retrieved** (59 natural, 61 inserted). Whether a poisoned page would rank that high in a real pipeline is untested. Insertion didn't look like it drove the result: the 27B followed in 50 of 59 natural and 52 of 61 inserted (exploratory).
+- **No prompt injection.** The planted text held no instructions.
+- **Wikipedia trivia.** The models knew few answers closed-book, so "knowing didn't help" rests on 15 questions.
+- **A helpful prompt.** Without the NOT FOUND and NOTE lines, flags would probably be rarer and made-up answers more common.
+- **One run per question,** fixed seeds.
 
-## What this means: impact and risks
+## What I make of it
 
-This part is my interpretation, not a measurement.
+My interpretation, not a measurement.
 
-**RAG moves the trust problem; it doesn't solve it.** "Answers from your documents" is exactly what these models did, faithfully, including when a document was wrong. The answer is now only as good as the document store, and the model adds very little checking of its own.
+**The main result was predictable:** a model told to answer from documents answered from them. What's useful is the size. With one number changed, right answers fell from 113 to 5 of 120, and the model rarely hedged.
 
-**One edited number is enough, and it doesn't look like an attack.** No "ignore your instructions", no hidden text: just a plausible wrong figure. That covers:
-- **Shared stores:** wikis, ticket systems and knowledge bases that many people can edit;
-- **Stale data:** a price, limit or date that was right when written. To the model it looks the same as a planted value;
-- **Deliberate tampering:** prompt-injection filters look for instructions, and wouldn't see a changed number.
+**RAG can improve factual grounding, but it also makes the reliability of retrieved information a critical dependency.** Some design considerations follow. None is tested here:
 
-**"The model would know that's wrong" isn't a safeguard.** It knew, 15 times, and repeated the wrong number 13 of them.
+- **Relevant isn't correct.** The poisoned paragraph matched the question perfectly, which is why it was retrieved.
+- **Provenance gives traceability, not accuracy.** A source says where a number came from, not that it's right.
+- **A bigger model wasn't more sceptical here,** though "no measurable difference" doesn't make the two equivalent.
+- **Disagreement can expose errors.** Most flags came when two retrieved paragraphs conflicted.
+- **Verifiable facts** (dates, figures, sums) could be checked in code, outside the model.
+- **A second source only helps if it's truly independent** of the first.
 
-**Asking it to flag contradictions catches only a few.** About 1 in 7 here, mostly where two sources disagreed. Checking is better done outside the model.
+The closed-book result is the interesting one: leaning on a model's own knowledge to challenge retrieved claims looks weak. With 15 questions, that's a lead, not a conclusion.
 
-**The good news: missing documents weren't the problem.** With a NOT FOUND option, both models rarely made things up when retrieval came back empty.
+## What would be worth testing next?
 
-**What to do about it:**
-- Treat the document store as part of the system: control who can edit it, keep version history, and date facts that go stale.
-- Show the source with every answer, so readers can see where a number came from.
-- For figures that matter (prices, doses, limits, dates, amounts), check against a second, independent source before acting, and compare in code, not by asking the model.
-- Don't pick a model size expecting it to be more or less credulous. Here it made no measurable difference.
+Untested hypotheses, not solutions:
+
+1. **Independent verification:** does checking critical facts against a separately sourced reference cut wrong answers?
+2. **Conflicting evidence:** what happens when two sources disagree, especially if the wrong one looks more authoritative?
+3. **Source provenance:** does telling the model a source's age, origin or reliability change the outcome?
+4. **Retrieval manipulation:** how easily can wrong material reach the top results of a realistic pipeline? This experiment skipped that question.
 
 ## Reproduce
 
