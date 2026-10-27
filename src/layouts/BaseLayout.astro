@@ -237,14 +237,16 @@ const jsonLdBlocks = jsonLd
         if (menu) menu.inert = !open;
       });
 
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && menu?.classList.contains('open')) {
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menu?.classList.contains('open')) {
           button?.setAttribute('aria-expanded', 'false');
           menu.classList.remove('open');
           menu.inert = true;
-          button?.focus();
+          (button as HTMLElement)?.focus();
         }
       });
+
+      // Editorial content stays visible immediately. Motion never gates reading.
 
       const onScroll = () => {
         header?.classList.toggle('is-scrolled', window.scrollY > 8);
