@@ -12,6 +12,7 @@ import {
   CF_WEB_ANALYTICS_BEACON,
 } from '../site';
 import { getVisibleNav, isCollectionNavVisible } from '../lib/collections';
+import { RSS_FEEDS } from '../lib/seo';
 
 interface Props {
   title?: string;
@@ -20,8 +21,11 @@ interface Props {
   noindex?: boolean;
   ogImage?: string;
   ogImageAlt?: string;
-  /** Default share image is 1200×630; omit dimensions for custom preview images. */
-  ogImageIsDefault?: boolean;
+  /**
+   * Emit og:image width/height 1200×630 when the image is the site default
+   * or a letterboxed experiment OG PNG. Omit for raw chart previewImages.
+   */
+  ogImageHasStandardSize?: boolean;
   /** Open Graph type. Use `article` for experiments, articles, architecture and news posts. */
   ogType?: 'website' | 'article';
   /** ISO date for og:article:published_time when ogType is article. */
@@ -40,7 +44,7 @@ const {
   noindex = false,
   ogImage = SITE_OG_IMAGE,
   ogImageAlt = SITE_OG_IMAGE_ALT,
-  ogImageIsDefault = ogImage === SITE_OG_IMAGE,
+  ogImageHasStandardSize = ogImage === SITE_OG_IMAGE,
   ogType = 'website',
   publishedTime,
   jsonLd,
@@ -96,8 +100,8 @@ const jsonLdBlocks = jsonLd
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
-    {ogImageIsDefault && <meta property="og:image:width" content="1200" />}
-    {ogImageIsDefault && <meta property="og:image:height" content="630" />}
+    {ogImageHasStandardSize && <meta property="og:image:width" content="1200" />}
+    {ogImageHasStandardSize && <meta property="og:image:height" content="630" />}
     <meta property="og:image:alt" content={ogImageAlt} />
     {ogType === 'article' && publishedTime && (
       <meta property="article:published_time" content={publishedTime} />
@@ -115,6 +119,14 @@ const jsonLdBlocks = jsonLd
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.png" type="image/png" />
+    {RSS_FEEDS.map((feed) => (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={feed.title}
+        href={feed.href}
+      />
+    ))}
     {preloadCover && <link rel="preload" href="/book-cover.png" as="image" />}
     {jsonLdBlocks.map((block) => (
       <script type="application/ld+json" set:html={JSON.stringify(block)} />
@@ -201,6 +213,10 @@ const jsonLdBlocks = jsonLd
           <a href="/guides/programming-the-loop/#licence">Licence</a>
           <a href="/downloads/">October 2026 PDF</a>
           <a href="https://github.com/meabs/programmingtheloop">GitHub</a>
+          <a href="/news/rss.xml">News RSS</a>
+          <a href="/experiments/rss.xml">Experiments RSS</a>
+          <a href="/articles/rss.xml">Articles RSS</a>
+          <a href="/architecture/rss.xml">Architecture RSS</a>
         </div>
       </div>
     </footer>

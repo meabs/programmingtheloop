@@ -4,11 +4,13 @@ import sitemap from '@astrojs/sitemap';
 import {
   CF_WEB_ANALYTICS_SRC,
   CF_WEB_ANALYTICS_BEACON,
+  SITE_TWITTER,
 } from './src/site.ts';
 import {
   readNavCollectionCountsSync,
   siteSidebarItems,
 } from './src/lib/nav-gate.ts';
+import { RSS_FEEDS } from './src/lib/seo.ts';
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og/default.png`;
@@ -16,6 +18,15 @@ const ogImageAlt = 'Programming the Loop: Building software with coding agents';
 const guideBase = '/guides/programming-the-loop';
 const navCounts = readNavCollectionCountsSync();
 const siteNavSidebar = siteSidebarItems(navCounts);
+const rssAlternateHead = RSS_FEEDS.map((feed) => ({
+  tag: 'link',
+  attrs: {
+    rel: 'alternate',
+    type: 'application/rss+xml',
+    title: feed.title,
+    href: feed.href,
+  },
+}));
 
 export default defineConfig({
   site,
@@ -75,12 +86,21 @@ export default defineConfig({
         },
         {
           tag: 'meta',
+          attrs: { name: 'twitter:site', content: SITE_TWITTER },
+        },
+        {
+          tag: 'meta',
+          attrs: { name: 'twitter:creator', content: SITE_TWITTER },
+        },
+        {
+          tag: 'meta',
           attrs: { name: 'twitter:image', content: ogImage },
         },
         {
           tag: 'link',
           attrs: { rel: 'icon', href: '/favicon.png', type: 'image/png' },
         },
+        ...rssAlternateHead,
         {
           tag: 'script',
           attrs: {

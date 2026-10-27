@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   SITE_URL,
   SITE_NAME,
@@ -10,9 +12,16 @@ import {
 /** Absolute URL for a site path or already-absolute URL. */
 export function absoluteUrl(pathOrUrl: string): string {
   if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-  const path = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`;
-  return new URL(path, SITE_URL).href;
+  const pathPart = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`;
+  return new URL(pathPart, SITE_URL).href;
 }
+
+export type OgImageResolution = {
+  url: string;
+  alt: string;
+  /** True when the image is known to be 1200×630 (default or letterboxed OG). */
+  hasStandardSize: boolean;
+};
 
 /**
  * Share-preview image: use frontmatter `previewImage` when set, else the site default.
@@ -20,29 +29,71 @@ export function absoluteUrl(pathOrUrl: string): string {
  */
 export function resolveOgImage(
   previewImage?: string | null,
-): { url: string; alt: string; isDefault: boolean } {
+): OgImageResolution {
   if (previewImage && previewImage.trim()) {
     return {
       url: absoluteUrl(previewImage.trim()),
       alt: SITE_OG_IMAGE_ALT,
-      isDefault: false,
+      hasStandardSize: false,
     };
   }
-  return { url: SITE_OG_IMAGE, alt: SITE_OG_IMAGE_ALT, isDefault: true };
+  return { url: SITE_OG_IMAGE, alt: SITE_OG_IMAGE_ALT, hasStandardSize: true };
 }
 
 export function resolveOgImageWithAlt(
   previewImage?: string | null,
   previewAlt?: string | null,
-): { url: string; alt: string; isDefault: boolean } {
+): OgImageResolution {
   const base = resolveOgImage(previewImage);
-  if (!base.isDefault && previewAlt && previewAlt.trim()) {
+  if (previewImage && previewAlt && previewAlt.trim()) {
     return { ...base, alt: previewAlt.trim() };
   }
   return base;
 }
 
-/** Person JSON-LD for Garry (no employer). */
+/**
+ * Experiment share image priority:
+ * 1. public/og/experiments/<id>.png (letterboxed 1200×630)
+ * 2. SITE_URL + previewImage
+ * 3. site default
+ * Alt always prefers previewAlt when provided.
+ */
+export function resolveExperimentOgImage(
+  experimentId: string,
+  previewImage?: string | null,
+  previewAlt?: string | null,
+): OgImageResolution {
+  const letterboxedRel = `/og/experiments/${experimentId}.png`;
+  const letterboxedFs = path.join(process.cwd(), 'public', 'og', 'experiments', `${experimentId}.png`);
+  const alt =
+    previewAlt && previewAlt.trim() ? previewAlt.trim() : SITE_OG_IMAGE_ALT;
+
+  if (fs.existsSync(letterboxedFs)) {
+    return {
+      url: absoluteUrl(letterboxedRel),
+      alt,
+      hasStandardSize: true,
+    };
+  }
+  if (previewImage && previewImage.trim()) {
+    return {
+      url: absoluteUrl(previewImage.trim()),
+      alt,
+      hasStandardSize: false,
+    };
+  }
+  return { url: SITE_OG_IMAGE, alt, hasStandardSize: true };
+}
+
+/** RSS discovery links for BaseLayout / Starlight head. */
+export const RSS_FEEDS = [
+  { href: '/news/rss.xml', title: `${SITE_NAME} — News` },
+  { href: '/experiments/rss.xml', title: `${SITE_NAME} — Experiments` },
+  { href: '/articles/rss.xml', title: `${SITE_NAME} — Articles` },
+  { href: '/architecture/rss.xml', title: `${SITE_NAME} — Architecture` },
+] as const;
+
+/** Person JSON-LD for Garry Meaburn (public profiles only). */
 export function personJsonLd() {
   return {
     '@context': 'https://schema.org',

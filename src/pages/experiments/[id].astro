@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FindingsTable from '../../components/experiments/FindingsTable.astro';
 import { formatItemDate, getPublishedExperiments, experimentHref } from '../../lib/collections';
-import { absoluteUrl, articleJsonLd, resolveOgImageWithAlt } from '../../lib/seo';
+import { absoluteUrl, articleJsonLd, resolveExperimentOgImage } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { getCollection, render } from 'astro:content';
 
@@ -45,7 +45,7 @@ const evidence = [
 ].filter(Boolean) as { label: string; href: string }[];
 
 const canonicalPath = `/experiments/${item.id}/`;
-const og = resolveOgImageWithAlt(d.previewImage, d.previewAlt);
+const og = resolveExperimentOgImage(item.id, d.previewImage, d.previewAlt);
 const published = d.publishedOn ?? d.date;
 const publishedTime = published.toISOString();
 const jsonLd = articleJsonLd({
@@ -63,7 +63,7 @@ const jsonLd = articleJsonLd({
   ogType="article"
   ogImage={og.url}
   ogImageAlt={og.alt}
-  ogImageIsDefault={og.isDefault}
+  ogImageHasStandardSize={og.hasStandardSize}
   publishedTime={publishedTime}
   jsonLd={jsonLd}
   noindex={isDraft}
