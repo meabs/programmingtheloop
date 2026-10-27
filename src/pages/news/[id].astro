@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE_OG_IMAGE } from '../../site';
 import { getPublishedNews, formatItemDate } from '../../lib/collections';
+import { absoluteUrl, articleJsonLd, resolveOgImage } from '../../lib/seo';
 import { renderMarkdown } from '../../lib/markdown';
 
 export async function getStaticPaths() {
@@ -17,12 +17,27 @@ const items = post.data.items.map((item) => ({
   ...item,
   bodyHtml: renderMarkdown(item.body),
 }));
+const canonicalPath = `/news/${post.id}/`;
+const og = resolveOgImage();
+const publishedTime = post.data.date.toISOString();
+const jsonLd = articleJsonLd({
+  headline: post.data.title,
+  description: post.data.summary,
+  url: absoluteUrl(canonicalPath),
+  datePublished: post.data.date,
+  image: og.url,
+});
 ---
 <BaseLayout
   title={post.data.title}
   description={post.data.summary}
-  canonicalPath={`/news/${post.id}/`}
-  ogImage={SITE_OG_IMAGE}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  ogImage={og.url}
+  ogImageAlt={og.alt}
+  ogImageIsDefault={og.isDefault}
+  publishedTime={publishedTime}
+  jsonLd={jsonLd}
   searchable
 >
   <header class="page-head">

@@ -8,6 +8,7 @@ import {
   getPublishedExperiments, getPublishedGuides, getPublishedNews,
   articleHref, architectureHref, newsHref, formatItemDate,
 } from '../lib/collections';
+import { personJsonLd } from '../lib/seo';
 
 const { featured } = await getHomepageSelection();
 const [articles, architecture, experiments, guides, news] = await Promise.all([
@@ -29,7 +30,7 @@ const latestArticles = articles.filter((a) => !shown.has(articleHref(a))).slice(
 const latestArchitecture = architecture.filter((a) => !shown.has(architectureHref(a))).slice(0, 3);
 const latestNews = news.slice(0, 3);
 ---
-<BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE}>
+<BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE} jsonLd={personJsonLd()}>
   <section class="publication-hero">
     <div class="wrap publication-hero-grid">
       <div class="publication-intro">

@@ -23,6 +23,11 @@ const posts = await getPublishedArchitecture();
       <p>
         Notes and experiments on how systems fit together, mostly from my own hobby projects.
       </p>
+      {posts.length > 0 && (
+        <p class="page-head-meta">
+          <a href="/architecture/rss.xml">RSS</a>
+        </p>
+      )}
     </div>
   </header>
   <div class="page-body">

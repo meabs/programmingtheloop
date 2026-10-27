@@ -73,7 +73,9 @@ Licence: free to read; share unchanged with attribution and the copyright notice
 ## SEO and sharing
 
 - `site` in `astro.config.mjs` is `https://programmingtheloop.com`.
-- Absolute `https://programmingtheloop.com/og/default.png` for social images (1200×630 typographic preview; book cover stays on the page, not in OG tags).
+- Default share image: absolute `https://programmingtheloop.com/og/default.png` (1200×630). Content pages with frontmatter `previewImage` use that image for Open Graph / Twitter instead.
+- Content pages (experiments, articles, architecture, news) set `og:type` to `article`, emit Article JSON-LD, and set `twitter:site` / `twitter:creator` to `@Mav1972`. The homepage also emits Person JSON-LD for Garry Meaburn.
+- RSS: `/news/rss.xml`, `/experiments/rss.xml`, `/articles/rss.xml`, `/architecture/rss.xml`.
 - `public/CNAME` must remain `programmingtheloop.com`.
 
 ## Analytics

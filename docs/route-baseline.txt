@@ -4,10 +4,14 @@
 /about/methodology/
 /about/references/
 /articles/
+/articles/rss.xml
+/architecture/
+/architecture/rss.xml
 /book/
 /contents/
 /downloads/
 /experiments/
+/experiments/rss.xml
 /experiments/agent-optimised-repository/
 /experiments/agwt-evaluation/
 /experiments/b3-confirm-sentence/
