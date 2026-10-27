@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FindingsTable from '../../components/experiments/FindingsTable.astro';
-import { SITE_OG_IMAGE } from '../../site';
 import { formatItemDate, getPublishedExperiments, experimentHref } from '../../lib/collections';
+import { absoluteUrl, articleJsonLd, resolveExperimentOgImage } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { getCollection, render } from 'astro:content';
 
@@ -43,12 +43,29 @@ const evidence = [
   d.prediction && { label: 'Prediction, written before the runs', href: d.prediction },
   d.repo && { label: 'Source repository', href: d.repo },
 ].filter(Boolean) as { label: string; href: string }[];
+
+const canonicalPath = `/experiments/${item.id}/`;
+const og = resolveExperimentOgImage(item.id, d.previewImage, d.previewAlt);
+const published = d.publishedOn ?? d.date;
+const publishedTime = published.toISOString();
+const jsonLd = articleJsonLd({
+  headline: item.data.title,
+  description: item.data.description,
+  url: absoluteUrl(canonicalPath),
+  datePublished: published,
+  image: og.url,
+});
 ---
 <BaseLayout
   title={item.data.title}
   description={item.data.description}
-  canonicalPath={`/experiments/${item.id}/`}
-  ogImage={SITE_OG_IMAGE}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  ogImage={og.url}
+  ogImageAlt={og.alt}
+  ogImageHasStandardSize={og.hasStandardSize}
+  publishedTime={publishedTime}
+  jsonLd={jsonLd}
   noindex={isDraft}
 
   searchable

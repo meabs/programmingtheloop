@@ -2,6 +2,8 @@
 export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
+/** X handle for twitter:site / twitter:creator (leading @). */
+export const SITE_TWITTER = '@Mav1972';
 export const SITE_DESCRIPTION =
   "Practical thinking on AI, software engineering, architecture and the tools we build with. Experiments, projects and guides.";
 

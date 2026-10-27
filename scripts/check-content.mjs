@@ -478,15 +478,18 @@ export function declaredSourceRoutes() {
   }
   routes.add('/experiments/');
   routes.add('/articles/');
+  routes.add('/articles/rss.xml');
   for (const f of listMarkdownFiles(join(ROOT, 'src/content/articles'))) {
     const id = relative(join(ROOT, 'src/content/articles'), f).replace(/\.(md|mdx)$/, '');
     if (!id.includes('do-not-publish')) routes.add(`/articles/${id}/`);
   }
   routes.add('/architecture/');
+  routes.add('/architecture/rss.xml');
   for (const f of listMarkdownFiles(join(ROOT, 'src/content/architecture'))) {
     const id = relative(join(ROOT, 'src/content/architecture'), f).replace(/\.(md|mdx)$/, '');
     if (!id.includes('do-not-publish')) routes.add(`/architecture/${id}/`);
   }
+  routes.add('/experiments/rss.xml');
   routes.add('/news/');
   routes.add('/news/rss.xml');
   for (const f of listMarkdownFiles(join(ROOT, 'src/content/news'))) {

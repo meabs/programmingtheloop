@@ -6,10 +6,13 @@ import {
   SITE_DESCRIPTION,
   SITE_OG_IMAGE,
   SITE_OG_IMAGE_ALT,
+  SITE_AUTHOR,
+  SITE_TWITTER,
   CF_WEB_ANALYTICS_SRC,
   CF_WEB_ANALYTICS_BEACON,
 } from '../site';
 import { getVisibleNav, isCollectionNavVisible } from '../lib/collections';
+import { RSS_FEEDS } from '../lib/seo';
 
 interface Props {
   title?: string;
@@ -18,6 +21,17 @@ interface Props {
   noindex?: boolean;
   ogImage?: string;
   ogImageAlt?: string;
+  /**
+   * Emit og:image width/height 1200×630 when the image is the site default
+   * or a letterboxed experiment OG PNG. Omit for raw chart previewImages.
+   */
+  ogImageHasStandardSize?: boolean;
+  /** Open Graph type. Use `article` for experiments, articles, architecture and news posts. */
+  ogType?: 'website' | 'article';
+  /** ISO date for og:article:published_time when ogType is article. */
+  publishedTime?: string;
+  /** JSON-LD objects (Article, Person, …). */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   preloadCover?: boolean;
   /** Include this page in the site search index (Pagefind). */
   searchable?: boolean;
@@ -30,6 +44,10 @@ const {
   noindex = false,
   ogImage = SITE_OG_IMAGE,
   ogImageAlt = SITE_OG_IMAGE_ALT,
+  ogImageHasStandardSize = ogImage === SITE_OG_IMAGE,
+  ogType = 'website',
+  publishedTime,
+  jsonLd,
   preloadCover = false,
   searchable = false,
 } = Astro.props;
@@ -41,6 +59,11 @@ const nav = await getVisibleNav();
 const showArticles = await isCollectionNavVisible('articles');
 const showArchitecture = await isCollectionNavVisible('architecture');
 const showNews = await isCollectionNavVisible('news');
+const jsonLdBlocks = jsonLd
+  ? Array.isArray(jsonLd)
+    ? jsonLd
+    : [jsonLd]
+  : [];
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -68,26 +91,46 @@ const showNews = await isCollectionNavVisible('news');
     </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <meta name="author" content="Garry Meaburn" />
+    <meta name="author" content={SITE_AUTHOR} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    {ogImageHasStandardSize && <meta property="og:image:width" content="1200" />}
+    {ogImageHasStandardSize && <meta property="og:image:height" content="630" />}
     <meta property="og:image:alt" content={ogImageAlt} />
+    {ogType === 'article' && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {ogType === 'article' && (
+      <meta property="article:author" content={SITE_AUTHOR} />
+    )}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={SITE_TWITTER} />
+    <meta name="twitter:creator" content={SITE_TWITTER} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.png" type="image/png" />
+    {RSS_FEEDS.map((feed) => (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={feed.title}
+        href={feed.href}
+      />
+    ))}
     {preloadCover && <link rel="preload" href="/book-cover.png" as="image" />}
+    {jsonLdBlocks.map((block) => (
+      <script type="application/ld+json" set:html={JSON.stringify(block)} />
+    ))}
     <!-- Cloudflare Web Analytics -->
     <script
       is:inline
@@ -126,34 +169,27 @@ const showNews = await isCollectionNavVisible('news');
         </nav>
         <div class="nav-tools">
           <a class="theme-toggle search-link" href="/search/" aria-label="Search the site">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14" stroke-linecap="round"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"></circle><path d="M10.5 10.5 14 14" stroke-linecap="round"></path></svg>
           </a>
-          <button
-            type="button"
-            class="theme-toggle"
-            id="theme-toggle"
-            aria-label="Toggle colour theme"
-          >
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle colour theme">
             <span class="theme-icon theme-icon-sun" aria-hidden="true"></span>
             <span class="theme-icon theme-icon-moon" aria-hidden="true"></span>
           </button>
-          <button
-            class="menu-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="mobile-menu"
-          >
-            Menu
-          </button>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">Menu</button>
         </div>
         <nav class="mobile-panel" id="mobile-menu" aria-label="Mobile" inert>
           {nav.map((item) => {
-            const active = item.href === '/' ? path === '/' : path.startsWith(item.href);
-            return <a href={item.href} aria-current={active ? 'page' : undefined}>
-              <span class="nav-num">[ {item.num} ]</span> {item.label}
-            </a>;
+            const active =
+              item.href === '/'
+                ? path === '/'
+                : path === item.href || path.startsWith(item.href);
+            return (
+              <a href={item.href} aria-current={active ? 'page' : undefined}>
+                <span class="nav-num">[ {item.num} ]</span> {item.label}
+              </a>
+            );
           })}
-        <a href="/search/">Search</a>
+          <a href="/search/">Search</a>
         </nav>
       </div>
     </header>
@@ -164,7 +200,7 @@ const showNews = await isCollectionNavVisible('news');
       <div class="wrap footer-inner">
         <div>
           <strong>{SITE_NAME}</strong>
-          <p>Practical technical thinking · Garry Meaburn</p>
+          <p>Practical technical thinking · {SITE_AUTHOR}</p>
         </div>
         <div class="footer-links">
           {showArticles && <a href="/articles/">Articles</a>}
@@ -177,6 +213,10 @@ const showNews = await isCollectionNavVisible('news');
           <a href="/guides/programming-the-loop/#licence">Licence</a>
           <a href="/downloads/">October 2026 PDF</a>
           <a href="https://github.com/meabs/programmingtheloop">GitHub</a>
+          <a href="/news/rss.xml">News RSS</a>
+          <a href="/experiments/rss.xml">Experiments RSS</a>
+          <a href="/articles/rss.xml">Articles RSS</a>
+          <a href="/architecture/rss.xml">Architecture RSS</a>
         </div>
       </div>
     </footer>
@@ -193,7 +233,7 @@ const showNews = await isCollectionNavVisible('news');
         root.style.colorScheme = theme;
         try {
           localStorage.setItem(key, theme);
-        } catch (_) {}
+        } catch {}
       };
 
       toggle?.addEventListener('click', () => {
@@ -202,11 +242,9 @@ const showNews = await isCollectionNavVisible('news');
 
       try {
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-          if (!localStorage.getItem(key)) {
-            applyTheme(e.matches ? 'dark' : 'light');
-          }
+          if (!localStorage.getItem(key)) applyTheme(e.matches ? 'dark' : 'light');
         });
-      } catch (_) {}
+      } catch {}
 
       button?.addEventListener('click', () => {
         const open = button.getAttribute('aria-expanded') !== 'true';
@@ -214,6 +252,7 @@ const showNews = await isCollectionNavVisible('news');
         menu?.classList.toggle('open', open);
         if (menu) menu.inert = !open;
       });
+
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && menu?.classList.contains('open')) {
           button?.setAttribute('aria-expanded', 'false');
@@ -223,13 +262,13 @@ const showNews = await isCollectionNavVisible('news');
         }
       });
 
+      // Editorial content stays visible immediately. Motion never gates reading.
+
       const onScroll = () => {
         header?.classList.toggle('is-scrolled', window.scrollY > 8);
       };
       onScroll();
       window.addEventListener('scroll', onScroll, { passive: true });
-
-      // Editorial content stays visible immediately. Motion never gates reading.
     </script>
   </body>
 </html>
