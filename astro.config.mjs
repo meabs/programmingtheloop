@@ -39,6 +39,8 @@ export default defineConfig({
     sitemap({
       filter: (page) => {
         if (page.includes('/search')) return false;
+        // Legacy /guide/<chapter>/ URLs only redirect to /guides/…; keep them out of the sitemap.
+        if (/\/guide\//.test(page)) return false;
         // Hide empty collection sections until something is published.
         if (navCounts.articles < 1 && /\/articles(\/|$)/.test(page)) return false;
         if (navCounts.architecture < 1 && /\/architecture(\/|$)/.test(page)) return false;
