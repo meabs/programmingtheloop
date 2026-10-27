@@ -23,6 +23,7 @@
 /experiments/h3-incomplete-openapi/
 /experiments/okf-worked-example/
 /findings/
+/measured/
 /guide/
 /guide/about-the-author/
 /guide/about-the-evidence/

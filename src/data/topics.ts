@@ -24,6 +24,10 @@ export const TOPICS = {
     title: 'Parallel',
     description: 'Parallel agents: isolation and the cost of coordination.',
   },
+  skills: {
+    title: 'Skills',
+    description: 'Agent skills and instruction files: what they change, and what they do not.',
+  },
   review: {
     title: 'Review',
     description: 'Review, merging and risk: matching scrutiny to consequence.',

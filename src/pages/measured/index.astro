@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import { getPublishedExperiments } from '../../lib/collections';
+import { getTopicsWithContent } from '../../lib/topics';
+import { TOPICS, TOPIC_IDS } from '../../data/topics';
+import { NEXT_EXPERIMENTS } from '../../data/next';
+
+const topics = await getTopicsWithContent();
+const all = await getPublishedExperiments();
+
+// Measurement is a method tag on most experiments, so it lists only those with no other topic;
+// otherwise it would repeat nearly everything. It goes last.
+const order = (id: string) => (id === 'measurement' ? 999 : TOPIC_IDS.indexOf(id as (typeof TOPIC_IDS)[number]));
+const sections = topics
+  .map((t) => ({
+    ...t,
+    rows: t.experiments
+      .filter((e) => t.id !== 'measurement' || (e.data.topics ?? []).every((x) => x === 'measurement'))
+      .flatMap((e) =>
+        (e.data.findings ?? []).filter((f) => f.status !== 'superseded').map((f) => ({ f, e })),
+      ),
+  }))
+  .filter((s) => s.rows.length > 0)
+  .sort((a, b) => order(a.id) - order(b.id));
+const total = new Set(sections.flatMap((s) => s.rows.map((r) => r.f.id))).size;
+---
+<BaseLayout
+  title="What I've measured so far"
+  description="Every current finding from the experiments, grouped by topic, with a link to the full write-up and its limits."
+  canonicalPath="/measured/"
+  ogImage={SITE_OG_IMAGE}
+  searchable
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Index</p>
+      <h1>What I've measured so far</h1>
+      <p>
+        {total} findings from {all.length} experiments, grouped by topic. A finding that belongs to two
+        topics is listed under both. Measurement lists only work with no other topic. Each links to the write-up, where its numbers, intervals and limits are.
+        Cite the experiment page, not this summary.
+      </p>
+      <p><a class="button primary" href="#next">What's next →</a> <a class="button" href="/experiments/">All experiments</a> <a class="button" href="/findings/">Five findings</a></p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <nav class="m-jump" aria-label="Topics on this page">
+        {sections.map((s) => <a href={`#${s.id}`}>{s.title} <span>{s.rows.length}</span></a>)}
+        <a href="#next">Next <span>{NEXT_EXPERIMENTS.length}</span></a>
+      </nav>
+
+      {sections.map((s) => (
+        <section class="m-topic" id={s.id} aria-labelledby={`${s.id}-h`}>
+          <h2 id={`${s.id}-h`}>{s.title}</h2>
+          <p class="m-desc">{TOPICS[s.id].description} <a href={`/topics/${s.id}/`}>Experiments on this topic →</a></p>
+          <ul class="m-list">
+            {s.rows.map(({ f, e }) => (
+              <li>
+                <a class="m-id" href={`/experiments/${e.id}/#findings-heading`}>{f.id}</a>
+                <span class="m-text">{f.statement}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      <section class="m-topic" id="next" aria-labelledby="next-h">
+        <h2 id="next-h">What I'm measuring next</h2>
+        <p class="m-desc">
+          Questions the results leave open. Each comes from a follow-up already on the page it names. These are
+          not results and not a schedule: when one is run, it becomes an experiment and leaves this list.
+          If you think one is the wrong question, or have a better one, message me on LinkedIn (link on the <a href="/about/">About page</a>).
+        </p>
+        <ol class="m-next">
+          {NEXT_EXPERIMENTS.map((n) => (
+            <li>
+              <h3>{n.title}</h3>
+              <p>{n.question}</p>
+              <p class="m-meta">
+                Follows <a href={`/experiments/${n.from}/`}>{n.fromLabel}</a>
+                · {n.topics.map((t) => TOPICS[t].title).join(', ')} · not yet run
+              </p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .m-jump { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
+  .m-jump a { display: inline-flex; gap: .4rem; align-items: center; min-height: 2.5rem; padding: .35rem .85rem; font-size: .88rem; font-weight: 600; color: var(--ink); text-decoration: none; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; }
+  .m-jump a span { font-weight: 500; color: var(--ink-faint); }
+  .m-jump a:hover { background: var(--accent-soft); }
+  .m-topic { margin-bottom: 3rem; scroll-margin-top: 5rem; }
+  .m-topic h2 { margin: 0 0 .35rem; }
+  .m-desc { margin: 0 0 1rem; color: var(--ink-muted); max-width: 62ch; }
+  .m-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .m-list li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: .25rem 1rem; margin: 0; padding: .8rem .25rem; border-bottom: 1px solid var(--line); }
+  .m-id { font: .78rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .03em; color: var(--accent); text-decoration: none; padding-top: .15rem; }
+  .m-id:hover { text-decoration: underline; }
+  .m-text { max-width: 70ch; }
+  @media (max-width: 520px) { .m-list li { grid-template-columns: 1fr; } }
+  .m-next { margin: 0; padding: 0; list-style: none; counter-reset: n; border-top: 1px solid var(--line); }
+  .m-next li { counter-increment: n; margin: 0; padding: 1rem .25rem 1rem 2.5rem; position: relative; border-bottom: 1px solid var(--line); }
+  .m-next li::before { content: counter(n); position: absolute; left: .25rem; top: 1rem; font: .85rem 'IBM Plex Mono', ui-monospace, monospace; color: var(--ink-faint); }
+  .m-next h3 { margin: 0 0 .25rem; font-size: 1.1rem; }
+  .m-next p { margin: 0 0 .4rem; max-width: 66ch; }
+  .m-next .m-meta { font: .74rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .03em; color: var(--ink-faint); text-transform: none; }
+</style>

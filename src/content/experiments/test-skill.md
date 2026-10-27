@@ -23,6 +23,7 @@ prediction: "https://github.com/meabs/experiments/blob/e3908706a9278546408fdd462
 topics:
   - verification
   - measurement
+  - skills
 publishedOn: 2026-10-23
 findings:
   - id: "TSK-1"

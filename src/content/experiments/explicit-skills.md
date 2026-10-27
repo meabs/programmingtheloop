@@ -23,6 +23,7 @@ prediction: "https://github.com/meabs/experiments/blob/65df2e973c3c136c9489e896e
 topics:
   - verification
   - measurement
+  - skills
 publishedOn: 2026-10-22
 findings:
   - id: "ESK-1"

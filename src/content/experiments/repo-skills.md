@@ -23,6 +23,7 @@ prediction: "https://github.com/meabs/experiments/blob/4eb88a9ef2dce98b987b0076b
 topics:
   - verification
   - measurement
+  - skills
 publishedOn: 2026-10-22
 findings:
   - id: "RSK-1"

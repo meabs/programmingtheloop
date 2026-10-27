@@ -49,6 +49,7 @@ const TOPIC_IDS = new Set([
   'verification',
   'harness',
   'parallel',
+  'skills',
   'review',
   'measurement',
   'safety-cost',
