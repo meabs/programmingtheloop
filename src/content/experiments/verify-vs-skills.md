@@ -23,6 +23,7 @@ prediction: "https://github.com/meabs/experiments/blob/9580d4aa95ec23e581026741a
 topics:
   - verification
   - measurement
+  - skills
 publishedOn: 2026-10-22
 findings:
   - id: "VVS-1"

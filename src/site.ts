@@ -376,6 +376,7 @@ export const LINKS = {
   workedExample: 'https://github.com/meabs/ProgrammingTheLoop-WorkedExample',
   feedbackIssue: 'https://github.com/meabs/ProgrammingTheLoop-WorkedExample/issues/new/choose',
   githubSite: 'https://github.com/meabs/programmingtheloop',
+  discussions: 'https://github.com/meabs/programmingtheloop/discussions',
   githubAuthor: 'https://github.com/meabs',
   x: 'https://x.com/Mav1972',
   linkedin: 'https://uk.linkedin.com/in/garrymeaburn',

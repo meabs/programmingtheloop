@@ -23,6 +23,7 @@ prediction: "https://github.com/meabs/experiments/blob/766313eaf42070cbaaf565b95
 topics:
   - verification
   - measurement
+  - skills
 publishedOn: 2026-10-21
 findings:
   - id: "SKT-1"

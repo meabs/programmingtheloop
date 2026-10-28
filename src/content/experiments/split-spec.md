@@ -26,6 +26,7 @@ topics:
   - review
   - measurement
   - safety-cost
+  - parallel
 publishedOn: 2026-10-26
 findings:
   - id: "SPS-1"
