@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE_OG_IMAGE } from '../../site';
+import { SITE_OG_IMAGE, LINKS } from '../../site';
 import { getPublishedExperiments } from '../../lib/collections';
 import { getTopicsWithContent } from '../../lib/topics';
 import { TOPICS, TOPIC_IDS } from '../../data/topics';
@@ -71,7 +71,7 @@ const total = new Set(sections.flatMap((s) => s.rows.map((r) => r.f.id))).size;
         <p class="m-desc">
           Questions the results leave open. Each comes from a follow-up already on the page it names. These are
           not results and not a schedule: when one is run, it becomes an experiment and leaves this list.
-          If you think one is the wrong question, or have a better one, message me on LinkedIn (link on the <a href="/about/">About page</a>).
+          If you think one is the wrong question, or have a better one, start a <a href={LINKS.discussions} rel="noopener noreferrer">GitHub discussion</a>.
         </p>
         <ol class="m-next">
           {NEXT_EXPERIMENTS.map((n) => (

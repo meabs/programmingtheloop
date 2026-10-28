@@ -23,6 +23,11 @@ const posts = await getPublishedArticles();
       <p>
         Technical opinions, analysis and commentary on the engineering choices behind the tools we use.
       </p>
+      {posts.length > 0 && (
+        <p class="page-head-meta">
+          <a href="/articles/rss.xml">RSS</a>
+        </p>
+      )}
     </div>
   </header>
   <div class="page-body">

@@ -2,6 +2,8 @@
 export const SITE_URL = 'https://programmingtheloop.com';
 export const SITE_NAME = 'Programming the Loop';
 export const SITE_AUTHOR = 'Garry Meaburn';
+/** X handle for twitter:site / twitter:creator (leading @). */
+export const SITE_TWITTER = '@Mav1972';
 export const SITE_DESCRIPTION =
   "Practical thinking on AI, software engineering, architecture and the tools we build with. Experiments, projects and guides.";
 
@@ -374,6 +376,7 @@ export const LINKS = {
   workedExample: 'https://github.com/meabs/ProgrammingTheLoop-WorkedExample',
   feedbackIssue: 'https://github.com/meabs/ProgrammingTheLoop-WorkedExample/issues/new/choose',
   githubSite: 'https://github.com/meabs/programmingtheloop',
+  discussions: 'https://github.com/meabs/programmingtheloop/discussions',
   githubAuthor: 'https://github.com/meabs',
   x: 'https://x.com/Mav1972',
   linkedin: 'https://uk.linkedin.com/in/garrymeaburn',

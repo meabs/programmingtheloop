@@ -14,6 +14,9 @@ const articleSchema = z.object({
   featured: z.boolean().default(false),
   /** Set true to keep a file without publishing it. */
   draft: z.boolean().default(false),
+  /** Optional share-preview image (path under /public). */
+  previewImage: z.string().optional(),
+  previewAlt: z.string().optional(),
 });
 
 /**
