@@ -103,7 +103,7 @@ I'm working on these at the moment:
 - **Without `--ci`, it hangs on a machine with no display.**
 - **There's no way to make the server slow,** which caused 4 of the 8 misses.
 
-The last one is the biggest. It's the difference between catching most of these bugs and catching about half of them.
+The last one matters most. It's behind half of the misses.
 
 ## So, is it useful?
 
