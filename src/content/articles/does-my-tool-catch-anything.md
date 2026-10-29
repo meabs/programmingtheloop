@@ -64,7 +64,7 @@ Then I ran two checks against every version:
 
 </figure>
 
-The ordinary check caught **none** of the 19 buggy versions.
+The ordinary check caught **none** of the 19 buggy versions (0 of 19).
 
 Not one. Every buggy version worked fine when only one thing happened at a time. That's the whole problem with timing bugs.
 
