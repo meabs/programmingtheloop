@@ -18,6 +18,9 @@ agents:
     settings: "medium reasoning effort in every agent and subagent; each run in a fresh clone in a sandbox"
 runs: 144
 repo: "https://github.com/meabs/experiments"
+video:
+  url: "https://www.youtube.com/shorts/zSh2EqsWE2M"
+  label: "Watch the short video"
 report: "https://github.com/meabs/experiments/blob/c899021a4298bb4f24c8b8fdae703b61739242b7/2026-10-swarm-tax/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/c899021a4298bb4f24c8b8fdae703b61739242b7/2026-10-swarm-tax/README.md"
 previewImage: "/guide-images/chart-swt-teams.png"

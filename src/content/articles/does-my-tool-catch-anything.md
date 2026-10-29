@@ -4,6 +4,9 @@ description: "I pointed my own WebMCP testing tool at 31 versions of six small a
 date: 2026-10-29T12:00:00+00:00
 summary: "An ordinary check caught none of 19 timing bugs. WebMCP Resilience caught 11, with no false alarms on correct code, and showed me exactly where it falls short."
 draft: false
+video:
+  url: "https://www.youtube.com/shorts/NvDSMmB74Qo"
+  label: "Watch the short video"
 ---
 
 *Quick note before I start. I've got mild dyslexia, so I use AI tooling to help with my writing, but the thoughts are all mine.*

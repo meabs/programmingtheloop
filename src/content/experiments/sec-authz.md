@@ -18,6 +18,9 @@ agents:
     settings: "medium reasoning effort; each run in a sandbox that shows only its own copy of the service"
 runs: 340
 repo: "https://github.com/meabs/experiments"
+video:
+  url: "https://www.youtube.com/shorts/jYs7POVnb7o"
+  label: "Watch the short video"
 report: "https://github.com/meabs/experiments/blob/58f43d6de4294945aa320be9df7fa3411636d1cb/2026-10-sec-authz/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/db11fb7751a49e35bed22e403ca67a6d05696637/2026-10-sec-authz/README.md"
 previewImage: "/guide-images/chart-sec-authz.png"
