@@ -5,6 +5,7 @@ import { formatItemDate, experimentHref } from '../../lib/collections';
 import { cardHeadline } from '../../lib/experiment-cards';
 import { axisFor, kindCaption, toResultPoint, type ResultPoint } from '../../lib/results';
 import ResultPlot from './ResultPlot.astro';
+import { displayTitle } from '../../lib/titles';
 
 interface Props {
   item: CollectionEntry<'experiments'>;
@@ -57,7 +58,7 @@ const plotAxis = plotted.length > 0 ? axisFor(plotted.map((r) => r.point)) : nul
       <span>{d.type}{label && <> · {label}</>}</span>
       <time datetime={d.date.toISOString()}>{formatItemDate(d.date)}</time>
     </p>
-    <h2 class="exp-title"><a href={experimentHref(item)}>{d.title}</a></h2>
+    <h2 class="exp-title"><a href={experimentHref(item)}>{displayTitle(d.title)}</a></h2>
     {d.question && <p class="exp-question">{d.question}</p>}
     {plainUnder && (
       <p class="exp-finding">

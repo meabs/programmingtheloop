@@ -5,6 +5,7 @@ import { formatItemDate, getPublishedExperiments, experimentHref } from '../../l
 import { absoluteUrl, articleJsonLd, resolveExperimentOgImage } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { LINKS } from '../../site';
+import { displayTitle } from '../../lib/titles';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -78,7 +79,7 @@ const jsonLd = articleJsonLd({
           ? `${item.data.type} · ${formatItemDate(publishedOn)}`
           : item.data.type}
       </p>
-      <h1>{item.data.title}</h1>
+      <h1>{displayTitle(item.data.title)}</h1>
       <p>{item.data.description}</p>
       {mine.size > 0 && (
         <p class="exp-topic-links">Topics: {[...mine].map((t, i) => <><a href={`/topics/${t}/`}>{TOPICS[t as keyof typeof TOPICS].title}</a>{i < mine.size - 1 ? ', ' : ''}</>)}</p>
@@ -134,7 +135,7 @@ const jsonLd = articleJsonLd({
           <h2 id="exp-related-title">Related experiments</h2>
           <ul>{related.map((e) => (
             <li>
-              <a href={experimentHref(e)}>{e.data.title}</a>
+              <a href={experimentHref(e)}>{displayTitle(e.data.title)}</a>
               {e.data.question && <span>{e.data.question}</span>}
             </li>
           ))}</ul>
