@@ -10,7 +10,7 @@ html[data-theme='light'] {
   --surface-2: #efeae3;
   --ink: #12151c;
   --ink-muted: #4a5160;
-  --ink-faint: #6d7585;
+  --ink-faint: #5a6272;
   --line: rgba(18, 21, 28, 0.12);
   --line-strong: rgba(18, 21, 28, 0.2);
   --accent: #0d7a72;
@@ -50,7 +50,7 @@ html[data-theme='dark'] {
   --surface-2: #181d27;
   --ink: #eef1f6;
   --ink-muted: #9aa3b2;
-  --ink-faint: #6f7a8c;
+  --ink-faint: #8590a2;
   --line: rgba(238, 241, 246, 0.1);
   --line-strong: rgba(238, 241, 246, 0.18);
   --accent: #2dd4bf;
@@ -288,7 +288,22 @@ a:hover {
 .brand-name {
   font-size: 0.92rem;
   font-weight: 650;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  word-spacing: 0;
+}
+
+@media (min-width: 1101px) {
+  .brand-name {
+    letter-spacing: -0.01em;
+    word-spacing: 0.12em;
+  }
+}
+
+/* Display type: the face's word space is narrow, so open it slightly. */
+h1,
+h2,
+h3 {
+  word-spacing: 0.06em;
 }
 
 .nav-cells {
@@ -524,7 +539,7 @@ html[data-theme='dark'] .icon-btn {
   margin: 0 0 1rem;
   font-size: clamp(2.35rem, 5.8vw, 4rem);
   line-height: 1.02;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   font-weight: 700;
   max-width: 20ch;
 }
@@ -655,7 +670,7 @@ html.js-motion .dash-live {
 
 .dash-body strong {
   font-size: 1.05rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   font-weight: 700;
 }
 
@@ -702,7 +717,7 @@ html.js-motion .dash-live {
 .stat-value {
   font-size: clamp(1.75rem, 3.5vw, 2.35rem);
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   line-height: 1;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
@@ -913,7 +928,7 @@ html.js-motion .dark-loop .loop-dot {
 .status-title {
   margin: 0 0 0.5rem;
   font-size: clamp(1.5rem, 3vw, 2rem);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   font-weight: 700;
 }
 
@@ -993,7 +1008,7 @@ html.js-motion .dark-loop .loop-dot {
 .section h2 {
   margin: 0 0 0.75rem;
   font-size: clamp(1.55rem, 3vw, 2.1rem);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   font-weight: 700;
 }
 
@@ -1068,7 +1083,7 @@ a.card:hover {
 .card-title {
   margin: 0;
   font-size: 1.15rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   font-weight: 650;
 }
 
@@ -1127,7 +1142,7 @@ a.card:hover {
 .start-head h1 {
   margin: 0 0 0.65rem;
   font-size: clamp(2.8rem, 8vw, 5rem);
-  letter-spacing: -0.06em;
+  letter-spacing: -0.02em;
   font-weight: 700;
   line-height: 0.95;
 }
@@ -1388,7 +1403,7 @@ html[data-theme='dark'] .accent-rose .start-chapter {
 .hero h1 {
   margin: 0 0 0.75rem;
   font-size: clamp(2.2rem, 5vw, 3.4rem);
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   font-weight: 700;
   line-height: 1.02;
 }
@@ -1479,7 +1494,7 @@ html[data-theme='dark'] .accent-rose .start-chapter {
 .finding h3 {
   margin: 0 0 0.5rem;
   font-size: 1.12rem;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   font-weight: 650;
 }
 
@@ -1582,7 +1597,7 @@ html[data-theme='dark'] .accent-rose .start-chapter {
   margin: 0 0 0.7rem;
   font-size: clamp(1.8rem, 3.8vw, 2.4rem);
   font-weight: 650;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   line-height: 1.12;
 }
 
@@ -1607,7 +1622,7 @@ html[data-theme='dark'] .accent-rose .start-chapter {
 
 .view-prose h2 {
   font-size: clamp(1.35rem, 2.4vw, 1.7rem);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   line-height: 1.25;
   margin: 2.1rem 0 0.75rem;
 }
@@ -2195,14 +2210,14 @@ html.js-motion .hero-headline.is-in .word {
 /* Editorial publication surfaces */
 .publication-hero { border-bottom: 1px solid var(--line); background: var(--bg); }
 .publication-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; padding-block: clamp(3.5rem, 6vw, 6rem); }
-.publication-intro h1 { max-width: 12ch; margin: .7rem 0 1.4rem; font-size: clamp(3rem, 5.2vw, 5.4rem); line-height: 1.03; letter-spacing: -.04em; text-wrap: balance; }
+.publication-intro h1 { max-width: 12ch; margin: .7rem 0 1.4rem; font-size: clamp(3rem, 5.2vw, 5.4rem); line-height: 1.03; letter-spacing: -0.02em; text-wrap: balance; }
 .publication-intro h1 em { font-style: normal; color: var(--accent); }
 .publication-intro > p:not(.section-label) { max-width: 56ch; margin: 0; color: var(--ink-muted); font-size: clamp(1.02rem, 1.45vw, 1.2rem); line-height: 1.65; }
 .publication-intro .actions { margin-top: 1.8rem; }
 .editorial-feature { min-width: 0; padding: clamp(1.5rem, 3vw, 2.5rem); border: 1px solid var(--line-strong); background: var(--surface); }
 .feature-meta, .feed-meta { display: flex; gap: .75rem; justify-content: space-between; align-items: baseline; color: var(--ink-faint); font: .71rem 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .045em; }
 .feature-meta span, .feed-meta span { color: var(--accent); }
-.editorial-feature h2 { margin: 1.7rem 0 .9rem; font-size: clamp(1.8rem, 2.9vw, 2.7rem); line-height: 1.15; letter-spacing: -.035em; text-wrap: balance; }
+.editorial-feature h2 { margin: 1.7rem 0 .9rem; font-size: clamp(1.8rem, 2.9vw, 2.7rem); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
 .editorial-feature h2 a, .feed-item h3 a, .work-list h3 a { color: var(--ink); text-decoration: none; }
 .editorial-feature h2 a:hover, .feed-item h3 a:hover, .work-list h3 a:hover { color: var(--accent); }
 .editorial-feature p { color: var(--ink-muted); margin-bottom: 1.6rem; }
@@ -2210,7 +2225,7 @@ html.js-motion .hero-headline.is-in .word {
 .text-link:hover { text-decoration: underline; text-underline-offset: .2em; }
 .publication-section { padding-block: clamp(3rem, 5vw, 5rem); border-bottom: 1px solid var(--line); }
 .publication-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem 2rem; margin-bottom: 1.6rem; }
-.publication-heading h2, .publication-about h2 { margin: 0; font-size: clamp(2rem, 3.3vw, 3rem); line-height: 1.12; letter-spacing: -.035em; }
+.publication-heading h2, .publication-about h2 { margin: 0; font-size: clamp(2rem, 3.3vw, 3rem); line-height: 1.12; letter-spacing: -0.02em; }
 .publication-heading p { margin: .4rem 0 0; color: var(--ink-muted); }
 .explore-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
 .explore-item { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; align-items: center; gap: .6rem; min-height: 7rem; padding: 1.15rem 1rem; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; }
@@ -2223,14 +2238,14 @@ html.js-motion .hero-headline.is-in .word {
 .guide-feature { background: var(--surface-2); }
 .guide-feature-grid { display: grid; grid-template-columns: minmax(150px, 250px) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; max-width: 940px; }
 .guide-feature img { display: block; width: 100%; height: auto; box-shadow: 8px 12px 30px #0002; }
-.guide-feature h2 { margin: .7rem 0 .1rem; font-size: clamp(2rem, 4vw, 3.8rem); letter-spacing: -.04em; line-height: 1.08; }
+.guide-feature h2 { margin: .7rem 0 .1rem; font-size: clamp(2rem, 4vw, 3.8rem); letter-spacing: -0.02em; line-height: 1.08; }
 .guide-feature .guide-subtitle { margin: 0 0 1.15rem; color: var(--accent); font-weight: 600; }
 .guide-feature p:not(.section-label):not(.guide-subtitle) { max-width: 55ch; color: var(--ink-muted); }
 .guide-feature .actions { margin-top: 1.5rem; }
 .publication-feed { border-top: 1px solid var(--line); }
 .feed-item { display: grid; grid-template-columns: 10.5rem minmax(0, 1fr) 2rem; gap: 1.4rem; padding: 1.4rem 0; border-bottom: 1px solid var(--line); }
 .feed-item .feed-meta { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: .25rem; padding-top: .2rem; }
-.feed-item h3 { margin: 0 0 .3rem; font-size: 1.25rem; line-height: 1.3; letter-spacing: -.025em; }
+.feed-item h3 { margin: 0 0 .3rem; font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.02em; }
 .feed-item p { max-width: 68ch; margin: 0; color: var(--ink-muted); font-size: .95rem; }
 .feed-arrow { align-self: center; color: var(--accent); text-decoration: none; font-size: 1.25rem; }
 .original-work { background: var(--surface); }
@@ -2300,7 +2315,7 @@ html.js-motion .hero-headline.is-in .word {
 @media (max-width: 360px) {
   .nav-shell { gap: .3rem; }
   .brand { gap: .35rem; padding-right: 0; min-width: 0; }
-  .brand-name { font-size: .78rem; white-space: nowrap; }
+  .brand-name { font-size: .78rem; white-space: nowrap; letter-spacing: -0.02em; word-spacing: .03em; }
   .brand-mark { width: 1rem; height: 1rem; }
   .nav-tools { gap: .25rem; padding-left: 0; }
   .theme-toggle { width: 2rem; height: 2rem; }
