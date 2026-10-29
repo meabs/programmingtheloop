@@ -1,0 +1,24 @@
+---
+import { LINKS } from '../../site';
+---
+<section class="follow" aria-labelledby="follow-title">
+  <div class="wrap">
+    <h2 id="follow-title">Follow new experiments</h2>
+    <p>Each experiment is published here with its method, data and limits. The channel explains the work in video; the site holds the evidence.</p>
+    <ul>
+      <li><a href={LINKS.youtube} rel="noopener noreferrer">YouTube: Frugal AI Engineer ↗</a></li>
+      <li><a href="/experiments/rss.xml">RSS: new experiments</a></li>
+      <li><a href={LINKS.discussions} rel="noopener noreferrer">GitHub Discussions ↗</a></li>
+      <li><a href={LINKS.linkedin} rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .follow { padding: 2.25rem 0; border-top: 1px solid var(--line); }
+  .follow :global(h2) { margin-top: 0; }
+  .follow p { max-width: 44rem; color: var(--ink-muted); }
+  .follow ul { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin: 1rem 0 0; padding: 0; }
+  .follow li { margin: 0; }
+  .follow a { display: inline-flex; align-items: center; min-height: 2.5rem; font-weight: 600; }
+</style>

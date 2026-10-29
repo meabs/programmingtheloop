@@ -31,6 +31,8 @@ For any visual change, also load the built page at 390px and 1440px, light and d
 - **Topics** are a fixed list in `src/data/topics.ts` (and mirrored in `scripts/check-content.mjs`). Tag an experiment with the topics it informs, not with "measurement" unless it has no other topic.
 - **Voice:** first person, British English, limits next to the numbers. Say when a result is exploratory, unadjusted, or from one model.
 - **The home hero is automatic:** it shows the newest article, architecture post or experiment, so a new post takes it over. `featured: true` on a post no longer pins it. Don't try to pin it from content; change `selectFeatured` in `src/lib/editorial.mjs` if the rule should change.
+- **Findings page and home selection:** `src/data/synthesis.ts` lists the three results to read first and the findings grouped by engineering problem. Numbers come from the finding records by id (a wrong id fails the build); only the questions and the short readings are wording, and readings must not add numbers or claims beyond the listed findings. When a new experiment changes an answer, update the group.
+- **Video:** if a YouTube video explains an experiment, set `video: { url, label }` in its frontmatter and it appears as a button in the page header. Never add a video that doesn't exist.
 - **Next experiments** go in `src/data/next.ts`, only if a published page already proposes them. When one is run, it becomes an experiment page and leaves that list.
 - Use `docs/templates/` to start a new article, experiment or guide, and `docs/news-posting.md` for news.
 
