@@ -59,6 +59,12 @@ describe('check:content fixtures', () => {
     assert.deepEqual(errors, []);
   });
 
+  it('catches an interval the results plot cannot read', () => {
+    const experiments = loadExperiments(join(fixtures, 'bad-interval'));
+    const { errors } = checkExperiments(experiments);
+    assert.ok(errors.some((e) => /interval low\/high must be plain numbers/.test(e)), errors.join('\n'));
+  });
+
   it('catches duplicate finding ids', () => {
     const experiments = loadExperiments(join(fixtures, 'dup-finding'));
     const { errors } = checkExperiments(experiments);

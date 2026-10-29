@@ -20,7 +20,9 @@ npm run dev
 
 `check:content` and `guide:verify` are separate: the former guards collection integrity; the latter guards Guide facts against the book.
 
-Node 22 is used in CI (see `.github/workflows/deploy.yml`).
+Node 22 is used in CI (see `.github/workflows/deploy.yml`). Use 22.18 or newer locally: some tests import `.ts` files directly, which older Node cannot load.
+
+Contributors, human or agent: read [`AGENTS.md`](AGENTS.md) first.
 
 ## Information architecture
 

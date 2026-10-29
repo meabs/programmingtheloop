@@ -1,10 +1,11 @@
 ---
 # TEMPLATE — copy into src/content/experiments/ as short-slug.md
 # Keep draft: true until ready. Drafts are not published (not in listings, nav counts, or public routes).
-title: "Short clear title"
+title: "A clear question? (experiment X)"
 description: "One sentence for cards and social previews."
 summary: "One-line card summary."
-date: 2026-11-01
+# Give a time when other posts may land the same day, so the order is stable:
+date: 2026-11-01T09:00:00+00:00
 type: "Controlled trial"
 github:
   - label: "Repository name"
@@ -15,10 +16,26 @@ guideLinks:
 draft: true
 experimentId: "X"
 question: "One sentence."
-# status: planned | running | published | superseded  (omit until structured)
-# evidenceGrade: published | unpublished
-# report: "https://github.com/…/results/….md"
-# findings: []  # IDs <experimentId>-<n>; never reuse; leave empty rather than infer
+status: published        # planned | running | published | superseded
+evidenceGrade: published # published | unpublished
+report: "https://github.com/meabs/example/blob/<commit-sha>/REPORT.md"   # pinned to a commit
+topics:                  # ids from src/data/topics.ts; avoid "measurement" unless nothing else fits
+  - verification
+# previewImage / previewAlt: optional; cards draw their plot from the findings
+findings:                # IDs <experimentId>-<n>; never reuse; leave empty rather than infer
+  - id: "X-1"
+    statement: "What was found, with the comparison and the counts."
+    metric: "what is differenced, and against what"
+    value: "+8.3 pts"    # or "1.98×" for a ratio
+    interval:            # plain numbers, one unit: "+3.0 pts", "1.54" (ratio), "11%"
+      low: "+3.0 pts"
+      high: "+13.5 pts"
+      method: "bootstrap 95% CI over N tasks; test and adjusted p; say 'no measurable difference' if that is the conclusion"
+    n: 60
+    limits:
+      - "One model, N synthetic tasks"
+    source: "https://github.com/meabs/example/blob/<commit-sha>/REPORT.md"
+    status: current
 ---
 
 ## Question

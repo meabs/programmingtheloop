@@ -380,6 +380,19 @@ export function checkExperiments(experiments) {
       if (!f.source) {
         errors.push(`Finding "${id}" in ${file} needs a source URL`);
       }
+      if (f.interval && typeof f.interval === 'object') {
+        // The results plot reads low/high as numbers in one unit: "+8.3 pts", "−5.0 pts", "1.38", "11%".
+        const m = (s) => String(s ?? '').trim().match(/^[+\-−–]?\d+(?:\.\d+)?\s*(pts?|%)?$/i);
+        const lo = m(f.interval.low);
+        const hi = m(f.interval.high);
+        if (!lo || !hi) {
+          errors.push(
+            `Finding "${id}" in ${file}: interval low/high must be plain numbers, optionally "pts" or "%" (got "${f.interval.low}" to "${f.interval.high}")`,
+          );
+        } else if ((lo[1] ?? '').toLowerCase().replace(/s$/, '') !== (hi[1] ?? '').toLowerCase().replace(/s$/, '')) {
+          errors.push(`Finding "${id}" in ${file}: interval low and high must use the same unit`);
+        }
+      }
       if (!f.statement) {
         errors.push(`Finding "${id}" in ${file} needs a statement`);
       }

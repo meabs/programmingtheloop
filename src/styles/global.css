@@ -2209,8 +2209,8 @@ html.js-motion .hero-headline.is-in .word {
 
 /* Editorial publication surfaces */
 .publication-hero { border-bottom: 1px solid var(--line); background: var(--bg); }
-.publication-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; padding-block: clamp(3.5rem, 6vw, 6rem); }
-.publication-intro h1 { max-width: 12ch; margin: .7rem 0 1.4rem; font-size: clamp(3rem, 5.2vw, 5.4rem); line-height: 1.03; letter-spacing: -0.02em; text-wrap: balance; }
+.publication-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; padding-block: clamp(2.5rem, 4.5vw, 4.5rem); }
+.publication-intro h1 { max-width: 20ch; margin: .7rem 0 1.2rem; font-size: clamp(2.2rem, 3.8vw, 3.7rem); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }
 .publication-intro h1 em { font-style: normal; color: var(--accent); }
 .publication-intro > p:not(.section-label) { max-width: 56ch; margin: 0; color: var(--ink-muted); font-size: clamp(1.02rem, 1.45vw, 1.2rem); line-height: 1.65; }
 .publication-intro .actions { margin-top: 1.8rem; }
@@ -2221,6 +2221,10 @@ html.js-motion .hero-headline.is-in .word {
 .editorial-feature h2 a, .feed-item h3 a, .work-list h3 a { color: var(--ink); text-decoration: none; }
 .editorial-feature h2 a:hover, .feed-item h3 a:hover, .work-list h3 a:hover { color: var(--accent); }
 .editorial-feature p { color: var(--ink-muted); margin-bottom: 1.6rem; }
+.editorial-feature .feature-finding { margin-bottom: 1.1rem; color: var(--ink); }
+.feature-result { display: grid; gap: .55rem; margin: 0 0 1.4rem; padding: .9rem 0; border-block: 1px solid var(--line); }
+.editorial-feature .feature-value { margin: 0; font-size: 1.35rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.editorial-feature .feature-caption { margin: 0; font: .68rem 'IBM Plex Mono', monospace; letter-spacing: .02em; color: var(--ink-faint); }
 .text-link { color: var(--accent); font-weight: 650; text-decoration: none; }
 .text-link:hover { text-decoration: underline; text-underline-offset: .2em; }
 .publication-section { padding-block: clamp(3rem, 5vw, 5rem); border-bottom: 1px solid var(--line); }
@@ -2285,13 +2289,13 @@ html.js-motion .hero-headline.is-in .word {
 
 @media (max-width: 850px) {
   .publication-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, .85fr); gap: 2rem; }
-  .publication-intro h1 { font-size: clamp(2.7rem, 5.5vw, 4rem); }
+  .publication-intro h1 { font-size: clamp(2.1rem, 4.6vw, 3rem); }
   .feed-item { grid-template-columns: 8rem minmax(0, 1fr) 1.5rem; gap: 1rem; }
 }
 @media (max-width: 700px) {
   .publication-hero-grid, .guide-feature-grid, .about-grid { grid-template-columns: 1fr; }
   .publication-hero-grid { padding-block: 2.8rem; }
-  .publication-intro h1 { max-width: 13ch; font-size: clamp(2.65rem, 11vw, 4rem); }
+  .publication-intro h1 { max-width: 20ch; font-size: clamp(2rem, 8.4vw, 2.6rem); }
   .editorial-feature { padding: 1.4rem; }
   .explore-list, .work-list, .page-body .collection-grid { grid-template-columns: 1fr; }
   .explore-item:nth-child(odd), .page-body .collection-card:nth-child(odd) { border-right: 0; }
@@ -2306,7 +2310,7 @@ html.js-motion .hero-headline.is-in .word {
 }
 @media (max-width: 360px) {
   .explore-item { grid-template-columns: 1.5rem minmax(0, 1fr) auto; padding-inline: .4rem; }
-  .publication-intro h1 { font-size: 2.5rem; }
+  .publication-intro h1 { font-size: 1.9rem; }
   .editorial-feature h2 { font-size: 1.7rem; }
 }
 
