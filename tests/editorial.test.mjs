@@ -7,10 +7,20 @@ const item = (kind, day, featured = false) => ({
   href: `/${kind}/${day}/`, featured,
 });
 
-test('explicit feature wins, with a deterministic substantial-content fallback', () => {
-  const items = [item('news', 21), item('experiment', 17), item('guide', 20)];
-  assert.equal(selectFeatured(items).kind, 'experiment');
-  assert.equal(selectFeatured([...items, item('guide', 1, true)]).href, '/guide/1/');
+test('the hero is the newest original work; news and the guide never take it', () => {
+  const items = [item('news', 28), item('guide', 27), item('experiment', 17), item('article', 24), item('architecture', 20)];
+  assert.equal(selectFeatured(items).href, '/article/24/');
+  assert.equal(selectFeatured([...items, item('experiment', 25)]).href, '/experiment/25/');
+});
+
+test('a featured flag no longer pins an older item', () => {
+  const items = [item('experiment', 17, true), item('article', 24)];
+  assert.equal(selectFeatured(items).href, '/article/24/');
+});
+
+test('with no original work the guide, then anything, is used', () => {
+  assert.equal(selectFeatured([item('news', 21), item('guide', 20)]).kind, 'guide');
+  assert.equal(selectFeatured([item('news', 21)]).kind, 'news');
 });
 
 test('recent items exclude the hero, cap news, and retain date order', () => {

@@ -30,6 +30,7 @@ For any visual change, also load the built page at 390px and 1440px, light and d
 - **Titles:** a question, ending `(experiment ID)`. The page hides the suffix and shows the ID as a label; the suffix stays in the `<title>`, feeds and search.
 - **Topics** are a fixed list in `src/data/topics.ts` (and mirrored in `scripts/check-content.mjs`). Tag an experiment with the topics it informs, not with "measurement" unless it has no other topic.
 - **Voice:** first person, British English, limits next to the numbers. Say when a result is exploratory, unadjusted, or from one model.
+- **The home hero is automatic:** it shows the newest article, architecture post or experiment, so a new post takes it over. `featured: true` on a post no longer pins it. Don't try to pin it from content; change `selectFeatured` in `src/lib/editorial.mjs` if the rule should change.
 - **Next experiments** go in `src/data/next.ts`, only if a published page already proposes them. When one is run, it becomes an experiment page and leaves that list.
 - Use `docs/templates/` to start a new article, experiment or guide, and `docs/news-posting.md` for news.
 
