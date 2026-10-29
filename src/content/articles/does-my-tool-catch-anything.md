@@ -94,6 +94,17 @@ Using my own tool properly for a day turned up some rough edges.
 
 Slightly embarrassing, but better found by me than by someone else. 😂
 
+## What I'm fixing
+
+I'm working on these at the moment:
+
+- **`run` doesn't wait for tools that register after the page loads,** so every run failed until I added a wait.
+- **The tools are lost after a page reload.**
+- **Without `--ci`, it hangs on a machine with no display.**
+- **There's no way to make the server slow,** which caused 4 of the 8 misses.
+
+The last one is the biggest. It's the difference between catching most of these bugs and catching about half of them.
+
 ## So, is it useful?
 
 I think so, with some honesty about what "useful" means here.
