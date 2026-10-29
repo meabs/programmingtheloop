@@ -69,13 +69,13 @@ export type NavItem = {
  */
 export const NAV: readonly NavItem[] = [
   { num: '00', label: 'Home', href: '/', always: true },
-  // Each section appears with its first published item.
-  { num: '01', label: 'Articles', href: '/articles/', collection: 'articles' },
-  { num: '02', label: 'Architecture', href: '/architecture/', collection: 'architecture' },
-  { num: '03', label: 'News', href: '/news/', collection: 'news' },
-  { num: '04', label: 'Experiments', href: '/experiments/', collection: 'experiments' },
+  // Original work leads: experiments, then the guide. Each section appears with its first published item.
+  { num: '01', label: 'Experiments', href: '/experiments/', collection: 'experiments' },
   // Book hub: show once at least one guide is published.
-  { num: '05', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
+  { num: '02', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
+  { num: '03', label: 'Articles', href: '/articles/', collection: 'articles' },
+  { num: '04', label: 'Architecture', href: '/architecture/', collection: 'architecture' },
+  { num: '05', label: 'News', href: '/news/', collection: 'news' },
   { num: '06', label: 'About', href: '/about/', always: true },
 ];
 

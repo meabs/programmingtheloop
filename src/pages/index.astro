@@ -10,6 +10,8 @@ import {
 } from '../lib/collections';
 import { personJsonLd } from '../lib/seo';
 import ResultPlot from '../components/experiments/ResultPlot.astro';
+import Strongest from '../components/home/Strongest.astro';
+import Follow from '../components/home/Follow.astro';
 import { axisFor, statusText, toResultPoint, kindCaption } from '../lib/results';
 import { displayTitle } from '../lib/titles';
 
@@ -71,6 +73,8 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
       </article>}
     </div>
   </section>
+
+  <Strongest heading="What the experiments show" intro="Three results to read first. The findings page groups all of them by engineering problem." />
 
   {latestWork.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
     <div class="wrap">
@@ -152,6 +156,8 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
       </ul>
     </div>
   </section>}
+
+  <Follow />
 
   <section class="publication-section publication-about" aria-labelledby="about-title">
     <div class="wrap about-grid"><h2 id="about-title">About the publication</h2><div><p>I'm Garry Meaburn. I use this space to work through practical technical questions, share original work and offer evidence-based opinions. Findings are measured; recommendations are judgement.</p><div class="about-links"><a href="/about/">More about me →</a><a href={LINKS.githubAuthor}>GitHub ↗</a><a href={LINKS.x}>X ↗</a><a href={LINKS.linkedin}>LinkedIn ↗</a></div></div></div>

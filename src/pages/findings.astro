@@ -1,26 +1,35 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Strongest from '../components/home/Strongest.astro';
+import Synthesis from '../components/home/Synthesis.astro';
 import StartHere from '../components/home/StartHere.astro';
+import Follow from '../components/home/Follow.astro';
 import { SITE_NAME, SITE_OG_IMAGE } from '../site';
 ---
 <BaseLayout
-  title={`Start here — ${SITE_NAME}`}
-  description="Five findings from the experiments, including the friction loop, each with its limits."
+  title={`What the experiments show — ${SITE_NAME}`}
+  description="What the controlled experiments on coding agents show so far, grouped by engineering problem, each result with its limits."
   canonicalPath="/findings/"
   ogImage={SITE_OG_IMAGE}
   searchable
 >
   <header class="page-head">
     <div class="wrap">
-      <p class="section-label">Start here</p>
-      <h1>Five findings from the experiments</h1>
-      <p>The shortest version of what the trials show about when context helps and when it hurts.</p>
+      <p class="section-label">Synthesis</p>
+      <h1>What the experiments show</h1>
+      <p>
+        A connected body of controlled trials, not a list of one-off tests. Start with three results, then read by the problem
+        you are trying to solve. Every number is read from the experiment it comes from, with its limits.
+      </p>
       <p>
         <a class="button primary" href="/experiments/">All experiments →</a>
+        <a class="button" href="/measured/">Every finding by topic</a>
         <a class="button" href="/guides/programming-the-loop/">Read the guide</a>
-        <a class="button" href="/guides/programming-the-loop/start/">Which chapter first?</a>
       </p>
     </div>
   </header>
-  <StartHere heading="The five findings" level="h2" />
+  <Strongest intro="If you read three, read these. Each shows the result, its interval and its limit." />
+  <Synthesis />
+  <StartHere heading="Five rules to start with" level="h2" />
+  <Follow />
 </BaseLayout>

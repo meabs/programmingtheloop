@@ -1,0 +1,67 @@
+---
+// Guide header: same brand and main navigation as the rest of the site, with Starlight's
+// search, social links and theme control. Below 1100px the main links live in the sidebar's "Site" group.
+import config from 'virtual:starlight/user-config';
+import Search from 'virtual:starlight/components/Search';
+import SocialIcons from 'virtual:starlight/components/SocialIcons';
+import ThemeSelect from 'virtual:starlight/components/ThemeSelect';
+import { getVisibleNav } from '../../lib/collections';
+
+const nav = await getVisibleNav();
+const path = Astro.url.pathname;
+const shouldRenderSearch =
+  config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
+const isActive = (href: string) => (href === '/' ? false : path === href || path.startsWith(href));
+---
+<div class="ptl-header">
+  <a class="ptl-brand" href="/" aria-label="Programming the Loop home">
+    <span class="ptl-mark" aria-hidden="true"></span>
+    <span class="ptl-name">Programming the Loop</span>
+  </a>
+  <nav class="ptl-nav" aria-label="Main">
+    {nav.map((item) => (
+      <a href={item.href} class:list={['ptl-cell', { 'is-active': isActive(item.href) }]} aria-current={isActive(item.href) ? 'page' : undefined}>
+        {item.label}
+      </a>
+    ))}
+  </nav>
+  <div class="ptl-tools print:hidden">
+    {shouldRenderSearch && <Search />}
+    <div class="ptl-social sl-hidden md:sl-flex"><SocialIcons /></div>
+    <div class="sl-hidden md:sl-flex"><ThemeSelect /></div>
+  </div>
+</div>
+
+<script>
+  // Carry the theme choice both ways between the main site ('ptl-theme') and Starlight ('starlight-theme').
+  document.addEventListener('change', (e) => {
+    const t = e.target as HTMLElement | null;
+    if (!t || !t.closest('starlight-theme-select')) return;
+    window.setTimeout(() => {
+      try {
+        const stored = localStorage.getItem('starlight-theme');
+        if (stored === 'light' || stored === 'dark') localStorage.setItem('ptl-theme', stored);
+        else localStorage.removeItem('ptl-theme');
+      } catch {}
+    }, 0);
+  });
+</script>
+
+<style>
+  @layer starlight.core {
+    .ptl-header { display: flex; align-items: center; gap: 1rem; height: 100%; min-width: 0; }
+    .ptl-brand { display: inline-flex; align-items: center; gap: .65rem; flex-shrink: 0; text-decoration: none; color: var(--sl-color-white); }
+    .ptl-mark { width: 1.2rem; height: 1.2rem; border-radius: 2px; border: 1px solid var(--sl-color-accent); background: var(--sl-color-accent); box-shadow: inset 0 0 0 3px var(--sl-color-black), inset 0 0 0 4px var(--sl-color-accent); flex-shrink: 0; }
+    .ptl-name { font-size: .92rem; font-weight: 650; letter-spacing: -0.01em; word-spacing: .12em; white-space: nowrap; }
+    .ptl-nav { display: none; align-self: stretch; margin-left: auto; border-left: 1px solid var(--sl-color-gray-5); }
+    .ptl-cell { display: inline-flex; align-items: center; padding: 0 .85rem; border-right: 1px solid var(--sl-color-gray-5); text-decoration: none; color: var(--sl-color-gray-3); font-size: .78rem; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+    .ptl-cell:hover { color: var(--sl-color-white); background: var(--sl-color-accent-low); }
+    .ptl-cell.is-active { color: var(--sl-color-white); box-shadow: inset 0 -2px 0 var(--sl-color-accent); }
+    .ptl-tools { display: flex; align-items: center; gap: 1rem; margin-left: auto; min-width: 0; }
+    .ptl-nav + .ptl-tools { margin-left: 0; }
+    .ptl-social { align-items: center; gap: 1rem; }
+    @media (min-width: 1100px) {
+      .ptl-nav { display: flex; }
+    }
+  }
+</style>

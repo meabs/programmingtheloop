@@ -1,0 +1,60 @@
+---
+import ResultPlot from '../experiments/ResultPlot.astro';
+import { getCurrentFindings } from '../../lib/findings';
+import { axisFor, kindCaption, statusText, toResultPoint } from '../../lib/results';
+import { displayTitle } from '../../lib/titles';
+import { STRONGEST } from '../../data/synthesis';
+
+interface Props {
+  heading?: string;
+  level?: 'h2' | 'h3';
+  intro?: string;
+}
+const { heading = 'Three results to read first', level = 'h2', intro } = Astro.props;
+const Heading = level;
+
+const all = await getCurrentFindings();
+const byId = new Map(all.map((f) => [f.id, f]));
+const picks = STRONGEST.map((p) => {
+  const f = byId.get(p.id);
+  if (!f) throw new Error(`Strongest finding "${p.id}" is not a current finding (src/data/synthesis.ts)`);
+  const point = toResultPoint(f);
+  return { p, f, point, axis: point ? axisFor([point]) : null };
+});
+---
+<section class="strongest" aria-labelledby="strongest-title">
+  <div class="wrap">
+    <Heading id="strongest-title">{heading}</Heading>
+    {intro && <p class="strongest-intro">{intro}</p>}
+    <ul class="strongest-list">
+      {picks.map(({ p, f, point, axis }) => (
+        <li class="strongest-item">
+          <p class="strongest-q">{p.question}</p>
+          <p class="strongest-statement">{f.statement}</p>
+          {f.value && <p class="strongest-value">{f.value}</p>}
+          {point && axis && <ResultPlot rows={[{ point }]} axis={axis} />}
+          {point && <p class="strongest-caption">{kindCaption(point.kind)}{statusText(point) ? ` · ${statusText(point)}` : ''}</p>}
+          <p class="strongest-limit"><span>Limit</span> {f.limits.join('; ')}</p>
+          <a href={f.experimentHref}>{displayTitle(f.experimentTitle)} ({f.id}) →</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .strongest { padding: 2.75rem 0; border-bottom: 1px solid var(--line); }
+  .strongest :global(h2), .strongest :global(h3) { margin-top: 0; }
+  .strongest-intro { max-width: 44rem; color: var(--ink-muted); }
+  .strongest-list { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; gap: 1.25rem; }
+  @media (min-width: 900px) { .strongest-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .strongest-item { display: flex; flex-direction: column; gap: .55rem; min-width: 0; margin: 0; padding: 1.1rem 1.15rem 1.2rem; background: var(--surface); border: 1px solid var(--line); }
+  .strongest-item p { margin: 0; overflow-wrap: anywhere; }
+  .strongest-q { font-size: 1.1rem; font-weight: 650; line-height: 1.3; color: var(--ink); }
+  .strongest-statement { font-size: .95rem; line-height: 1.5; color: var(--ink-muted); }
+  .strongest-value { font-size: 1.25rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .strongest-caption { font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .02em; color: var(--ink-faint); }
+  .strongest-limit { font-size: .84rem; line-height: 1.45; color: var(--ink-muted); }
+  .strongest-limit span { margin-right: .35rem; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .strongest-item a { margin-top: auto; padding-top: .35rem; font-size: .9rem; font-weight: 600; }
+</style>

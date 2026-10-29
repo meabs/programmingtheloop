@@ -22,6 +22,9 @@ report: "https://github.com/meabs/example/blob/<commit-sha>/REPORT.md"   # pinne
 topics:                  # ids from src/data/topics.ts; avoid "measurement" unless nothing else fits
   - verification
 # previewImage / previewAlt: optional; cards draw their plot from the findings
+# video:                 # optional: only when a video about this experiment exists
+#   url: "https://www.youtube.com/watch?v=…"
+#   label: "Watch the experiment explained"
 findings:                # IDs <experimentId>-<n>; never reuse; leave empty rather than infer
   - id: "X-1"
     statement: "What was found, with the comparison and the counts."

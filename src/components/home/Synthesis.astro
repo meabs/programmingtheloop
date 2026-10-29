@@ -1,0 +1,70 @@
+---
+import { getCurrentFindings } from '../../lib/findings';
+import { SYNTHESIS } from '../../data/synthesis';
+import { toResultPoint, statusText } from '../../lib/results';
+import { displayTitle } from '../../lib/titles';
+
+const all = await getCurrentFindings();
+const byId = new Map(all.map((f) => [f.id, f]));
+const groups = SYNTHESIS.map((g) => ({
+  ...g,
+  rows: g.ids.map((id) => {
+    const f = byId.get(id);
+    if (!f) throw new Error(`Synthesis finding "${id}" is not a current finding (src/data/synthesis.ts)`);
+    const point = toResultPoint(f);
+    return { f, status: point ? statusText(point) : null };
+  }),
+}));
+---
+<section class="synthesis" aria-labelledby="synthesis-title">
+  <div class="wrap">
+    <h2 id="synthesis-title">By engineering problem</h2>
+    <p class="synthesis-intro">
+      The same experiments, grouped by the question an engineer is trying to answer. Each line is a finding record: its
+      number, interval and limits are on the write-up it links to. The short reading under each question is my wording.
+    </p>
+    <nav class="synthesis-jump" aria-label="Problems">
+      {groups.map((g) => <a href={`#${g.id}`}>{g.problem}</a>)}
+    </nav>
+    {groups.map((g) => (
+      <section class="synthesis-group" id={g.id} aria-labelledby={`${g.id}-h`}>
+        <h3 id={`${g.id}-h`}>{g.problem}</h3>
+        <p class="synthesis-reading"><span>My reading</span> {g.reading}</p>
+        <ul class="synthesis-rows">
+          {g.rows.map(({ f, status }) => (
+            <li>
+              <a class="synthesis-id" href={f.experimentHref} title={displayTitle(f.experimentTitle)}>{f.id}</a>
+              <span class="synthesis-text">{f.statement}</span>
+              <span class="synthesis-value">
+                {f.value && <b>{f.value}</b>}
+                {status && <small>{status}</small>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</section>
+
+<style>
+  .synthesis { padding: 2.75rem 0; border-bottom: 1px solid var(--line); }
+  .synthesis :global(h2) { margin-top: 0; }
+  .synthesis-intro { max-width: 46rem; color: var(--ink-muted); }
+  .synthesis-jump { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.25rem 0 2rem; }
+  .synthesis-jump a { display: inline-flex; align-items: center; min-height: 2.5rem; padding: .35rem .85rem; font-size: .88rem; font-weight: 600; color: var(--ink); text-decoration: none; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; }
+  .synthesis-jump a:hover { background: var(--accent-soft); }
+  .synthesis-group { margin-bottom: 2.5rem; scroll-margin-top: 5rem; }
+  .synthesis-group h3 { margin: 0 0 .4rem; font-size: 1.3rem; }
+  .synthesis-reading { max-width: 52rem; margin: 0 0 1rem; color: var(--ink); }
+  .synthesis-reading span { margin-right: .5rem; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .synthesis-rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .synthesis-rows li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) 11rem; gap: .25rem 1rem; margin: 0; padding: .75rem .25rem; border-bottom: 1px solid var(--line); }
+  .synthesis-id { font: .78rem 'IBM Plex Mono', ui-monospace, monospace; padding-top: .15rem; color: var(--accent); text-decoration: none; }
+  .synthesis-id:hover { text-decoration: underline; }
+  .synthesis-text { max-width: 62ch; line-height: 1.5; }
+  .synthesis-value { display: grid; align-content: start; gap: .1rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .synthesis-value b { font-weight: 600; font-size: .95rem; color: var(--ink); }
+  .synthesis-value small { font: .68rem 'IBM Plex Mono', ui-monospace, monospace; color: var(--ink-muted); }
+  @media (max-width: 760px) { .synthesis-rows li { grid-template-columns: 1fr; } .synthesis-value { grid-auto-flow: column; justify-content: start; gap: .75rem; align-items: baseline; } }
+</style>
