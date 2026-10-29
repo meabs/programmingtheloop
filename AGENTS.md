@@ -47,5 +47,6 @@ For any visual change, also load the built page at 390px and 1440px, light and d
 - Experiments: `src/content/experiments/*.md`; schema in `src/content.config.ts`.
 - Results plot: `src/lib/results.ts`, `src/components/experiments/ResultPlot.astro`, `FindingsTable.astro`, `ExperimentCard.astro`.
 - Home, `/experiments/`, `/measured/`, `/topics/`, `/findings/`: `src/pages/`.
+- Guide (Starlight) chrome: `src/components/starlight/Header.astro` (same brand and main nav as the site) and `src/styles/starlight.css` (tokens mapped to the site's). The theme is shared between the two via `ptl-theme` / `starlight-theme`; keep that in sync if you touch either toggle.
 - Redirects and sitemap filter: `astro.config.mjs`. Don't add old redirect stubs to the sitemap.
 - Route baseline: `docs/route-baseline.txt`; add new routes there.

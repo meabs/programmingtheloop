@@ -65,6 +65,12 @@ export default defineConfig({
       favicon: '/favicon.svg',
       head: [
         {
+          // Carry the main site's saved theme into Starlight before its theme provider reads it.
+          tag: 'script',
+          content:
+            "try{var t=localStorage.getItem('ptl-theme');if(t==='light'||t==='dark')localStorage.setItem('starlight-theme',t);else localStorage.removeItem('starlight-theme')}catch(e){}",
+        },
+        {
           tag: 'meta',
           attrs: { property: 'og:image', content: ogImage },
         },
@@ -111,6 +117,7 @@ export default defineConfig({
         },
       ],
       customCss: ['./src/styles/starlight.css'],
+      components: { Header: './src/components/starlight/Header.astro' },
       sidebar: [
         {
           label: 'Site',

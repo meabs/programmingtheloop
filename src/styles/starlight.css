@@ -13,6 +13,8 @@
   --sl-color-gray-5: #cbd5e1;
   --sl-color-gray-6: #e8ecf1;
   --sl-color-black: #f6f3ee;
+  --sl-color-bg-nav: #f6f3ee;
+  --sl-color-bg-sidebar: #f6f3ee;
   --sl-font: 'Instrument Sans', 'Segoe UI', sans-serif;
   --sl-font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
   --sl-content-width: 48rem;
@@ -31,6 +33,8 @@
   --sl-color-gray-5: #2a3344;
   --sl-color-gray-6: #161b25;
   --sl-color-black: #07090d;
+  --sl-color-bg-nav: #0a0c10;
+  --sl-color-bg-sidebar: #0a0c10;
 }
 
 .sl-markdown-content h1,
