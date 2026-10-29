@@ -3,6 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { formatItemDate, experimentHref } from '../../lib/collections';
 import { cardHeadline } from '../../lib/experiment-cards';
+import { axisFor, kindCaption, toResultPoint, type ResultPoint } from '../../lib/results';
+import ResultPlot from './ResultPlot.astro';
 
 interface Props {
   item: CollectionEntry<'experiments'>;
@@ -17,10 +19,30 @@ const topics = (d.topics ?? []).filter(isTopicId);
 const label = d.experimentId ?? '';
 const headline = cardHeadline(finding);
 const plainUnder = d.description;
+
+// Preview: up to three intervals of one unit, on a shared axis. Falls back to the chart image or headline figure.
+const live = (d.findings ?? []).filter((f) => f.status !== 'superseded');
+const withPoint = live
+  .map((f) => ({ f, point: toResultPoint(f) }))
+  .filter((r): r is { f: (typeof live)[number]; point: ResultPoint } => r.point !== null);
+const lead = withPoint.find((r) => r.f.featured) ?? withPoint[0];
+const plotted = lead
+  ? [lead, ...withPoint.filter((r) => r !== lead && r.point.kind === lead.point.kind)].slice(0, 3)
+  : [];
+const plotAxis = plotted.length > 0 ? axisFor(plotted.map((r) => r.point)) : null;
 ---
 <article class="exp-card" data-topics={topics.join(' ')}>
-  <div class:list={['exp-preview', { 'has-image': !!d.previewImage, 'is-text': !d.previewImage }]}>
-    {d.previewImage ? (
+  <div class:list={['exp-preview', { 'has-plot': plotted.length > 0, 'has-image': plotted.length === 0 && !!d.previewImage, 'is-text': plotted.length === 0 && !d.previewImage }]}>
+    {plotted.length > 0 && plotAxis ? (
+      <div class="exp-plot">
+        <ResultPlot
+          compact
+          axis={plotAxis}
+          rows={plotted.map((r) => ({ text: `${r.f.id} · ${r.f.value ?? ''}`, point: r.point }))}
+        />
+        <p class="exp-plot-caption">{kindCaption(lead.point.kind)}</p>
+      </div>
+    ) : d.previewImage ? (
       <img src={d.previewImage} alt={d.previewAlt ?? ''} loading="lazy" width="1800" height="920" />
     ) : headline ? (
       <p class:list={['exp-figure', { 'is-long': headline.text.length > 28 || headline.notMeasurable }]}>
@@ -58,8 +80,11 @@ const plainUnder = d.description;
   .exp-card:hover, .exp-card:focus-within { border-color: var(--accent); }
   .exp-preview { aspect-ratio: 2 / 1; display: grid; place-items: center; overflow: hidden; border-bottom: 1px solid var(--line); background: var(--accent-soft, rgba(13,122,114,.1)); }
   .exp-preview.has-image { background: #fff; }
+  .exp-preview.has-plot { aspect-ratio: auto; display: block; background: var(--surface); }
+  .exp-plot { box-sizing: border-box; width: 100%; min-height: 8.6rem; align-content: start; padding: .9rem 1rem .8rem; display: grid; gap: .6rem; }
+  .exp-plot-caption { margin: 0; font: .66rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .03em; color: var(--ink-faint); }
   .exp-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .exp-figure { margin: 0; padding: 1rem 1.25rem; text-align: center; font-size: clamp(1.75rem, 5.5vw, 2.5rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.15; color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .exp-figure { margin: 0; padding: 1rem 1.25rem; text-align: center; font-size: clamp(1.75rem, 5.5vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
   .exp-figure.is-long { font-size: clamp(1.05rem, 3.6vw, 1.35rem); letter-spacing: -.01em; line-height: 1.3; font-weight: 650; }
   .exp-body { display: flex; flex-direction: column; gap: .4rem; padding: .85rem 1rem 1rem; flex: 1; }
   .exp-meta { display: flex; justify-content: space-between; gap: .75rem; margin: 0; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }

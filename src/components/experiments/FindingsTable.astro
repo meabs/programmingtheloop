@@ -1,5 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import ResultPlot from './ResultPlot.astro';
+import { axisFor, statusText, toResultPoint, type Axis, type ResultKind, type ResultPoint } from '../../lib/results';
 
 interface Props {
   findings: NonNullable<CollectionEntry<'experiments'>['data']['findings']>;
@@ -11,211 +13,89 @@ const rows = findings.filter((f) => f.status !== 'superseded');
 function displayN(n: string | number | undefined | null): string | null {
   return n !== undefined && n !== null && n !== '' ? String(n) : null;
 }
+
+// One axis per unit across the experiment, so intervals line up and can be compared by eye.
+const points = rows.map((f) => toResultPoint(f));
+const axes = new Map<ResultKind, Axis>();
+for (const kind of ['pts', 'ratio', 'pct'] as ResultKind[]) {
+  const ofKind = points.filter((p): p is ResultPoint => p !== null && p.kind === kind);
+  if (ofKind.length > 0) axes.set(kind, axisFor(ofKind));
+}
 ---
 {rows.length > 0 && (
   <section class="findings-block" aria-labelledby="findings-heading">
     <h2 id="findings-heading">{rows.length === 1 ? 'Key finding' : 'Key findings'}</h2>
 
-    <ul class="findings-cards">
-      {rows.map((f) => (
-        <li class="finding-card">
-          <div class="finding-top">
-            <code class="finding-id">{f.id}</code>
-            {f.value && (
-              <span class:list={['finding-value', { 'is-long': f.value.length > 24 }]}>{f.value}</span>
-            )}
-          </div>
-          <p class="finding-statement">{f.statement}</p>
+    <ul class="findings-list">
+      {rows.map((f, i) => {
+        const point = points[i];
+        const label = point ? statusText(point) : null;
+        return (
+          <li class="finding">
+            <div class="finding-main">
+              <code class="finding-id">{f.id}</code>
+              <p class="finding-statement">{f.statement}</p>
 
-          {f.detail && f.detail.length > 0 && (
-            <ul class="finding-detail">
-              {f.detail.map((d) => (
-                <li>{d}</li>
-              ))}
-            </ul>
-          )}
-
-          {(f.metric || f.interval || displayN(f.n)) && (
-            <dl class="finding-meta">
-              {f.metric && (
-                <div>
-                  <dt>Measure:</dt>
-                  <dd>{f.metric}</dd>
-                </div>
+              {f.detail && f.detail.length > 0 && (
+                <ul class="finding-detail">
+                  {f.detail.map((d) => (
+                    <li>{d}</li>
+                  ))}
+                </ul>
               )}
-              {f.interval && (
-                <div>
-                  <dt>Interval:</dt>
-                  <dd>
-                    {f.interval.low} to {f.interval.high}
+
+              <p class="finding-limits">
+                <span class="finding-label">Limits</span>
+                {f.limits.join(' · ')}
+              </p>
+              <a class="finding-source" href={f.source} rel="noopener noreferrer">Source ↗</a>
+            </div>
+
+            {(f.value || f.interval || f.metric || displayN(f.n)) && (
+              <div class="finding-result">
+                {f.value && <p class:list={['finding-value', { 'is-long': f.value.length > 24 }]}>{f.value}</p>}
+                {label && <p class:list={['finding-status', `is-${point?.status}`]}>{label}</p>}
+                {point && <ResultPlot rows={[{ point }]} axis={axes.get(point.kind)!} />}
+                {f.interval && (
+                  <p class="finding-interval">
+                    95% interval {f.interval.low} to {f.interval.high}
                     <span class="finding-method">{f.interval.method}</span>
-                  </dd>
-                </div>
-              )}
-              {displayN(f.n) && (
-                <div>
-                  <dt>Runs:</dt>
-                  <dd>{displayN(f.n)}</dd>
-                </div>
-              )}
-            </dl>
-          )}
-
-          <div class="finding-limits">
-            <span class="finding-limits-label">Limits:</span>
-            <ul class="findings-limits">
-              {f.limits.map((lim) => (
-                <li>{lim}</li>
-              ))}
-            </ul>
-          </div>
-
-          <a class="finding-source" href={f.source} rel="noopener noreferrer">Source ↗</a>
-        </li>
-      ))}
+                  </p>
+                )}
+                {f.metric && <p class="finding-metric"><span class="finding-label">Measure</span>{f.metric}</p>}
+                {displayN(f.n) && <p class="finding-metric"><span class="finding-label">Runs</span>{displayN(f.n)}</p>}
+              </div>
+            )}
+          </li>
+        );
+      })}
     </ul>
   </section>
 )}
 
 <style>
-  .findings-block {
-    margin: 0 0 2.25rem;
-  }
-  .findings-block h2 {
-    margin-top: 0;
-  }
+  .findings-block { margin: 0 0 2.25rem; }
+  .findings-block h2 { margin-top: 0; }
+  .findings-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-strong); }
+  .finding { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem 2rem; margin: 0; padding: 1.25rem 0; border-bottom: 1px solid var(--line); }
+  @media (min-width: 820px) { .finding { grid-template-columns: minmax(0, 1fr) 17rem; } }
 
-  .findings-block .findings-cards {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 1rem;
-  }
+  .finding-id { display: block; margin-bottom: .35rem; font-size: .8rem; color: var(--ink-faint); }
+  .finding-statement { margin: 0 0 .75rem; font-size: 1.05rem; line-height: 1.45; color: var(--ink); }
+  .finding-detail { margin: 0 0 .75rem; padding: 0 0 0 1.1rem; font-size: .92rem; line-height: 1.5; color: var(--ink-muted); }
+  .finding-detail li { margin: .3rem 0; overflow-wrap: anywhere; }
+  .finding-limits { margin: 0 0 .6rem; font-size: .88rem; line-height: 1.5; color: var(--ink-muted); }
+  .finding-label { display: inline-block; margin-right: .5rem; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .finding-source { font-size: .88rem; font-weight: 600; }
 
-  .findings-block .finding-card {
-    margin: 0;
-    padding: 1.15rem 1.25rem 1.25rem;
-    background: var(--surface, #fffcf8);
-    border: 1px solid var(--line, #d8d2c8);
-    border-left: 3px solid var(--accent, #0d7a72);
-    border-radius: 10px;
-  }
-
-  .findings-block .finding-top {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.25rem 1rem;
-    margin-bottom: 0.6rem;
-  }
-  .findings-block .finding-id {
-    font-size: 0.8rem;
-    color: var(--ink-faint, #6b7280);
-  }
-  .findings-block .finding-value {
-    font-size: clamp(1.5rem, 6vw, 1.9rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: var(--accent, #0d7a72);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .findings-block .finding-value.is-long {
-    flex-basis: 100%;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    line-height: 1.35;
-  }
-
-  .findings-block .finding-statement {
-    margin: 0 0 1rem;
-    font-size: 1.05rem;
-    line-height: 1.45;
-    color: var(--ink, #12151c);
-  }
-
-  .findings-block .finding-detail {
-    margin: 0 0 1rem;
-    padding: 0 0 0 1.1rem;
-    font-size: 0.92rem;
-    line-height: 1.5;
-    color: var(--ink-muted, #4a5160);
-  }
-  .findings-block .finding-detail li {
-    margin: 0.35rem 0;
-    overflow-wrap: anywhere;
-  }
-
-  .findings-block .finding-meta {
-    display: grid;
-    gap: 0.5rem;
-    margin: 0 0 1rem;
-    padding: 0.75rem 0;
-    border-top: 1px solid var(--line, #d8d2c8);
-    border-bottom: 1px solid var(--line, #d8d2c8);
-    font-size: 0.9rem;
-  }
-  .findings-block .finding-meta > div {
-    display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: 0.75rem;
-  }
-  .findings-block .finding-meta dt {
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-faint, #6b7280);
-    padding-top: 0.2rem;
-  }
-  .findings-block .finding-meta dd {
-    margin: 0;
-    color: var(--ink-muted, #4a5160);
-    font-variant-numeric: tabular-nums;
-    overflow-wrap: anywhere;
-  }
-  .findings-block .finding-method {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--ink-faint, #6b7280);
-  }
-
-  .findings-block .finding-limits-label {
-    display: block;
-    margin-bottom: 0.4rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-faint, #6b7280);
-  }
-  .findings-block .findings-limits {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 0;
-    padding: 0;
-  }
-  .findings-block .findings-limits li {
-    margin: 0;
-    padding: 0.45rem 0.7rem;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.82rem;
-    line-height: 1.35;
-    color: var(--ink-muted, #4a5160);
-    background: var(--accent-soft, rgba(13, 122, 114, 0.12));
-    border-radius: 999px;
-  }
-
-  .findings-block .finding-source {
-    display: inline-block;
-    margin-top: 1.1rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
+  .finding-result { display: grid; align-content: start; gap: .5rem; min-width: 0; padding: .1rem 0 0 1rem; border-left: 1px solid var(--line); }
+  @media (max-width: 819px) { .finding-result { padding: .85rem 0 0; border-left: 0; border-top: 1px solid var(--line); } }
+  .finding-value { margin: 0; font-size: 1.25rem; font-weight: 600; line-height: 1.2; color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .finding-value.is-long { font-size: .98rem; line-height: 1.35; }
+  .finding-status { margin: 0; font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .02em; color: var(--ink-muted); }
+  .finding-status.is-excludes-null { color: var(--accent); }
+  .finding-interval { margin: 0; font-size: .82rem; line-height: 1.4; color: var(--ink-muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .finding-method { display: block; margin-top: .15rem; font-size: .76rem; color: var(--ink-faint); }
+  .finding-metric { margin: 0; font-size: .82rem; line-height: 1.4; color: var(--ink-muted); overflow-wrap: anywhere; }
+  .finding-metric .finding-label { display: block; margin: 0 0 .1rem; }
 </style>
