@@ -18,6 +18,9 @@ agents:
     settings: "low or medium reasoning, isolation on"
 runs: 240
 repo: "https://github.com/meabs/experiments"
+video:
+  url: "https://www.youtube.com/shorts/e5DkwZXj_qE"
+  label: "Watch the short video"
 report: "https://github.com/meabs/experiments/blob/9580d4aa95ec23e581026741afb909e820d5af51/2026-10-verify-vs-skills/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/9580d4aa95ec23e581026741afb909e820d5af51/2026-10-verify-vs-skills/README.md"
 topics:

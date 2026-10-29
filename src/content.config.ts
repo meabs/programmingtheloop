@@ -17,6 +17,8 @@ const articleSchema = z.object({
   /** Optional share-preview image (path under /public). */
   previewImage: z.string().optional(),
   previewAlt: z.string().optional(),
+  /** Optional video about this article (YouTube). Only set when one exists. */
+  video: z.object({ url: z.string().url(), label: z.string().optional() }).optional(),
 });
 
 /**

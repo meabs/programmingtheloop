@@ -42,6 +42,9 @@ const jsonLd = articleJsonLd({
     <div class="wrap">
       <p class="section-label">Article · {formatItemDate(post.data.date)}</p>
       <h1>{post.data.title}</h1>
+      {post.data.video && (
+        <p class="actions"><a class="button primary" href={post.data.video.url} rel="noopener noreferrer">{post.data.video.label ?? 'Watch the video'} ↗</a></p>
+      )}
     </div>
   </header>
   <div class="page-body">
