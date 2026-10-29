@@ -1,8 +1,8 @@
 ---
 title: "The endpoint worked. Was it secure? (experiment SEC)"
-description: "A hosted coding agent added 320 endpoints to a multi-tenant Spring Boot API from ordinary tickets. About one in nine let the wrong person in, and the agent reported success almost every time. A security skill changed nothing measurable. A security gate of public tests beat the skill, but only once two faults in my own tests were fixed, and nothing stopped approvers approving their own requests."
+description: "A hosted coding agent added 320 endpoints to a multi-tenant Spring Boot API from ordinary tickets. The agent handled framework-level security well but repeatedly missed one business rule: in 38 of 40 closure-approval runs, an approver could approve their own request. A security skill changed nothing measurable. A gate of public tests improved the behaviours it named, but not that failure, and its edge over the skill rests on a corrected, exploratory result."
 date: 2026-10-29
-summary: "From ordinary tickets, Luna shipped working but insecure endpoints in 18% of baseline runs, 11% with a real access hole, and claimed success in 69 of 71 failures. A security skill, read every time, didn't help. A gate of public security tests beat the skill by 11 points once two test faults were fixed, but missed what its tests didn't name: 38 of 40 runs let an approver approve their own request."
+summary: "From ordinary tickets, Luna shipped working but insecure endpoints in 18% of baseline runs. All 9 genuine access breaches came from one task, closure approval, where the requester could approve their own request. A security skill, read every time, didn't help. A gate of public security tests beat the skill by 11 points in an exploratory analysis after two test faults were fixed, but it did not reduce genuine access breaches: 38 of 40 closure runs let an approver approve their own request."
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
@@ -39,10 +39,11 @@ findings:
     n: 80
     detail:
       - "9 of 80 (11%) were access breaches: the wrong person could act or see data"
+      - "all 9 came from one task, closure approval, repeated 10 times; this is not a rate across independently chosen endpoints"
       - "the other 5 refused with 403 where the service's convention is 404, which tells an outsider the record exists"
       - "every rule the hidden tests check is written in the ticket, the README or the code"
     limits:
-      - "one model, one small service, eight tasks"
+      - "one model, one small service, eight deliberately chosen tasks; the baseline breaches are concentrated in one of them"
     source: "https://github.com/meabs/experiments/blob/58f43d6de4294945aa320be9df7fa3411636d1cb/2026-10-sec-authz/REPORT.md"
     status: current
     featured: false
@@ -64,8 +65,8 @@ findings:
     status: current
     featured: false
   - id: "SEC-3"
-    statement: "A gate of public security tests beat the skill, but only once two faults in my test materials were fixed"
-    metric: "runs that worked and were secure (higher is better), gate minus skill, mean over eight tasks, corrected"
+    statement: "In an exploratory analysis after two faults in my test materials were fixed, a gate of public security tests beat the skill"
+    metric: "runs that worked and were secure (higher is better), gate minus skill, mean over eight tasks, corrected (exploratory)"
     value: "+11 pts"
     interval:
       low: "+5 pts"
@@ -77,8 +78,11 @@ findings:
       - "fault 1: a hidden test assumed admins could rename accounts, which nothing said; fixed and regraded"
       - "fault 2: a gate test's name implied the wrong rule, and agents followed it in 8 of 20 runs; renamed and rerun"
       - "the gate didn't measurably beat no help: +6 points (−1 to +12.5), Holm p 0.19"
+      - "the gate fixed response conventions (wrong-denial-code failures fell from 5 of 80 to 0) but not genuine access breaches: 10 of 80 corrected for the gate and 9 of 80 for both, against 9 of 80 with no help"
     limits:
       - "the corrections were decided after seeing the runs; the pre-registered result stays the primary one"
+      - "the S08 fix repaired a hidden grader and regraded saved runs; the S05 fix changed what the agents were told and needed 20 new runs, so the corrected comparison is a revised condition, not a confirmation"
+      - "the skill is general advice and the gate is task-specific tests, so the comparison mixes how specific the information is with how it is delivered"
     source: "https://github.com/meabs/experiments/blob/58f43d6de4294945aa320be9df7fa3411636d1cb/2026-10-sec-authz/REPORT.md"
     status: current
     featured: false
@@ -88,22 +92,23 @@ findings:
     value: "38 of 40"
     n: 40
     detail:
-      - "the code says 'Closing needs a second person, an approver'"
+      - "the requirement is in a class-level comment in ClosureRequest.java ('Closing needs a second person, an approver'), not in the ticket, so it tests whether the agent finds rules in the repository"
       - "the agents checked role, tenant and state correctly, but never compared the approver with the requester"
       - "neither the skill nor the gate's four tests mentioned separation of duties"
+      - "the missing control is a domain invariant (the requester must differ from the approver), not a missing framework annotation"
     limits:
       - "one task; other domain rules may be easier or harder to spot"
     source: "https://github.com/meabs/experiments/blob/58f43d6de4294945aa320be9df7fa3411636d1cb/2026-10-sec-authz/REPORT.md"
     status: current
     featured: false
   - id: "SEC-5"
-    statement: "In 69 of 71 failed runs, the agent's closing line said its checks had passed"
+    statement: "In 69 of 71 failed runs, the agent's closing line said its own checks had passed"
     metric: "failed runs whose verification line reported success (lower is better)"
     value: "69 of 71"
     n: 71
     detail:
       - "the other two made no claim"
-      - "the agents' own tests passed; the hidden tests didn't"
+      - "the agents' own tests did pass; the hidden tests didn't, so the finding is that passing visible tests gave poor assurance, not that the agents lied"
     limits:
       - "compared with the corrected grades"
     source: "https://github.com/meabs/experiments/blob/58f43d6de4294945aa320be9df7fa3411636d1cb/2026-10-sec-authz/REPORT.md"
@@ -123,7 +128,7 @@ I wanted to know:
 - how often a coding agent, working from ordinary tickets, ships endpoints that work but aren't secure;
 - whether a skill, a gate, or both make secure endpoints more likely.
 
-**The short answer:** about one endpoint in nine had a real access hole, and the agent said it was fine almost every time. The skill didn't help. The gate helped somewhat, but only with what its tests named.
+**The short answer:** across eight endpoint tasks, the agent repeatedly missed one critical business rule. In 9 of 10 baseline attempts at a closure-approval endpoint, it let the requester approve their own request, and it said its checks had passed almost every time it failed. The skill didn't help. The gate fixed the behaviours its tests named, such as response codes, but not that rule.
 
 ## Prediction
 
@@ -146,7 +151,7 @@ Before the runs, I published the design and four hypotheses ([README.md](https:/
 
 Its README states the security model and conventions, for example that records you may not see answer 404, exactly like missing ones.
 
-**The tasks:** eight tickets, each asking for one new endpoint: account notes, contact details, closure approval, customer search, a staff case page, statements, a data export and account settings. They read like real tickets: the feature, who it's for, and the request and response shapes. They don't repeat the security rules. Those are in the README and the code, for example "Closing needs a second person, an approver". The evaluation tests are hidden; the rules aren't.
+**The tasks:** eight tickets, each asking for one new endpoint: account notes, contact details, closure approval, customer search, a staff case page, statements, a data export and account settings. They read like real tickets: the feature, who it's for, and the request and response shapes. They don't repeat the security rules. Those are in the README and the code. For example, "Closing needs a second person, an approver" is in a class comment in `ClosureRequest.java`, not in the ticket. The evaluation tests are hidden; the rules aren't.
 
 **Four setups, differing only in files:**
 
@@ -204,7 +209,7 @@ Each cell is runs that worked and were secure, out of 80 (higher is better).
 | # | Comparison | As pre-registered | Corrected |
 | --- | --- | --- | --- |
 | H2 | skill − no help | −5.0 points (−12.5 to +3.7), Holm p 0.93: no measurable difference | the same |
-| H3 | gate − skill | +7.5 points (0 to +15), Holm p 0.23: no measurable difference | **+11.2 points (+5 to +17.5), Holm p 0.012: confirmed** |
+| H3 | gate − skill | +7.5 points (0 to +15), Holm p 0.23: no measurable difference | **+11.2 points (+5 to +17.5), Holm p 0.012: statistically significant (exploratory)** |
 | — | gate − no help | +2.5 points (−5 to +10), Holm p 0.77 | +6.2 points (−1.2 to +12.5), Holm p 0.19 |
 | H4 | both − gate | −3.7 points (−11.3 to +3.8) | −1.2 points (−7.5 to +5.0) |
 
@@ -229,7 +234,7 @@ Each cell is runs passed out of 10, pre-registered runs (higher is better).
 
 - **The gate's clearest win was a convention.** Its public test `anotherCustomerGets404` told the agent the 404 rule directly.
 - **The skill was opened in every run,** but its general points didn't change what the agent did.
-- **The closure-approval hole survived everything.** The agents checked role, tenant and state correctly, then recorded the approver without comparing them with the requester. Neither safeguard mentioned it.
+- **The closure-approval hole survived everything,** and it accounts for all 9 genuine baseline access breaches. The agents checked role, tenant and state correctly, then recorded the approver without comparing them with the requester. Neither safeguard mentioned it. The gate cut wrong-denial-code failures from 5 of 80 to 0, but it didn't reduce genuine access breaches (9 of 80 with no help; 10 with the corrected gate, 9 with both).
 
 ### Cost
 
@@ -244,9 +249,10 @@ About $0.015 and 49 seconds per run at list prices; $5.19 for all 340 runs. The 
 
 ## Limits
 
-- **The scope is narrow:** one model at one effort level, one small and well-documented service, eight tasks.
+- **The scope is narrow:** one model at one effort level, one small and well-documented service, eight tasks. The eight tasks were chosen, not sampled, so the results show repeatability on those tasks, not a failure rate for other APIs, and the intervals don't include uncertainty about task choice.
 - **10 runs per task and setup** can't reliably show differences under about 15 points. Most of the differences between setups come from three tasks.
-- **The corrected results were decided after seeing the runs.** The pre-registered result, no hypothesis confirmed, stays the primary one. The corrected one shows what the experiment would have found without my two mistakes.
+- **The corrected results were decided after seeing the runs.** The pre-registered result, no hypothesis confirmed, stays the primary one. Regrading after the S08 fix repaired a faulty grader. The S05 rerun changed the information the agents got, after I had seen the failures, so its result is exploratory evidence for a follow-up, not a confirmation or an independent replication.
+- **The skill and the gate differ in two ways at once:** the skill is general prose and the gate is task-specific executable tests. This experiment can't separate how specific the information was from how it was delivered.
 - **I wrote both the gate tests and the hidden tests.** A team's own gate might overlap with real risks more or less than mine did.
 - **The one data-export failure is borderline:** the field name appeared, but with no value.
 
@@ -254,11 +260,11 @@ About $0.015 and 49 seconds per run at list prices; $5.19 for all 340 runs. The 
 
 This part is my interpretation, not a measurement.
 
-**Working endpoints aren't evidence of secure ones.** In about one run in nine, the wrong person could act or see data, and the endpoint still passed the agent's own tests. A "does it work" review won't catch this.
+**Working endpoints aren't evidence of secure ones.** In 9 of 10 baseline closure-approval runs, the requester could approve their own request, and the endpoint still passed the agent's own tests. A "does it work" review won't catch this. This isn't a risk estimate across endpoints in general: all the baseline access breaches came from that one task.
 
-**Don't trust the agent's report on security.** 69 of 71 failed runs said their checks had passed.
+**Don't rely on the agent's report on security.** 69 of 71 failed runs said their checks had passed. That was probably accurate about its own tests, which is the problem: passing visible tests gave little assurance.
 
-**Executable tests did better than advice.** If you add one safeguard, make it denied-path tests for each new endpoint, not a security checklist for the agent. Adding the skill on top of the gate gained nothing measurable.
+**Executable tests did better than advice on what they named.** If you add one safeguard, make it denied-path tests for each new endpoint, not a security checklist for the agent. But the gate didn't reduce genuine access breaches here, and since the gate was also more specific than the skill, this doesn't show that tests beat prose. Adding the skill on top of the gate gained nothing measurable.
 
 **Safeguards only cover what they name.** The holes that got through broke business rules, such as "a second person approves", not framework mechanics. Neither a general skill nor a gate without that test catches them. Someone who knows the domain still has to name these rules, in a test or in review.
 
@@ -268,8 +274,16 @@ This part is my interpretation, not a measurement.
 
 These are proposals, not results.
 
-- **A skill that states the domain's own rules** (separation of duties, which assignment counts) instead of general points. Did the skill fail because skills don't work, or because this one said nothing specific?
+- **A 2×2 of guidance specificity and format.** Generic or domain-specific, written or executable:
+
+  | | Generic | Domain-specific |
+  | --- | --- | --- |
+  | Written | the current skill | explicit domain rules |
+  | Executable | generic security checks | task-specific authorisation tests |
+
+  That would show whether the skill failed because prose doesn't work or because this one said nothing specific.
 - **Gate tests written by the agent:** ask it to write denied-path tests before implementing. Does it find the four-eyes rule on its own?
+- **Domain invariants across several independent workflows,** with explicit rules, generated tests and hand-written tests as separate conditions. Can an agent implement authorisation when security depends on business relationships rather than framework permissions?
 - **A weaker or local model,** where functional success isn't near the ceiling and the safeguards may matter more.
 
 ## Reproduce
