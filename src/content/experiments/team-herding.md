@@ -1,8 +1,8 @@
 ---
 title: "Three AI agents agreed. Did that make them right? (experiment TH)"
-description: "AI agents triaged security alerts whose evidence contained one false fact, contradicted by another record. A vote of three agents did no better than one. After reading each other's conclusions, all three escalated every harmless alert with conflicting records. A stronger model reviewing the team rarely overruled it. Allowing a \"can't tell, investigate\" answer halved the peer-reviewed team's harmful errors."
+description: "AI agents triaged security alerts whose evidence contained one false fact, contradicted by another record. A vote of three agents did no better than one. After reading each other's conclusions, all three escalated every harmless alert with conflicting records. A stronger model reviewing the team rarely overruled it. Allowing a \"can't tell, investigate\" answer halved the peer-reviewed team's harmful errors by sending cases to a human."
 date: 2026-10-29
-summary: "With tampered security evidence, three Luna agents voting got 20 of 42 cases right, against 17 for one agent. After peer review all three escalated all 22 harmless cases with conflicting records, and Sol, reviewing the team, overruled it only 6 times in 42. Letting agents answer \"can't tell, investigate\" halved the peer-reviewed team's harmful errors (29 to 15 of 42, exploratory), at the cost of more cases sent to a human."
+summary: "With tampered security evidence, three Luna agents voting got 20 of 42 cases right, against 17 for one agent. After peer review all three escalated all 22 harmless cases with conflicting records, and Sol, reviewing the team, overruled it only 6 times in 42. Letting agents answer \"can't tell, investigate\" halved the peer-reviewed team's harmful errors (29 to 15 of 42, exploratory), by sending 19 of 42 cases to a human."
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
@@ -43,9 +43,10 @@ findings:
     n: 42
     detail:
       - "the vote did better on 3 cases, the same on 18 and worse on none"
-      - "all three voting agents were wrong together in 18 of 42; independent errors at each case's own difficulty would give 18.9, so hard cases fail for all three because each fails alone"
+      - "all three voting agents were wrong together in 18 of 42; one error rate for every case would give 6.0, and each case's own rate would give 18.9, so most of the apparent shared error is case difficulty"
     limits:
       - "the agents shared one model, one prompt and the same evidence; diverse agents were not tested"
+      - "the 18.9 baseline is estimated from the same six solo answers per case, so it cannot show that errors were no more shared than chance, and any residual dependence between the agents cannot be measured reliably"
     source: "https://github.com/meabs/experiments/blob/c8c5bf1149b0f5e5aebcaa591d7427bafabc352d/2026-10-team-herding/REPORT.md"
     status: current
     featured: false
@@ -79,14 +80,14 @@ findings:
     status: current
     featured: false
   - id: "TH-4"
-    statement: "Allowing a \"can't tell, investigate\" answer for conflicting evidence halved the peer-reviewed team's harmful errors (exploratory)"
+    statement: "Allowing a \"can't tell, investigate\" answer for conflicting evidence halved the peer-reviewed team's harmful errors, by sending 19 of 42 falsified case-repeats to a human (exploratory)"
     metric: "harmful errors after peer review: genuine threats called harmless plus harmless activity escalated, of 42 falsified case-repeats (lower is better)"
     value: "29 → 15"
     n: 42
     detail:
       - "fewer harmful errors on 9 cases, more on none; two-sided sign-flip p 0.004, unadjusted"
       - "genuine threats called harmless fell from 7 to 2 of 20; harmless activity escalated from 22 to 13 of 22"
-      - "the cost: 19 of 42 falsified and 5 of 18 clean case-repeats sent for investigation, and right answers fell from 13 to 8"
+      - "the cost: 19 of 42 falsified and 5 of 18 clean case-repeats sent for investigation, and right answers fell from 13 to 8; those cases are unresolved, not solved, and still need an analyst"
     limits:
       - "added after the main run, in an amendment, and run afterwards rather than interleaved"
     source: "https://github.com/meabs/experiments/blob/c8c5bf1149b0f5e5aebcaa591d7427bafabc352d/2026-10-team-herding/REPORT.md"
@@ -105,7 +106,7 @@ So I put the two together. When the evidence behind a security alert has been ta
 - does a team of agents catch the false fact, repeat the mistake, or make it worse?
 - does a stronger model, reviewing the team's work at the end, fix it?
 
-**The short answer:** extra copies of the same agent didn't add an independent check. Peer review made the agents agree, not get more right. The stronger reviewer mostly confirmed what the team said. The biggest improvement came from letting the agents say "the records conflict, I can't tell".
+**The short answer:** extra copies of the same agent didn't add an independent check. Peer review made the agents agree and escalate, not get more right. The stronger reviewer mostly confirmed what the team said. The biggest improvement came from letting the agents say "the records conflict, I can't tell".
 
 ## Prediction
 
@@ -148,9 +149,15 @@ Findings TH-1 to TH-4 are at the top of the page.
 
 <img src="/guide-images/chart-team-herding.png" alt="Harmful errors, lower is better, of 20 genuine threats and 22 harmless cases: one Luna agent 5 and 16; three voting 7 and 15; three after peer review 7 and 22; one agent with the same token budget 4 and 16; Sol reviewing the team 2 and 17; Sol alone 2 and 18. Of 42 falsified cases, right, sent for investigation and harmful: three voting 20, 0, 22, and with a can't-tell answer allowed 13, 11, 18; peer review 13, 0, 29, and with can't-tell allowed 8, 19, 15." width="1800" height="920" loading="lazy" />
 
-<figcaption>Left: extra agents and a stronger reviewer didn't cut harmful errors much; peer review escalated every conflicting harmless case. Right: a "can't tell" answer halved peer review's harmful errors. Source: github.com/meabs/experiments, 2026-10-team-herding/results (Codex 0.157, medium effort).</figcaption>
+<figcaption>Left: extra agents and a stronger reviewer didn't cut harmful errors much; peer review escalated every conflicting harmless case. Right: a "can't tell" answer halved peer review's harmful errors, by sending 19 cases to a human. Source: github.com/meabs/experiments, 2026-10-team-herding/results (Codex 0.157, medium effort).</figcaption>
 
 </figure>
+
+### Two ways to score
+
+The pre-registered measure is **classification**: a case counts as right when the malicious or benign decision matches the ground truth, even if the agent also asked for an investigation. H1 to H5 use it, as pre-registered.
+
+A triage team sees something different: **the outcome**, meaning what the agent did. The tables further down count each falsified case as a right action, a harmful action, or sent for investigation. They differ: one agent's 17 correct decisions in the first table are 16 right, 21 harmful and 5 sent for investigation in the outcome table. For judging a deployed team, the outcome view is the more useful one.
 
 ### Correct decisions
 
@@ -211,7 +218,16 @@ I logged this as an amendment before writing anything up, kept the pre-registere
 
 ### Allowing "can't tell"
 
-Of 42 falsified alerts: right (higher is better) / harmful error (lower is better) / sent for investigation.
+**Peer review, without and with "can't tell" allowed, of 42 falsified alerts:**
+
+- **Harmful actions:** 29 → 15 (fewer on 9 alerts, more on none; p 0.004, unadjusted and exploratory).
+- **Genuine threats missed:** 7 → 2 of 20. Harmless activity escalated: 22 → 13 of 22.
+- **Sent for investigation:** 0 → 19. Five of 18 clean alerts were sent as well.
+- **Right actions:** 13 → 8.
+
+This is a trade of coverage for risk, with human review as the third cost. The 19 cases weren't solved, they moved to an analyst.
+
+By setup, of 42 falsified alerts: right (higher is better) / harmful error (lower is better) / sent for investigation.
 
 | Setup | Main run | "Can't tell" allowed |
 | --- | --- | --- |
@@ -220,8 +236,6 @@ Of 42 falsified alerts: right (higher is better) / harmful error (lower is bette
 | C: peer review | 13 / 29 / 0 | 8 / 15 / 19 |
 | F: Sol reviews the team | 16 / 19 / 7 | 10 / 16 / 16 |
 
-- **Peer review's harmful errors fell from 29 to 15:** fewer on 9 alerts, more on none (p 0.004, exploratory). Threats called harmless fell from 7 to 2, harmless activity escalated from 22 to 13.
-- **The cost:** 19 falsified and 5 clean alerts went to a human, and right answers fell from 13 to 8.
 - **Peer review now moved answers towards investigation instead of escalation.** No answer went from right to harmful.
 - The other setups changed less, with 3 or 4 fewer harmful errors each.
 
@@ -249,7 +263,7 @@ This part is my interpretation, not a measurement.
 
 **More copies of the same agent aren't an independent check.** When the evidence misleads one agent, it misleads the others on the same alerts.
 
-**Agents reading each other's conclusions end up agreeing, not more accurate.** Here they all escalated every conflicting harmless alert. In a security team, that's analyst time spent on false alarms. With differently built evidence, it could as easily be three agents closing a real threat together.
+**Agreeing, being right and being safe are three different things.** After reading each other's conclusions the agents converged: all three escalated all 22 harmless alerts, up from 15 under a plain vote. That isn't clearly more wrong or less safe. 20 of the 23 right-to-wrong changes were harmless alerts the agent had closed and then escalated, a shift towards caution, and peer review missed no more genuine threats than voting (7 of 20). What it cost was analyst time on false alarms. With differently built evidence, the same pull towards the group's reading could as easily mean three agents closing a real threat together, but this experiment didn't test that.
 
 **A unanimous team looks more convincing than it is.** "Three agents agreed" invites trust, but here it mostly meant the agents had settled on the same reading of a conflict.
 
@@ -263,11 +277,11 @@ For AI agents triaging security alerts, based on this experiment. None rests on 
 
 | Recommendation | Why | Strength |
 | --- | --- | --- |
-| Give agents an explicit "evidence conflicts, can't tell" answer that routes to a human, and say when to use it | Peer review's harmful errors fell from 29 to 15 of 42 | Moderate: exploratory, p 0.004 |
+| Give agents an explicit "evidence conflicts, can't tell" answer that routes to a human, and say when to use it | Peer review's harmful errors fell from 29 to 15 of 42, with 19 sent to a human | Moderate: exploratory, p 0.004 |
 | Budget for the extra investigations it creates | 19 of 42 falsified and 5 of 18 clean alerts went to a human | Descriptive |
 | Don't rely on several copies of the same agent voting | 20 right against 17 for one agent | Consistent, not significant |
 | If you use several agents, keep their conclusions apart until each has decided | 23 right answers became wrong after peer review, 4 wrong became right | Descriptive |
-| Spend extra budget on one agent re-checking its answer rather than on a team | 20 right against peer review's 13, never worse on any alert | Consistent, not significant |
+| Don't assume extra review passes improve reliability: compare any review or team against a single pass, and include cost | One agent re-checking its answer got 20 right against 17 for a single pass (not tested), at $0.025 against $0.003 an alert; peer review got 13, mostly by escalating more harmless alerts | Descriptive |
 | Run a stronger model on its own rather than as a reviewer of a cheaper team | Same score (19 of 42) for about 80% of the cost | Descriptive |
 | Give the agent a trusted source to check evidence against | In evidence-manipulation, a verification tool fixed 359 of 360 manipulated runs | Strong, from the earlier experiment |
 
