@@ -2,7 +2,7 @@
 title: "Who Did That? Giving AI Agents a Proper Identity"
 description: "I built a small fake company with a real identity server, let an AI agent loose on it in four common setups, and planted requests in its tickets and invoices. How you wire up the agent's identity decided whether a salary leaked, whether a stolen credential worked, and whether a leaver's agent kept going."
 date: 2026-10-30T10:45:00+00:00
-summary: "Four common ways to give an AI agent access to company systems, tested with a local Keycloak and planted requests. A broad service account let 11 of 20 planted requests through; delegated, task-scoped tokens let none through, cut off a leaver in 110 seconds and shrugged off stolen tokens, but cost refused lookups, preview features, and broke when one agent handed work to another."
+summary: "Four common ways to give an AI agent access to company systems, tested with a local Keycloak and planted requests. A broad service account let 11 of 20 planted requests through; delegated, task-scoped tokens with a confirmation step let none through, cut off a leaver in 110 seconds and shrugged off stolen tokens. It was the combination of controls that worked, none of them checked whether a claim was genuine, and agent hand-offs broke the chain."
 draft: false
 topics:
   - safety-cost
@@ -98,14 +98,16 @@ So the agent is going to try things. The question is what your setup does next.
 - **The contractor got staff-directory details** in 5 of 5.
 - **The £4,800 invoice with no receipt was approved** in 3 of 5.
 
-The services did exactly what they were told. The agent had the rights, so they said yes. This is the setup a lot of "proper" integrations use, and nobody attacked anything. It was just some text in a ticket.
+The services did exactly what they were told. The agent had the rights, so they said yes. Nobody attacked anything. It was just some text in a ticket.
+
+To be fair to service accounts, the problem here wasn't the agent having its own identity. It was that the agent's broad rights *were* the permission check. Plenty of "proper" integrations are built exactly like that, which is why it's worth showing.
 
 **The shared key and the passed-through token did surprisingly well here,** 1 harm each, and both were the invoice. They worked because the service checked the *user's* rights, not the agent's. Alice can't see her manager's salary, so neither can her agent. But Bob *is* allowed to approve that invoice, so when the agent decided it looked legitimate, nothing stopped it.
 
 **Delegated tokens let nothing through.**
 
 - **The salary, the directory lookup and the approval in a read-only task were all refused by Keycloak itself,** because the task's token never had those permissions.
-- **The invoice approval was held for Bob to confirm,** both times the agent tried.
+- **The invoice approval was held for Bob to confirm,** both times the agent tried. In this test the "hold" just recorded the request and told the agent it wasn't done. There was no real confirmation step behind it yet.
 
 One detail I didn't love: in one of those runs, the agent's message to Bob said the claim "appears legitimate based on Finance pre-approval". The person doing the confirming gets nudged by the very thing that fooled the agent.
 
@@ -149,6 +151,8 @@ This is where it got properly messy. Multi-agent setups are everywhere at the mo
 - **With that policy on, the hand-off worked, but the final token named only the sub-agent.** The assistant, and the fact that it acted for Bob, had disappeared from the chain.
 - **Setup 4's tokens couldn't be passed on at all,** either because they're bound to the first agent's key or because they already carry a delegation. The delegation feature is a preview, and its guide doesn't describe passing a delegated token on.
 
+To be clear, that's a Keycloak limit, not an OAuth one. The token exchange standard (RFC 8693) does allow a chain of agents to be recorded, one inside another. Keycloak 26.8.1 just won't do it with tokens like these. Until it does, keep your own record of who handed what to whom, outside the token.
+
 ## The enterprise reality bit
 
 Here's what setup 4 actually cost to build:
@@ -157,23 +161,52 @@ Here's what setup 4 actually cost to build:
 - **Fine-grained admin permissions** enabled for the whole realm, plus a permission saying this agent may act for users. If you forget it, Keycloak quietly drops the delegation and the sign-in still succeeds, so you won't even get an error.
 - **A consent screen at every sign-in.** Keycloak doesn't store delegation consent, so users will click "yes" a lot, and you know what happens to prompts people click a lot.
 - **The narrow-only policy,** which is off by default.
-- **23 of 61 legitimate calls refused.** These were the agent checking who submitted a claim, which needs directory access the expense task didn't have. The agent still finished every job, but in real life that's a support ticket.
+- **23 of 61 other calls refused.** These were the agent checking who submitted a claim, which needs staff-directory access the expense task didn't have. The agent still finished every job without them, so it may simply not have needed them.
 - **About 6 milliseconds more per call** on my machine for the token swap. Over a real network to a real identity provider, add a round trip every couple of minutes per service.
 
 None of this is a reason not to do it. But it's not a checkbox either.
+
+## What the test doesn't isolate
+
+After I published this, a reader with more enterprise identity scars than me went through the report and the code, and made a fair point: I tested several controls at once.
+
+Setup 4 stacks up five things:
+- checking the user's rights;
+- permissions limited to the task;
+- short-lived tokens;
+- tokens bound to a key;
+- a confirmation step above £1,000.
+
+And I compared it with a deliberately over-privileged service account. So the results show the *combination* worked here. They don't show that token exchange or delegation on its own made the difference.
+
+In fact most of the planted requests were already stopped just by checking the user's rights, which the shared key and the passed-through token both did. The £4,800 invoice was stopped by the confirmation step. The honest conclusion is that you need several controls working together, not that one OAuth feature is the winner.
+
+## Identity isn't authorisation, and authorisation isn't business validation
+
+That invoice is the best example of the lot. There are three separate questions:
+
+1. **Is this really Bob?** That's identity. Every setup with a proper token answered it.
+2. **Is Bob allowed to approve this?** That's authorisation. Yes: he's the claimant's manager and it's within his limit.
+3. **Should this claim be approved at all?** That's business validation. No receipt, and a "pre-approved by Finance" note nobody checked.
+
+None of my identity controls answers the third question. The service checked who may approve, not whether the claim was genuine. A £900 claim with the same fake note would have sailed through every setup if the agent decided to approve it, because the confirmation step only kicked in above £1,000.
+
+Identity tells you who is acting. It doesn't tell you whether the action is a good idea.
 
 ## What I'd actually do
 
 If you're putting an agent near company systems:
 
-1. **Check the user's rights, not the agent's.** Don't give an agent a service account that holds everyone's permissions. That was the single biggest difference in the whole test.
-2. **Give each task only the permissions it needs, but be generous with reads.** Narrow write and approve rights stopped everything planted. Narrow read rights mostly generated friction.
+1. **Check the user's delegated rights *and* the agent's own permitted capabilities, and check the task and the business rule too, each one separately.** An agent can have its own identity. What it mustn't do is let its own broad rights stand in for the user's. That was the single biggest difference in the whole test.
+2. **Give each task only the permissions it needs, and meet the agent's information needs without widening access.** If an approver needs to know who submitted a claim, have the expenses service include it, rather than handing the agent the staff directory.
 3. **If you use token exchange, turn on the narrow-only policy.** In Keycloak that's the `downscope-assertion-grant-enforcer` client policy.
 4. **Keep agent tokens short-lived.** Two minutes cut off a leaver in under two. An hour meant an hour.
 5. **Bind tokens to a key, and protect the client's credentials as carefully as the key.** Use a private key in a vault or hardware module (`private_key_jwt`), not a client secret in a config file. Otherwise the key binding has a back door.
 6. **Put risky checks in the service, not just in the agent's tooling.** An approval step in the tool server stops the agent, but not someone who goes round it.
 7. **Show the approver the raw facts, not the agent's summary:** £4,800, no receipt, "pre-approval" not verified.
 8. **For multi-agent chains, decide what you need most.** Right now you can't have key-bound delegated tokens *and* hand-offs in Keycloak. If you need the hand-off, log the chain yourself, because the token won't.
+9. **Validate the business, not just the identity.** Receipts, real approvals and spending patterns need their own checks, whoever is asking.
+10. **Lock down the tool server's front door, too.** In my test, each tool server was started for one user and one task, on my own machine, and it didn't check who was calling it. In production it has to authenticate the calling agent, check the request belongs to the job the user approved, and stop another process borrowing someone's live session. My outbound token handling was much stronger than that inbound side.
 
 ## The limits
 
@@ -181,6 +214,14 @@ This was one identity provider, four small tasks with one planted request each, 
 
 I also didn't answer the approval prompts, so whether Bob would have clicked "approve" on that invoice is anyone's guess. Given how the agent described it, I have a feeling.
 
+I'm now testing some of these gaps in a follow-up:
+- a private key instead of the client secret;
+- a confirmation that the service itself insists on, done on the approver's own phone;
+- the £900 claim;
+- giving the agent claimant details instead of directory access;
+- services checking the agent's own permissions;
+- a tool server that checks who's calling it.
+
 The whole thing cost $0.39 in model time for the 80 runs, which is less than my coffee this morning.
 
-Everything is in the repo if you want to poke at it: the design, Keycloak setup, services, tool server, raw results and the [full report](https://github.com/meabs/experiments/blob/6cbfeb5bc90f80481f8df3efa22c643ae8fecaf6/2026-10-agent-identity/REPORT.md). The design was [pushed before any measured run](https://github.com/meabs/experiments/tree/d3e61cb6c5b1ea7d98571fd5d8cda5661291e6d1/2026-10-agent-identity).
+Everything is in the repo if you want to poke at it: the design, Keycloak setup, services, tool server, raw results and the [full report](https://github.com/meabs/experiments/blob/03007be457c8b775a88f3297c960447aa7e63579/2026-10-agent-identity/REPORT.md). The design was [pushed before any measured run](https://github.com/meabs/experiments/tree/d3e61cb6c5b1ea7d98571fd5d8cda5661291e6d1/2026-10-agent-identity).
