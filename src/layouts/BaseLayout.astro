@@ -13,6 +13,7 @@ import {
   LINKS,
 } from '../site';
 import { getVisibleNav, isCollectionNavVisible } from '../lib/collections';
+import { navItemIsActive } from '../lib/nav-visibility.mjs';
 import { RSS_FEEDS } from '../lib/seo';
 
 interface Props {
@@ -152,25 +153,22 @@ const jsonLdBlocks = jsonLd
         </a>
         <nav class="nav-cells" aria-label="Main">
           {nav.map((item) => {
-            const active =
-              item.href === '/'
-                ? path === '/'
-                : path === item.href || path.startsWith(item.href);
+            const active = navItemIsActive(item, path);
             return (
               <a
                 href={item.href}
                 class:list={['nav-cell', { 'is-active': active }]}
                 aria-current={active ? 'page' : undefined}
               >
-                <span class="nav-num">[ {item.num} ]</span>
                 <span class="nav-label">{item.label}</span>
               </a>
             );
           })}
         </nav>
         <div class="nav-tools">
-          <a class="theme-toggle search-link" href="/search/" aria-label="Search the site">
+          <a class="search-link" href="/search/" aria-current={path.startsWith('/search/') ? 'page' : undefined}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"></circle><path d="M10.5 10.5 14 14" stroke-linecap="round"></path></svg>
+            <span class="search-label">Search</span>
           </a>
           <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle colour theme">
             <span class="theme-icon theme-icon-sun" aria-hidden="true"></span>
@@ -180,14 +178,9 @@ const jsonLdBlocks = jsonLd
         </div>
         <nav class="mobile-panel" id="mobile-menu" aria-label="Mobile" inert>
           {nav.map((item) => {
-            const active =
-              item.href === '/'
-                ? path === '/'
-                : path === item.href || path.startsWith(item.href);
+            const active = navItemIsActive(item, path);
             return (
-              <a href={item.href} aria-current={active ? 'page' : undefined}>
-                <span class="nav-num">[ {item.num} ]</span> {item.label}
-              </a>
+              <a href={item.href} aria-current={active ? 'page' : undefined}>{item.label}</a>
             );
           })}
           <a href="/search/">Search</a>
@@ -207,12 +200,13 @@ const jsonLdBlocks = jsonLd
           {showArticles && <a href="/articles/">Articles</a>}
           {showArchitecture && <a href="/architecture/">Architecture</a>}
           {showNews && <a href="/news/">News</a>}
+          <a href="/findings/">Findings</a>
           <a href="/experiments/">Experiments</a>
-          <a href="/guides/">Guides</a>
+          <a href="/guides/">Guide</a>
           <a href="/about/">About</a>
           <a href="/updates/">Updates</a>
           <a href="/guides/programming-the-loop/#licence">Licence</a>
-          <a href="/downloads/">October 2026 PDF</a>
+          <a href="/resources/">Resources</a>
           <a href="https://github.com/meabs/programmingtheloop">GitHub</a>
           <a href={LINKS.discussions} rel="noopener noreferrer">Discussions</a>
           <a href="/news/rss.xml">News RSS</a>
