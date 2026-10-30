@@ -4,6 +4,7 @@ import { getCurrentFindings } from '../../lib/findings';
 import { axisFor, kindCaption, statusText, toResultPoint } from '../../lib/results';
 import { displayTitle } from '../../lib/titles';
 import { STRONGEST } from '../../data/synthesis';
+import { selectHomeFindings } from '../../lib/home-selection.mjs';
 
 interface Props {
   heading?: string;
@@ -15,11 +16,14 @@ const Heading = level;
 
 const all = await getCurrentFindings();
 const byId = new Map(all.map((f) => [f.id, f]));
-const picks = STRONGEST.map((p) => {
-  const f = byId.get(p.id);
-  if (!f) throw new Error(`Strongest finding "${p.id}" is not a current finding (src/data/synthesis.ts)`);
+for (const p of STRONGEST) {
+  if (!byId.has(p.id)) throw new Error(`Strongest finding "${p.id}" is not a current finding (src/data/synthesis.ts)`);
+}
+// A finding's own `homeRank` wins; the curated list fills any gaps. At most three.
+const questionFor = new Map(STRONGEST.map((p) => [p.id, p.question]));
+const picks = (selectHomeFindings(all, STRONGEST.map((p) => p.id)) as typeof all).map((f) => {
   const point = toResultPoint(f);
-  return { p, f, point, axis: point ? axisFor([point]) : null };
+  return { p: { id: f.id, question: questionFor.get(f.id) ?? displayTitle(f.experimentTitle) }, f, point, axis: point ? axisFor([point]) : null };
 });
 ---
 <section class="strongest" aria-labelledby="strongest-title">

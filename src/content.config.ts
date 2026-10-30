@@ -46,6 +46,8 @@ const findingSchema = z.object({
   source: z.string().url(),
   status: z.enum(['current', 'superseded']).default('current'),
   featured: z.boolean().default(false),
+  /** Optional: 1 is shown first in the homepage "what the experiments show" strip (at most three). */
+  homeRank: z.number().int().positive().optional(),
 });
 
 const agentSchema = z.object({

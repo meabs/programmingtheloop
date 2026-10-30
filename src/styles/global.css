@@ -2217,7 +2217,8 @@ html.js-motion .hero-headline.is-in .word {
 .publication-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; padding-block: clamp(2.5rem, 4.5vw, 4.5rem); }
 .publication-intro h1 { max-width: 20ch; margin: .7rem 0 1.2rem; font-size: clamp(2.2rem, 3.8vw, 3.7rem); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }
 .publication-intro h1 em { font-style: normal; color: var(--accent); }
-.publication-intro > p:not(.section-label) { max-width: 56ch; margin: 0; color: var(--ink-muted); font-size: clamp(1.02rem, 1.45vw, 1.2rem); line-height: 1.65; }
+.publication-intro > .audience { max-width: 56ch; margin: 0 0 .9rem; color: var(--ink); font-size: clamp(1.1rem, 1.6vw, 1.3rem); font-weight: 600; line-height: 1.4; }
+.publication-intro > p:not(.section-label):not(.audience) { max-width: 56ch; margin: 0; color: var(--ink-muted); font-size: clamp(1.02rem, 1.45vw, 1.2rem); line-height: 1.65; }
 .publication-intro .actions { margin-top: 1.8rem; }
 .editorial-feature { min-width: 0; padding: clamp(1.5rem, 3vw, 2.5rem); border: 1px solid var(--line-strong); background: var(--surface); }
 .feature-meta, .feed-meta { display: flex; gap: .75rem; justify-content: space-between; align-items: baseline; color: var(--ink-faint); font: .71rem 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .045em; }

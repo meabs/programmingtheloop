@@ -9,18 +9,10 @@ import { NEXT_EXPERIMENTS } from '../../data/next';
 const topics = await getTopicsWithContent();
 const all = await getPublishedExperiments();
 
-// Measurement is a method tag on most experiments, so it lists only those with no other topic;
-// otherwise it would repeat nearly everything. It goes last.
+// Per-topic findings come from getTopicsWithContent (measurement lists only work with no other topic). Measurement goes last.
 const order = (id: string) => (id === 'measurement' ? 999 : TOPIC_IDS.indexOf(id as (typeof TOPIC_IDS)[number]));
 const sections = topics
-  .map((t) => ({
-    ...t,
-    rows: t.experiments
-      .filter((e) => t.id !== 'measurement' || (e.data.topics ?? []).every((x) => x === 'measurement'))
-      .flatMap((e) =>
-        (e.data.findings ?? []).filter((f) => f.status !== 'superseded').map((f) => ({ f, e })),
-      ),
-  }))
+  .map((t) => ({ ...t, rows: t.findings }))
   .filter((s) => s.rows.length > 0)
   .sort((a, b) => order(a.id) - order(b.id));
 const total = new Set(sections.flatMap((s) => s.rows.map((r) => r.f.id))).size;
@@ -41,7 +33,7 @@ const total = new Set(sections.flatMap((s) => s.rows.map((r) => r.f.id))).size;
         topics is listed under both. Measurement lists only work with no other topic. Each links to the write-up, where its numbers, intervals and limits are.
         Cite the experiment page, not this summary.
       </p>
-      <p><a class="button primary" href="#next">What's next →</a> <a class="button" href="/experiments/">All experiments</a> <a class="button" href="/findings/">What the experiments show</a></p>
+      <p><a class="button primary" href="/findings/">What the experiments show →</a> <a class="button" href="#next">What's next →</a> <a class="button" href="/experiments/">All experiments →</a></p>
     </div>
   </header>
   <div class="page-body">
