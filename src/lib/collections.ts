@@ -48,6 +48,27 @@ export async function getPublishedExperiments(): Promise<Experiment[]> {
   return items.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
+export type RelatedItem = {
+  kind: 'article' | 'architecture' | 'experiment';
+  title: string;
+  summary: string;
+  date: Date;
+  href: string;
+  topics: string[];
+};
+
+/** Everything a post can link to as related reading: articles, architecture posts and experiments. */
+export async function getRelatedPool(): Promise<RelatedItem[]> {
+  const [articles, architecture, experiments] = await Promise.all([
+    getPublishedArticles(), getPublishedArchitecture(), getPublishedExperiments(),
+  ]);
+  return [
+    ...articles.map((a) => ({ kind: 'article' as const, title: a.data.title, summary: a.data.summary ?? a.data.description, date: a.data.date, href: articleHref(a), topics: a.data.topics })),
+    ...architecture.map((a) => ({ kind: 'architecture' as const, title: a.data.title, summary: a.data.summary ?? a.data.description, date: a.data.date, href: architectureHref(a), topics: a.data.topics })),
+    ...experiments.map((e) => ({ kind: 'experiment' as const, title: e.data.title, summary: e.data.summary, date: e.data.date, href: experimentHref(e), topics: e.data.topics ?? [] })),
+  ];
+}
+
 export async function getPublishedGuides(): Promise<GuideEntry[]> {
   const items = await getCollection('guides', ({ data }) => data.draft !== true);
   return items.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());

@@ -4,6 +4,8 @@ description: "A small tool where coding agents leave a one-line note when a repo
 date: 2026-10-25T12:15:00Z
 summary: "Coding agents leave a one-line note when a repo slows them down, git hooks record it, and a weekly report shows the gaps worth fixing."
 draft: false
+topics:
+  - harness
 video:
   url: "https://www.youtube.com/shorts/VfXi64V_jWE"
   label: "Watch the short video"

@@ -1,0 +1,60 @@
+---
+import { getRelatedPool, formatItemDate } from '../../lib/collections';
+import { relatedItems, neighbours } from '../../lib/related.mjs';
+import { displayTitle } from '../../lib/titles';
+
+interface Props {
+  /** Collection of the current post, for the older / newer pager. */
+  kind: 'article' | 'architecture';
+  href: string;
+  topics?: string[];
+}
+const { kind, href, topics = [] } = Astro.props;
+
+const pool = await getRelatedPool();
+const current = { href, kind, date: new Date(0), topics };
+const related = relatedItems(current, pool, 4) as typeof pool;
+const { older, newer } = neighbours(pool.filter((i) => i.kind === kind), href) as {
+  older?: (typeof pool)[number];
+  newer?: (typeof pool)[number];
+};
+const label = { article: 'Article', architecture: 'Architecture', experiment: 'Experiment' } as const;
+---
+<aside class="post-footer" aria-label="After this post">
+  {related.length > 0 && (
+    <section aria-labelledby="related-h">
+      <h2 id="related-h">Related reading</h2>
+      <ul class="related-list">
+        {related.map((r) => (
+          <li>
+            <span class="related-kind">{label[r.kind]} · <time datetime={r.date.toISOString()}>{formatItemDate(r.date)}</time></span>
+            <a href={r.href}>{displayTitle(r.title)}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+  {(older || newer) && (
+    <nav class="pager" aria-label={`More ${kind === 'article' ? 'articles' : 'architecture posts'}`}>
+      {older ? <a class="pager-older" href={older.href}><span>← Older</span>{displayTitle(older.title)}</a> : <span />}
+      {newer ? <a class="pager-newer" href={newer.href}><span>Newer →</span>{displayTitle(newer.title)}</a> : <span />}
+    </nav>
+  )}
+</aside>
+
+<style>
+  .post-footer { margin: 3rem 0 0; padding-top: 1.75rem; border-top: 1px solid var(--line); }
+  .post-footer h2 { margin: 0 0 .75rem; font-size: 1.35rem; }
+  /* Scoped styles have zero specificity, so qualify to beat the prose list rules. */
+  .post-footer .related-list { list-style: none; margin: 0 0 2rem; padding: 0; border-top: 1px solid var(--line); }
+  .post-footer .related-list li { display: grid; gap: .15rem; margin: 0; padding: .8rem 0; border-bottom: 1px solid var(--line); }
+  .related-kind { font: .7rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .related-list a { font-weight: 600; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+  .related-list a:hover { color: var(--accent); }
+  .pager { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .pager a { display: grid; gap: .2rem; padding: .85rem 1rem; text-decoration: none; color: var(--ink); font-weight: 600; background: var(--surface); border: 1px solid var(--line); overflow-wrap: anywhere; }
+  .pager a:hover { border-color: var(--accent); }
+  .pager a span { font: .7rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; }
+  .pager-newer { text-align: right; }
+  @media (max-width: 560px) { .pager { grid-template-columns: 1fr; } .pager-newer { text-align: left; } }
+</style>

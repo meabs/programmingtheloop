@@ -4,6 +4,8 @@ description: "Last time, my WebMCP testing tool caught 11 of 19 timing bugs and 
 date: 2026-10-29T18:00:00+00:00
 summary: "After fixing the problems I found, WebMCP Resilience caught 15 of 19 timing bugs, up from 11, with no false alarms on correct code. Each fix earned its place, and one introduced a bug of its own that the rerun caught."
 draft: false
+topics:
+  - verification
 ---
 
 *Quick note before I start. I've got mild dyslexia, so I use AI tooling to help with my writing, but the thoughts are all mine.*

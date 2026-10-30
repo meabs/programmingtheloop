@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostFooter from '../../components/home/PostFooter.astro';
 import { getPublishedArticles, formatItemDate } from '../../lib/collections';
 import { absoluteUrl, articleJsonLd, resolveOgImageWithAlt } from '../../lib/seo';
 import { render } from 'astro:content';
@@ -50,6 +51,7 @@ const jsonLd = articleJsonLd({
   <div class="page-body">
     <div class="wrap view-prose">
       <Content />
+      <PostFooter kind="article" href={canonicalPath} topics={post.data.topics} />
       <p class="view-back">
         <a href="/articles/">← All articles</a>
       </p>
