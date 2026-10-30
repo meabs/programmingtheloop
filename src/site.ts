@@ -97,11 +97,18 @@ export const NAV: readonly NavItem[] = [
  */
 export type StartThenPart = string | { label: string; href: string };
 
+/**
+ * A chip on the "where to start" table. Plain text, or a number read from the findings so it cannot drift:
+ * `{ finding: 'J-1' }` shows that finding's value; `{ headlineCount: true }` shows how many findings are
+ * marked as Foreword headline findings.
+ */
+export type StartChip = string | { finding: string } | { headlineCount: true };
+
 export const START_ROUTES: ReadonlyArray<{
   have: string;
   startWith: { label: string; href: string; detail: string };
   then: ReadonlyArray<StartThenPart>;
-  chips: ReadonlyArray<string>;
+  chips: ReadonlyArray<StartChip>;
   accent: 'teal' | 'rose' | 'blue' | 'green' | 'orange';
 }> = [
   {
@@ -146,7 +153,7 @@ export const START_ROUTES: ReadonlyArray<{
       'Lean AGENTS.md; add layers only when they pay — see the ',
       { label: 'take-home kit', href: '/guides/programming-the-loop/take-home-kit/' },
     ],
-    chips: ['+35–48%', 'tokens'],
+    chips: [{ finding: 'J-1' }, 'tokens'],
     accent: 'blue',
   },
   {
@@ -160,7 +167,7 @@ export const START_ROUTES: ReadonlyArray<{
       'Contracts and freshness gates in ',
       { label: 'Chapter 5', href: '/guides/programming-the-loop/proof-not-promises/' },
     ],
-    chips: ['3 → 18–19/20'],
+    chips: [{ finding: 'OKF-2' }],
     accent: 'green',
   },
   {
@@ -190,7 +197,7 @@ export const START_ROUTES: ReadonlyArray<{
       'Independent checks the agent cannot rewrite — stay in ',
       { label: 'Chapter 5', href: '/guides/programming-the-loop/proof-not-promises/' },
     ],
-    chips: ['12 runs', 'freshness gate'],
+    chips: [{ finding: 'B3-1' }, 'freshness gate'],
     accent: 'rose',
   },
   {
@@ -263,7 +270,7 @@ export const START_ROUTES: ReadonlyArray<{
       ' onward, or the ',
       { label: 'Guide contents', href: '/guides/programming-the-loop/' },
     ],
-    chips: ['4 findings', 'thesis'],
+    chips: [{ headlineCount: true }, 'thesis'],
     accent: 'teal',
   },
 ];

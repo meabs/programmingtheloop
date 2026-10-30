@@ -1,9 +1,21 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES, type StartThenPart } from '../../../site';
+import { SITE_NAME, SITE_OG_IMAGE, START_ROUTES, type StartChip, type StartThenPart } from '../../../site';
+import { getCurrentFindings, getFeaturedFindings } from '../../../lib/findings';
 
 function isThenLink(part: StartThenPart): part is { label: string; href: string } {
   return typeof part === 'object' && part !== null && 'href' in part;
+}
+
+// Numbers in chips come from the finding records, so they follow the data. A wrong id fails the build.
+const findingValue = new Map((await getCurrentFindings()).map((f) => [f.id, f.value ?? '']));
+const headlineCount = (await getFeaturedFindings()).length;
+function chipText(chip: StartChip): string {
+  if (typeof chip === 'string') return chip;
+  if ('headlineCount' in chip) return `${headlineCount} findings`;
+  const value = findingValue.get(chip.finding);
+  if (!value) throw new Error(`Start chip finding "${chip.finding}" is not a current finding with a value (src/site.ts)`);
+  return value;
 }
 ---
 <BaseLayout
@@ -46,7 +58,7 @@ function isThenLink(part: StartThenPart): part is { label: string; href: string 
               </a>
               <span class="start-chips">
                 {row.chips.map((chip) => (
-                  <span class="chip">{chip}</span>
+                  <span class="chip">{chipText(chip)}</span>
                 ))}
               </span>
             </div>
@@ -69,10 +81,8 @@ function isThenLink(part: StartThenPart): part is { label: string; href: string 
         ))}
       </div>
       <p class="start-footnote">
-        Numbers in chips (for example <span class="chip">+35–48%</span>,
-        <span class="chip">14 / 16</span>, <span class="chip">3 → 18–19/20</span>,
-        <span class="chip">12 runs</span>) come from the Foreword findings. Each has limits
-        stated in the Guide.
+        Numbers in chips are read from the finding records, and the findings count is the number of
+        headline findings in the Foreword. Each result has its limits stated in the Guide.
       </p>
     </div>
   </section>
