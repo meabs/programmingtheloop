@@ -2434,6 +2434,26 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
   color: var(--ink);
 }
 
+/* Short numeric tables keep their shape on phones: headers wrap, cells stay on one line, the table scrolls if it must. */
+.view-prose table.table-compact th {
+  white-space: normal;
+  min-width: 4.5rem;
+  max-width: 11rem;
+}
+.view-prose table.table-compact td:first-child {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .view-prose table.table-compact { font-size: 0.82rem; }
+  .view-prose table.table-compact th,
+  .view-prose table.table-compact td { padding-inline: 0.4rem; }
+  .view-prose table.table-compact th { min-width: 3.5rem; max-width: 7rem; }
+  .view-prose table.table-compact td:first-child,
+  .view-prose table.table-compact th:first-child { white-space: normal; min-width: 5.5rem; max-width: 8rem; padding-left: 0; }
+}
+
 /* Tables with long text cells wrap like prose; on phones each row becomes a card. */
 .view-prose table.table-prose {
   display: table;
