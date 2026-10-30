@@ -3,7 +3,7 @@ title: "About the author"
 description: "From Programming the Loop — About the author."
 ---
 
-<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/resources/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 **Garry Meaburn** is a cloud and infrastructure architect with over 25 years' experience designing enterprise-scale public, private and hybrid cloud systems. His experience includes a role as Senior Solutions Architect at Amazon Web Services, where his work included generative AI proofs of concept and projects focused on retrieval-augmented generation. Earlier roles include Domain Architect in the Cloud Centre of Excellence and Lead Architect in CTO Research and Applied Development at Barclays, Solution Architect at Rathbones Wealth Management, Research Director at Gartner, and architecture and operations roles at Unilever and Microsoft.
 

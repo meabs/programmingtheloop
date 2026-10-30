@@ -50,33 +50,37 @@ export type NavCollection =
   | 'news';
 
 export type NavItem = {
-  num: string;
   label: string;
   href: string;
   /** Always shown regardless of counts. */
   always?: boolean;
   /** Gate on published count for this collection. */
   collection?: NavCollection;
-  /** Override NAV_MIN_ITEMS for this item (e.g. Guides: 1). */
+  /** Shown when any of these collections has published items (a hub over several collections). */
+  collections?: NavCollection[];
+  /** Override NAV_MIN_ITEMS for this item (e.g. Guide: 1). */
   minItems?: number;
+  /** Path prefixes that count as being inside this section (defaults to `href`). */
+  match?: string[];
 };
 
 /**
- * Main nav — numbered like an engineering index.
- * Updates lives in the footer only.
- * Collection sections are filtered + renumbered via nav-gate (getVisibleNav /
- * siteSidebarItems). Static `num` values here are source-order only.
+ * Main nav: original work first. Search is rendered separately, with a text label.
+ * Writing is a hub over Articles, Architecture and News. Updates lives in the footer only.
+ * Collection sections are filtered via nav-gate (getVisibleNav / siteSidebarItems).
  */
 export const NAV: readonly NavItem[] = [
-  { num: '00', label: 'Home', href: '/', always: true },
-  // Original work leads: experiments, then the guide. Each section appears with its first published item.
-  { num: '01', label: 'Experiments', href: '/experiments/', collection: 'experiments' },
+  { label: 'Findings', href: '/findings/', always: true, match: ['/findings/', '/measured/'] },
+  { label: 'Experiments', href: '/experiments/', collection: 'experiments', match: ['/experiments/', '/topics/'] },
+  {
+    label: 'Writing',
+    href: '/writing/',
+    collections: ['articles', 'architecture', 'news'],
+    match: ['/writing/', '/articles/', '/architecture/', '/news/'],
+  },
   // Book hub: show once at least one guide is published.
-  { num: '02', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
-  { num: '03', label: 'Articles', href: '/articles/', collection: 'articles' },
-  { num: '04', label: 'Architecture', href: '/architecture/', collection: 'architecture' },
-  { num: '05', label: 'News', href: '/news/', collection: 'news' },
-  { num: '06', label: 'About', href: '/about/', always: true },
+  { label: 'Guide', href: '/guides/', collection: 'guides', minItems: 1, match: ['/guides/', '/guide/', '/resources/'] },
+  { label: 'About', href: '/about/', always: true },
 ];
 
 /**
@@ -85,22 +89,6 @@ export const NAV: readonly NavItem[] = [
  * figures) are computed in `src/lib/guide-counts.ts`. Do not reintroduce
  * SITE_STATS / FINDING_DASHBOARD / SYSTEM_STATUS hard-coded chrome.
  */
-
-/** Ticker topics drawn from Guide chapter titles / thesis — not marketing fluff. */
-export const TOPIC_TICKER = [
-  'Briefs',
-  'Context',
-  'Verification',
-  'Harness',
-  'Friction loop',
-  'Contracts',
-  'Freshness gates',
-  'Review tiers',
-  'Honest measurement',
-  'Human in the loop',
-  'Take-home kit',
-  'Right facts, not every fact',
-] as const;
 
 /**
  * Where to start: reader situation → Guide entry → where it leads.

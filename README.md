@@ -14,7 +14,8 @@ npm run dev
 - `npm run build` — type-check and build into `dist/`
 - `npm run preview` — serve the production build
 - `npm run check:content` — experiment finding IDs, published/superseded rules, topics, route baseline, and that evidence links to other GitHub repos (in experiments, Notes and Guide chapters) name a commit SHA rather than a branch
-- `npm run test:content` — fixture tests for check:content failures
+- `npm run check:links` — after a build, fails on any internal link in `dist/` that does not resolve
+- `npm run test:content` — fixture and unit tests (check:content, selection rules, results plot, link checker)
 - `npm run guide:verify` — book fact-number / citation / checklist coverage (`scripts/verify_book_coverage.py`)
 - `python3 scripts/build_guide_from_book.py` — legacy: regenerates the Guide pages from a book Markdown master that is not kept in this repo. Guide pages are now edited directly; running it would overwrite the commit-pinned links, which `check:content` would then flag
 

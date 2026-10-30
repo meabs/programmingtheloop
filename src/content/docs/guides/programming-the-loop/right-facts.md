@@ -3,7 +3,7 @@ title: "3. The right facts, not every fact"
 description: "From Programming the Loop — 3. The right facts, not every fact."
 ---
 
-<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/resources/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 An agent working in a repository it can read should mostly be left to read it. Adding generated guides, graphs and long instruction files on top tends to add cost without adding correctness. An agent working across a boundary it *can't* see needs facts, and those facts decide whether it succeeds. The best way to supply them is usually the smallest, most authoritative thing that will do: a versioned contract, then a short owned note. And whatever you supply must be checked for freshness *outside* the knowledge itself, because stale facts are repeated confidently. That is the position. This chapter is where my own experiments say the most about it, for and against, and it's the one to read if you read only one.
 

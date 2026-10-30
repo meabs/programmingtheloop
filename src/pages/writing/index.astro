@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../../site';
+import {
+  getPublishedArticles, getPublishedArchitecture, getPublishedNews,
+  articleHref, architectureHref, newsHref, formatItemDate,
+} from '../../lib/collections';
+
+const SHOWN = 5;
+const [articles, architecture, news] = await Promise.all([
+  getPublishedArticles(), getPublishedArchitecture(), getPublishedNews(),
+]);
+const sections = [
+  {
+    id: 'articles', title: 'Articles', all: '/articles/', allLabel: 'All articles',
+    blurb: 'Longer pieces on what I built and what happened.',
+    rows: articles.map((p) => ({ date: p.data.date, href: articleHref(p), title: p.data.title, line: p.data.summary ?? p.data.description })),
+  },
+  {
+    id: 'architecture', title: 'Architecture', all: '/architecture/', allLabel: 'All architecture',
+    blurb: 'Design notes from building tools for agents.',
+    rows: architecture.map((p) => ({ date: p.data.date, href: architectureHref(p), title: p.data.title, line: p.data.summary ?? p.data.description })),
+  },
+  {
+    id: 'news', title: 'News', all: '/news/', allLabel: 'All news',
+    blurb: 'Relevant developments, kept short.',
+    rows: news.map((p) => ({ date: p.data.date, href: newsHref(p), title: p.data.title, line: p.data.summary })),
+  },
+].filter((s) => s.rows.length > 0);
+const total = articles.length + architecture.length + news.length;
+---
+<BaseLayout
+  title="Writing"
+  description="Articles, architecture notes and news from Programming the Loop, newest first."
+  canonicalPath="/writing/"
+  ogImage={SITE_OG_IMAGE}
+  noindex={total === 0}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Writing</p>
+      <h1>Writing</h1>
+      <p>Articles, architecture notes and news. The experiments are on the <a href="/experiments/">Experiments</a> page.</p>
+      <p class="page-head-meta">
+        {sections.map((s) => <a href={`#${s.id}`}>{s.title}</a>)}
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      {sections.map((s) => (
+        <section class="writing-section" id={s.id} aria-labelledby={`${s.id}-h`}>
+          <div class="writing-head">
+            <div><h2 id={`${s.id}-h`}>{s.title}</h2><p>{s.blurb}</p></div>
+            <a class="text-link" href={s.all}>{s.allLabel} →</a>
+          </div>
+          <ol class="writing-list">
+            {s.rows.slice(0, SHOWN).map((r) => (
+              <li>
+                <time datetime={r.date.toISOString()}>{formatItemDate(r.date)}</time>
+                <div>
+                  <a href={r.href}>{r.title}</a>
+                  {r.line && <p>{r.line}</p>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .writing-section { margin-bottom: 3rem; scroll-margin-top: 5rem; }
+  .writing-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 1.5rem; margin-bottom: 1rem; }
+  .writing-head h2 { margin: 0 0 .25rem; }
+  .writing-head p { margin: 0; color: var(--ink-muted); }
+  .writing-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .writing-list li { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: .25rem 1.5rem; margin: 0; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  .writing-list time { padding-top: .2rem; font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .writing-list a { font-weight: 600; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+  .writing-list a:hover { color: var(--accent); }
+  .writing-list p { margin: .25rem 0 0; max-width: 62ch; color: var(--ink-muted); overflow-wrap: anywhere; }
+  @media (max-width: 640px) { .writing-list li { grid-template-columns: 1fr; } .writing-list time { padding-top: 0; } }
+</style>

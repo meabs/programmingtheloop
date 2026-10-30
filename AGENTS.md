@@ -16,6 +16,7 @@ All of these must pass; CI runs the same:
 npm run check:content   # frontmatter, finding ids, intervals, topics, pinned links, route baseline
 npm run test:content    # fixture and unit tests
 npm run build           # astro check (type errors fail) + build + search index
+npm run check:links     # after the build: every internal href/src in dist/ must resolve
 ```
 
 For any visual change, also load the built page at 390px and 1440px, light and dark, and confirm there is no horizontal scroll. `npm run preview` serves `dist/`.
@@ -49,7 +50,9 @@ For any visual change, also load the built page at 390px and 1440px, light and d
 
 - Experiments: `src/content/experiments/*.md`; schema in `src/content.config.ts`.
 - Results plot: `src/lib/results.ts`, `src/components/experiments/ResultPlot.astro`, `FindingsTable.astro`, `ExperimentCard.astro`.
-- Home, `/experiments/`, `/measured/`, `/topics/`, `/findings/`: `src/pages/`.
+- Home, `/experiments/`, `/measured/`, `/topics/`, `/findings/`, `/writing/`: `src/pages/`.
+- Main nav is `NAV` in `src/site.ts`: Findings, Experiments, Writing (a hub over Articles, Architecture and News), Guide, About, plus a labelled Search link rendered in `BaseLayout`. No numbering and no Home item (the logo links home). A hub uses `collections` and `match` so its sub-pages highlight it. The Starlight header and the sidebar "Site" group read the same `NAV`.
+- Resources (`/resources/`) holds the PDF, licence and worked-example links. `/downloads/` and `/resources/ebook/` redirect there; the PDF file itself stays at `/downloads/Programming-the-Loop-1st-edition.pdf`. Link to `/resources/`, not `/downloads/`.
 - Guide (Starlight) chrome: `src/components/starlight/Header.astro` (same brand and main nav as the site) and `src/styles/starlight.css` (tokens mapped to the site's). The theme is shared between the two via `ptl-theme` / `starlight-theme`; keep that in sync if you touch either toggle.
 - Redirects and sitemap filter: `astro.config.mjs`. Don't add old redirect stubs to the sitemap.
 - Route baseline: `docs/route-baseline.txt`; add new routes there.

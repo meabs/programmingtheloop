@@ -44,6 +44,10 @@ export default defineConfig({
     '/book/': `${guideBase}/`,
     '/contents': `${guideBase}/`,
     '/contents/': `${guideBase}/`,
+    '/downloads': '/resources/',
+    '/downloads/': '/resources/',
+    '/resources/ebook': '/resources/',
+    '/resources/ebook/': '/resources/',
   },
   integrations: [
     // Register before Starlight so Starlight does not add a second sitemap integration.
@@ -52,6 +56,8 @@ export default defineConfig({
         if (page.includes('/search')) return false;
         // Legacy /guide/<chapter>/ URLs only redirect to /guides/…; keep them out of the sitemap.
         if (/\/guide\//.test(page)) return false;
+        // Redirect stubs to /resources/.
+        if (/\/(downloads|resources\/ebook)\/$/.test(page)) return false;
         // Hide empty collection sections until something is published.
         if (navCounts.articles < 1 && /\/articles(\/|$)/.test(page)) return false;
         if (navCounts.architecture < 1 && /\/architecture(\/|$)/.test(page)) return false;
