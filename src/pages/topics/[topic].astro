@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ExperimentCard from '../../components/experiments/ExperimentCard.astro';
+import FindingRows from '../../components/home/FindingRows.astro';
 import { SITE_OG_IMAGE } from '../../site';
 import { getTopicsWithContent } from '../../lib/topics';
 
@@ -25,6 +26,14 @@ const { topic, others } = Astro.props;
   </header>
   <div class="page-body">
     <div class="wrap">
+      {topic.findings.length > 0 && (
+        <section class="topic-findings" aria-labelledby="topic-findings-h">
+          <h2 id="topic-findings-h">Findings</h2>
+          <p class="topic-count">{topic.findings.length} {topic.findings.length === 1 ? 'finding' : 'findings'}, each linking to its write-up and limits</p>
+          <FindingRows rows={topic.findings} />
+        </section>
+      )}
+      <h2 class="topic-exp-h">Experiments</h2>
       <p class="topic-count">{topic.experiments.length} {topic.experiments.length === 1 ? 'experiment' : 'experiments'}</p>
       <div class="topic-grid">
         {topic.experiments.map((item) => <ExperimentCard item={item} />)}
@@ -37,6 +46,8 @@ const { topic, others } = Astro.props;
 </BaseLayout>
 
 <style>
+  .topic-findings { margin-bottom: 2.5rem; }
+  .topic-findings h2, .topic-exp-h { margin: 0 0 .35rem; }
   .topic-count { margin: 0 0 1rem; font: .78rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
   .topic-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
   @media (min-width: 700px) { .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

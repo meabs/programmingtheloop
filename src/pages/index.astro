@@ -12,6 +12,8 @@ import { personJsonLd } from '../lib/seo';
 import ResultPlot from '../components/experiments/ResultPlot.astro';
 import Strongest from '../components/home/Strongest.astro';
 import Follow from '../components/home/Follow.astro';
+import HowToRead from '../components/home/HowToRead.astro';
+import Counts from '../components/home/Counts.astro';
 import { axisFor, statusText, toResultPoint, kindCaption } from '../lib/results';
 import { displayTitle } from '../lib/titles';
 
@@ -48,14 +50,15 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
       <div class="publication-intro">
         <p class="section-label">An independent technical publication</p>
         <h1>I measure what coding agents actually do, and publish the method and the limits.</h1>
+        <p class="audience">For engineers deciding how to set up, check and trust coding agents.</p>
         <p>Practical thinking on AI, software engineering, architecture and the tools we build with. Experiments I've run, with the data, and what I think they mean.</p>
         <div class="actions">
           <a class="button primary" href="/findings/">Start here →</a>
-          <a class="button" href="/guides/programming-the-loop/">Read the guide →</a>
+          <a class="button" href="/experiments/">All experiments →</a>
         </div>
       </div>
       {featured && <article class="editorial-feature">
-        <div class="feature-meta"><span>Featured {featured.tag}</span><time datetime={featured.date.toISOString()}>{formatItemDate(featured.date)}</time></div>
+        <div class="feature-meta"><span>Latest {featured.tag}</span><time datetime={featured.date.toISOString()}>{formatItemDate(featured.date)}</time></div>
         <h2><a href={featured.href}>{displayTitle(featured.title)}</a></h2>
         {heroFinding && heroPoint && heroAxis ? (
           <>
@@ -75,6 +78,7 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
   </section>
 
   <Strongest heading="What the experiments show" intro="Three results to read first. The findings page groups all of them by engineering problem." />
+  <HowToRead />
 
   {latestWork.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
     <div class="wrap">
@@ -114,7 +118,7 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
         <h2 id="guide-feature-title">Programming the Loop</h2>
         <p class="guide-subtitle">What I Measured with Coding Agents</p>
         <p>Eleven chapters of practical engineering judgement and small controlled trials, with the evidence and its limits close to each conclusion. Read it online or keep the first edition PDF.</p>
-        <div class="actions"><a class="button primary" href="/guides/programming-the-loop/">Read online</a><a class="button" href={PDF_PATH} download>Download PDF ↓</a></div>
+        <div class="actions"><a class="button primary" href="/guides/programming-the-loop/">Read online →</a><a class="button" href={PDF_PATH} download>Download PDF ↓</a><a class="button" href="/resources/">Resources →</a></div>
       </div>
     </div>
   </section>}
@@ -126,7 +130,7 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
         {latestArticles.map((post) => <article class="feed-item">
           <div class="feed-meta"><span>Article</span><time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time></div>
           <div><h3><a href={articleHref(post)}>{post.data.title}</a></h3><p>{post.data.summary ?? post.data.description}</p></div>
-          <a class="feed-arrow" href={articleHref(post)} aria-label={`Read ${post.data.title}`}>↗</a>
+          <a class="feed-arrow" href={articleHref(post)} aria-label={`Read ${post.data.title}`}>→</a>
         </article>)}
       </div>
     </div>
@@ -139,7 +143,7 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
         {latestArchitecture.map((post) => <article class="feed-item">
           <div class="feed-meta"><span>Architecture</span><time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time></div>
           <div><h3><a href={architectureHref(post)}>{post.data.title}</a></h3><p>{post.data.summary ?? post.data.description}</p></div>
-          <a class="feed-arrow" href={architectureHref(post)} aria-label={`Read ${post.data.title}`}>↗</a>
+          <a class="feed-arrow" href={architectureHref(post)} aria-label={`Read ${post.data.title}`}>→</a>
         </article>)}
       </div>
     </div>

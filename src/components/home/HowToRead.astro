@@ -1,0 +1,33 @@
+---
+interface Props { open?: boolean }
+const { open = false } = Astro.props;
+---
+<section class="how-to-read" aria-labelledby="how-to-read-title">
+  <div class="wrap">
+    <details open={open}>
+      <summary id="how-to-read-title">How to read these results</summary>
+      <dl>
+        <div><dt>Controlled trial</dt><dd>The same tasks run under different set-ups, with the runs counted. A <em>run</em> is one agent attempt at one task.</dd></div>
+        <div><dt>pts</dt><dd>Percentage points: the gap between two pass rates. +10 pts means, for example, 60% against 50%.</dd></div>
+        <div><dt>95% interval</dt><dd>The range the true difference plausibly lies in. If it includes no change (0 pts, or 1× for a ratio), the trial cannot tell the set-ups apart.</dd></div>
+        <div><dt>No measurable difference</dt><dd>The test could not tell the set-ups apart with this many cases. It does not mean they are equal.</dd></div>
+        <div><dt>Pre-registered or exploratory</dt><dd>Pre-registered hypotheses were published before the runs. Exploratory analyses were added after seeing results, so treat them as leads.</dd></div>
+        <div><dt>Limit</dt><dd>What the result does not cover, such as one model or a small task set. It sits next to every finding.</dd></div>
+      </dl>
+    </details>
+  </div>
+</section>
+
+<style>
+  .how-to-read { padding: 1.25rem 0; border-bottom: 1px solid var(--line); }
+  .how-to-read summary { cursor: pointer; display: inline-flex; align-items: center; gap: .6rem; min-height: 44px; font-weight: 600; color: var(--ink); list-style: none; }
+  .how-to-read summary::-webkit-details-marker { display: none; }
+  .how-to-read summary::before { content: '+'; display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; font: 500 .95rem 'IBM Plex Mono', ui-monospace, monospace; color: var(--accent); border: 1px solid var(--line-strong); background: var(--surface); }
+  .how-to-read details[open] summary::before { content: '−'; }
+  .how-to-read summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .how-to-read dl { display: grid; gap: .75rem 2rem; margin: .75rem 0 0; }
+  @media (min-width: 900px) { .how-to-read dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .how-to-read dl > div { margin: 0; min-width: 0; }
+  .how-to-read dt { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .how-to-read dd { margin: .15rem 0 0; max-width: 46ch; color: var(--ink-muted); line-height: 1.5; }
+</style>

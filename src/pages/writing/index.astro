@@ -5,6 +5,7 @@ import {
   getPublishedArticles, getPublishedArchitecture, getPublishedNews,
   articleHref, architectureHref, newsHref, formatItemDate,
 } from '../../lib/collections';
+import { featuredFirst } from '../../lib/home-selection.mjs';
 
 const SHOWN = 5;
 const [articles, architecture, news] = await Promise.all([
@@ -14,7 +15,7 @@ const sections = [
   {
     id: 'articles', title: 'Articles', all: '/articles/', allLabel: 'All articles',
     blurb: 'Longer pieces on what I built and what happened.',
-    rows: articles.map((p) => ({ date: p.data.date, href: articleHref(p), title: p.data.title, line: p.data.summary ?? p.data.description })),
+    rows: featuredFirst(articles.map((p) => ({ date: p.data.date, href: articleHref(p), title: p.data.title, line: p.data.summary ?? p.data.description, featured: p.data.featured }))),
   },
   {
     id: 'architecture', title: 'Architecture', all: '/architecture/', allLabel: 'All architecture',

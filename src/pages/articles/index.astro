@@ -6,8 +6,9 @@ import {
   articleHref,
   formatItemDate,
 } from '../../lib/collections';
+import { featuredFirst } from '../../lib/home-selection.mjs';
 
-const posts = await getPublishedArticles();
+const posts = featuredFirst(await getPublishedArticles());
 ---
 <BaseLayout
   title="Articles"

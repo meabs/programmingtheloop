@@ -1,0 +1,9 @@
+---
+import { getSiteCounts } from '../../lib/findings';
+const c = await getSiteCounts();
+---
+<p class="site-counts">{c.experiments} experiments · {c.findings} findings · {c.topics} topics</p>
+
+<style>
+  .site-counts { margin: .5rem 0 .75rem; font: .78rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); }
+</style>

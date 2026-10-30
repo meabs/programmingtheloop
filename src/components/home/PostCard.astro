@@ -11,12 +11,11 @@ interface Props {
 const { kind, title, summary, href, date } = Astro.props;
 ---
 <article class="post-card">
-  <div class="post-preview" aria-hidden="true"><p>{kind}</p></div>
   <div class="post-body">
     <p class="post-meta"><span>{kind}</span><time datetime={date.toISOString()}>{formatItemDate(date)}</time></p>
     <h3 class="post-title"><a href={href}>{title}</a></h3>
     <p class="post-summary">{summary}</p>
-    <span class="post-open" aria-hidden="true">Read {kind.toLowerCase()} ↗</span>
+    <span class="post-open" aria-hidden="true">Read {kind.toLowerCase()} →</span>
   </div>
 </article>
 
@@ -24,8 +23,6 @@ const { kind, title, summary, href, date } = Astro.props;
   .post-card { position: relative; display: flex; flex-direction: column; height: 100%; min-width: 0; background: var(--surface); border: 1px solid var(--line); transition: border-color .18s ease; }
   .post-card:hover, .post-card:focus-within { border-color: var(--accent); }
   .post-card:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .post-preview { aspect-ratio: 2 / 1; display: grid; place-items: center; border-bottom: 1px solid var(--line); background: var(--accent-soft, rgba(13,122,114,.1)); }
-  .post-preview p { margin: 0; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; color: var(--accent); }
   .post-body { display: flex; flex-direction: column; gap: .5rem; padding: 1rem 1.1rem 1.15rem; flex: 1; }
   .post-meta { display: flex; justify-content: space-between; gap: .75rem; margin: 0; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
   .post-title { margin: 0; font-size: 1.15rem; line-height: 1.3; }
