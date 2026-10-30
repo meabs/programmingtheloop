@@ -32,19 +32,18 @@ const items = await getPublishedNews();
       {items.length === 0 ? (
         <p class="empty-note">Nothing published yet.</p>
       ) : (
-        <div class="collection-grid news-grid">
+        <ol class="news-list">
           {items.map((item) => (
-            <a class="collection-card news-card reveal" href={newsHref(item)}>
-              <span class="card-kicker">News</span>
+            <li>
               <time datetime={item.data.date.toISOString()}>{formatItemDate(item.data.date)}</time>
-              <h2 class="card-title">{item.data.title}</h2>
-              <p class="card-desc">{item.data.summary}</p>
-              <span class="card-meta">
-                {item.data.items.length} {item.data.items.length === 1 ? 'item' : 'items'} →
-              </span>
-            </a>
+              <div>
+                <a href={newsHref(item)}>{item.data.title}</a>
+                <p>{item.data.summary}</p>
+              </div>
+              <span class="news-count">{item.data.items.length} {item.data.items.length === 1 ? 'item' : 'items'} →</span>
+            </li>
           ))}
-        </div>
+        </ol>
       )}
     </div>
   </div>
@@ -63,4 +62,15 @@ const items = await getPublishedNews();
       padding: 1rem 1.05rem;
     }
   }
+</style>
+
+<style>
+  .news-list { list-style: none; margin: 0; padding: 0; max-width: 60rem; border-top: 1px solid var(--line); }
+  .news-list li { display: grid; grid-template-columns: 8rem minmax(0, 1fr) auto; gap: .25rem 1.5rem; align-items: baseline; margin: 0; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  .news-list time { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .news-list a { font-weight: 600; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+  .news-list a:hover { color: var(--accent); }
+  .news-list p { margin: .25rem 0 0; max-width: 62ch; color: var(--ink-muted); line-height: 1.5; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .news-count { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .03em; color: var(--ink-muted); white-space: nowrap; }
+  @media (max-width: 640px) { .news-list li { grid-template-columns: 1fr; } }
 </style>
