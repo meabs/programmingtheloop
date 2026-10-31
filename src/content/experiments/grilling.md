@@ -1,12 +1,12 @@
 ---
 title: "Grill me first? Does letting the agent interview you get you what you wanted? (experiment GRL)"
-description: "Matt Pocock's grilling skill makes a coding agent interview the developer before it builds. On tickets that left out business rules, grilling recovered all 15 rules only the developer knew; working from the ticket, a plain \"ask me anything\" and a developer who said yes to everything recovered none. Grill-with-docs's glossary and decision records made no measurable difference to the next ticket. The developer was Claude following a fixed brief, not a real person."
+description: "Matt Pocock's grilling skill makes a coding agent interview the developer before it builds. On tickets that left out business rules, grilling recovered all five rules only the developer knew, in each of three runs; working from the ticket, a plain \"ask me anything\" and a developer who said yes to everything recovered none. Grill-with-docs's glossary and decision records made no measurable difference to the next ticket. The developer was Claude following a fixed brief, not a real person."
 date: 2026-10-31
-summary: "Codex with gpt-5.6-luna, six tickets on a small banking API, five ways to start. Grilling met 15 of 15 requirements that only the developer knew; ticket only, \"ask me anything first\" (which never asked a question) and grilling with \"yes\" to everything met 0. The gain came entirely from the developer correcting one or two wrong recommendations per ticket. Grill-with-docs met 9 of 15, because a third of its runs built without waiting for answers, and its docs only helped a later ticket when the next agent happened to open them. The developer's answers came from Claude following a fixed brief, not a real person."
+summary: "Codex with gpt-5.6-luna, six tickets on a small banking API, five ways to start. Grilling recovered all five rules that only the developer knew in every run (15 of 15 rule checks: 5 rules × 3 runs); ticket only, \"ask me anything first\" (which never asked a question) and grilling with \"yes\" to everything met 0. The gain came entirely from the developer correcting one or two wrong recommendations per ticket. Grill-with-docs met 9 of the 15 checks, because a third of its runs built without waiting for answers, and its docs only helped a later ticket when the next agent happened to open them. The developer's answers came from Claude following a fixed brief, not a real person."
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/f11cd1af04aa5f891054a3e35135965cd0824348/2026-10-grilling"
+    href: "https://github.com/meabs/experiments/tree/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling"
 draft: false
 experimentId: "GRL"
 question: "When a coding agent interviews the developer before building (Matt Pocock's grilling skill), does it build more of what the developer actually wanted than working from the ticket, and is that from the skill, from being allowed to ask, or from the developer's answers? Do grill-with-docs's glossary and decision records help a later ticket?"
@@ -18,7 +18,7 @@ agents:
     settings: "medium reasoning effort; one Codex session per run, each developer reply sent with codex exec resume; subagents on; bubblewrap sandbox; skills pinned to mattpocock/skills 4ae2317"
 runs: 114
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/f11cd1af04aa5f891054a3e35135965cd0824348/2026-10-grilling/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/5f6403853819a623f605c3a7b46eb7a1c4435ec9/2026-10-grilling/README.md"
 previewImage: "/guide-images/chart-grilling.png"
 previewAlt: "Left-out requirements met on the Some and Lots tickets, higher is better. Only in the developer's head, of 15: grilling 15, grill-with-docs 9, ticket only 0, ask me anything 0, yes to everything 0. Findable in the repo, of 18: 17 or 18 in every arm."
@@ -31,32 +31,31 @@ findings:
   - id: "GRL-1"
     statement: "Grilling recovered every requirement that only the developer knew; working from the ticket recovered none"
     metric: "requirements only the developer knew, met on the Some and Lots tickets, counted only when the ticket's own tests passed (higher is better)"
-    value: "15 of 15 against 0 of 15"
-    interval:
-      low: "80%"
-      high: "100%"
-      method: "Wilson 95% interval on grilling's 15 of 15 (ticket only: 0% to 20%)"
-    n: "30 requirement checks, 15 in each arm"
+    value: "5 of 5 rules in each of 3 runs (15 of 15 checks) against 0 of 15"
+    n: "5 distinct rules, each checked in 3 runs per arm; the 15 checks are not 15 independent rules"
     detail:
       - "on the Lots tickets, grilling met 1.67 more left-out requirements per run than ticket only (pre-registered H1, Holm p = 0.017)"
       - "requirements findable in the repo were met in 17 or 18 of 18 runs in every arm; the whole difference is in the ones only the developer knew"
       - "on clear tickets every arm passed; grilling added only cost (about 500 words to read, 2–3 times the wall time)"
     limits:
       - "the developer was Claude following a fixed brief, not a real person; one agent, one small repository, 3 runs per cell"
-    source: "https://github.com/meabs/experiments/blob/f11cd1af04aa5f891054a3e35135965cd0824348/2026-10-grilling/REPORT.md"
+      - "only five distinct rules; no interval is given, because counting repeated runs of the same rule as independent would make it look more precise than it is"
+      - "compared with a one-line \"ask me anything\", not with a structured prompt that requires blocking questions; this shows the value of compulsory structured clarification, not yet the extra value of this particular skill"
+    source: "https://github.com/meabs/experiments/blob/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling/REPORT.md"
     status: current
     featured: false
   - id: "GRL-2"
     statement: "The gain came from the developer's corrections: grilling with \"yes\" to everything did no better than the ticket alone"
     metric: "requirements only the developer knew, met (higher is better)"
-    value: "15 of 15 (answered) against 0 of 15 (\"yes\" to everything)"
-    n: "30 requirement checks, 15 in each arm"
+    value: "15 of 15 checks (answered) against 0 of 15 (\"yes\" to everything)"
+    n: "5 distinct rules, each checked in 3 runs per arm"
     detail:
-      - "grilling against yes-to-everything: +1.25 per run, Holm p = 0.0004; yes-to-everything against ticket only: no difference (pre-registered H3)"
+      - "grilling against yes-to-everything: +1.25 per run, Holm p = 0.0004 (pre-registered H3a)"
+      - "yes-to-everything against ticket only: identical observed results, 0 against 0 (H3b, p = 1.0); that is not proof the two are equivalent in general"
       - "yes-to-everything asked as many questions (8–9 per run); the developer corrected 1–2 wrong recommendations per run on the Some and Lots tickets"
     limits:
       - "a real developer may sometimes catch a wrong recommendation even when skimming"
-    source: "https://github.com/meabs/experiments/blob/f11cd1af04aa5f891054a3e35135965cd0824348/2026-10-grilling/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling/REPORT.md"
     status: current
     featured: false
   - id: "GRL-3"
@@ -68,11 +67,11 @@ findings:
       - "every run said it needed no clarification and built straight away; it scored the same as ticket only"
     limits:
       - "one wording of the invitation; one model"
-    source: "https://github.com/meabs/experiments/blob/f11cd1af04aa5f891054a3e35135965cd0824348/2026-10-grilling/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling/REPORT.md"
     status: current
     featured: false
   - id: "GRL-4"
-    statement: "Grill-with-docs's glossary and decision records made no measurable difference to a later ticket; they helped only when they held the rule and the next agent opened them"
+    statement: "Grill-with-docs's glossary and decision records made no measurable difference to a later ticket; they helped only when the rule was captured correctly and the next agent found it"
     metric: "left-out requirements met on the follow-up ticket, docs against no docs (higher is better)"
     value: "17 of 27 against 15 of 27"
     n: 24
@@ -82,7 +81,8 @@ findings:
       - "grill-with-docs built without waiting for the developer's answers in 6 of 18 runs; one such run wrote an ADR stating the opposite of the developer's rule"
     limits:
       - "follow-ups started from the plain app, without the first ticket's code"
-    source: "https://github.com/meabs/experiments/blob/f11cd1af04aa5f891054a3e35135965cd0824348/2026-10-grilling/REPORT.md"
+      - "12 docs sets and 24 runs, with docs that were unevenly written and unevenly read: this doesn't show that docs are ineffective"
+    source: "https://github.com/meabs/experiments/blob/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling/REPORT.md"
     status: current
     featured: false
 ---
@@ -155,7 +155,7 @@ Findings GRL-1 to GRL-4 are at the top of the page.
 
 Left-out requirements met, counted only when the ticket's own tests passed (higher is better):
 
-| Arm | Clear tickets passed | Some: met / possible | Lots: met / possible | Only in the developer's head |
+| Arm | Clear tickets passed | Some: met / possible | Lots: met / possible | Only in the developer's head: 5 rules × 3 runs |
 | --- | --- | --- | --- | --- |
 | Ticket only | 6 of 6 | 5 / 12 | 14 / 24 | **0 / 15** |
 | "Ask me anything first" | 6 of 6 | 6 / 12 | 15 / 24 | **0 / 15** |
@@ -165,7 +165,10 @@ Left-out requirements met, counted only when the ticket's own tests passed (high
 
 - **H1, confirmed:** on the Lots tickets grilling met 1.67 more of the 4 left-out requirements per run than the ticket alone (Holm p = 0.017).
 - **H2:** "ask me anything" never asked anything, so it scored like the ticket alone.
-- **H3, confirmed:** grilling beat "yes" to everything by 1.25 per run on the rules only the developer knew (p = 0.0004), and "yes" to everything was no better than the ticket alone (0 against 0).
+- **H3a, confirmed:** grilling beat "yes" to everything by 1.25 per run on the rules only the developer knew (Holm p = 0.0004).
+- **H3b, identical observed results; equivalence not established:** "yes" to everything and the ticket alone both met 0 of 15 (p = 1.0). No difference showed up, but a test like this can't prove the two are the same in general.
+
+The "of 15" counts are five distinct rules, each checked in three runs per arm. Grilling recovered all five in every run, and the ticket alone recovered none of them in any run. With only five rules, that is strong evidence on these tickets but a small base for a general claim.
 - **H4, as predicted:** every arm passed the clear tickets; grilling only added cost there.
 
 ### What it cost
@@ -193,7 +196,8 @@ The ranges run from the Clear to the Lots tickets. Most of what Claude typed was
 
 </figure>
 
-- **H5, not supported:** with the docs, 17 of 27 left-out requirements were met; without, 15 of 27 (Holm p = 0.81, no measurable difference).
+- **H5, not supported:** with the docs, 17 of 27 left-out requirements were met; without, 15 of 27 (Holm p = 0.81, no measurable difference). With 24 runs and docs that were unevenly written and unevenly read, this doesn't show that docs are ineffective.
+- **Written knowledge has to pass three gates: captured, correct, and found.** 6 of the 12 docs sets stated the carried-over rule, 4 of the 12 follow-up runs opened any doc, and 2 of 12 met the rule. That chain matters more than the grilling skill itself: it's the same problem as [stale knowledge across a boundary (D2)](/experiments/d2-stale-knowledge/), where a wrong guide was believed, and the [OKF trials](/experiments/okf-worked-example/), where a guide helped when the agent was given it.
 - **The docs helped exactly where they held the rule and the next agent opened them.** That happened only on the freeze ticket, whose ADR was called `0001-account-freeze-audit.md`. On the case-closing ticket all three ADRs recorded the rule, and none of the follow-up agents opened them.
 - **Docs can be wrong with authority.** A grill-with-docs run that built before the developer could answer wrote an ADR saying case assignees are stored "without resolving" them, the opposite of the developer's rule.
 
@@ -206,8 +210,9 @@ The ranges run from the Clear to the Lots tickets. Most of what Claude typed was
 
 ## Limits
 
-- **The developer was Claude following a fixed brief, not a real person.** A real developer forgets, knows more, gets tired of questions, and sometimes says yes without reading. The audit shows the replies didn't give away more than was asked; that still isn't a real person.
-- **One agent, one small repository, six tickets, three runs per cell.** The large effects (15 of 15 against 0 of 15) are clear; the smaller ones, such as grill-with-docs against grilling, are description.
+- **The developer was Claude following a fixed brief, not a real person.** It knew the complete answer and followed a fixed correction policy. Real developers forget, give confident wrong answers, miss constraints, disagree with each other, and sometimes say yes without reading. So this measures how well the agent extracts ground truth the developer has, not whether an interview produces correct requirements in a real team. The audit shows the replies didn't give away more than was asked.
+- **No structured-prompt arm.** The cheap alternative tested was a one-line "ask me anything", which never asked. A short instruction that requires the agent to list the missing decisions and wait for answers wasn't tested, so this shows the value of compulsory structured clarification, not yet the extra value of this particular skill.
+- **One agent, one small repository, six tickets, three runs per cell, five developer-only rules.** The large effects (every rule in every run against none) are clear on these tickets; the smaller ones, such as grill-with-docs against grilling, are description.
 - **I wrote the left-out requirements.** A fresh reader checked them for fairness before the run, but which ones I chose shapes the result.
 - **The follow-up tickets started from the plain app,** not from the first ticket's code, to isolate the docs. In real life the code would carry some of the rules.
 - **The arms weren't fully blind.** The agents usually named their skill, so the developer could often tell which arm it was answering.
@@ -222,7 +227,7 @@ This part is my interpretation, not a measurement.
 
 **"Ask me if you need anything" isn't a substitute.** Given permission, this agent concluded every time that it didn't need anything.
 
-**Written decisions only help if they're right and someone reads them.** Grill-with-docs sometimes wrote down its own guesses as decisions, and the next agent mostly didn't look.
+**Written decisions only help if they're captured, right, and found.** Grill-with-docs sometimes wrote down its own guesses as decisions, and the next agent mostly didn't look. Each gate failed on its own here; fixing the skill doesn't fix discovery.
 
 ## Configuration recommendations
 
@@ -230,8 +235,8 @@ For developers and teams using an agent on tickets. Each says how strong its evi
 
 | Recommendation | Why | Strength |
 | --- | --- | --- |
-| Use a grilling-style skill on tickets that depend on unwritten rules (who may do what, what the customer sees, what gets recorded) | 15 of 15 such rules recovered, against 0 of 15 from the ticket alone | Strong: pre-registered, Holm p = 0.017 and 0.0004 |
-| Read each recommendation; the job is to spot the wrong one or two | "Yes" to everything recovered 0 of 15 | Strong: pre-registered, p = 0.0004 |
+| Use a grilling-style skill on tickets that depend on unwritten rules (who may do what, what the customer sees, what gets recorded) | All 5 such rules recovered in every run, against none from the ticket alone | Strong on these tickets: pre-registered, Holm p = 0.017 and 0.0004; five rules, and no structured-prompt comparison |
+| Read each recommendation; the job is to spot the wrong one or two | "Yes" to everything recovered none of the 5 rules in any run | Strong: pre-registered, p = 0.0004 |
 | Skip it on tickets that spell everything out | Every arm passed the clear tickets; grilling added reading and 2–3× the wall time | Descriptive |
 | Don't rely on "ask me anything first" | 0 of 18 runs asked a question | Descriptive, one wording |
 | With grill-with-docs, say "ask, then wait for my answers before building" | It built without waiting in 6 of 18 runs | Descriptive; the fix is untested |
@@ -242,14 +247,15 @@ For developers and teams using an agent on tickets. Each says how strong its evi
 
 These are proposals, not results.
 
-- **Real developers** answering the same briefs, to see how often people say yes without reading.
+- **Grilling against a short structured prompt.** Four arms: ticket only; the grilling skill; a prompt that requires blocking questions and answers before coding; and a targeted interview limited to the three most consequential unknowns. Measure hidden requirements met, wrong assumptions accepted, developer reading and total cost. That says whether the skill is worth installing or a plain instruction gets most of the benefit for less interaction.
+- **Real developers** answering the same briefs, to see how often people say yes without reading or answer wrongly.
 - **Grill-with-docs told to wait for answers,** to see whether it then matches grilling.
 - **The follow-up ticket with an AGENTS.md line pointing at the docs.**
 - **A larger repository,** where more of the unwritten rules leave traces in the code and asking matters less.
 
 ## Reproduce
 
-Everything is in [experiments/2026-10-grilling](https://github.com/meabs/experiments/tree/f11cd1af04aa5f891054a3e35135965cd0824348/2026-10-grilling):
+Everything is in [experiments/2026-10-grilling](https://github.com/meabs/experiments/tree/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling):
 
 - the tickets, developer briefs, hidden tests, reference implementations, skills and driver (`tasks/`, `hidden/`, `reference/`, `arms/`, `scripts/`);
 - per run: every developer reply with its rule labels, the agent's messages and event stream, the grade, the audit and the diff (`results/main`, `results/pilot`);
