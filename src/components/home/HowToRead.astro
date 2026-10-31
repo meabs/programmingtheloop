@@ -15,6 +15,7 @@ const { open = false } = Astro.props;
         <div><dt>Limit</dt><dd>What the result does not cover, such as one model or a small task set. It sits next to every finding.</dd></div>
       </dl>
     </details>
+    <p class="how-more">New to all this? <a href="/new-to-this/">A short route in →</a></p>
   </div>
 </section>
 
@@ -25,6 +26,8 @@ const { open = false } = Astro.props;
   .how-to-read summary::before { content: '+'; display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; font: 500 .95rem 'IBM Plex Mono', ui-monospace, monospace; color: var(--accent); border: 1px solid var(--line-strong); background: var(--surface); }
   .how-to-read details[open] summary::before { content: '−'; }
   .how-to-read summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .how-more { margin: .25rem 0 0; font-size: .92rem; color: var(--ink-muted); }
+  .how-more a { font-weight: 600; }
   .how-to-read dl { display: grid; gap: .75rem 2rem; margin: .75rem 0 0; }
   @media (min-width: 900px) { .how-to-read dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .how-to-read dl > div { margin: 0; min-width: 0; }

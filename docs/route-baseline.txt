@@ -69,6 +69,7 @@
 /guides/programming-the-loop/tools-measurement/
 /guides/programming-the-loop/verifiable-change/
 /measured/
+/new-to-this/
 /news/
 /news/rss.xml
 /notes/

@@ -1,0 +1,64 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../site';
+import { BEGINNER_TRACK, BEGINNER_NEXT } from '../data/beginners';
+import { readingMinutes } from '../lib/reading-time.mjs';
+
+const steps = await Promise.all(
+  BEGINNER_TRACK.map(async (s) => {
+    const entry = await getEntry(s.collection, s.id);
+    if (!entry || entry.data.draft) throw new Error(`Beginner route: ${s.collection}/${s.id} is not a published post (src/data/beginners.ts)`);
+    return { ...s, title: entry.data.title, href: `/${s.collection}/${entry.id}/`, minutes: readingMinutes(entry.body) };
+  }),
+);
+---
+<BaseLayout
+  title="New to this?"
+  description="A short route in for readers new to generative AI and agents, in the order I would read it."
+  canonicalPath="/new-to-this/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">A route in</p>
+      <h1>New to this?</h1>
+      <p>You don't need a background in AI to start. This is the short route I'd take, in order. Each piece rests on measurements I ran myself, and none of it is required for the rest of the site.</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <ol class="route">
+        {steps.map((s) => (
+          <li>
+            <a class="route-title" href={s.href}>{s.title}</a>
+            <span class="route-meta">About {s.minutes} minutes</span>
+            <p>{s.why}</p>
+          </li>
+        ))}
+      </ol>
+
+      <h2 class="next-h">After that</h2>
+      <ul class="next">
+        {BEGINNER_NEXT.map((n) => (
+          <li><a href={n.href}>{n.label} →</a><span>{n.why}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .route { list-style: none; counter-reset: step; margin: 0 0 3rem; padding: 0; max-width: 46rem; border-top: 1px solid var(--line); }
+  .route li { counter-increment: step; position: relative; margin: 0; padding: 1.25rem 0 1.25rem 3rem; border-bottom: 1px solid var(--line); }
+  .route li::before { content: counter(step); position: absolute; left: .25rem; top: 1.3rem; font: 500 .9rem 'IBM Plex Mono', ui-monospace, monospace; color: var(--ink-faint); }
+  .route-title { font-size: 1.25rem; font-weight: 650; line-height: 1.3; color: var(--ink); text-decoration: none; }
+  .route-title:hover { color: var(--accent); }
+  .route-meta { display: block; margin-top: .2rem; font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .route p { margin: .5rem 0 0; max-width: 60ch; color: var(--ink-muted); line-height: 1.55; }
+  .next-h { margin: 0 0 .75rem; font-size: 1.25rem; }
+  .next { list-style: none; margin: 0; padding: 0; max-width: 46rem; border-top: 1px solid var(--line); }
+  .next li { display: grid; gap: .1rem; margin: 0; padding: .85rem 0; border-bottom: 1px solid var(--line); }
+  .next a { font-weight: 600; }
+  .next span { color: var(--ink-muted); max-width: 60ch; }
+</style>
