@@ -20,7 +20,7 @@ Here's what happens between you pressing Enter and words appearing on the screen
 
 <figure class="guide-figure">
 <img src="/guide-images/genai-1-prompt-journey.png" alt="Flow diagram. 1, your prompt: 'Why is the sky blue?', just text. 2, tokens: Why, is, the, sky, blue, question mark; 6 pieces, each a number. 3, vectors: 1,024 numbers per token. 4, transformer: 28 layers, one after another, each with attention (which words matter here?) and feed-forward (what it has learned); vectors in, better vectors out. 5, next-token odds: a probability for every one of its 151,936 tokens. 6, pick one: the top one or a weighted dice roll (temperature). 7, add it on: the new token joins the text and it all goes round again, looping back to step 2, one token at a time. 8, reply: at a stop token, ids turn back into text. Nothing in this loop looks facts up." width="1800" height="1100" loading="lazy" />
-<figcaption>Steps 2 to 7 run once for every single token of the reply.</figcaption>
+<figcaption>The loop goes round once for every token of the reply.</figcaption>
 </figure>
 
 If you only remember one thing, make it the loop. The model doesn't write an answer. It predicts **one** next piece of text, adds it on, and goes round again. A 300-word reply is a few hundred trips round that loop.
@@ -90,7 +90,7 @@ After the last layer, the final vector gets turned into a **probability for ever
 <figcaption>The odds, the dice, and the loop, all from real runs.</figcaption>
 </figure>
 
-**The odds.** For "The cat sat on the", my little model spreads its bets: chair 6%, edge 5%, window 4%, and "mat" only 3%. I ran the same prompt on a 27-billion-parameter model I also have locally, and it said **mat, 84%**. Part of that is size: bigger models have seen more text. Part is training: the 27B is a chat model, the one I use as an agent, and chat training tends to make a model more decisive. So this isn't a clean test of size alone. And being sure isn't the same as being right, as we'll see.
+**The odds.** For "The cat sat on the", my little model spreads its bets: chair 6%, edge 5%, window 4%, and "mat" only 3%. I ran the same prompt on a 27-billion-parameter model I also have locally, and it said **mat, 84%**. Part of that is size: bigger models have seen more text. Part is training: the 27B is a chat model, the one I use as an agent, and chat training tends to make a model more decisive. So this isn't a clean test of size alone, and it's one example, not a rule that bigger models are always more confident or more accurate. Being sure isn't the same as being right, as we'll see.
 
 **The pick.** Then something has to choose one. Always taking the top one gives the same answer every time. Rolling a weighted dice gives variety, and **temperature** controls how much the dice favour the top choice. I asked "My favourite colour is" 20 times at each setting:
 
@@ -100,12 +100,14 @@ After the last layer, the final vector gets turned into a **probability for ever
 
 Same model, same prompt. Only the dice changed. That's why you can ask a chatbot the same question twice and get two different answers.
 
-**The loop.** The picked token is added to the text, and the whole thing runs again with one more token. I let it go for 10 rounds on "The sky is blue because":
+**The loop.** The picked token is added to the text, and the model runs again to predict the one after. I let it go for 10 rounds on "The sky is blue because":
 
 > …the molecules in the air are ________.
 > Answer
 
 It started a perfectly sensible answer, then turned it into a quiz sheet. That isn't a bug. It's a *base* model: all it has learned is to continue text the way its training text tends to go, and the internet is full of quiz sheets. Chat models get a lot of extra training (instructions, examples of good answers, and human feedback) so that the likeliest continuation of a question is a helpful reply. Same machinery, different habits.
+
+**A speed note.** Read naively, the loop sounds like the model re-reads your whole prompt for every new token. In practice it reads the prompt once, in one go, and then for each new token it only has to work on that token. It keeps the notes it made on the earlier tokens (a [KV cache](https://huggingface.co/docs/transformers/kv_cache)) and reuses them. The answer is the same as starting from scratch each time, just much faster. It's also why a long prompt can take a moment before the first word appears, and then the words stream.
 
 ## So where do the made-up facts come from?
 
@@ -124,7 +126,7 @@ A few things I think are worth taking away, especially if you're building with t
 - **It's prediction, not lookup.** If the answer matters, give the model the facts in the prompt (that's what retrieval and tools are for) and check what comes back.
 - **Tokens are the unit of everything.** Pricing, context limits and speed are all counted in tokens, and the model's view of your text is in chunks, not letters.
 - **Different answers to the same question are normal.** That's the dice. Turn the temperature down when you want consistency.
-- **The model only knows what's in front of it.** Each trip round the loop sees the text so far and nothing else. "Memory" in chat apps is the app quietly pasting earlier conversation, or notes about you, back in.
+- **What it knows comes from two places:** what it learned in training, which is stored in its parameters, and the text in front of it right now. It doesn't look anything else up. "Memory" in chat apps is the app quietly pasting earlier conversation, or notes about you, back in.
 - **Agents are this loop with tools added.** The model predicts "call the search tool" as text, some code runs the search, and the result gets pasted back in. I tested when that's worth it in [Do you actually need an agent?](/architecture/do-you-need-an-agent/)
 
 ## The limits
