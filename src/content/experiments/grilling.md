@@ -105,7 +105,7 @@ Every ticket leaves things out. The person who wrote it knows the business rule 
 
 </figure>
 
-The skill tells the agent to work through the decisions a ticket implies one branch at a time, ask everything it can ask now as numbered questions, give its own recommended answer to each (so the developer can just say "yes"), look facts up in the code itself rather than asking, and not start building until both sides agree. In practice that meant two or three rounds of eight to eleven questions per ticket, and most of my replies were one word.
+The skill tells the agent to work through the decisions a ticket implies one branch at a time, ask everything it can ask now as numbered questions, give its own recommended answer to each (so the developer can just say "yes"), look facts up in the code itself rather than asking, and not start building until both sides agree. In practice that meant two or three rounds of eight to eleven questions per ticket, and most of the replies were one word.
 
 ## Prediction
 
@@ -121,7 +121,7 @@ Before any run I published the design and five hypotheses ([README.md](https://g
 
 <figure class="guide-figure">
 
-<img src="/guide-images/grilling-2-experiment.png" alt="Six tickets: Clear (2) with nothing left out, Some (2) with 2 requirements left out, Lots (2) with 4. Each left-out requirement is either in the repo (findable in code or README) or in my head (only the developer knows it, for example 'support may only add internal notes'). Five ways to start the agent, 90 runs: T the ticket only; Q ticket plus 'Before you start, ask me anything you need to know'; G ticket plus 'Grill me on this before you build it'; GD ticket plus 'Use grill-with-docs on this'; GY as G but a script answers Yes to everything. The developer is me, Claude, with a private brief per ticket and fixed reply rules; a judge model checked all 54 interviews and found no leaks. Stage 2: the next ticket in a fresh session with nobody to ask, 24 runs, 12 with the docs one grill-with-docs run wrote and 12 without." width="1800" height="1000" loading="lazy" />
+<img src="/guide-images/grilling-2-experiment.png" alt="Six tickets: Clear (2) with nothing left out, Some (2) with 2 requirements left out, Lots (2) with 4. Each left-out requirement is either in the repo (findable in code or README) or in my head (only the developer knows it, for example 'support may only add internal notes'). Five ways to start the agent, 90 runs: T the ticket only; Q ticket plus 'Before you start, ask me anything you need to know'; G ticket plus 'Grill me on this before you build it'; GD ticket plus 'Use grill-with-docs on this'; GY as G but a script answers Yes to everything. The developer is Claude following a fixed brief, with a private brief per ticket and fixed reply rules; a judge model checked all 54 interviews and found no leaks. Stage 2: the next ticket in a fresh session with nobody to ask, 24 runs, 12 with the docs one grill-with-docs run wrote and 12 without." width="1800" height="1000" loading="lazy" />
 
 <figcaption>Five arms on six tickets, then a follow-up ticket to test the docs.</figcaption>
 
@@ -131,7 +131,7 @@ Before any run I published the design and five hypotheses ([README.md](https://g
 
 **The work:** six new tickets on [SEC-1](/experiments/sec-authz/)'s Spring Boot accounts API. Two leave out nothing, two leave out two requirements and two leave out four. Each left-out requirement is either findable in the repository (a README convention, a pattern in the code) or exists only in the developer's head. An example of the second kind: when staff add notes to an account, support users may only add *internal* notes, because anything a customer sees counts as a message from the bank and has to come from an admin.
 
-**The developer was me.** As in earlier experiments, Claude played the human. Each ticket had a private brief, written before any run, and fixed rules for replying: answer only the question asked; "yes" to a recommendation that matches the brief; correct one that doesn't; point to the code for questions about the code; "your call" for things the brief doesn't care about. Afterwards a separate judge model read every reply against its brief and the agent's message, looking for anything I gave away that the agent hadn't asked about. It found nothing in 54 interviews.
+**The developer was Claude following a fixed brief, not a real person.** Each ticket had a private brief, written before any run, and fixed rules for replying: answer only the question asked; "yes" to a recommendation that matches the brief; correct one that doesn't; point to the code for questions about the code; "your call" for things the brief doesn't care about. Afterwards a separate judge model read every reply against its brief and the agent's message, looking for anything the replies gave away that the agent hadn't asked about. It found nothing in 54 interviews.
 
 **Scoring:** hidden tests run after each session. The main score is **left-out requirements met**, counted only in runs that pass the ticket's own tests.
 
@@ -181,7 +181,7 @@ Per run, means (lower is cheaper):
 | Agent wall time | about 1 minute | 2.5–6 minutes | 2–5 minutes |
 | Agent cost, list price | $0.013–0.019 | $0.025–0.030 | $0.025–0.036 |
 
-The ranges run from the Clear to the Lots tickets. Most of what I typed was "Yes." On the Some and Lots tickets I corrected 1–2 recommendations per grilling run, and those corrections were the whole gain.
+The ranges run from the Clear to the Lots tickets. Most of what Claude typed was "Yes." On the Some and Lots tickets it corrected 1–2 recommendations per grilling run, and those corrections were the whole gain.
 
 ### The next ticket: did the docs help?
 
@@ -195,7 +195,7 @@ The ranges run from the Clear to the Lots tickets. Most of what I typed was "Yes
 
 - **H5, not supported:** with the docs, 17 of 27 left-out requirements were met; without, 15 of 27 (Holm p = 0.81, no measurable difference).
 - **The docs helped exactly where they held the rule and the next agent opened them.** That happened only on the freeze ticket, whose ADR was called `0001-account-freeze-audit.md`. On the case-closing ticket all three ADRs recorded the rule, and none of the follow-up agents opened them.
-- **Docs can be wrong with authority.** A grill-with-docs run that built before I could answer wrote an ADR saying case assignees are stored "without resolving" them, the opposite of the developer's rule.
+- **Docs can be wrong with authority.** A grill-with-docs run that built before the developer could answer wrote an ADR saying case assignees are stored "without resolving" them, the opposite of the developer's rule.
 
 ### Checks
 
@@ -206,11 +206,11 @@ The ranges run from the Clear to the Lots tickets. Most of what I typed was "Yes
 
 ## Limits
 
-- **The developer was me,** following a brief. A real developer forgets, knows more, gets tired of questions, and sometimes says yes without reading. The audit shows I didn't give away more than was asked; it doesn't make me human.
+- **The developer was Claude following a fixed brief, not a real person.** A real developer forgets, knows more, gets tired of questions, and sometimes says yes without reading. The audit shows the replies didn't give away more than was asked; that still isn't a real person.
 - **One agent, one small repository, six tickets, three runs per cell.** The large effects (15 of 15 against 0 of 15) are clear; the smaller ones, such as grill-with-docs against grilling, are description.
 - **I wrote the left-out requirements.** A fresh reader checked them for fairness before the run, but which ones I chose shapes the result.
 - **The follow-up tickets started from the plain app,** not from the first ticket's code, to isolate the docs. In real life the code would carry some of the rules.
-- **The arms weren't fully blind.** The agents usually named their skill, so I could often tell which arm I was answering.
+- **The arms weren't fully blind.** The agents usually named their skill, so the developer could often tell which arm it was answering.
 
 ## What this means: impact and risks
 
