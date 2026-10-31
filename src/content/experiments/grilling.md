@@ -36,7 +36,7 @@ findings:
       low: "80%"
       high: "100%"
       method: "Wilson 95% interval on grilling's 15 of 15 (ticket only: 0% to 20%)"
-    n: 30
+    n: "30 requirement checks, 15 in each arm"
     detail:
       - "on the Lots tickets, grilling met 1.67 more left-out requirements per run than ticket only (pre-registered H1, Holm p = 0.017)"
       - "requirements findable in the repo were met in 17 or 18 of 18 runs in every arm; the whole difference is in the ones only the developer knew"
@@ -50,7 +50,7 @@ findings:
     statement: "The gain came from the developer's corrections: grilling with \"yes\" to everything did no better than the ticket alone"
     metric: "\"in my head\" requirements met (higher is better)"
     value: "15 of 15 (answered) against 0 of 15 (\"yes\" to everything)"
-    n: 30
+    n: "30 requirement checks, 15 in each arm"
     detail:
       - "grilling against yes-to-everything: +1.25 per run, Holm p = 0.0004; yes-to-everything against ticket only: no difference (pre-registered H3)"
       - "yes-to-everything asked as many questions (8–9 per run); the developer corrected 1–2 wrong recommendations per run on the Some and Lots tickets"
@@ -105,7 +105,7 @@ Every ticket leaves things out. The person who wrote it knows the business rule 
 
 </figure>
 
-The skill tells the agent to work through the decisions a ticket implies one branch at a time, ask everything it can ask now as numbered questions, give its own recommended answer to each (so the developer can just say "yes"), look facts up in the code itself rather than asking, and not start building until both sides agree. In practice that meant two or three rounds of eight to eleven questions per ticket, and most of the replies were one word.
+The skill tells the agent to work through the decisions a ticket implies one branch at a time, ask everything it can ask now as numbered questions, give its own recommended answer to each (so the developer can just say "yes"), look facts up in the code itself rather than asking, and not start building until both sides agree. In practice that meant two or three rounds and eight to eleven questions per ticket in all, and most of the replies were one word.
 
 ## Prediction
 
