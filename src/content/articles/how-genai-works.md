@@ -4,8 +4,6 @@ description: "A beginner's walk through what a generative AI model does with you
 date: 2026-10-31T12:00:00+00:00
 summary: "Your prompt is cut into tokens, each token becomes a vector of 1,024 numbers, 28 transformer layers rework those vectors, and out comes a probability for every possible next token. Pick one, add it on, repeat. I measured each step on a small open model: cat sits nearest kitten, 42 of 448 attention heads link \"it\" to \"animal\", and it confidently named the capital of a country that doesn't exist."
 draft: false
-topics:
-  - context
 ---
 
 *Quick note before I start. I've got mild dyslexia, so I use AI tooling to help with my writing, but the thoughts are all mine.*
@@ -52,7 +50,7 @@ I took 20 words (animals, vehicles, fruit and colours, picked before I looked at
 
 I'll be honest, my first attempt wasn't that tidy. At the model's last layer every vector points in nearly the same direction, and "dog" even edged out "kitten". The middle layer, with the shared direction taken out, is much clearer, and that's the one I've shown. Every version I tried put the animals nearest and the colours furthest, though. The exact numbers just depend on where you look.
 
-This idea, meaning as direction, is also what powers search over documents (the "vector databases" you hear about). It's the same trick, applied to whole paragraphs instead of single words.
+This idea, meaning as direction, is also what powers search over documents (the "vector databases" you hear about). That uses separate models trained to turn whole paragraphs into vectors, but it's the same idea.
 
 ## Step 4: the transformer, and attention
 
@@ -70,11 +68,14 @@ Then it all goes to the next layer, and the next, 28 times. Vectors in, better v
 
 Every explainer uses the same example, so I measured it: "The animal didn't cross the street because **it** was too tired." What does "it" look at?
 
-Each layer has 16 **attention heads**, so 448 in total, each doing its own looking. I counted where each head looked hardest:
+Each layer has 16 **attention heads**, so 448 in total, each doing its own looking. For each head I found the earlier word it looked at hardest (ignoring the very first token, which heads tend to park their attention on), and counted:
 
 - **206** looked hardest at "because";
+- **64** at the "'t" of "didn't";
 - **53** at "street";
 - **42** at "animal".
+
+The diagram shows the words that matter for the story. Note that "because" is the word right before "it", and heads often favour the nearest word, which is part of why it tops the count.
 
 That surprised me a bit. The textbook picture has "it" neatly pointing at "animal", and in this model only a minority of heads do that. Different heads pick out different things, and the understanding (such as it is) is spread across lots of heads and layers rather than living in any one of them. It's a nice reminder that the tidy diagrams are a simplification.
 
@@ -89,7 +90,7 @@ After the last layer, the final vector gets turned into a **probability for ever
 <figcaption>The odds, the dice, and the loop, all from real runs.</figcaption>
 </figure>
 
-**The odds.** For "The cat sat on the", my little model spreads its bets: chair 6%, edge 5%, window 4%, and "mat" only 3%. I ran the same prompt on a 27-billion-parameter model I also have locally, and it said **mat, 84%**. Bigger models have seen more text and are a lot more sure of themselves. Not always rightly, as we'll see.
+**The odds.** For "The cat sat on the", my little model spreads its bets: chair 6%, edge 5%, window 4%, and "mat" only 3%. I ran the same prompt on a 27-billion-parameter model I also have locally, and it said **mat, 84%**. Part of that is size: bigger models have seen more text. Part is training: the 27B is a chat model, the one I use as an agent, and chat training tends to make a model more decisive. So this isn't a clean test of size alone. And being sure isn't the same as being right, as we'll see.
 
 **The pick.** Then something has to choose one. Always taking the top one gives the same answer every time. Rolling a weighted dice gives variety, and **temperature** controls how much the dice favour the top choice. I asked "My favourite colour is" 20 times at each setting:
 
@@ -110,9 +111,9 @@ It started a perfectly sensible answer, then turned it into a quiz sheet. That i
 
 Look at that loop diagram again. Nothing in it looks anything up. Every word is "what's likely to come next", and nothing else.
 
-So I asked my model about a country I'd just invented: "What is the capital of Zarnovia?"
+So I gave my model a question-and-answer prompt about a country I'd just invented, "Q: What is the capital of Zarnovia?" followed by "A: The capital of Zarnovia is", and let it carry on:
 
-> The capital of Zarnovia is **Zarnovia City.**
+> **Zarnovia City.**
 
 Confident, fluent and entirely made up. It's not lying, it's doing exactly what it always does: producing a likely-looking continuation. A capital city of "Zarnovia" is very likely to be called something like "Zarnovia City". Real chat models are trained to say "I don't know" more often, and many can now search the web first, but underneath, this is the habit they're fighting.
 
