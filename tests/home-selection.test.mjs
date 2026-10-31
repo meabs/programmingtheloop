@@ -34,3 +34,24 @@ test('featured items first, the rest keep their order', () => {
   assert.deepEqual(featuredFirst(items).map((x) => x.id), ['f1', 'f2', 'n1', 'n2']);
   assert.deepEqual(featuredFirst([{ id: 'a' }, { id: 'b' }]).map((x) => x.id), ['a', 'b']);
 });
+
+import { latestWriting, latestExperiments } from '../src/lib/home-selection.mjs';
+
+const w = (href, day) => ({ href, date: new Date(`2026-10-${String(day).padStart(2, '0')}`) });
+
+test('latest writing: newest first, never the hero, capped', () => {
+  const items = [w('/a/', 1), w('/hero/', 31), w('/c/', 20), w('/b/', 25), w('/d/', 10)];
+  assert.deepEqual(latestWriting(items, '/hero/', 3).map((x) => x.href), ['/b/', '/c/', '/d/']);
+});
+
+test('latest writing: the hero is excluded even when it is the newest', () => {
+  assert.ok(!latestWriting([w('/hero/', 31), w('/x/', 5)], '/hero/').some((x) => x.href === '/hero/'));
+});
+
+test('latest writing: equal dates are ordered by href so the list is stable', () => {
+  assert.deepEqual(latestWriting([w('/b/', 5), w('/a/', 5)], undefined).map((x) => x.href), ['/a/', '/b/']);
+});
+
+test('latest experiments uses the same rule', () => {
+  assert.deepEqual(latestExperiments([w('/e1/', 3), w('/e2/', 9)], '/e2/').map((x) => x.href), ['/e1/']);
+});
