@@ -1,8 +1,8 @@
 ---
 title: "Grill me first? Does letting the agent interview you get you what you wanted? (experiment GRL)"
-description: "Matt Pocock's grilling skill makes a coding agent interview the developer before it builds. On tickets that left out business rules, grilling recovered all 15 rules only the developer knew; working from the ticket, a plain \"ask me anything\" and a developer who said yes to everything recovered none. Grill-with-docs's glossary and decision records made no measurable difference to the next ticket."
+description: "Matt Pocock's grilling skill makes a coding agent interview the developer before it builds. On tickets that left out business rules, grilling recovered all 15 rules only the developer knew; working from the ticket, a plain \"ask me anything\" and a developer who said yes to everything recovered none. Grill-with-docs's glossary and decision records made no measurable difference to the next ticket. The developer was Claude following a fixed brief, not a real person."
 date: 2026-10-31
-summary: "Codex with gpt-5.6-luna, six tickets on a small banking API, five ways to start. Grilling met 15 of 15 requirements that only the developer knew; ticket only, \"ask me anything first\" (which never asked a question) and grilling with \"yes\" to everything met 0. The gain came entirely from the developer correcting one or two wrong recommendations per ticket. Grill-with-docs met 9 of 15, because a third of its runs built without waiting for answers, and its docs only helped a later ticket when the next agent happened to open them."
+summary: "Codex with gpt-5.6-luna, six tickets on a small banking API, five ways to start. Grilling met 15 of 15 requirements that only the developer knew; ticket only, \"ask me anything first\" (which never asked a question) and grilling with \"yes\" to everything met 0. The gain came entirely from the developer correcting one or two wrong recommendations per ticket. Grill-with-docs met 9 of 15, because a third of its runs built without waiting for answers, and its docs only helped a later ticket when the next agent happened to open them. The developer's answers came from Claude following a fixed brief, not a real person."
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
@@ -30,7 +30,7 @@ publishedOn: 2026-10-31
 findings:
   - id: "GRL-1"
     statement: "Grilling recovered every requirement that only the developer knew; working from the ticket recovered none"
-    metric: "\"in my head\" requirements met, Some and Lots tickets, counted only when the ticket's own tests passed (higher is better)"
+    metric: "requirements only the developer knew, met on the Some and Lots tickets, counted only when the ticket's own tests passed (higher is better)"
     value: "15 of 15 against 0 of 15"
     interval:
       low: "80%"
@@ -48,7 +48,7 @@ findings:
     featured: false
   - id: "GRL-2"
     statement: "The gain came from the developer's corrections: grilling with \"yes\" to everything did no better than the ticket alone"
-    metric: "\"in my head\" requirements met (higher is better)"
+    metric: "requirements only the developer knew, met (higher is better)"
     value: "15 of 15 (answered) against 0 of 15 (\"yes\" to everything)"
     n: "30 requirement checks, 15 in each arm"
     detail:
@@ -93,7 +93,7 @@ Every ticket leaves things out. The person who wrote it knows the business rule 
 
 [Matt Pocock's `grilling` skill](https://github.com/mattpocock/skills/tree/4ae2317ddb22b046e26455e4f9c9b3aaaf62212d/skills/productivity/grilling) turns that around: before it writes any code, the agent interviews you. Its sibling, `grill-with-docs`, does the same and also writes what was settled into the repository as a glossary and short decision records (ADRs). It's an attractive idea, and it costs the developer time. I wanted to know what the interview actually gets you, where that comes from, and when it's worth it.
 
-**The short answer:** grilling recovered every rule that only the developer knew, but only because the developer corrected the agent's wrong guesses. A developer who just says "yes" gets nothing from it, and a plain "ask me anything" got no questions at all.
+**The short answer:** grilling recovered every rule that only the developer knew, but only because the developer corrected the agent's wrong guesses. A developer who just says "yes" gets nothing from it, and a plain "ask me anything" got no questions at all. The developer here was Claude following a fixed brief, not a real person.
 
 ## How grilling works
 
