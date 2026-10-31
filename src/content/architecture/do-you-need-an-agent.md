@@ -1,8 +1,8 @@
 ---
 title: "Do You Actually Need an Agent?"
-description: "I built the same customer-service bot four ways (plain code, one model call, a workflow and an agent) and ran 4,480 emails through them, from simple lookups to failing services and requests nobody planned for. Most emails didn't need an agent. Recovering from failures did, and that was also where an agent refunded a customer twice."
+description: "I built the same customer-service bot four ways (plain code, one model call, a workflow and an agent) and ran 4,480 emails through them, from simple lookups to failing services and requests nobody planned for. Most emails didn't need an agent. Failures mid-way were where the agent won, partly because I left two simple fixes out of the fixed code, and that was also where an agent refunded a customer twice."
 date: 2026-10-30T23:30:00+00:00
-summary: "Same shop, same tools, four architectures, 4,480 runs. Simple and branching emails were handled at or near 100% without an agent. One model call coped with unexpected requests too. The agent won only when something failed mid-way (74% against 42–50%), cost about the same as the others, and with a cheap model it refunded a timed-out refund twice in 16 of 20 runs."
+summary: "Same shop, same tools, four architectures, 4,480 runs. Simple and branching emails were handled at or near 100% without an agent. One model call coped with unexpected requests too. The agent won when something failed mid-way (74% against 42–50%), though two of those cases are simple fixes I left out of the fixed code. It cost about the same as the others, and with a cheap model it refunded a timed-out refund twice in 16 of 20 runs."
 draft: false
 topics:
   - safety-cost
@@ -16,6 +16,26 @@ Pretty much every time someone shows me something built with an LLM at the momen
 Both of those get said a lot. I couldn't find many people actually measuring it. So I picked a boring, very common job, answering customer-service emails and acting on them, built it four ways, and threw the same emails at all four.
 
 I tried quite hard not to rig it for the simple option. Some of the emails are there specifically because an agent *should* win them: services that fall over halfway, input that's slightly off, and requests the fixed code was never written for. The interesting bit isn't who wins overall, it's where the crossover is.
+
+## The 30-second version
+
+If you only read one thing, this is how I read the results below. It comes from one shop and two cheap models, so treat it as a place to start, not a rule.
+
+| Your problem | Start with |
+| --- | --- |
+| The rules are clear and predictable | Ordinary code |
+| You need AI to interpret language | One model call |
+| Several known steps must happen | A fixed workflow |
+| The next step depends on outcomes you can't predict | Consider an agent |
+| The system changes money or sensitive data | Enforce permissions, limits and idempotency in code, whichever you choose |
+
+Five terms, in plain English:
+
+- **Agent:** a model in a loop that picks its own next tool and step.
+- **Workflow:** steps fixed in code, with a model used for some of them, such as reading the email or writing the reply.
+- **Tool call:** the model asking your code to do something, like look up an order or issue a refund.
+- **Idempotent:** safe to repeat. Doing it twice has the same effect as doing it once, so a refund with an idempotency key can't pay out twice.
+- **Escalate:** hand the email to a person.
 
 ## The shop
 
@@ -39,7 +59,7 @@ Everything is simulated in Python, so nothing touches a real system.
 
 Some design choices in the fixed code are worth calling out, because they matter later. It retries a failed *lookup* twice, but never retries a refund or replacement that fails, it hands those to a person, so money can't go out twice. And anything it doesn't recognise goes to a person too. That's deliberately safe, and I think it's what most sensible developers would write.
 
-The agent is the shortest bit of code by a mile, 34 lines. All the logic is in the prompt and the model.
+The agent is the shortest bit of code by a mile, 34 lines. All the logic is in the prompt and the model, so line count says nothing about how simple it is. The complexity has moved somewhere harder to see and test.
 
 ## The emails
 
@@ -57,7 +77,7 @@ There's a catch I spotted early. I wrote the plain-code keyword rules after read
 
 And every email runs with **small** customer accounts (1–3 orders) and **large** ones (40 older orders added), because "fetch everything up front" is a lot cheaper when there isn't much to fetch.
 
-Two models, both cheap: OpenAI's **gpt-6-luna** and **Qwen 3.7 Flash**, via OpenRouter. Five repeats of everything, so 4,480 runs. Each one was scored on what actually changed in the shop and whether the reply had the facts it needed.
+Two models, both cheap: OpenAI's **gpt-6-luna** and **Qwen 3.7 Flash**, via OpenRouter. Five repeats of everything. That is 32 emails × 2 wordings × 2 account sizes × 5 repeats, or 640 runs for each of 7 set-ups (plain code, plus one call, the workflow and the agent with each of the two models), so 4,480 runs. It's 32 problems seen under different conditions, not 4,480 separate ones. Each run was scored on what actually changed in the shop and whether the reply had the facts it needed.
 
 The design went up on GitHub [before the main run](https://github.com/meabs/experiments/tree/3e6a2562dbe796461cf808ebd1b1a94cd5126a2d/2026-10-need-an-agent), so I couldn't quietly move the goalposts afterwards.
 
@@ -82,14 +102,14 @@ I expected the unanticipated requests to be where the agent proved itself. Not q
 
 The workflow and plain code escalated them, by design: "hold my order" isn't one of their four request types, so a person gets it. That's safe, but it's also why they sent 16–19% of all emails to a human, against 4% for the Luna agent. A safe hand-off still costs someone's time.
 
-### Level 4: this is where the agent earned it
+### Level 4: where the agent won, with a caveat
 
 Recovery was the only level where the agent clearly beat everything else: **74% for Luna's agent, against 42–50%** for all the others.
 
 - **The warehouse falls over once on a replacement.** The fixed code doesn't retry writes, so it escalates. The agents just tried again: Luna 15 of 20, Qwen 18 of 20.
 - **The email comes from `Grace.Liu@Mail.test` instead of `grace.liu@mail.test`.** Every non-agent version told her she wasn't a customer. The agents sometimes thought to try again in lower case (Luna 12 of 20, Qwen 2 of 20).
 
-To be fair to the fixed code, both of those are one-line fixes once you know about them. Lower-case the email. Retry the warehouse call. The agent's real advantage here is that *nobody had to see it coming*.
+To be fair to the fixed code, both of those are small fixes once you know about them: lower-case the email, and retry the warehouse call once the replacement call is idempotent. So some of this win is the agent covering for two branches I didn't write, and I haven't measured how much of the gap would close if I had. The agent's real advantage here is that *nobody had to see it coming*.
 
 ### And then the refund that timed out
 
@@ -134,11 +154,11 @@ For this kind of job, mostly not. Here's what I'd actually do:
 2. **Make your writes idempotent before anything is allowed to retry.** An idempotency key on refunds would have stopped every double refund, whatever the architecture. Honestly, do this anyway.
 3. **Enforce limits in the tool, not the prompt.** If refunds over £200 need a manager, the refund service should refuse them without approval.
 4. **Before reaching for an agent, write the recovery branch you're missing,** if you can name it. Lower-case the email. Retry the idempotent call.
-5. **Bring in an agent where recovery is the problem you can't enumerate**: flaky services, messy input, lookups that need a second go. That was the only place it clearly won.
+5. **Bring in an agent where recovery is the problem you can't enumerate**: flaky services, messy input, lookups that need a second go. That was the only place it clearly won, and part of that came from two fixes I didn't write.
 6. **If you do use an agent, use a decent model.** The cheap one was fine inside a workflow and noticeably riskier with the keys.
 7. **Count escalations as a cost.** "Safe" architectures that hand 1 in 5 emails to a person aren't free, they've just moved the work.
 
-A pattern I'd like to try next is a hybrid: the workflow handles everything it knows, and only falls back to an agent when a fixed step fails, with idempotent tools underneath. My guess is that gets most of the agent's recovery without most of its risk, but that's a guess until I test it.
+A pattern I'd like to try next is a hybrid: the workflow handles everything it knows, and only falls back to an agent when a fixed step fails, with idempotent tools underneath. My guess is that gets most of the agent's recovery without most of its risk, but that's a guess until I test it. The simpler test comes first: add the two small fixes to the fixed code and see how much of the level 4 gap closes.
 
 ## The limits
 
