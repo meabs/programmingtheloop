@@ -1,6 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { join, dirname } from 'node:path';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import {
   runChecks,
@@ -114,6 +116,29 @@ describe('check:content fixtures', () => {
       errors.some((e) => /Hard-coded finding number "44 \/ 44"/.test(e)),
       errors.join('\n'),
     );
+  });
+
+  it('allows a number that appears in a published post summary, but not one typed only on the page', () => {
+    const experiments = loadExperiments(join(fixtures, 'clean'));
+    const landingHtmlDir = join(fixtures, 'landing-hardcoded');
+    const withPost = checkLandingFindingNumbers({
+      experiments,
+      landingHtmlDir,
+      postTexts: ['A summary that mentions +99–100% and 44 / 44 itself'],
+    });
+    assert.deepEqual(withPost.errors, [], withPost.errors.join('\n'));
+    const without = checkLandingFindingNumbers({ experiments, landingHtmlDir, postTexts: [] });
+    assert.ok(without.errors.length >= 2, without.errors.join('\n'));
+  });
+
+  it('a run count in a post summary shown on the home page is not flagged', () => {
+    const experiments = loadExperiments(join(fixtures, 'clean'));
+    const dir = mkdtempSync(join(tmpdir(), 'ptl-landing-'));
+    writeFileSync(join(dir, 'home.html'), '<main><p>Same shop, four architectures, 4,480 runs.</p></main>');
+    const ok = checkLandingFindingNumbers({ experiments, landingHtmlDir: dir, postTexts: ['Same shop, four architectures, 4,480 runs.'] });
+    assert.deepEqual(ok.errors, [], ok.errors.join('\n'));
+    const bad = checkLandingFindingNumbers({ experiments, landingHtmlDir: dir, postTexts: [] });
+    assert.ok(bad.errors.some((e) => /480 runs/.test(e)), bad.errors.join('\n'));
   });
 
   it('valid news post passes news rules', () => {

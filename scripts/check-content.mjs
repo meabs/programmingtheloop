@@ -732,16 +732,45 @@ function collectLandingTexts({ landingHtmlDir = LANDING_HTML_DIR } = {}) {
   return files.map((file) => ({ file: relative(ROOT, file), text: readFileSync(file, 'utf8') }));
 }
 
+const POST_DIRS = [join(ROOT, 'src/content/articles'), join(ROOT, 'src/content/architecture')];
+
+/**
+ * Titles, summaries and descriptions of published posts. The home hero and "Latest work" cards show
+ * these as authored text, so a number that appears in one of them is sourced from that post.
+ */
+export function postSummaryTexts(dirs = POST_DIRS, newsDir = NEWS_DIR) {
+  const texts = [];
+  for (const dir of [...dirs, newsDir]) {
+    for (const file of listMarkdownFiles(dir)) {
+      const { data } = parseFrontmatter(readFileSync(file, 'utf8'));
+      if (data.draft === true) continue;
+      for (const key of ['title', 'summary', 'description']) {
+        if (typeof data[key] === 'string') texts.push(data[key]);
+      }
+    }
+  }
+  return texts;
+}
+
 /**
  * Fail if home / guide-landing HTML (or its source) hard-codes a finding-shaped
- * number that is not present on any finding / runs / structural count record.
+ * number that is not present on any finding / runs / structural count record,
+ * or in a published post's own title, summary or description.
  */
 export function checkLandingFindingNumbers({
   experiments,
   landingHtmlDir = LANDING_HTML_DIR,
+  postTexts = postSummaryTexts(),
 } = {}) {
   const errors = [];
   const allowed = sourcedLandingTokens(experiments);
+  const authored = [
+    ...postTexts,
+    ...(experiments ?? []).flatMap((e) => [e.data?.title, e.data?.summary, e.data?.description].filter((t) => typeof t === 'string')),
+  ];
+  for (const text of authored) {
+    for (const raw of extractFindingShaped(text)) allowed.add(normalizeFindingToken(raw));
+  }
   const texts = collectLandingTexts({ landingHtmlDir });
 
   for (const { file, text } of texts) {
