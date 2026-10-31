@@ -4,8 +4,6 @@ description: "A beginner's walk through what a generative AI model does with you
 date: 2026-10-31T12:00:00+00:00
 summary: "Your prompt is cut into tokens, each token becomes a vector of 1,024 numbers, 28 transformer layers rework those vectors, and out comes a probability for every possible next token. Pick one, add it on, repeat. I measured each step on a small open model: cat sits nearest kitten, 42 of 448 attention heads link \"it\" to \"animal\", and it confidently named the capital of a country that doesn't exist."
 draft: false
-topics:
-  - context
 ---
 
 *Quick note before I start. I've got mild dyslexia, so I use AI tooling to help with my writing, but the thoughts are all mine.*
@@ -22,7 +20,7 @@ Here's what happens between you pressing Enter and words appearing on the screen
 
 <figure class="guide-figure">
 <img src="/guide-images/genai-1-prompt-journey.png" alt="Flow diagram. 1, your prompt: 'Why is the sky blue?', just text. 2, tokens: Why, is, the, sky, blue, question mark; 6 pieces, each a number. 3, vectors: 1,024 numbers per token. 4, transformer: 28 layers, one after another, each with attention (which words matter here?) and feed-forward (what it has learned); vectors in, better vectors out. 5, next-token odds: a probability for every one of its 151,936 tokens. 6, pick one: the top one or a weighted dice roll (temperature). 7, add it on: the new token joins the text and it all goes round again, looping back to step 2, one token at a time. 8, reply: at a stop token, ids turn back into text. Nothing in this loop looks facts up." width="1800" height="1100" loading="lazy" />
-<figcaption>Steps 2 to 7 run once for every single token of the reply.</figcaption>
+<figcaption>The loop goes round once for every token of the reply.</figcaption>
 </figure>
 
 If you only remember one thing, make it the loop. The model doesn't write an answer. It predicts **one** next piece of text, adds it on, and goes round again. A 300-word reply is a few hundred trips round that loop.
@@ -52,7 +50,7 @@ I took 20 words (animals, vehicles, fruit and colours, picked before I looked at
 
 I'll be honest, my first attempt wasn't that tidy. At the model's last layer every vector points in nearly the same direction, and "dog" even edged out "kitten". The middle layer, with the shared direction taken out, is much clearer, and that's the one I've shown. Every version I tried put the animals nearest and the colours furthest, though. The exact numbers just depend on where you look.
 
-This idea, meaning as direction, is also what powers search over documents (the "vector databases" you hear about). It's the same trick, applied to whole paragraphs instead of single words.
+This idea, meaning as direction, is also what powers search over documents (the "vector databases" you hear about). That uses separate models trained to turn whole paragraphs into vectors, but it's the same idea.
 
 ## Step 4: the transformer, and attention
 
@@ -70,11 +68,14 @@ Then it all goes to the next layer, and the next, 28 times. Vectors in, better v
 
 Every explainer uses the same example, so I measured it: "The animal didn't cross the street because **it** was too tired." What does "it" look at?
 
-Each layer has 16 **attention heads**, so 448 in total, each doing its own looking. I counted where each head looked hardest:
+Each layer has 16 **attention heads**, so 448 in total, each doing its own looking. For each head I found the earlier word it looked at hardest (ignoring the very first token, which heads tend to park their attention on), and counted:
 
 - **206** looked hardest at "because";
+- **64** at the "'t" of "didn't";
 - **53** at "street";
 - **42** at "animal".
+
+The diagram shows the words that matter for the story. Note that "because" is the word right before "it", and heads often favour the nearest word, which is part of why it tops the count.
 
 That surprised me a bit. The textbook picture has "it" neatly pointing at "animal", and in this model only a minority of heads do that. Different heads pick out different things, and the understanding (such as it is) is spread across lots of heads and layers rather than living in any one of them. It's a nice reminder that the tidy diagrams are a simplification.
 
@@ -89,7 +90,7 @@ After the last layer, the final vector gets turned into a **probability for ever
 <figcaption>The odds, the dice, and the loop, all from real runs.</figcaption>
 </figure>
 
-**The odds.** For "The cat sat on the", my little model spreads its bets: chair 6%, edge 5%, window 4%, and "mat" only 3%. I ran the same prompt on a 27-billion-parameter model I also have locally, and it said **mat, 84%**. Bigger models have seen more text and are a lot more sure of themselves. Not always rightly, as we'll see.
+**The odds.** For "The cat sat on the", my little model spreads its bets: chair 6%, edge 5%, window 4%, and "mat" only 3%. I ran the same prompt on a 27-billion-parameter model I also have locally, and it said **mat, 84%**. Part of that is size: bigger models have seen more text. Part is training: the 27B is a chat model, the one I use as an agent, and chat training tends to make a model more decisive. So this isn't a clean test of size alone, and it's one example, not a rule that bigger models are always more confident or more accurate. Being sure isn't the same as being right, as we'll see.
 
 **The pick.** Then something has to choose one. Always taking the top one gives the same answer every time. Rolling a weighted dice gives variety, and **temperature** controls how much the dice favour the top choice. I asked "My favourite colour is" 20 times at each setting:
 
@@ -99,20 +100,22 @@ After the last layer, the final vector gets turned into a **probability for ever
 
 Same model, same prompt. Only the dice changed. That's why you can ask a chatbot the same question twice and get two different answers.
 
-**The loop.** The picked token is added to the text, and the whole thing runs again with one more token. I let it go for 10 rounds on "The sky is blue because":
+**The loop.** The picked token is added to the text, and the model runs again to predict the one after. I let it go for 10 rounds on "The sky is blue because":
 
 > …the molecules in the air are ________.
 > Answer
 
 It started a perfectly sensible answer, then turned it into a quiz sheet. That isn't a bug. It's a *base* model: all it has learned is to continue text the way its training text tends to go, and the internet is full of quiz sheets. Chat models get a lot of extra training (instructions, examples of good answers, and human feedback) so that the likeliest continuation of a question is a helpful reply. Same machinery, different habits.
 
+**A speed note.** Read naively, the loop sounds like the model re-reads your whole prompt for every new token. In practice it reads the prompt once, in one go, and then for each new token it only has to work on that token. It keeps the notes it made on the earlier tokens (a [KV cache](https://huggingface.co/docs/transformers/kv_cache)) and reuses them. The answer is the same as starting from scratch each time, just much faster. It's also why a long prompt can take a moment before the first word appears, and then the words stream.
+
 ## So where do the made-up facts come from?
 
 Look at that loop diagram again. Nothing in it looks anything up. Every word is "what's likely to come next", and nothing else.
 
-So I asked my model about a country I'd just invented: "What is the capital of Zarnovia?"
+So I gave my model a question-and-answer prompt about a country I'd just invented, "Q: What is the capital of Zarnovia?" followed by "A: The capital of Zarnovia is", and let it carry on:
 
-> The capital of Zarnovia is **Zarnovia City.**
+> **Zarnovia City.**
 
 Confident, fluent and entirely made up. It's not lying, it's doing exactly what it always does: producing a likely-looking continuation. A capital city of "Zarnovia" is very likely to be called something like "Zarnovia City". Real chat models are trained to say "I don't know" more often, and many can now search the web first, but underneath, this is the habit they're fighting.
 
@@ -123,7 +126,7 @@ A few things I think are worth taking away, especially if you're building with t
 - **It's prediction, not lookup.** If the answer matters, give the model the facts in the prompt (that's what retrieval and tools are for) and check what comes back.
 - **Tokens are the unit of everything.** Pricing, context limits and speed are all counted in tokens, and the model's view of your text is in chunks, not letters.
 - **Different answers to the same question are normal.** That's the dice. Turn the temperature down when you want consistency.
-- **The model only knows what's in front of it.** Each trip round the loop sees the text so far and nothing else. "Memory" in chat apps is the app quietly pasting earlier conversation, or notes about you, back in.
+- **What it knows comes from two places:** what it learned in training, which is stored in its parameters, and the text in front of it right now. It doesn't look anything else up. "Memory" in chat apps is the app quietly pasting earlier conversation, or notes about you, back in.
 - **Agents are this loop with tools added.** The model predicts "call the search tool" as text, some code runs the search, and the result gets pasted back in. I tested when that's worth it in [Do you actually need an agent?](/architecture/do-you-need-an-agent/)
 
 ## The limits
