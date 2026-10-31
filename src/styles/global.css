@@ -2223,10 +2223,11 @@ html.js-motion .hero-headline.is-in .word {
 .editorial-feature { min-width: 0; padding: clamp(1.5rem, 3vw, 2.5rem); border: 1px solid var(--line-strong); background: var(--surface); }
 .feature-meta, .feed-meta { display: flex; gap: .75rem; justify-content: space-between; align-items: baseline; color: var(--ink-faint); font: .71rem 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .045em; }
 .feature-meta span, .feed-meta span { color: var(--accent); }
-.editorial-feature h2 { margin: 1.7rem 0 .9rem; font-size: clamp(1.8rem, 2.9vw, 2.7rem); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; }
+.editorial-feature h2 { margin: 1.2rem 0 .75rem; font-size: clamp(1.45rem, 2.2vw, 2rem); line-height: 1.2; letter-spacing: -0.02em; text-wrap: balance; }
 .editorial-feature h2 a, .feed-item h3 a, .work-list h3 a { color: var(--ink); text-decoration: none; }
 .editorial-feature h2 a:hover, .feed-item h3 a:hover, .work-list h3 a:hover { color: var(--accent); }
-.editorial-feature p { color: var(--ink-muted); margin-bottom: 1.6rem; }
+.editorial-feature p { color: var(--ink-muted); margin-bottom: 1.2rem; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.editorial-feature .feature-finding { -webkit-line-clamp: 3; }
 .editorial-feature .feature-finding { margin-bottom: 1.1rem; color: var(--ink); }
 .feature-result { display: grid; gap: .55rem; margin: 0 0 1.4rem; padding: .9rem 0; border-block: 1px solid var(--line); }
 .editorial-feature .feature-value { margin: 0; font-size: 1.35rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -2235,7 +2236,10 @@ html.js-motion .hero-headline.is-in .word {
 .text-link:hover { text-decoration: underline; text-underline-offset: .2em; }
 .publication-section { padding-block: clamp(3rem, 5vw, 5rem); border-bottom: 1px solid var(--line); }
 .publication-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem 2rem; margin-bottom: 1.6rem; }
-.publication-heading h2, .publication-about h2 { margin: 0; font-size: clamp(2rem, 3.3vw, 3rem); line-height: 1.12; letter-spacing: -0.02em; }
+.publication-heading h2, .publication-about h2 { margin: 0; line-height: 1.12; letter-spacing: -0.02em; }
+/* One size for every home / findings section heading; the book title in the Guide band shares it on purpose. */
+h2.section-title { font-size: clamp(1.6rem, 2.4vw, 2.1rem); line-height: 1.15; letter-spacing: -0.02em; }
+.sub-title { margin: 0; font-size: 1.25rem; line-height: 1.2; letter-spacing: -0.01em; }
 .publication-heading p { margin: .4rem 0 0; color: var(--ink-muted); }
 .explore-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
 .explore-item { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) auto; align-items: center; gap: .6rem; min-height: 7rem; padding: 1.15rem 1rem; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; }
@@ -2248,7 +2252,7 @@ html.js-motion .hero-headline.is-in .word {
 .guide-feature { background: var(--surface-2); }
 .guide-feature-grid { display: grid; grid-template-columns: minmax(150px, 250px) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; max-width: 940px; }
 .guide-feature img { display: block; width: 100%; height: auto; box-shadow: 8px 12px 30px #0002; }
-.guide-feature h2 { margin: .7rem 0 .1rem; font-size: clamp(2rem, 4vw, 3.8rem); letter-spacing: -0.02em; line-height: 1.08; }
+.guide-feature h2 { margin: .7rem 0 .1rem; }
 .guide-feature .guide-subtitle { margin: 0 0 1.15rem; color: var(--accent); font-weight: 600; }
 .guide-feature p:not(.section-label):not(.guide-subtitle) { max-width: 55ch; color: var(--ink-muted); }
 .guide-feature .actions { margin-top: 1.5rem; }
@@ -2256,9 +2260,9 @@ html.js-motion .hero-headline.is-in .word {
 .feed-item { display: grid; grid-template-columns: 10.5rem minmax(0, 1fr) 2rem; gap: 1.4rem; padding: 1.4rem 0; border-bottom: 1px solid var(--line); }
 .feed-item .feed-meta { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: .25rem; padding-top: .2rem; }
 .feed-item h3 { margin: 0 0 .3rem; font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.02em; }
-.feed-item p { max-width: 68ch; margin: 0; color: var(--ink-muted); font-size: .95rem; }
+.feed-item p { max-width: 68ch; margin: 0; color: var(--ink-muted); font-size: .95rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .feed-arrow { align-self: center; color: var(--accent); text-decoration: none; font-size: 1.25rem; }
-.original-work { background: var(--surface); }
+
 .work-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); }
 .work-list article { padding-top: 1rem; border-top: 1px solid var(--line-strong); }
 .work-list .feed-meta { flex-wrap: wrap; }
@@ -2574,8 +2578,9 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
 .news-strip-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .news-strip-list li { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: .25rem 1.25rem; align-items: baseline; margin: 0; padding: .85rem 0; border-bottom: 1px solid var(--line); }
 .news-strip-list time { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
-.news-strip-list a { color: var(--ink); font-weight: 600; text-decoration: none; overflow-wrap: anywhere; }
+.news-strip-list a { color: var(--ink-muted); font-weight: 400; text-decoration: none; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .news-strip-list a:hover { color: var(--accent); }
+.home-news { margin-top: 2.5rem; }
 @media (max-width: 640px) { .news-strip-list li { grid-template-columns: 1fr; } }
 
 /* Home: latest work as a swipe row on phones, a plain grid from 900px. No autoplay. */
@@ -2605,3 +2610,7 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
   .mobile-panel.open { display: flex; flex-direction: column; gap: 0; position: absolute; left: 0; right: 0; top: 100%; padding: 0; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 14px 26px #0002; z-index: 10; padding-inline: 1rem; }
   .mobile-panel a { color: var(--ink); text-decoration: none; font-weight: 600; padding: .85rem 0; border-top: 1px solid var(--line); font-size: .9rem; text-transform: uppercase; letter-spacing: .03em; }
 }
+
+/* The three results and the "how to read" line sit together as one block. */
+.results-block > .strongest.strongest { border-bottom: 0; padding-bottom: 1rem; }
+.results-block .how-to-read { padding-top: 0; }

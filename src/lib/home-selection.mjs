@@ -20,3 +20,20 @@ export function selectHomeFindings(findings, fallbackIds, limit = 3) {
 export function featuredFirst(items) {
   return [...items.filter((i) => i.featured), ...items.filter((i) => !i.featured)];
 }
+
+/**
+ * Newest written pieces (articles and architecture posts) for the home page, newest first, never the one
+ * already shown in the hero.
+ * items: { href, date, ... }
+ */
+export function latestWriting(items, excludeHref, limit = 5) {
+  return items
+    .filter((i) => i.href !== excludeHref)
+    .sort((a, b) => b.date.valueOf() - a.date.valueOf() || a.href.localeCompare(b.href))
+    .slice(0, limit);
+}
+
+/** Newest experiments for the carousel, never the one already shown in the hero. */
+export function latestExperiments(items, excludeHref, limit = 5) {
+  return latestWriting(items, excludeHref, limit);
+}
