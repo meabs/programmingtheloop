@@ -14,7 +14,7 @@ import { RSS_FEEDS } from './src/lib/seo.ts';
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og/default.png`;
-const ogImageAlt = 'Programming the Loop: Building software with coding agents';
+const ogImageAlt = 'Programming the Loop: Independent experiments and practical architecture for building AI systems that actually work';
 const guideBase = '/guides/programming-the-loop';
 const navCounts = readNavCollectionCountsSync();
 const siteNavSidebar = siteSidebarItems(navCounts);
