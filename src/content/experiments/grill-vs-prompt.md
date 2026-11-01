@@ -6,7 +6,7 @@ summary: "Codex with gpt-5.6-luna, seven tickets on a small banking API, four wa
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/e48ba3936b376a97d8c7e6407f5f464d0a27f9f3/2026-10-grill-vs-prompt"
+    href: "https://github.com/meabs/experiments/tree/2566ea355d25984f7eee3f9c29a9a4b7263aca68/2026-10-grill-vs-prompt"
 draft: false
 experimentId: "GVP"
 question: "Does Matt Pocock's grilling skill recover more of the rules only the developer knows than a short prompt that makes the agent list its open decisions and wait, or than an interview capped at three questions? Does grilling's branch-by-branch walk win where one answer opens new questions, and what does each cost the developer?"
@@ -18,7 +18,7 @@ agents:
     settings: "medium reasoning effort; one Codex session per run, each developer reply sent with codex exec resume; subagents on; bubblewrap sandbox; grilling skill pinned to mattpocock/skills 4ae2317"
 runs: 140
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/e48ba3936b376a97d8c7e6407f5f464d0a27f9f3/2026-10-grill-vs-prompt/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/2566ea355d25984f7eee3f9c29a9a4b7263aca68/2026-10-grill-vs-prompt/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/e33d6e203eb4163badfaf19b55b0f4bde6c6e09d/2026-10-grill-vs-prompt/README.md"
 previewImage: "/guide-images/chart-grill-vs-prompt.png"
 previewAlt: "Developer-only rules met, higher is better. Few flat unknowns, of 25: ticket only 0, grilling 21, structured prompt 21, three questions 19. Many flat unknowns, of 20: 0, 10, 9, 6. Nested unknowns, of 30: 0, 3, 5, 0."
@@ -40,7 +40,7 @@ findings:
     limits:
       - "the developer was Claude following a fixed brief, not a real person; one agent, one small repository, one wording of the prompt"
       - "non-inferiority held with little room: a lower bound of −0.13 against a −0.15 margin"
-    source: "https://github.com/meabs/experiments/blob/e48ba3936b376a97d8c7e6407f5f464d0a27f9f3/2026-10-grill-vs-prompt/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2566ea355d25984f7eee3f9c29a9a4b7263aca68/2026-10-grill-vs-prompt/REPORT.md"
     status: current
     featured: false
   - id: "GVP-2"
@@ -54,7 +54,7 @@ findings:
       - "on the goodwill-credit ticket the parent came up only when the agent recommended \"no maximum amount\" and was corrected; once it was known, both grilling and the prompt asked about the follow-on rules"
     limits:
       - "nesting was hardly tested: the comparison is between formats that mostly never reached the nested part"
-    source: "https://github.com/meabs/experiments/blob/e48ba3936b376a97d8c7e6407f5f464d0a27f9f3/2026-10-grill-vs-prompt/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2566ea355d25984f7eee3f9c29a9a4b7263aca68/2026-10-grill-vs-prompt/REPORT.md"
     status: current
     featured: false
   - id: "GVP-3"
@@ -68,7 +68,7 @@ findings:
       - "three questions asked open questions without recommended answers, so its rules came from the developer's answers rather than corrections"
     limits:
       - "the many-unknown result is one ticket"
-    source: "https://github.com/meabs/experiments/blob/e48ba3936b376a97d8c7e6407f5f464d0a27f9f3/2026-10-grill-vs-prompt/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2566ea355d25984f7eee3f9c29a9a4b7263aca68/2026-10-grill-vs-prompt/REPORT.md"
     status: current
     featured: false
 ---
@@ -200,7 +200,7 @@ This part is my interpretation, not a measurement.
 
 **The practical question isn't "skill or prompt" but "will the agent think to ask about this at all?"** Where it would (who may do what, what gets recorded), asking for a list of open decisions with recommended answers was enough, and the skill added rounds and reading without adding rules. Where it wouldn't (money left in an account, savings accounts being different), no interview format helped: the rule has to be in the ticket, the code or the docs.
 
-**An interview feels thorough without being complete.** Grilling asked 10–13 questions per run and still never reached a nested parent rule. The length of an interview tells the developer nothing about what wasn't asked.
+**An interview feels thorough without being complete.** Grilling asked 10–13 questions per run and still missed the parent rule in 9 of its 10 runs on the nested tickets. The length of an interview tells the developer nothing about what wasn't asked.
 
 **The gaps are shared.** The formats found the same rules and missed the same ones. Relying on any interview for rules like the ones nobody found is relying on luck.
 
@@ -232,7 +232,7 @@ These are proposals, not results.
 
 ## Reproduce
 
-Everything is in [experiments/2026-10-grill-vs-prompt](https://github.com/meabs/experiments/tree/e48ba3936b376a97d8c7e6407f5f464d0a27f9f3/2026-10-grill-vs-prompt):
+Everything is in [experiments/2026-10-grill-vs-prompt](https://github.com/meabs/experiments/tree/2566ea355d25984f7eee3f9c29a9a4b7263aca68/2026-10-grill-vs-prompt):
 
 - the tickets, developer briefs, hidden tests, reference implementations and driver (`tasks/`, `hidden/`, `reference/`, `scripts/`);
 - the fresh reader's fairness check of the new tickets (`checks/brief-check.md`);
