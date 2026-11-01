@@ -247,7 +247,7 @@ For developers and teams using an agent on tickets. Each says how strong its evi
 
 These are proposals, not results.
 
-- **Grilling against a short structured prompt.** Four arms: ticket only; the grilling skill; a prompt that requires blocking questions and answers before coding; and a targeted interview limited to the three most consequential unknowns. Measure hidden requirements met, wrong assumptions accepted, developer reading and total cost. That says whether the skill is worth installing or a plain instruction gets most of the benefit for less interaction.
+- **Grilling against a short structured prompt.** Four arms: ticket only; the grilling skill; a prompt that requires blocking questions and answers before coding; and a targeted interview limited to the three most consequential unknowns. Measure hidden requirements met, wrong assumptions accepted, developer reading and total cost. That says whether the skill is worth installing or a plain instruction gets most of the benefit for less interaction. Now done: [Grilling or a good prompt? (GVP)](/experiments/grill-vs-prompt/).
 - **Real developers** answering the same briefs, to see how often people say yes without reading or answer wrongly.
 - **Grill-with-docs told to wait for answers,** to see whether it then matches grilling.
 - **The follow-up ticket with an AGENTS.md line pointing at the docs.**
