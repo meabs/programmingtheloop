@@ -1,0 +1,49 @@
+---
+/**
+ * Wraps a block of rendered HTML and marks the first mention of each glossary term in it.
+ * Outside a link it becomes a link to the glossary entry; inside a link (a card title, say) it becomes a
+ * plain span with a tooltip, because links cannot nest. Only text between tags is touched.
+ */
+import { GLOSSARY } from '../../data/glossary';
+
+const html = await Astro.slots.render('default');
+const seen = new Set<string>();
+const compiled = GLOSSARY.map((g) => ({ g, re: new RegExp(`(^|[^\\w.-])(${g.pattern})(?![\\w-])`) }));
+const SKIP = new Set(['script', 'style', 'button', 'textarea', 'svg']);
+
+let inLink = 0;
+let skip = 0;
+const out = html
+  .split(/(<[^>]+>)/)
+  .map((chunk) => {
+    if (chunk.startsWith('<')) {
+      const m = chunk.match(/^<(\/?)([a-zA-Z0-9]+)/);
+      if (m) {
+        const closing = m[1] === '/';
+        const tag = m[2].toLowerCase();
+        if (tag === 'a') inLink += closing ? -1 : 1;
+        if (SKIP.has(tag)) skip += closing ? -1 : 1;
+      }
+      return chunk;
+    }
+    if (skip > 0 || chunk.trim() === '') return chunk;
+    let text = chunk;
+    for (const { g, re } of compiled) {
+      if (seen.has(g.id)) continue;
+      const hit = re.exec(text);
+      if (!hit) continue;
+      seen.add(g.id);
+      const tip = (g.definition ?? `See the glossary entry for ${g.term}.`).replace(/"/g, '&quot;');
+      const start = hit.index + hit[1].length;
+      const end = start + hit[2].length;
+      const wrapped =
+        inLink > 0
+          ? `<span class="gloss" title="${tip}">${hit[2]}</span>`
+          : `<a class="gloss" href="/glossary/#${g.id}" title="${tip}">${hit[2]}</a>`;
+      text = text.slice(0, start) + wrapped + text.slice(end);
+    }
+    return text;
+  })
+  .join('');
+---
+<Fragment set:html={out} />

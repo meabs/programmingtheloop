@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE } from '../site';
+import { GLOSSARY } from '../data/glossary';
+
+const terms = [...GLOSSARY].sort((a, b) => a.term.localeCompare(b.term, 'en-GB'));
+---
+<BaseLayout
+  title="Glossary"
+  description="Plain-English meanings for the tools, models and terms used in the experiments."
+  canonicalPath="/glossary/"
+  ogImage={SITE_OG_IMAGE}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Reference</p>
+      <h1>Glossary</h1>
+      <p>Plain-English meanings for the tools, models and terms used in the experiments.</p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      <dl class="glossary">
+        {terms.map((t) => (
+          <div class="glossary-entry" id={t.id}>
+            <dt>{t.term}</dt>
+            <dd>{t.definition ?? <span class="glossary-todo">TODO: definition to be added.</span>}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .glossary { max-width: 44rem; margin: 0; }
+  .glossary-entry { padding: 1rem 0; border-top: 1px solid var(--line); scroll-margin-top: 5rem; }
+  .glossary-entry:last-child { border-bottom: 1px solid var(--line); }
+  .glossary-entry:target dt { color: var(--accent); }
+  dt { font-weight: 700; font-size: 1.1rem; }
+  dd { margin: .3rem 0 0; color: var(--ink-muted); }
+  .glossary-todo { font-style: italic; color: var(--ink-muted); }
+</style>

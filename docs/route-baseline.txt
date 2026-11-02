@@ -27,6 +27,7 @@
 /experiments/okf-worked-example/
 /experiments/rss.xml
 /findings/
+/glossary/
 /guide/
 /guide/about-the-author/
 /guide/about-the-evidence/
