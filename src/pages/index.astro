@@ -95,7 +95,7 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
     <div class="wrap">
       <div class="publication-heading"><div><h2 class="section-title" id="work-title">Latest experiments</h2><p>Each states its method and its limits.</p></div><a class="text-link" href="/experiments/">All {experiments.length} experiments →</a></div>
       <div class="latest-row-wrap">
-        <ul class="latest-row" id="latest-row" role="region" aria-label="Latest experiments, scroll sideways for more" tabindex="0">
+        <ul class="latest-row" id="latest-row" aria-label="Latest experiments, scroll sideways for more" tabindex="0">
           {latestExp.map((x) => (
             <li class="latest-item"><ExperimentCard item={x.entry} /></li>
           ))}

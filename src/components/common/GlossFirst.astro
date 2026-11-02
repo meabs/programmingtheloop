@@ -11,6 +11,10 @@ const seen = new Set<string>();
 const compiled = GLOSSARY.map((g) => ({ g, re: new RegExp(`(^|[^\\w.-])(${g.pattern})(?![\\w-])`) }));
 const SKIP = new Set(['script', 'style', 'button', 'textarea', 'svg']);
 
+const VOID = new Set(['area','base','br','col','embed','hr','img','input','link','meta','source','track','wbr']);
+// Stack of open tags; `hidden` counts open aria-hidden elements so a link is never placed where it cannot be focused.
+const stack: { tag: string; hidden: boolean }[] = [];
+let hidden = 0;
 let inLink = 0;
 let skip = 0;
 const out = html
@@ -23,10 +27,22 @@ const out = html
         const tag = m[2].toLowerCase();
         if (tag === 'a') inLink += closing ? -1 : 1;
         if (SKIP.has(tag)) skip += closing ? -1 : 1;
+        if (!VOID.has(tag) && !chunk.endsWith('/>')) {
+          if (closing) {
+            const i = stack.map((e) => e.tag).lastIndexOf(tag);
+            if (i >= 0) {
+              for (const e of stack.splice(i)) if (e.hidden) hidden--;
+            }
+          } else {
+            const isHidden = /\saria-hidden="true"/.test(chunk);
+            stack.push({ tag, hidden: isHidden });
+            if (isHidden) hidden++;
+          }
+        }
       }
       return chunk;
     }
-    if (skip > 0 || chunk.trim() === '') return chunk;
+    if (skip > 0 || hidden > 0 || chunk.trim() === '') return chunk;
     let text = chunk;
     for (const { g, re } of compiled) {
       if (seen.has(g.id)) continue;

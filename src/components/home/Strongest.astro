@@ -30,7 +30,7 @@ const picks = (selectHomeFindings(all, STRONGEST.map((p) => p.id)) as typeof all
   <div class="wrap">
     <Heading class="section-title" id="strongest-title">{heading}</Heading>
     {intro && <p class="strongest-intro">{intro}</p>}
-    <ul class="strongest-list" role="region" aria-label="Three results, scroll sideways for more" tabindex="0">
+    <ul class="strongest-list" aria-label="Three results, scroll sideways for more" tabindex="0">
       {picks.map(({ p, f, point, axis }) => (
         <li class="strongest-item">
           <p class="strongest-q">{p.question}</p>
