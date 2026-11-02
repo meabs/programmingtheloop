@@ -5,7 +5,7 @@ export const SITE_AUTHOR = 'Garry Meaburn';
 /** X handle for twitter:site / twitter:creator (leading @). */
 export const SITE_TWITTER = '@Mav1972';
 export const SITE_DESCRIPTION =
-  "Practical thinking on AI, software engineering, architecture and the tools we build with. Experiments, projects and guides.";
+  "Independent experiments and practical architecture for building AI systems that actually work. Method and limits published.";
 
 /** Base path for the Programming the Loop multi-page guide. */
 export const PTL_GUIDE_HREF = '/guides/programming-the-loop/';
@@ -25,7 +25,7 @@ export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
 /** Default link-preview image (1200×630 typographic, light theme). */
 export const SITE_OG_IMAGE = `${SITE_URL}/og/default.png`;
 export const SITE_OG_IMAGE_ALT =
-  'Programming the Loop: Building software with coding agents';
+  'Programming the Loop: Independent experiments and practical architecture for building AI systems that actually work';
 /** @deprecated Use SITE_OG_IMAGE; kept as an alias so older imports keep working. */
 export const BOOK_OG_IMAGE = SITE_OG_IMAGE;
 
