@@ -36,6 +36,11 @@ But coding agents already get asked "review this for security" every day. So I t
 4. **Strands team:** a recon agent maps the app; four specialists (injection; access control and auth; crypto, config and dependencies; logic, integrity, logging and errors) work in parallel; a verifier checks their findings and submits. The order is fixed in code, using Strands' `Graph`.
 5. **Strands swarm:** the same six agents and prompts, but they choose who goes next by handing off, using Strands' `Swarm`.
 
+<figure class="guide-figure">
+<img src="/guide-images/arch-vuln-hunt-1-five-reviewers.png" alt="Diagram of five ways to review the same app. A, Codex as it comes: Codex CLI with its own system prompt, a shell in a sandbox, web search off, one turn, asked to review this repository for security vulnerabilities. A2, Codex plus checklist: set up exactly as A, plus the specialist's checklist and a running copy of the app reached with curl. B, specialist, one Strands agent: a security reviewer with a checklist following OWASP's categories, evidence required, and four tools: list_files, read_file, search_code and http_request to the local app only. C, team, a Strands Graph with the order fixed in code: recon, then injection, access and auth, crypto and deps, and logic and errors specialists in parallel, then a verifier that checks and submits once all four finish. D, swarm, a Strands Swarm: the same six agents and prompts, each handing off to the one it chooses, one hand-off a turn, and the verifier submits. Underneath, the same app: a Flask shop API of about 1,200 lines with 23 planted vulnerabilities across all ten OWASP Top 10:2025 categories, 6 decoys, and proof tests the reviewers never see; every reviewer writes its findings to FINDINGS.json." width="1800" height="1060" loading="lazy" />
+<figcaption>Beige: Codex's own harness. Teal: built with Strands Agents.</figcaption>
+</figure>
+
 All five used **gpt-5.6-luna** at medium reasoning effort. 10 runs each, plus the specialist and team with Qwen 3.7 Flash: **70 reviews for $2.09.** The design, the app and the pilot went up on GitHub [before the main run](https://github.com/meabs/experiments/tree/5af45184/2026-11-vuln-hunt).
 
 ## What happened
@@ -76,6 +81,11 @@ Same six agents, same prompts. The only difference: in the swarm, each agent dec
 The crypto, config and dependencies specialist **never ran** in any of the 10 runs. Nor did the logic and errors one. In 6 runs the injection specialist handed straight to the verifier, and in one run nothing was submitted at all. Every run still reported "completed".
 
 If I hadn't logged which agents ran, I'd have assumed the whole checklist had been covered.
+
+<figure class="guide-figure">
+<img src="/guide-images/arch-vuln-hunt-2-graph-vs-swarm.png" alt="Diagram comparing the same six agents in two set-ups, with the number of 10 runs in which each agent ran, using gpt-5.6-luna. Team, Strands Graph, order set in code: recon 10 of 10; injection, access and auth, crypto and deps, logic and errors 10 each, in parallel, with the verifier starting only when all four have finished; verifier 10 of 10; 10.9 hard and very-hard vulnerabilities found per run, of 14, worst run 9, best 12. Swarm, Strands Swarm, each agent picks the next: recon 10 of 10; injection 10, access and auth 4, crypto and deps 0, logic and errors 0; in 6 runs injection handed straight to the verifier, in 2 runs back to recon, then access and auth; verifier submitted in 9 of 10, one run ended without it; 4.4 found per run, and every run still reported completed." width="1800" height="1000" loading="lazy" />
+<figcaption>Dashed red: hand-offs the Swarm rarely or never made.</figcaption>
+</figure>
 
 ## The other things that surprised me
 

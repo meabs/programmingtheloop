@@ -28,18 +28,38 @@ This is a sequel to [Do You Actually Need an Agent?](/architecture/do-you-need-a
 
 Terms, in plain English:
 
-- **State machine:** one model call turns the email into a typed list of requests; ordinary code applies the rules to each; a second call writes the reply.
+- **State machine:** the model fills in a form listing what the customer wants, ordinary `if`/`else` code acts on each item, and the model writes the reply. More on this below.
 - **Crew:** several agents, each with its own instructions and tools, passing the conversation between them.
 - **Handoff:** one agent transferring the conversation to another, here with a `transfer_to_<agent>` tool, the way OpenAI's Swarm and Agents SDK do it.
 
 ## Four ways to build it
 
-1. **State machine.** Always two model calls. The schema covers every kind of request in the policy, and anything it can't express goes to a person.
+<figure class="guide-figure">
+<img src="/guide-images/arch-crew-vs-code-2-four-architectures.png" alt="Diagram of four ways to build the same support bot. 1, state machine, always 2 model calls: the model fills a typed list, plain if/else code applies the policy to each request and sends anything else to a person, and the model writes the reply from the facts the code found. 2, single agent, up to 20 calls: the model in a loop with all nine tools and the whole policy, picking a tool, reading the result and picking the next one until it writes the reply. 3, crew with full history, and 4, crew with note only, up to 20 calls in total: a front desk that looks things up but can't change anything transfers to a delivery specialist (tracking, address, cancel) or a returns specialist (refunds, replacements). In the full-history crew the next agent sees the whole conversation; in the note-only crew it sees only the email and a note. Underneath, the shop's nine tools: find_customer, get_order, track_shipment, check_stock, issue_refund, send_replacement, change_address, cancel_order and escalate." width="1800" height="1040" loading="lazy" />
+<figcaption>Beige: code I wrote decides. Teal: a model decides.</figcaption>
+</figure>
+
+1. **State machine.** Always two model calls, explained step by step below.
 2. **Single agent.** The model in a loop with all nine tools and the whole policy.
 3. **Crew, full history.** A **front desk** that can look things up but not change anything, a **delivery** specialist (tracking, address changes, cancellations) and a **returns** specialist (refunds, replacements, billing). Each sees only its own part of the policy. When one transfers to another, the new one sees the whole conversation so far, which is the Swarm and Agents SDK default. The instructions start with the Agents SDK's own handoff prompt, word for word.
 4. **Crew, note only.** The same crew, but the new agent sees only the email and a note from the last one, more like a CrewAI task hand-off.
 
 In my first pilot the crew was a mess: specialists kept writing "I've passed your request to our delivery team" instead of doing the work. I assumed I'd written the handoff badly, so I switched to the Agents SDK's own prompt and tool result. It helped a little. Remember that sentence, it comes back.
+
+### The state machine, in plain English
+
+"State machine" sounds technical, but the idea is simple. The model only does the two jobs that need language: reading the email and writing the reply. Everything in between is ordinary code, the same every time.
+
+<figure class="guide-figure">
+<img src="/guide-images/arch-crew-vs-code-3-state-machine.png" alt="Diagram of the state machine, step by step, for the email: Change the address on A1088 to 14 Elm Road. One mug in A1042 arrived chipped, please replace the set. Do you take Amex? Step 1, the model fills in a form, one line per request, each one of nine fixed request types: change_address, order A1088, to 14 Elm Road; damaged_item, order A1042, wants a replacement; policy_question, Do you take Amex? Step 2, plain code handles each line with if/else rules, with no model involved. Address change: already dispatched? Yes, decline and say why; no, call change_address; fact: address changed. Damaged item: delivered, within 30 days? No, decline and say why; yes, send a replacement, or a refund if they asked for one; fact: replacement sent. General question: no tool needed, the answer is in the shop's policy. Anything the form can't express, a billing problem, or a tool that fails is handed to a person. Step 3, the model writes the reply from the list of facts. It is told not to promise or decide anything that isn't in the facts. Replies claiming an action that wasn't taken, in the main run: 0%." width="1800" height="1180" loading="lazy" />
+<figcaption>Source: <code>2026-11-crew-vs-code/src/statemachine.py</code>.</figcaption>
+</figure>
+
+1. **The model fills in a form.** It reads the email and writes down each separate request as one line, picking from nine fixed request types (change an address, a damaged item, a general question, and so on) and noting the details: order number, new address, what they want.
+2. **Code does the work, one line at a time.** For each line, plain `if`/`else` code applies the shop's rules, the same way every time. Change of address: has the order been dispatched? If not, change it. Damaged item: was it delivered in the last 30 days? If so, send a replacement. A general question needs no action; the answer is in the policy. Anything the form can't express, a billing problem, or a service that fails goes to a person. Each step ends with a plain fact: "address changed", "replacement sent".
+3. **The model writes the reply** from that list of facts, and is told not to promise anything that isn't on it.
+
+So the model never decides what to *do*. It can misread an email, but it can't skip a step or do one twice, because only the code acts. And because the reply is written from what the code actually did, none of its replies in the main run claimed an action that hadn't happened.
 
 ## The emails
 
