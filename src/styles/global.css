@@ -2253,7 +2253,7 @@ h2.section-title { font-size: clamp(1.6rem, 2.4vw, 2.1rem); line-height: 1.15; l
 .guide-feature-grid { display: grid; grid-template-columns: minmax(150px, 250px) minmax(0, 1fr); gap: clamp(1.5rem, 5vw, 5rem); align-items: center; max-width: 940px; }
 .guide-feature img { display: block; width: 100%; height: auto; box-shadow: 8px 12px 30px #0002; }
 .guide-feature h2 { margin: .7rem 0 .1rem; }
-.guide-feature .guide-subtitle { margin: 0 0 1.15rem; color: var(--accent); font-weight: 600; }
+.guide-feature .guide-subtitle { margin: 0 0 1.15rem; color: var(--ink-muted); font-weight: 600; }
 .guide-feature p:not(.section-label):not(.guide-subtitle) { max-width: 55ch; color: var(--ink-muted); }
 .guide-feature .actions { margin-top: 1.5rem; }
 .publication-feed { border-top: 1px solid var(--line); }
@@ -2326,7 +2326,7 @@ h2.section-title { font-size: clamp(1.6rem, 2.4vw, 2.1rem); line-height: 1.15; l
 
 .site-header { z-index: 100; }
 .mobile-panel.open { z-index: 10; }
-@media (max-width: 360px) {
+@media (max-width: 400px) {
   .nav-shell { gap: .3rem; }
   .brand { gap: .35rem; padding-right: 0; min-width: 0; }
   .brand-name { font-size: .78rem; white-space: nowrap; letter-spacing: -0.02em; word-spacing: .03em; }
@@ -2580,7 +2580,6 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
 .news-strip-list time { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
 .news-strip-list a { color: var(--ink-muted); font-weight: 400; text-decoration: none; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .news-strip-list a:hover { color: var(--accent); }
-.home-news { margin-top: 2.5rem; }
 @media (max-width: 640px) { .news-strip-list li { grid-template-columns: 1fr; } }
 
 /* Home: latest work as a swipe row on phones, a plain grid from 900px. No autoplay. */
@@ -2614,3 +2613,9 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
 /* The three results and the "how to read" line sit together as one block. */
 .results-block > .strongest.strongest { border-bottom: 0; padding-bottom: 1rem; }
 .results-block .how-to-read { padding-top: 0; }
+
+/* Home Writing: the same card pattern as experiments, in a grid. Phones show four. */
+.writing-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
+@media (max-width: 640px) { .writing-grid > :nth-child(n + 5) { display: none; } }
+@media (min-width: 700px) { .writing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .writing-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

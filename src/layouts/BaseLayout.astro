@@ -58,8 +58,6 @@ const canonical = new URL(canonicalPath, SITE_URL).href;
 const pageTitle = title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
 const path = Astro.url.pathname;
 const nav = await getVisibleNav();
-const showArticles = await isCollectionNavVisible('articles');
-const showArchitecture = await isCollectionNavVisible('architecture');
 const showNews = await isCollectionNavVisible('news');
 const jsonLdBlocks = jsonLd
   ? Array.isArray(jsonLd)
@@ -166,7 +164,7 @@ const jsonLdBlocks = jsonLd
           })}
         </nav>
         <div class="nav-tools">
-          <a class="search-link" href="/search/" aria-current={path.startsWith('/search/') ? 'page' : undefined}>
+          <a class="search-link" href="/search/" aria-label="Search" aria-current={path.startsWith('/search/') ? 'page' : undefined}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"></circle><path d="M10.5 10.5 14 14" stroke-linecap="round"></path></svg>
             <span class="search-label">Search</span>
           </a>
@@ -194,20 +192,14 @@ const jsonLdBlocks = jsonLd
       <div class="wrap footer-inner">
         <div>
           <strong>{SITE_NAME}</strong>
-          <p>Practical technical thinking · {SITE_AUTHOR}</p>
+          <p>Independent experiments and practical architecture · {SITE_AUTHOR}</p>
         </div>
         <div class="footer-links">
-          {showArticles && <a href="/articles/">Articles</a>}
-          {showArchitecture && <a href="/architecture/">Architecture</a>}
           {showNews && <a href="/news/">News</a>}
-          <a href="/findings/">Findings</a>
           <a href="/new-to-this/">New to this?</a>
-          <a href="/experiments/">Experiments</a>
-          <a href="/guides/">Guide</a>
-          <a href="/about/">About</a>
           <a href="/updates/">Updates</a>
-          <a href="/guides/programming-the-loop/#licence">Licence</a>
           <a href="/resources/">Resources</a>
+          <a href="/guides/programming-the-loop/#licence">Licence</a>
           <a href="https://github.com/meabs/programmingtheloop">GitHub</a>
           <a href={LINKS.discussions} rel="noopener noreferrer">Discussions</a>
           <a href="/news/rss.xml">News RSS</a>
