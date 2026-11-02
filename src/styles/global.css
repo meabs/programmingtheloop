@@ -2614,11 +2614,6 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
 .results-block > .strongest.strongest { border-bottom: 0; padding-bottom: 1rem; }
 .results-block .how-to-read { padding-top: 0; }
 
-/* Glossary mentions: first use of a term on a page. */
-a.gloss, span.gloss { text-decoration: underline dotted; text-underline-offset: .2em; text-decoration-thickness: 1px; cursor: help; }
-a.gloss { color: inherit; position: relative; z-index: 1; }
-a.gloss:hover, a.gloss:focus-visible { color: var(--accent); }
-
 /* Home Writing: the same card pattern as experiments, in a grid. Phones show four. */
 .writing-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
 @media (max-width: 640px) { .writing-grid > :nth-child(n + 5) { display: none; } }

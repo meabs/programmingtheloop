@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import GlossFirst from '../components/common/GlossFirst.astro';
 import WritingCard from '../components/home/WritingCard.astro';
 import ExperimentCard from '../components/experiments/ExperimentCard.astro';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_OG_IMAGE, LINKS, PDF_PATH } from '../site';
@@ -53,7 +52,6 @@ const heroPoint = toResultPoint(heroFinding);
 const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
 ---
 <BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE} jsonLd={personJsonLd()}>
-  <GlossFirst>
   <section class="publication-hero">
     <div class="wrap publication-hero-grid">
       <div class="publication-intro">
@@ -150,7 +148,6 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
   <section class="publication-section publication-about" aria-labelledby="about-title">
     <div class="wrap about-grid"><h2 class="section-title" id="about-title">About the publication</h2><div><p>I'm Garry Meaburn. I use this space to work through practical technical questions, share original work and offer evidence-based opinions. Findings are measured; recommendations are judgement.</p><div class="about-links"><a href="/about/">More about me →</a><a href={LINKS.githubAuthor}>GitHub ↗</a><a href={LINKS.x}>X ↗</a><a href={LINKS.linkedin}>LinkedIn ↗</a></div></div></div>
   </section>
-  </GlossFirst>
 </BaseLayout>
 
 <script>
