@@ -26,3 +26,11 @@ test('a section is active for its own href and for its match prefixes', () => {
   assert.equal(navItemIsActive(writing, '/experiments/'), false);
   assert.equal(navItemIsActive({ href: '/about/' }, '/about/methodology/'), true);
 });
+
+test('primary nav is Experiments, Architecture, Articles, Guide, About, with no Findings or Writing item', async () => {
+  const { NAV } = await import('../src/site.ts');
+  assert.deepEqual(NAV.map((n) => n.label), ['Experiments', 'Architecture', 'Articles', 'Guide', 'About']);
+  const experiments = NAV.find((n) => n.label === 'Experiments');
+  assert.equal(navItemIsActive(experiments, '/findings/'), true, 'Findings tab highlights Experiments');
+  assert.equal(navItemIsActive(experiments, '/measured/'), true);
+});

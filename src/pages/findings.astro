@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ExperimentTabs from '../components/experiments/ExperimentTabs.astro';
 import Strongest from '../components/home/Strongest.astro';
 import Synthesis from '../components/home/Synthesis.astro';
 import StartHere from '../components/home/StartHere.astro';
@@ -22,16 +23,16 @@ import { SITE_NAME, SITE_OG_IMAGE } from '../site';
       <h1>What the experiments show</h1>
       <Counts />
       <p>
-        A connected body of controlled trials, not a list of one-off tests. Start with three results, then read by the problem
-        you are trying to solve. Every number is read from the experiment it comes from, with its limits.
+        This is a curated view of the same experiments: the headline results, grouped by the engineering problem they inform.
+        Every number is read from the experiment it comes from, with its limits. For the full write-ups, use All experiments.
       </p>
       <p>
         <a class="button primary" href="#by-problem">By problem →</a>
-        <a class="button" href="/experiments/">All experiments →</a>
         <a class="button" href="/measured/">Reference list →</a>
       </p>
     </div>
   </header>
+  <ExperimentTabs current="findings" />
   <Strongest intro="If you read three, read these. Each shows the result, its interval and its limit." />
   <HowToRead />
   <Synthesis />

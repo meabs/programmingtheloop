@@ -66,18 +66,19 @@ export type NavItem = {
 
 /**
  * Main nav: original work first. Search is rendered separately, with a text label.
- * Writing is a hub over Articles, Architecture and News. Updates lives in the footer only.
+ * The same list feeds the header, the mobile menu and the Guide header. News, Updates and Resources are footer links.
  * Collection sections are filtered via nav-gate (getVisibleNav / siteSidebarItems).
  */
 export const NAV: readonly NavItem[] = [
-  { label: 'Findings', href: '/findings/', always: true, match: ['/findings/', '/measured/'] },
-  { label: 'Experiments', href: '/experiments/', collection: 'experiments', match: ['/experiments/', '/topics/'] },
+  // Findings is a view of the experiments (a tab on /experiments/), so it highlights this item rather than having its own.
   {
-    label: 'Writing',
-    href: '/writing/',
-    collections: ['articles', 'architecture', 'news'],
-    match: ['/writing/', '/articles/', '/architecture/', '/news/'],
+    label: 'Experiments',
+    href: '/experiments/',
+    collection: 'experiments',
+    match: ['/experiments/', '/topics/', '/findings/', '/measured/'],
   },
+  { label: 'Architecture', href: '/architecture/', collection: 'architecture', match: ['/architecture/'] },
+  { label: 'Articles', href: '/articles/', collection: 'articles', match: ['/articles/'] },
   // Book hub: show once at least one guide is published.
   { label: 'Guide', href: '/guides/', collection: 'guides', minItems: 1, match: ['/guides/', '/guide/', '/resources/'] },
   { label: 'About', href: '/about/', always: true },

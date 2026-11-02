@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExperimentTabs from '../../components/experiments/ExperimentTabs.astro';
 import ExperimentCard from '../../components/experiments/ExperimentCard.astro';
 import { SITE_OG_IMAGE } from '../../site';
 import { getPublishedExperiments } from '../../lib/collections';
@@ -25,7 +26,7 @@ const filters = [...counts].sort((a, b) => b[1] - a[1]).map(([id, n]) => ({ id, 
         Each item is one write-up: what I asked, what I measured, and where to read the full
         numbers. Limits stay with the numbers.
       </p>
-      <p><a class="button primary" href="/findings/">What the experiments show →</a> <a class="button" href="/measured/">What I've measured so far</a> <a class="button" href="/topics/">Browse by topic</a></p>
+      <p><a class="button" href="/measured/">Reference list</a> <a class="button" href="/topics/">Browse by topic</a></p>
       {items.length > 0 && (
         <p class="page-head-meta">
           <a href="/experiments/rss.xml">RSS</a>
@@ -33,6 +34,7 @@ const filters = [...counts].sort((a, b) => b[1] - a[1]).map(([id, n]) => ({ id, 
       )}
     </div>
   </header>
+  <ExperimentTabs current="all" />
   <div class="page-body">
     <div class="wrap">
       <div class="exp-toolbar">
