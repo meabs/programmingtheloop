@@ -2580,7 +2580,6 @@ html.js-motion .reveal:not(.is-visible) { opacity: 1; transform: none; }
 .news-strip-list time { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
 .news-strip-list a { color: var(--ink-muted); font-weight: 400; text-decoration: none; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .news-strip-list a:hover { color: var(--accent); }
-.home-news { margin-top: 2.5rem; }
 @media (max-width: 640px) { .news-strip-list li { grid-template-columns: 1fr; } }
 
 /* Home: latest work as a swipe row on phones, a plain grid from 900px. No autoplay. */

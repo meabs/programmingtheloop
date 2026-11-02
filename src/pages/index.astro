@@ -40,6 +40,8 @@ const writing = latestWriting(
   5,
 ) as WritingItem[];
 const latestNews = news.slice(0, 3);
+// Calculated from content, never typed: experiments whose type is a controlled trial.
+const controlledCount = experiments.filter((e) => /^controlled trial/i.test(e.data.type ?? '')).length;
 
 // The hero shows the featured experiment's headline result as evidence, not just a title.
 const featuredExp = featured ? experiments.find((e) => `/experiments/${e.id}/` === featured.href) : undefined;
@@ -53,9 +55,9 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
     <div class="wrap publication-hero-grid">
       <div class="publication-intro">
         <p class="section-label">An independent technical publication</p>
-        <h1>Independent experiments and practical architecture for building AI systems that actually work.</h1>
+        <h1>{controlledCount} controlled experiments on whether AI coding agents can be trusted, with the method and limits published.</h1>
         <p class="audience">For engineers building, securing and trusting AI systems.</p>
-        <p>Controlled experiments on coding agents and other AI systems, with the data, the method and the limits, plus architecture notes and plain-English explainers on how GenAI works.</p>
+        <p>Independent experiments and practical architecture for building AI systems that actually work: the data, the method and the limits, plus plain-English explainers on how GenAI works.</p>
         <div class="actions">
           <a class="button primary" href="/findings/">Start here →</a>
           <a class="button" href="/experiments/">All experiments →</a>
@@ -106,10 +108,9 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
     </div>
   </section>}
 
-  {(writing.length > 0 || latestNews.length > 0) && <section class="publication-section" aria-labelledby="writing-title">
+  {writing.length > 0 && <section class="publication-section" aria-labelledby="writing-title">
     <div class="wrap">
-      {writing.length > 0 && <>
-        <div class="publication-heading"><div><h2 class="section-title" id="writing-title">Writing</h2><p>Articles and architecture notes, newest first.</p></div><a class="text-link" href="/writing/">All writing →</a></div>
+      <div class="publication-heading"><div><h2 class="section-title" id="writing-title">Writing</h2><p>Articles and architecture notes, newest first.</p></div><a class="text-link" href="/writing/">All writing →</a></div>
         <div class="publication-feed">
           {writing.map((post) => <article class="feed-item">
             <div class="feed-meta"><span>{post.kind}</span><time datetime={post.date.toISOString()}>{formatItemDate(post.date)}</time></div>
@@ -117,16 +118,6 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
             <a class="feed-arrow" href={post.href} aria-label={`Read ${post.title}`}>→</a>
           </article>)}
         </div>
-      </>}
-      {latestNews.length > 0 && <div class="home-news">
-        <div class="publication-heading"><div><h3 class="sub-title" id="news-title">News</h3></div><a class="text-link" href="/news/">All news →</a></div>
-        <ul class="news-strip-list">
-          {latestNews.map((post) => <li>
-            <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
-            <a href={newsHref(post)}>{post.data.summary ?? post.data.title}</a>
-          </li>)}
-        </ul>
-      </div>}
     </div>
   </section>}
 
@@ -140,6 +131,18 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
         <p>Eleven chapters of practical engineering judgement and small controlled trials, with the evidence and its limits close to each conclusion. Read it online or keep the first edition PDF.</p>
         <div class="actions"><a class="button primary" href="/guides/programming-the-loop/">Read online →</a><a class="button" href={PDF_PATH} download>Download PDF ↓</a><a class="button" href="/resources/">Resources →</a></div>
       </div>
+    </div>
+  </section>}
+
+  {latestNews.length > 0 && <section class="publication-section home-news" aria-labelledby="news-title">
+    <div class="wrap">
+      <div class="publication-heading"><div><h2 class="section-title" id="news-title">News</h2><p>Short digests of tool and model releases.</p></div><a class="text-link" href="/news/">News digest →</a></div>
+      <ul class="news-strip-list">
+        {latestNews.map((post) => <li>
+          <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
+          <a href={newsHref(post)}>{post.data.summary ?? post.data.title}</a>
+        </li>)}
+      </ul>
     </div>
   </section>}
 
