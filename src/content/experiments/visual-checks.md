@@ -15,7 +15,7 @@ evidenceGrade: published
 agents:
   - name: "Jev"
     model: "jev-latest 1.14.0 (TypeSafe, hosted)"
-    settings: "yes/no (noul) questions, all of a screen's assertions in one request; flag below 0.5"
+    settings: "yes/no questions (Jev calls this question type a noul: it answers with a probability of yes), all of a screen's assertions in one request; flag below 0.5"
   - name: "Vision models"
     model: "google/gemini-4-argon, openai/gpt-6.1-terra (OpenRouter); qwen3-vl:8b (local, Ollama)"
     settings: "same assertions, answered yes or no; and a free review"
@@ -24,7 +24,7 @@ repo: "https://github.com/meabs/experiments"
 report: "https://github.com/meabs/experiments/blob/06234b11a0ebc11e35706beac8fc701ff699af63/2026-11-visual-checks/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/d3e16f4463cb15a25efe3119b16aed9faf8a3159/2026-11-visual-checks/README.md"
 previewImage: "/guide-images/chart-visual-checks.png"
-previewAlt: "Defects caught of 22 (higher is better) and false alarms on harmless changes of 24 (lower is better). Gemini assertions 22 and 0; Jev assertions 19 and 0; gpt-6.1-terra assertions 22 and 10; local qwen3-vl:8b assertions 11 and 0; pixel diff 13 and 16; Jev open question 22 and 22; Gemini free review 21 and 12."
+previewAlt: "Defects caught of 22 (higher is better) and false alarms on harmless changes of 24 (lower is better). Gemini assertions 22 and 0; Jev assertions 19 and 0; gpt-6.1-terra assertions 22 and 10; local qwen3-vl:8b assertions 11 and 0; pixel diff 13 and 16; Jev open question 22 and 22; Gemini free review 21 and 12; gpt-6.1-terra free review 21 and 13; local qwen3-vl:8b free review 7 and 0."
 topics:
   - verification
   - review
@@ -86,7 +86,7 @@ That's the job here. A web change can pass every unit test and still ship a brok
 
 Jev needs questions it can answer, so each screen got a short checklist written from what the page must show ("Is a cart total shown, and is it equal to the sum of the line subtotals?"). I compared Jev with Gemini, GPT and a local vision model answering the same checklist, with a pixel diff, and with Jev asked one open question: is anything wrong?
 
-**The short answer:** with the checklist, Jev answered ten times faster than the vision models and never cried wolf, unlike the pixel diff. But it missed three bugs that needed adding up or noticing something missing, and Gemini, with the same questions, caught everything. Asked "is anything wrong?", Jev flagged almost every screen.
+**The short answer:** with the checklist, Jev answered about 12 times faster than Gemini (0.4 s against 4.8 s a call) and never cried wolf, unlike the pixel diff. But it missed three bugs that needed adding up or noticing something missing, and Gemini, with the same questions, caught everything. Asked "is anything wrong?", Jev flagged almost every screen.
 
 ## How the checks work
 
@@ -130,7 +130,7 @@ Findings VIS-1 to VIS-3 are at the top of the page.
 
 <figure class="guide-figure">
 
-<img src="/guide-images/chart-visual-checks.png" alt="Caught the bug, or cried wolf? Defects caught of 22 (higher is better) and false alarms on harmless changes of 24 (lower is better). Gemini, assertions: 22 and 0. Jev, assertions: 19 and 0. gpt-6.1-terra, assertions: 22 and 10. qwen3-vl:8b local, assertions: 11 and 0. Pixel diff at 0.5%: 13 and 16. Jev, one open question: 22 and 22. Gemini, free review: 21 and 12. Jev against the pixel diff on false alarms: 0 against 16, Holm p = 0.0003; Jev answered in 0.4 s, the others in 4 to 15 s. Jev's 3 misses: a cart total that doesn't add up, and blank product pictures on 2 screens. All 10 of terra's false alarms: navigation links readable, on phones, where the links hide in a menu." width="1800" height="1010" loading="lazy" />
+<img src="/guide-images/chart-visual-checks.png" alt="Caught the bug, or cried wolf? Defects caught of 22 (higher is better) and false alarms on harmless changes of 24 (lower is better). Gemini, assertions: 22 and 0. Jev, assertions: 19 and 0. gpt-6.1-terra, assertions: 22 and 10. qwen3-vl:8b local, assertions: 11 and 0. Pixel diff at 0.5%: 13 and 16. Jev, one open question: 22 and 22. Gemini, free review: 21 and 12. gpt-6.1-terra, free review: 21 and 13. qwen3-vl:8b local, free review: 7 and 0. Jev against the pixel diff on false alarms: 0 against 16, Holm p = 0.0003; Jev answered in 0.4 s, the others in 4 to 15 s. Jev's 3 misses: a cart total that doesn't add up, and blank product pictures on 2 screens. All 10 of terra's false alarms: navigation links readable, on phones, where the links hide in a menu." width="1800" height="1160" loading="lazy" />
 
 <figcaption>Source: github.com/meabs/experiments, 2026-11-visual-checks (each screenshot 3 calls, majority verdict).</figcaption>
 
@@ -143,17 +143,17 @@ Of 22 defect screenshots, 24 harmless changes and 8 untouched screens:
 | Checker | Defects caught (higher is better) | False alarms, harmless changes (lower is better) | False alarms, untouched (lower is better) | Median seconds per call |
 | --- | --- | --- | --- | --- |
 | **Jev, assertions** | 19 | **0** | **0** | **0.4** |
-| Gemini, assertions | **22** | **0** | **0** | 4.9 |
+| Gemini, assertions | **22** | **0** | **0** | 4.8 |
 | gpt-6.1-terra, assertions | **22** | 10 | 3 | 4.1 |
-| qwen3-vl:8b (local), assertions | 11 | **0** | **0** | 9.0 |
+| qwen3-vl:8b (local), assertions | 11 | **0** | **0** | 8.9 |
 | Pixel diff | 13 | 16 | **0** | 0.0 |
 | Jev, open question | **22** | 22 | 7 | 0.4 |
 | Gemini, free review | 21 | 12 | 5 | 5.8 |
 | gpt-6.1-terra, free review | 21 | 13 | 4 | 4.8 |
-| qwen3-vl:8b (local), free review | 7 | **0** | 1 | 15.2 |
+| qwen3-vl:8b (local), free review | 7 | **0** | 1 | 15.1 |
 
 - **H1, supported:** Jev's assertions against the pixel diff on harmless changes, 0 against 16 of 24 (Holm p = 0.0003).
-- **H2, not supported:** Jev 19 against Gemini's 22 of 22. The difference is −14 points, with a 95% interval from −37 to 0, so I can't rule out that Jev is clearly worse.
+- **H2, not supported:** Jev 19 against Gemini's 22 of 22. The difference is −14 points, with a 95% interval from −37 to 0, so Jev might be about as good as Gemini or much worse.
 - **H3, not supported:** the open question caught all 22, but only by flagging almost everything.
 - **H4, no difference:** Jev and Gemini both had no false alarms.
 
@@ -172,10 +172,12 @@ One call per screenshot, as a CI gate would make (this run made three):
 | Pixel diff | $0 | $0 | under 0.1 |
 | **Jev, assertions** | **$0.00017** | **$1.69** | **0.4** |
 | gpt-6.1-terra, assertions | $0.0015 | $14.78 | 4.1 |
-| Gemini, assertions | $0.0036 | $35.71 | 4.9 |
+| Gemini, assertions | $0.0036 | $35.71 | 4.8 |
 | qwen3-vl:8b (local), assertions | $0 in API fees | about 33 hours of GPU time | 8.9 |
 
-- **Jev against Gemini, same questions:** about 21 times cheaper and 12 times faster, for 3 fewer bugs caught of 22 and the same zero false alarms. Jev's price is TypeSafe's list price for `jev-1.14.0`, $0.042 per million input tokens (output free), applied to the tokens it used. The others are OpenRouter's billed cost.
+Times in both tables are the median of a checker's 162 calls. The "about 33 hours of GPU time" is different: it is 10,000 calls at qwen's mean of 11.9 s, because a few of its calls were much slower than the median of 8.9 s.
+
+- **Jev against Gemini, same questions:** about 21 times cheaper and 12 times faster, for 3 fewer bugs caught of 22 and the same zero false alarms. Jev's price is TypeSafe's list price for `jev-1.14.0`, $0.042 per million input tokens (output free), from TypeSafe's models page on 3 November 2026, applied to the tokens it used. The others are OpenRouter's billed cost.
 - **But none of these bills is large.** Gemini for 10,000 screenshots is about $36. The cost that matters more is a person's time: each false alarm needs someone to look, and each miss ships a bug. At this run's rates, 100 harmless changes would raise about 67 alarms from the pixel diff, 42 from gpt-6.1-terra's assertions, and none from Jev's or Gemini's.
 
 ### Exploratory follow-up
@@ -201,7 +203,7 @@ This part is my interpretation, not a measurement.
 
 **Writing down what each screen must show is what made the models useful.** Three of the four assertion checkers raised no false alarms on any harmless change. The general question ("is anything broken?") didn't work with any model.
 
-**Gemini, not Jev, was the strongest checker here,** with all 22 bugs and no false alarms. Jev was ten times faster and a twentieth of the price, but missed three. With 22 bug screenshots, that shows neither that Gemini is better in general nor that Jev is about as good; its three misses could matter.
+**Gemini, not Jev, was the strongest checker here,** with all 22 bugs and no false alarms. Jev was about 12 times faster than Gemini and a twentieth of the price, but missed three. With 22 bug screenshots, that shows neither that Gemini is better in general nor that Jev is about as good; its three misses could matter.
 
 **Some of these bugs didn't need a model at all.** A wrong total can be calculated, and a blank picture shows up as an image that failed to load. Visual checking is really three questions, and no single checker here answers all of them:
 
@@ -231,7 +233,7 @@ For teams adding visual checks to CI. Each says how strong its evidence is.
 
 These are proposals, not results.
 
-- **A hybrid gate against AI-only gates,** on the same screenshots plus real bugs from a project's history: deterministic Playwright and DOM checks only; Gemini with visual assertions; Jev with visual assertions; and deterministic checks plus targeted visual assertions, sending only unclear failures to a stronger model. Measure bugs caught, false alarms, review time, total cost, and which bugs get past every layer. A reviewer suggested this, and it's the most useful next step.
+- **A hybrid gate against AI-only gates,** on the same screenshots plus real bugs from a project's history: deterministic Playwright and DOM checks only; Gemini with visual assertions; Jev with visual assertions; and deterministic checks plus targeted visual assertions, sending only unclear failures to a stronger model. Measure bugs caught, false alarms, review time, total cost, and which bugs get past every layer. It's the most useful next step.
 - **Jev without the arithmetic:** assertions that never ask it to add up or compare, with totals checked in code.
 - **Real regressions** from a project's history instead of planted ones.
 - **Assertions written by someone else,** or generated from the requirements, to see how much depends on the writer.
