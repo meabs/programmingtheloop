@@ -1,15 +1,15 @@
 ---
-title: "Yes/no screenshot checks: can they catch the UI bugs that tests miss? (experiment VIS)"
-description: "I planted 12 kinds of visual bug in a storefront, plus 8 harmless changes, and checked 54 screenshots four ways. Short yes/no questions written for each screen beat a pixel diff: Jev, a small yes/no model, raised no false alarms against the pixel diff's 16 of 24, and answered in under half a second. But it missed 3 of 22 defects, a wrong total and blank pictures, that Gemini caught. Asking any model \"is anything wrong?\" flagged most harmless changes."
+title: "Can Jev, a new kind of AI model, catch UI bugs better than vision models or a pixel diff? (experiment VIS)"
+description: "Jev is a new kind of AI model: a decision model that doesn't generate text, but answers typed questions about text and images (true or false, pick an option, a score) with calibrated probabilities. I tested it against Gemini, GPT and a local vision model, and against a pixel diff, on 54 storefront screenshots with 12 kinds of planted UI bug and 8 harmless changes. Given a short checklist of questions per screen, Jev raised no false alarms (the pixel diff: 16 of 24) and answered in under half a second, but missed 3 of 22 bugs, a wrong total and blank pictures, that Gemini caught. Asked \"is anything wrong?\", it flagged almost everything."
 date: 2026-11-03
 summary: "54 storefront screenshots (22 with a planted defect, 24 with a harmless change, 8 untouched), each checked three times. Written yes/no assertions answered by Jev: 19 of 22 defects, 0 false alarms, 0.4 s a call. Gemini with the same assertions: 22 of 22, 0 false alarms. Pixel diff: 13 of 22, 16 false alarms. One open question to Jev: 22 of 22, but 22 of 24 false alarms."
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/ee78f29a2923534aa3e14099e84c71cad3b0a998/2026-11-visual-checks"
+    href: "https://github.com/meabs/experiments/tree/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks"
 draft: false
 experimentId: "VIS"
-question: "Can short yes/no questions about a screenshot catch the visual bugs that unit tests miss, without the false alarms that make people ignore a pixel diff? And is Jev, a small yes/no decision model, good enough at answering them compared with general vision models?"
+question: "How well does Jev, a new kind of AI model that returns calibrated probabilities instead of text, catch visual bugs in screenshots, compared with general vision models and a pixel diff? And does a checklist of questions per screen work better than asking whether anything is wrong?"
 status: published
 evidenceGrade: published
 agents:
@@ -21,7 +21,7 @@ agents:
     settings: "same assertions, answered yes or no; and a free review"
 runs: "54 screenshots × 9 checkers × 3 calls"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/ee78f29a2923534aa3e14099e84c71cad3b0a998/2026-11-visual-checks/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/d3e16f4463cb15a25efe3119b16aed9faf8a3159/2026-11-visual-checks/README.md"
 previewImage: "/guide-images/chart-visual-checks.png"
 previewAlt: "Defects caught of 22 (higher is better) and false alarms on harmless changes of 24 (lower is better). Gemini assertions 22 and 0; Jev assertions 19 and 0; gpt-6.1-terra assertions 22 and 10; local qwen3-vl:8b assertions 11 and 0; pixel diff 13 and 16; Jev open question 22 and 22; Gemini free review 21 and 12."
@@ -43,7 +43,7 @@ findings:
     limits:
       - "one app, five screens, defects and assertions I designed"
       - "single screenshots: no scrolling, hover or animation"
-    source: "https://github.com/meabs/experiments/blob/ee78f29a2923534aa3e14099e84c71cad3b0a998/2026-11-visual-checks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
     status: current
     featured: false
   - id: "VIS-2"
@@ -58,7 +58,7 @@ findings:
     limits:
       - "22 defect screenshots: the interval is wide"
       - "Jev's image support is labelled beta in its docs"
-    source: "https://github.com/meabs/experiments/blob/ee78f29a2923534aa3e14099e84c71cad3b0a998/2026-11-visual-checks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
     status: current
     featured: false
   - id: "VIS-3"
@@ -72,18 +72,20 @@ findings:
       - "an exploratory rewrite in the style of TypeSafe's docs, specific with true/false criteria: 18 of 24 false alarms"
     limits:
       - "one wording of the open question, plus one exploratory rewrite"
-    source: "https://github.com/meabs/experiments/blob/ee78f29a2923534aa3e14099e84c71cad3b0a998/2026-11-visual-checks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
     status: current
     featured: false
 ---
 
 ## Question
 
-A web change can pass every unit test and still ship a broken screen: a Pay button hidden behind a banner, a price cut off, a total that doesn't add up. The usual guard is a pixel diff against a reference screenshot. It flags every change, wanted or not, so people learn to wave it through. A vision model could judge the screen the way a person would, but it's slower and costs money.
+**Jev**, from TypeSafe, is a new kind of AI model. TypeSafe calls it a System One model. It doesn't generate text, write code or hold a conversation: it takes a state, such as a screenshot, and a set of typed questions, and returns calibrated probabilities your code can use directly. A question can be a true-or-false statement, a choice from a list, or a score on a rubric; this experiment used the true-or-false kind. Could a model like that do a job that usually needs a big vision model, or a pixel diff: spotting a broken web page in a screenshot?
 
-This experiment tests something in between: **visual assertions**. Each screen gets a short list of yes/no questions written from what the page must show ("Is a cart total shown, and is it equal to the sum of the line subtotals?"), and a model answers them. The model under test is **Jev**, from TypeSafe, a small decision model that answers yes/no questions about text and images with a probability.
+That's the job here. A web change can pass every unit test and still ship a broken screen: a Pay button hidden behind a banner, a price cut off, a total that doesn't add up. The usual guard is a pixel diff against a reference screenshot, which flags every change, wanted or not, so people learn to wave it through. A vision model can judge the screen the way a person would, but it's slower and costs more.
 
-**The short answer:** written assertions turned screenshot checking from noise into a usable signal. Jev answered them ten times faster than the vision models and never cried wolf, but it missed three defects that needed adding up or noticing something missing. Gemini, with the same questions, caught everything.
+Jev needs questions it can answer, so each screen got a short checklist written from what the page must show ("Is a cart total shown, and is it equal to the sum of the line subtotals?"). I compared Jev with Gemini, GPT and a local vision model answering the same checklist, with a pixel diff, and with Jev asked one open question: is anything wrong?
+
+**The short answer:** with the checklist, Jev answered ten times faster than the vision models and never cried wolf, unlike the pixel diff. But it missed three bugs that needed adding up or noticing something missing, and Gemini, with the same questions, caught everything. Asked "is anything wrong?", Jev flagged almost every screen.
 
 ## How the checks work
 
@@ -214,7 +216,7 @@ These are proposals, not results.
 
 ## Reproduce
 
-Everything is in [experiments/2026-11-visual-checks](https://github.com/meabs/experiments/tree/ee78f29a2923534aa3e14099e84c71cad3b0a998/2026-11-visual-checks):
+Everything is in [experiments/2026-11-visual-checks](https://github.com/meabs/experiments/tree/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks):
 
 - the storefront rig and mock backend (`app/`), requirements and assertions (`assertions/`), defects and harmless changes (`variants/`);
 - the checker and analysis scripts (`scripts/`);
