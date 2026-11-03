@@ -6,7 +6,7 @@ summary: "54 storefront screenshots (22 with a planted defect, 24 with a harmles
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks"
+    href: "https://github.com/meabs/experiments/tree/06234b11a0ebc11e35706beac8fc701ff699af63/2026-11-visual-checks"
 draft: false
 experimentId: "VIS"
 question: "How well does Jev, a new kind of AI model that returns calibrated probabilities instead of text, catch visual bugs in screenshots, compared with general vision models and a pixel diff? And does a checklist of questions per screen work better than asking whether anything is wrong?"
@@ -21,7 +21,7 @@ agents:
     settings: "same assertions, answered yes or no; and a free review"
 runs: "54 screenshots × 9 checkers × 3 calls"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/06234b11a0ebc11e35706beac8fc701ff699af63/2026-11-visual-checks/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/d3e16f4463cb15a25efe3119b16aed9faf8a3159/2026-11-visual-checks/README.md"
 previewImage: "/guide-images/chart-visual-checks.png"
 previewAlt: "Defects caught of 22 (higher is better) and false alarms on harmless changes of 24 (lower is better). Gemini assertions 22 and 0; Jev assertions 19 and 0; gpt-6.1-terra assertions 22 and 10; local qwen3-vl:8b assertions 11 and 0; pixel diff 13 and 16; Jev open question 22 and 22; Gemini free review 21 and 12."
@@ -32,7 +32,7 @@ topics:
 publishedOn: 2026-11-03
 findings:
   - id: "VIS-1"
-    statement: "Written yes/no assertions answered by Jev raised no false alarms on harmless changes; the pixel diff flagged two thirds of them"
+    statement: "Written yes/no assertions answered by Jev raised no false alarms on harmless changes; a plain 0.5% pixel diff flagged two thirds of them"
     metric: "screenshots with a harmless change (new colour, font, picture, spacing…) flagged as broken, of 24 (lower is better)"
     value: "0 of 24 (Jev, assertions) against 16 of 24 (pixel diff at 0.5%)"
     n: "24 decoy screenshots, 3 calls each, majority verdict"
@@ -43,7 +43,8 @@ findings:
     limits:
       - "one app, five screens, defects and assertions I designed"
       - "single screenshots: no scrolling, hover or animation"
-    source: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
+      - "one plain pixel-diff configuration: a 0.5% threshold over the whole screen, no masked regions, no baseline approval; in a visual regression workflow a deliberate change like a new font is a change to approve, not a mistake"
+    source: "https://github.com/meabs/experiments/blob/06234b11a0ebc11e35706beac8fc701ff699af63/2026-11-visual-checks/REPORT.md"
     status: current
     featured: false
   - id: "VIS-2"
@@ -58,7 +59,7 @@ findings:
     limits:
       - "22 defect screenshots: the interval is wide"
       - "Jev's image support is labelled beta in its docs"
-    source: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/06234b11a0ebc11e35706beac8fc701ff699af63/2026-11-visual-checks/REPORT.md"
     status: current
     featured: false
   - id: "VIS-3"
@@ -72,7 +73,7 @@ findings:
       - "an exploratory rewrite in the style of TypeSafe's docs, specific with true/false criteria: 18 of 24 false alarms"
     limits:
       - "one wording of the open question, plus one exploratory rewrite"
-    source: "https://github.com/meabs/experiments/blob/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/06234b11a0ebc11e35706beac8fc701ff699af63/2026-11-visual-checks/REPORT.md"
     status: current
     featured: false
 ---
@@ -162,9 +163,20 @@ Of 22 defect screenshots, 24 harmless changes and 8 untouched screens:
 - **gpt-6.1-terra's false alarms were my question's fault.** All of them came from one assertion on phone screens: "Is the shop header shown, with the navigation links and the cart icon readable?" On a phone, the links sit behind a menu button, so "no" is literally right. Jev and Gemini answered what I meant.
 - **The pixel diff is upside down for this job.** It's most sensitive to big harmless changes (a new font changes everything) and least to small harmful ones (a `{{price}}` placeholder changes almost nothing).
 
-### Cost
+### Cost and speed
 
-Gemini's assertions cost $0.58 for all 162 calls, about a third of a cent a screenshot; gpt-6.1-terra's cost $0.24. Jev used about 5,500 tokens per desktop screenshot request. The local model was free, but slow, and 9 of its 162 review calls gave no answer within 10 minutes.
+One call per screenshot, as a CI gate would make (this run made three):
+
+| Checker | API cost per screenshot (lower is better) | Per 10,000 screenshots | Median seconds per call (lower is better) |
+| --- | --- | --- | --- |
+| Pixel diff | $0 | $0 | under 0.1 |
+| **Jev, assertions** | **$0.00017** | **$1.69** | **0.4** |
+| gpt-6.1-terra, assertions | $0.0015 | $14.78 | 4.1 |
+| Gemini, assertions | $0.0036 | $35.71 | 4.9 |
+| qwen3-vl:8b (local), assertions | $0 in API fees | about 33 hours of GPU time | 8.9 |
+
+- **Jev against Gemini, same questions:** about 21 times cheaper and 12 times faster, for 3 fewer bugs caught of 22 and the same zero false alarms. Jev's price is TypeSafe's list price for `jev-1.14.0`, $0.042 per million input tokens (output free), applied to the tokens it used. The others are OpenRouter's billed cost.
+- **But none of these bills is large.** Gemini for 10,000 screenshots is about $36. The cost that matters more is a person's time: each false alarm needs someone to look, and each miss ships a bug. At this run's rates, 100 harmless changes would raise about 67 alarms from the pixel diff, 42 from gpt-6.1-terra's assertions, and none from Jev's or Gemini's.
 
 ### Exploratory follow-up
 
@@ -187,7 +199,15 @@ After the main results, I rewrote Jev's open question in the style TypeSafe's do
 
 This part is my interpretation, not a measurement.
 
-**Writing down what each screen must show is what made this work.** Three of the four assertion checkers raised no false alarms on any harmless change. That's what makes a visual check something a team will keep switched on. The general question ("is anything broken?") didn't work with any model.
+**Writing down what each screen must show is what made the models useful.** Three of the four assertion checkers raised no false alarms on any harmless change. The general question ("is anything broken?") didn't work with any model.
+
+**Gemini, not Jev, was the strongest checker here,** with all 22 bugs and no false alarms. Jev was ten times faster and a twentieth of the price, but missed three. With 22 bug screenshots, that shows neither that Gemini is better in general nor that Jev is about as good; its three misses could matter.
+
+**Some of these bugs didn't need a model at all.** A wrong total can be calculated, and a blank picture shows up as an image that failed to load. Visual checking is really three questions, and no single checker here answers all of them:
+
+1. **Does the page meet an explicit requirement?** (the total adds up, the Pay button is visible, the page fits the screen) Deterministic checks first: arithmetic, DOM and Playwright assertions. Then written visual assertions for what code can't easily see.
+2. **Does it look right to a person?** (readable, nothing overlapping) A vision model answering written assertions.
+3. **Did anything change unexpectedly?** A pixel or snapshot diff against an approved baseline, with moving parts masked; each change is approved or rejected.
 
 **A gate that never cries wolf can still miss.** Jev's clean record on false alarms makes it easy to trust. Its misses were a wrong total and missing pictures, both expensive in a real shop.
 
@@ -199,10 +219,11 @@ For teams adding visual checks to CI. Each says how strong its evidence is.
 
 | Recommendation | Why | Strength |
 | --- | --- | --- |
-| Use written yes/no assertions per screen, not a pixel diff, as the visual gate | 0 against 16 of 24 false alarms, and the pixel diff missed 9 of 22 defects | Strong: pre-registered, Holm p = 0.0003 |
+| Use written yes/no assertions per screen alongside visual regression testing, not instead of it: assertions to judge whether a screen is broken, a pixel or snapshot diff with approved baselines to catch unexpected change | Against a plain 0.5% pixel diff: 0 against 16 of 24 harmless changes flagged, and the pixel diff missed 9 of 22 bugs | Strong against the configuration tested (pre-registered, Holm p = 0.0003); masked or regional diffs with baseline approval weren't tested |
+| Check in code whatever can be calculated, before asking any model: totals with arithmetic, missing pictures with an image-load check, missing buttons with a visibility assertion, sideways overflow with the page's width | Jev's three misses were a wrong total and missing pictures | Descriptive; the deterministic checks weren't run here |
 | Don't gate on an open "is anything wrong?" question, with any model | It flagged 12 to 22 of 24 harmless changes | Descriptive, consistent across three models |
-| If you use Jev, keep its 0.5 threshold and check totals and other arithmetic in code | It missed the wrong total and blank pictures; higher thresholds add false alarms faster than catches | Descriptive (H2 not supported) |
-| If missing nothing matters more than speed, use a strong hosted vision model for the assertions | Gemini: 22 of 22, no false alarms, about a third of a cent a screenshot | Descriptive; not significantly different from Jev at this size |
+| If you use Jev, keep its 0.5 threshold and don't rely on it for arithmetic or "is something missing" checks | It missed the wrong total and blank pictures; higher thresholds add false alarms faster than catches | Descriptive (H2 not supported) |
+| For the visual assertions themselves, prefer a strong hosted vision model unless speed or volume rules it out | Gemini: 22 of 22, no false alarms, about $36 per 10,000 screenshots | Descriptive; 22 bug screenshots are too few to show either model better in general |
 | Write assertions per viewport, and reread them as a literal reader would | One loosely worded header question caused all of gpt-6.1-terra's false alarms | Descriptive |
 | Don't use an 8B local vision model as the gate | `qwen3-vl:8b` caught 11 of 22 with assertions and 7 of 22 reviewing | Descriptive |
 
@@ -210,13 +231,14 @@ For teams adding visual checks to CI. Each says how strong its evidence is.
 
 These are proposals, not results.
 
+- **A hybrid gate against AI-only gates,** on the same screenshots plus real bugs from a project's history: deterministic Playwright and DOM checks only; Gemini with visual assertions; Jev with visual assertions; and deterministic checks plus targeted visual assertions, sending only unclear failures to a stronger model. Measure bugs caught, false alarms, review time, total cost, and which bugs get past every layer. A reviewer suggested this, and it's the most useful next step.
 - **Jev without the arithmetic:** assertions that never ask it to add up or compare, with totals checked in code.
 - **Real regressions** from a project's history instead of planted ones.
 - **Assertions written by someone else,** or generated from the requirements, to see how much depends on the writer.
 
 ## Reproduce
 
-Everything is in [experiments/2026-11-visual-checks](https://github.com/meabs/experiments/tree/10987b9ff34421d929de4529a030ddf762c52171/2026-11-visual-checks):
+Everything is in [experiments/2026-11-visual-checks](https://github.com/meabs/experiments/tree/06234b11a0ebc11e35706beac8fc701ff699af63/2026-11-visual-checks):
 
 - the storefront rig and mock backend (`app/`), requirements and assertions (`assertions/`), defects and harmless changes (`variants/`);
 - the checker and analysis scripts (`scripts/`);
