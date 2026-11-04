@@ -41,8 +41,6 @@ const writing = latestWriting(
   6,
 ) as WritingItem[];
 const latestNews = news.slice(0, 3);
-// Calculated from content, never typed: experiments whose type is a controlled trial.
-const controlledCount = experiments.filter((e) => /^controlled trial/i.test(e.data.type ?? '')).length;
 
 // The hero shows the featured experiment's headline result as evidence, not just a title.
 const featuredExp = featured ? experiments.find((e) => `/experiments/${e.id}/` === featured.href) : undefined;
@@ -56,7 +54,7 @@ const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
     <div class="wrap publication-hero-grid">
       <div class="publication-intro">
         <p class="section-label">An independent technical publication</p>
-        <h1>{controlledCount} controlled experiments on whether AI coding agents can be trusted, with the method and limits published.</h1>
+        <h1>{experiments.length} experiments on whether AI coding agents can be trusted, with the method and limits published.</h1>
         <p class="audience">For engineers building, securing and trusting AI systems.</p>
         <p>Independent experiments and practical architecture for building AI systems that actually work: the data, the method and the limits, plus plain-English explainers on how GenAI works.</p>
         <div class="actions">
