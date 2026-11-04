@@ -2,11 +2,11 @@
 title: "When the context is wrong: does a coding agent follow a stale knowledge bundle? (experiment OKS)"
 description: "I gave Codex the OKF bundle from OKC with three facts made out of date, and the truth in the code or a vendored contract. With no instruction, it followed the stale timeout advice in every run and built a retry that pays customers twice, with passing tests. One line in AGENTS.md telling it to check the bundle against the code and contracts took that to 0 of 24 runs. Freshness dates in the bundle's front matter did nothing."
 date: 2026-11-04
-summary: "144 Codex runs on a Spring Boot payments API, six arms. Runs that followed a stale fact: correct bundle 0 of 24, stale bundle 8 of 24 (all 8 timeout runs), stale bundle with old verified and stale_after dates 8 of 24, stale bundle plus a verify line in AGENTS.md 0 of 24. With the line, the summary named the conflict in 13 of 24 runs; no run in any arm asked the user."
+summary: "144 Codex runs on a Spring Boot payments API, six arms. Runs that followed a stale fact: correct bundle 0 of 24, stale bundle 8 of 24 (all 8 timeout runs), stale bundle with old verified and stale_after dates 8 of 24, stale bundle plus a verify line in AGENTS.md 0 of 24. With the line, the summary named the conflict in 13 of 24 runs. Six of eight stale runs wrote a passing test for the wrong behaviour."
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale"
+    href: "https://github.com/meabs/experiments/tree/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale"
 draft: false
 experimentId: "OKS"
 question: "When a hand-maintained OKF bundle is out of date, does a coding agent follow the wrong fact over the code and contracts in its repository? Does an AGENTS.md instruction to verify, or OKF's own freshness metadata, stop it?"
@@ -21,7 +21,7 @@ agents:
     settings: "did the final summary report the bundle disagreeing with the code or a contract; every verdict checked by hand"
 runs: "6 arms × 3 tickets × 8 runs = 144 runs, after a 12-run pilot"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/e18e66e1bc88535e354828969f10db65da8bb08d/2026-11-okf-stale/README.md"
 previewImage: "/guide-images/chart-okf-stale.png"
 previewAlt: "The agent followed the wrong fact only on the timeout ticket. One square per run, 8 per arm and ticket. Stale runs: correct bundle 0 of 24; stale bundle 8 of 24; stale bundle with freshness dates 8 of 24; stale bundle with the verify line 0 of 24; correct bundle with the verify line 0 of 24; no bundle 0 of 24. On the template and daily-limit tickets every run in every arm followed the code or contract."
@@ -43,22 +43,24 @@ findings:
     limits:
       - "three stale facts; the one that bit was repeated in three files and read as a complete recipe"
       - "one repository written for the test, with simulated integrations"
-    source: "https://github.com/meabs/experiments/blob/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
     status: current
     featured: false
   - id: "OKS-2"
-    statement: "One verify line in AGENTS.md stopped it; freshness dates in the front matter did nothing"
+    statement: "One verify line in AGENTS.md stopped it; expiry dates with nothing to act on them did nothing"
     metric: "runs that followed the stale fact, of 24 (lower is better); runs that opened the ticket's source of truth before the first edit"
     value: "0 of 24 with the line (8 without); dates: 8 of 24, the same as without them"
     n: "24 runs per arm"
     detail:
       - "pre-registered H1 (B − E): +33 points, Holm p = 0.0008; H2: E's 95% upper bound 14%, below the 25% threshold"
+      - "the evidence rests on the timeout ticket: 0 of 8 with the line against 8 of 8 without (95% upper bound for 0 of 8: 37%)"
       - "pre-registered H5 (dates help): 0 points, not supported; no D run ran date or mentioned the dates in any message"
       - "with the line, 24 of 24 runs opened the contract or code before editing; without, 46 to 62%"
       - "the line cost about $0.015 and 10 seconds a run, and the correct bundle with it was fully correct in 24 of 24 runs"
     limits:
-      - "one wording of the line; one agent and model at one effort"
-    source: "https://github.com/meabs/experiments/blob/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale/REPORT.md"
+      - "one wording of the line, which bundles four things (verify, where to look, which source wins, report); which part works is not isolated"
+      - "one agent and model at one effort"
+    source: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
     status: current
     featured: false
   - id: "OKS-3"
@@ -68,10 +70,10 @@ findings:
     n: "24 runs per arm; 144 summaries read by two judges and by hand"
     detail:
       - "pre-registered H6: +54 points, Holm p = 0.0005; the second judge agrees on 144 of 144 after one hand correction"
-      - "no run in any arm asked the user which source was right"
+      - "no run in any arm asked the user which source was right, but the runs were one turn with nobody to answer"
     limits:
       - "the summary is one place to report; the agent was not asked for a separate section"
-    source: "https://github.com/meabs/experiments/blob/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
     status: current
     featured: false
 ---
@@ -93,8 +95,9 @@ So this experiment takes OKC's bundle and makes three facts stale, while the tru
 - With no instruction, the agent followed the stale timeout advice in **every run** and built a retry that pays a customer twice if the scheme took the first attempt. The tests passed, including the one it wrote for the wrong behaviour.
 - The two other stale facts did no harm, because each ticket sent the agent to the file with the truth anyway.
 - **One verify line in `AGENTS.md` took stale-following from 8 of 24 runs to 0 of 24.**
-- **Freshness dates did nothing.** The agent read them and carried on.
-- Even with the line, only about half the summaries said the bundle was wrong, and no run asked.
+- **Freshness dates did nothing** on their own. The agent read them and carried on: expiry metadata with no instruction or check that acts on it didn't change its behaviour.
+- **The wrong fact became a passing test.** Six of the eight stale runs wrote a test confirming the double-payment behaviour. A test written by the agent that misread the requirement isn't an independent check.
+- Even with the line, only about half the summaries said the bundle was wrong.
 
 ## Set-up
 
@@ -224,7 +227,9 @@ Runs per arm and ticket: truth / stale / other, of 8. For truth higher is better
 | H5 dates help (B − D) | 0 points | 1.0 | not supported |
 | H6 E reports the conflict more than B | +54 points (+33 to +75) | 0.0005 | **supported** |
 
-The prediction held on both halves. H4 not being supported doesn't mean a stale bundle is as good as none: with no bundle, the agent failed the timeout ticket differently (6 of 8 *other*), and 8 runs per ticket can't separate the two.
+The prediction held on both halves, with two caveats. H1's interval of +33 to +33 is an artefact of complete separation in a small sample (every resample gives the same difference), not an effect known exactly. And the pooled 0 of 24 for the verify line is mostly tickets that never failed in any arm: on the timeout ticket, where the stale fact did harm, it is 0 of 8 against 8 of 8, and the 95% upper bound for 0 of 8 is 37%, not 14%.
+
+H4 not being supported doesn't mean a stale bundle is as good as none: with no bundle, the agent failed the timeout ticket differently (6 of 8 *other*), and 8 runs per ticket can't separate the two.
 
 **The ten *other* runs** (A 2, E 2, V 6) all failed the same way. They kept the same reference, so nothing is paid twice, but when the retry got `DUPL` back they marked the payment `REJECTED`, so a payment the scheme took is shown to the customer as failed. Without a bundle to explain `DUPL`, this was the usual outcome.
 
@@ -252,7 +257,7 @@ Share of 24 runs per arm (from the Codex event logs; higher means more checking)
 - **Opening the source of truth before editing decided it.** No run that did so followed the stale fact (0 of 98); all 16 that followed it had skipped it.
 - **Why the template and daily-limit tickets were safe anyway:** the agent needed something the bundle didn't have. The bundle lists template names but not their parameters, so runs opened the notification contract to build the message and found `PAYMENT_FAILED` there. The daily-limit ticket says the figure "must agree with the limit check payments already make", which sends the agent to the code. On the timeout ticket the bundle gave a complete recipe (catch, add a suffix, resubmit), so nothing sent the agent to the contract.
 - **The dates were read and ignored.** Every D run opened `okf/`, where every file starts with the front matter. None ran `date`, and none mentioned `stale_after`, the March dates or the bundle being out of date in any message (0 of 24). With the verify line, 8 of 24 did.
-- **The verify line got checking reliably and reporting about half the time.** E opened the source first in 24 of 24 runs but named the conflict in 13 summaries (template 3 of 8, timeout 5, daily limit 5), although the line asks for it. No run in 144 asked the user which source was right.
+- **The verify line got checking reliably and reporting about half the time.** E opened the source first in 24 of 24 runs but named the conflict in 13 summaries (template 3 of 8, timeout 5, daily limit 5), although the line asks for it. No run in 144 asked the user which source was right, though with one-turn runs and nobody to answer that says little about whether it would.
 
 ### What the agent wrote
 
@@ -273,7 +278,7 @@ assertThat(scheme.calls).hasSize(2);
 assertThat(scheme.calls.get(1).reference()).isEqualTo(initialReference + "-R1");
 ```
 
-Six of the eight B runs added a test like this. Its summary: "Retries use new scheme references (`P{id}-R1`, etc.) and continue through balance, ledger, and notification processing. … Validation: `mvn -o -q test` passes."
+Six of the eight B runs added a test like this. That is the sequence to worry about: stale but convincing knowledge, the wrong behaviour, a test the agent wrote to confirm its own assumption, and green. Only the hidden tests, written from the contract, caught it. Its summary: "Retries use new scheme references (`P{id}-R1`, etc.) and continue through balance, ledger, and notification processing. … Validation: `mvn -o -q test` passes."
 
 An E run on the same ticket, after reading the scheme contract:
 
@@ -339,7 +344,9 @@ The wrong fact made the work more expensive, not cheaper: B's timeout runs built
 - One service, written by me (Claude), with simulated integrations; the bundle, stale facts and contracts are mine too.
 - **The three stale facts differ in more than the ticket.** The one that bit was repeated in three files and read as a complete recipe; the other two were single lines that the task routed around. This test can't separate repetition, recipe and ticket.
 - Each stale fact is cleanly contradicted by one file in the repository. Real staleness is messier, and often there is nothing to check against.
-- One agent and model at one effort, and one wording of the verify line.
+- One agent and model at one effort, and one wording of the verify line. The line does four things at once (verify, name where to look, say which source wins, ask for the disagreement to be reported); naming `contracts/` may be most of what worked.
+- The line's rule "follow the code or the contract" suits this test, where those sources are right by construction. It isn't a general source-of-truth hierarchy: code shows current behaviour, a contract defines an interface, neither settles the intended business rule, and either can be stale.
+- One-turn runs with nobody to answer can't test whether the agent would ask.
 - 8 runs per arm and ticket: H4 and the F-against-A comparison are inconclusive, not equal.
 
 ## What this means: impact and risks
@@ -348,23 +355,26 @@ The wrong fact made the work more expensive, not cheaper: B's timeout runs built
 
 **Risks this exposes:**
 
+- **A false assumption becomes a passing test.** Tests from the same agent are not an independent check of behaviour that crosses a system boundary.
 - **Plausible stale recipes are the dangerous kind.** A wrong fact that leaves a gap gets checked; one that fills the gap doesn't.
-- **Green tests and a confident summary.** Every stale run passed the existing tests, most added a passing test of the wrong behaviour, and none expressed doubt.
+- **Green tests and a confident summary.** Every stale run passed the existing tests, and none expressed doubt.
 - **Silent correction keeps the bundle wrong.** With the line, the code was right but the bundle's error was reported only half the time, so it stays wrong for the next reader.
-- **No one asked.** In 144 runs the agent never asked which source was right; it chose and carried on.
+- **It chose silently.** The agent picked a source and carried on; unless the summary says so, nobody learns there was a choice.
 
 ## Configuration recommendations
 
 For Codex with gpt-5.6-luna at medium effort, on tickets like these (the configuration tested):
 
-1. **Add the verify line to `AGENTS.md`** whenever you give the agent a context bundle (wording above). It cut stale-following from 8 of 24 to 0 of 24 runs for $0.015 a run.
+1. **Add the verify line to `AGENTS.md`** whenever you give the agent a context bundle (wording above), including the part that names where to check. It cut stale-following from 8 of 8 to 0 of 8 on the ticket where it mattered, for $0.015 a run. Which of its four parts does the work isn't tested, so keep all four.
 2. **Vendor the authoritative contracts into the repository**, so there is something to check against. The line only works if the truth is in reach.
-3. **Don't rely on `stale_after` or `verified` dates to make the agent careful.** Use them for people and tooling: a CI check that fails when a bundle file passes its `stale_after` catches what the agent ignores.
+3. **Don't rely on `stale_after` or `verified` dates alone to make the agent careful.** Put them in something that acts on them: a CI check that fails when a bundle file passes its `stale_after`, or an instruction saying what to do with an expired file (untested).
 4. **Don't rely on the summary to tell you the bundle is wrong.** Check drift mechanically (for example, a test that every template name in `okf/` exists in the contract), or ask for an explicit "context disagreements" section and measure whether you get it.
-5. **Review tests the agent adds for assumptions about external systems.** They can lock in the wrong fact.
+5. **Review tests the agent adds for assumptions about external systems,** and keep an independent check (contract tests written from the contract) for behaviour that crosses a system boundary.
+6. **Say which source owns which fact.** Name the owner per kind of fact (the scheme's behaviour: its contract; limits: the product spec) and tell the agent to flag, not pick, when they disagree about intent.
 
 ## What would be worth testing next?
 
+- **Why the verify line works** (from an external review): stale knowledge alone; plus a generic "verify facts" line; plus a pointer to the named source; plus an enforced check of that source. On several independently built tasks with complete but false guidance, measuring whether the agent opened the right source, got it right, reported the disagreement and passed independent tests.
 - **Which part of the timeout fact made it stick:** the same fact as a single line, without the recipe, and on a ticket that doesn't need the contract.
 - **Getting the conflict reported:** an explicit "context disagreements" section against the current wording.
 - **Stale facts with nothing to check against:** where the truth is only in a log or a person's head, does the verify line make the agent ask?
@@ -372,10 +382,10 @@ For Codex with gpt-5.6-luna at medium effort, on tickets like these (the configu
 
 ## Reproduce
 
-Everything is in [experiments/2026-11-okf-stale](https://github.com/meabs/experiments/tree/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale):
+Everything is in [experiments/2026-11-okf-stale](https://github.com/meabs/experiments/tree/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale):
 
 - the service with its contracts and fakes (`app/`), the six arms and the script that makes them from OKC's bundle (`arms/`, `scripts/make_arms.py`), the tickets (`tasks/`), the hidden tests and stale detectors (`hidden/`), and reference and stale solutions (`reference/`);
 - the run, grading, transcript, judge, analysis and diagram scripts (`scripts/`);
 - every run's diff and grade, the extracted transcript fields, both judges' verdicts, my override and the full analysis (`results/main/`).
 
-The design and its two amendments are in [README.md](https://github.com/meabs/experiments/blob/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/a1a3a10ad19848f46aeff2a429222e298d201b9f/2026-11-okf-stale/REPORT.md), with the commands in section 10. The API keys, the Codex login and the agents' raw transcripts are not published.
+The design and its three amendments are in [README.md](https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md), with the commands in section 10. The API keys, the Codex login and the agents' raw transcripts are not published.
