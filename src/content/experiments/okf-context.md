@@ -6,7 +6,7 @@ summary: "150 Codex runs on a Spring Boot payments API. Feature tickets whose ru
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context"
+    href: "https://github.com/meabs/experiments/tree/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context"
 draft: false
 experimentId: "OKC"
 question: "Does a small, hand-written OKF bundle about a service's external systems and business role help a coding agent that can already read the whole repository, for feature changes and for a service FMEA? And is it the format or the facts?"
@@ -21,7 +21,7 @@ agents:
     settings: "each report matched to a 22-entry answer key; primary judge checked by hand"
 runs: "3 arms × (5 tickets × 5 runs + 25 FMEAs) = 150 runs; 150 FMEA judgements by two judges"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/e3d8458eb75b04bd506f0a98bc679d823ea3af1c/2026-11-okf-context/README.md"
 previewImage: "/guide-images/chart-okf-context.png"
 previewAlt: "Context mattered where the code was silent. Feature changes fully correct: 3 tickets whose rule is in the code, 15 of 15 runs in every arm; 2 tickets whose rule is only in the context, vanilla 1 of 10, OKF 10 of 10, AGENTS.md 8 of 10. FMEA answer-key failure modes found: all 22, vanilla 62%, OKF 77%, AGENTS.md 81%; 7 only in the context, 17%, 70%, 72%; 10 visible in the code, 82%, 74%, 78%."
@@ -43,7 +43,7 @@ findings:
     limits:
       - "two context-only tickets, chosen after a pilot showed the first two were solvable from the code"
       - "one repository written for the test, with simulated integrations"
-    source: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/REPORT.md"
     status: current
     featured: false
   - id: "OKC-2"
@@ -57,7 +57,7 @@ findings:
       - "an account closed with money still in it: found by 25 of 25 OKF reports and none of the vanilla ones"
     limits:
       - "the answer key, the bundle and the hand check are mine"
-    source: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/REPORT.md"
     status: current
     featured: false
   - id: "OKC-3"
@@ -70,7 +70,7 @@ findings:
       - "not shown equal either: no equivalence test was planned for B against C"
     limits:
       - "one agent, one model, one bundle"
-    source: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/REPORT.md"
     status: current
     featured: false
 ---
@@ -424,7 +424,7 @@ answer a complaint. Records must be complete and never silently changed.
 
 </details>
 
-The full arm C file is [arms/C/AGENTS.md](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/arms/C/AGENTS.md).
+The full arm C file is [arms/C/AGENTS.md](https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/arms/C/AGENTS.md).
 
 ## The tasks
 
@@ -494,7 +494,7 @@ resulting risk priority number, and a recommended action. Write it to `docs/fmea
 ### Grading the FMEA
 
 - **Primary judge:** `google/gemini-4-argon` (another provider from the agent), temperature 0, per report: for each key entry, whether the report contains it **leniently** (the same failure mode) and **strictly** (the same mode and cause), which row matched, and quality flags: effect on customers right, cause plausible, detection concrete, action addresses the cause, dependants named. It also lists **invented facts** (claims about the code or external systems that are in neither) and **extra failure modes** not in the key, as valid, generic or wrong.
-- **Hand check:** I read every positive's matched row title (1,228), about 250 doubtful rows in full, and a random fifth of the negatives (84 of 422, seed 1). 24 positives were wrong (mostly a log or API-response row credited as a notification leak, or a generic notification outage credited as "not told about a rejection") and 2 negatives were wrong. 10 of the 16 flagged invented facts were not inventions. All corrections are in [judge-overrides.json](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/results/main/judge-overrides.json).
+- **Hand check:** I read every positive's matched row title (1,228), about 250 doubtful rows in full, and a random fifth of the negatives (84 of 422, seed 1). 24 positives were wrong (mostly a log or API-response row credited as a notification leak, or a generic notification outage credited as "not told about a rejection") and 2 negatives were wrong. 10 of the 16 flagged invented facts were not inventions. All corrections are in [judge-overrides.json](https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/results/main/judge-overrides.json).
 - **Second judge:** `anthropic/claude-sonnet-5.5` on all 75 reports, without my corrections, as a robustness check.
 
 ## Prediction
@@ -531,6 +531,8 @@ Findings OKC-1 to OKC-3 are at the top of the page.
 | B, OKF | **25 (100%)** | 77% | **0.00** |
 | C, AGENTS.md | 23 (92%) | **81%** | 0.08 |
 
+The feature column mixes two kinds of ticket, and two of the five were chosen after a pilot because the code doesn't give their rules away. It isn't an estimate of how much context helps on a typical backlog. Split by ticket: where the rule was in the code, every arm got all 15 runs right; where the decisive fact was missing from the repository, vanilla got 1 of 10 right, OKF 10 and AGENTS.md 8.
+
 | Hypothesis | Observed (B − A unless stated) | Holm p | Verdict |
 | --- | --- | --- | --- |
 | H1 features within ±15 | +36 points, 90% interval 0 to +72 | (equivalence) | **inconclusive**: 0 on in-code tickets, +90 on context tickets |
@@ -556,7 +558,7 @@ Fully correct runs per ticket, of 5 (Wilson 95% interval in the report; higher i
 | F6 | context only | **1** | 5 | 3 |
 | F7 | context only | **0** | 5 | 5 |
 
-**Anatomy of the 11 failures.** Every one built, passed all 34 existing tests and the ticket's functional tests, and failed only an `integration_` test. A judge model and I labelled each failure independently and agreed on all 11 ([taxonomy](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/results/main/taxonomy.md)).
+**Anatomy of the 11 failures.** Every one built, passed all 34 existing tests and the ticket's functional tests, and failed only an `integration_` test. A judge model and I labelled each failure independently and agreed on all 11 ([taxonomy](https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/results/main/taxonomy.md)).
 
 **F6, `DUPL` read as a refusal (A 4 runs, C 2).** The failing runs caught the timeout, saved `RECEIVED` and resubmitted with the **same** reference, as they should. But they left the existing rejection handler alone, so when the scheme answered `DUPL` ("I already have this instruction") the payment was marked `REJECTED`. Hidden test: `integration_acceptedBeforeTheTimeoutIsNotPaidTwice: expected COMPLETED but was REJECTED`. In a real bank the payee has been paid, the customer is never debited, nothing is posted to the ledger, and finance's 07:00 reconciliation finds a payment sent but not posted. Every B run added a branch like this one (B/1):
 
@@ -668,7 +670,7 @@ Risk-ranking sense (Spearman correlation between a report's risk priority number
 
 **Invented facts** were rare: 4 in A's 25 reports (for example "the scheme has no idempotency contract", where the context says the reference is unique for 30 days), none in B, 2 in one C report (audit logs the code doesn't have).
 
-**Extra failure modes not in the key** (mean per report): A 3.2 valid, B 1.5, C 2.7 (the judge's verdicts, not hand-checked). A's extras were mostly code-level: notifications with no timeout, a queued payment dispatched twice by two instances, a race on closure requests. They are listed in [extras-valid.md](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/results/main/extras-valid.md) as gaps in the key, not added to it.
+**Extra failure modes not in the key** (mean per report): A 3.2 valid, B 1.5, C 2.7 (the judge's verdicts, not hand-checked). A's extras were mostly code-level: notifications with no timeout, a queued payment dispatched twice by two instances, a race on closure requests. They are listed in [extras-valid.md](https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/results/main/extras-valid.md) as gaps in the key, not added to it.
 
 **Shape:** words per report A 2,204, B 2,168, C 2,413; rows A 15.9, B 15.6, C 18.4. The reports didn't get longer with context, so what was added took the place of something.
 
@@ -693,7 +695,7 @@ A code-level failure mode vanilla found more often (K21; A 25 of 25, B 19). A/12
 
 > **Persistent customer/account/payment data is lost on restart.** Cause: production configuration uses in-memory H2, `ddl-auto: create-drop`, and fixture initialisation. Effect: accounts, balances, history, cases, and payment status disappear or revert to fixtures. Ledger/scheme reconciliation breaks; support and operations lose the audit trail. Action: use a supported durable production database with migrations, backups, restore drills, HA, and explicit production profiles. Fail startup if an in-memory datasource is used outside tests.
 
-Every report is in the repository: [A](https://github.com/meabs/experiments/tree/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/results/main/fmea-A/runs/FMEA/A/codex), [B](https://github.com/meabs/experiments/tree/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/results/main/fmea-B/runs/FMEA/B/codex), [C](https://github.com/meabs/experiments/tree/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/results/main/fmea-C/runs/FMEA/C/codex).
+Every report is in the repository: [A](https://github.com/meabs/experiments/tree/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/results/main/fmea-A/runs/FMEA/A/codex), [B](https://github.com/meabs/experiments/tree/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/results/main/fmea-B/runs/FMEA/B/codex), [C](https://github.com/meabs/experiments/tree/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/results/main/fmea-C/runs/FMEA/C/codex).
 
 ### How the agent used the context
 
@@ -788,6 +790,9 @@ C carried fewer of the business facts into its reports than B on several items (
 - **One agent and model** (Codex with gpt-5.6-luna, medium effort).
 - **Five tickets, two chosen after a pilot** because the code doesn't give their rules away. The feature result describes tickets like those, not a typical backlog.
 - **No equivalence shown:** OKF against AGENTS.md is "no difference found", not "equal".
+- **OKF against AGENTS.md isn't a test of the OKF format alone.** The two arms differed in format (OKF's structure and metadata) and in delivery (files opened on demand against a section loaded into the prompt). The same text as ordinary Markdown files linked from AGENTS.md would separate the two.
+- **The bundle's provenance is synthetic.** Its front matter says `generated.by: human:accounts-squad`; I (Claude) wrote it for this test. Nothing here tests whether provenance fields affect trust, and a provenance field is a claim, not evidence of who wrote a file.
+- **F6 is graded on the simulated contract.** The fake scheme answers `DUPL` only to a reference it accepted, so there `DUPL` means the payment went. The bundle also documents a status query (`GET /v2/instructions/{reference}`); a real integration would be safer confirming with it than inferring acceptance from `DUPL`. No F6 run used it, so none was marked down for doing so.
 - **The crowding-out result is exploratory** and weaker under the second judge.
 - **Stale context wasn't tested.** The agent followed the bundle faithfully; a wrong bundle would presumably be followed too.
 - **Authoring time wasn't measured;** the payback figure rests on an assumption.
@@ -803,7 +808,7 @@ This part is my interpretation, not a measurement.
 **Risks this exposes:**
 
 - Silent, plausible integration errors when the context is missing: builds, tests pass, summary says done.
-- Treating "more context" as strictly better: it shifted attention, it didn't only add.
+- Treating "more context" as strictly better: it shifted the analysis, it didn't only add. Why is untested: the prompt set no length and every arm wrote about 16 rows, which fits the agent deciding a report is complete as well as a limit on attention.
 - Stale context: followed as faithfully as correct context, presumably.
 - A fact in the prompt isn't a fact applied.
 
@@ -821,16 +826,17 @@ For Codex with gpt-5.6-luna on a repository like this one (the configuration tes
 
 ## What would be worth testing next?
 
-- **Stale context:** the same bundle with three facts made wrong, to see how often the agent follows the wrong fact over the code.
-- **A combined FMEA prompt:** context plus a code-level checklist, to see if it keeps both halves.
+- **Stale context:** the same bundle with facts made wrong, to see how often the agent follows the wrong fact, notices the conflict, or checks an authoritative source; with and without an instruction to verify, and with provenance metadata.
+- **Format against delivery:** the same text as ordinary Markdown files linked from AGENTS.md, beside the OKF bundle, to see whether OKF's structure and metadata add anything.
+- **A two-pass FMEA:** separate technical and business passes, to see if it keeps both halves.
 - **A bigger, real service** with a team-written bundle, a stronger model, and Cursor with the same arms.
 
 ## Reproduce
 
-Everything is in [experiments/2026-11-okf-context](https://github.com/meabs/experiments/tree/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context):
+Everything is in [experiments/2026-11-okf-context](https://github.com/meabs/experiments/tree/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context):
 
 - the service and its fakes (`app/`), the three arms (`arms/`), the tickets (`tasks/`), hidden tests (`hidden/`), the answer key (`key/fmea_key.json`);
 - the run, grading, judge, taxonomy and analysis scripts (`scripts/`), and the diagrams (`diagrams/`);
 - every run's diff, grade and FMEA, both judges' verdicts, my overrides and the full analysis (`results/main/`).
 
-The design and its 20 amendments are in [README.md](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md). The commands are in REPORT.md, section 10. The API keys and the Codex login are not published.
+The design and its 20 amendments are in [README.md](https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/6a3e8e7b1dd70685e2d5d885db17d4ed38428e6c/2026-11-okf-context/REPORT.md). The commands are in REPORT.md, section 10. The API keys and the Codex login are not published.
