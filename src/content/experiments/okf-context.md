@@ -821,7 +821,7 @@ For Codex with gpt-5.6-luna on a repository like this one (the configuration tes
 
 ## What would be worth testing next?
 
-- **Stale context:** the same bundle with three facts made wrong, to see how often the agent follows the wrong fact over the code.
+- **Stale context:** the same bundle with three facts made wrong, to see how often the agent follows the wrong fact over the code. Done: [OKS](/experiments/okf-stale/).
 - **A combined FMEA prompt:** context plus a code-level checklist, to see if it keeps both halves.
 - **A bigger, real service** with a team-written bundle, a stronger model, and Cursor with the same arms.
 
