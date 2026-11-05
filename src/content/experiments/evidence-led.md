@@ -1,6 +1,6 @@
 ---
-title: "Can an AI agent turn experimental evidence into a better coding setup? (ELC, round 1)"
-description: "An AI agent wrote this whole experiment for me, including an evidence-led setup built from my published findings, which it raced against six lines of common-sense AGENTS.md with three small skills, and against no setup at all, on six hard Shopizer bug reports with real, hidden causes. The common-sense setup won: 53% of hidden acceptance tests passed, against 36% with no setup. The evidence-led setup scored 46%, not measurably better than nothing. In the follow-on I write the configuration and skills myself."
+title: "Me vs my AI agent, round 1: can it turn my experiments into a better coding setup? (ELC)"
+description: "Round 1 of me against my AI agent: it wrote this whole experiment for me, including an evidence-led setup built from my published findings, which it raced against six lines of common-sense AGENTS.md with three small skills, and against no setup at all, on six hard Shopizer bug reports with real, hidden causes. The common-sense setup won: 53% of hidden acceptance tests passed, against 36% with no setup. The evidence-led setup scored 46%, not measurably better than nothing. Round 2 of the grudge match: I write the configuration and skills myself."
 date: 2026-11-05
 summary: "90 Codex runs on six real Shopizer defects. Share of hidden tests passed: no setup 36%, disciplined setup (six AGENTS.md lines and three skills) 53% (+17 points, Holm p = 0.012), evidence-led setup 46% (+10 over none, not significant; 7 below disciplined). The evidence-led stop gate never had to block. 81 of the 85 runs that missed hidden tests said they were done."
 type: "Controlled trial"
@@ -77,7 +77,9 @@ findings:
 
 ## Question
 
-Over the past month I've been running experiments into what actually helps coding agents. This time I wanted to see whether those findings could be put together into something useful.
+Over the past month I've been running experiments into what actually helps coding agents. This time I wanted to see whether those findings could be put together into something useful, and who is better at doing that: **me, or my AI agent.**
+
+This page is round 1. The agent went first: it read my findings and built its own evidence-led setup. In the follow-on, I read the same findings and write my own. Same evidence, two interpreters, one scoreboard. The agent has the advantage of having read every report in about a minute; I have the advantage of having actually run them, and of writing the page about who won.
 
 **This experiment was written by an AI agent** (Claude Code, working for me): the tickets, the hidden acceptance tests, the reference fixes, the common-sense setup and its skills, and an evidence-led setup built from my published findings. I chose the options and approved the design; I didn't write any of the configurations.
 
@@ -85,7 +87,7 @@ I tested that against a simple common-sense configuration and vanilla Codex on s
 
 The common-sense setup came out ahead, passing 53% of hidden acceptance tests. The agent-generated evidence setup managed 46%, while vanilla scored 36%. Only the common-sense setup's improvement over vanilla was statistically supported.
 
-Not quite what I expected.
+Not quite what I expected. Round 1 to the agent's own common-sense setup, then, with the agent's evidence-led setup a respectable second and vanilla Codex nursing a 36%. Strictly, the agent beat itself.
 
 But there's an important distinction here. This experiment tested **how an AI agent interpreted my findings**: which ones it picked, how it turned them into settings and how it combined them. It didn't test how I would interpret the same data. That's the next experiment: **the same findings, interpreted by me**, with the configuration, the AGENTS.md and the skills written by me, run against the agent's version.
 
