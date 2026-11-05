@@ -1,6 +1,6 @@
 ---
-title: "Me vs my AI agent, round 1: can it turn my experiments into a better coding setup? (ELC)"
-description: "Round 1 of me against my AI agent: it wrote this whole experiment for me, including an evidence-led setup built from my published findings, which it raced against six lines of common-sense AGENTS.md with three small skills, and against no setup at all, on six hard Shopizer bug reports with real, hidden causes. The common-sense setup won: 53% of hidden acceptance tests passed, against 36% with no setup. The evidence-led setup scored 46%, not measurably better than nothing. Round 2 of the grudge match: I write the configuration and skills myself."
+title: "Me vs my AI agent: can it turn my experiments into a better coding setup? (ELC, round 1)"
+description: "Me against my AI agent, the agent's turn: it wrote this whole experiment for me, including an evidence-led setup built from my published findings, which it raced against six lines of common-sense AGENTS.md with three small skills, and against no setup at all, on six hard Shopizer bug reports with real, hidden causes. The common-sense setup won: 53% of hidden acceptance tests passed, against 36% with no setup. The evidence-led setup scored 46%, not measurably better than nothing. In the rematch, ELC-H1, I write the configuration and skills myself."
 date: 2026-11-05
 summary: "90 Codex runs on six real Shopizer defects. Share of hidden tests passed: no setup 36%, disciplined setup (six AGENTS.md lines and three skills) 53% (+17 points, Holm p = 0.012), evidence-led setup 46% (+10 over none, not significant; 7 below disciplined). The evidence-led stop gate never had to block. 81 of the 85 runs that missed hidden tests said they were done."
 type: "Controlled trial"
@@ -18,7 +18,7 @@ agents:
     settings: "medium effort, one turn per run, no network, bubblewrap sandbox; checked in all 90 session files"
 runs: "6 tickets × 3 arms × 5 runs = 90 runs, after a vanilla pilot of every candidate ticket"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/5fd8d56bd0480c45bfd411598a5902819dc703cb/2026-11-evidence-led/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/d902d92a3bba58962c63b1806da884dc9b006daa/2026-11-evidence-led/README.md"
 previewImage: "/guide-images/chart-evidence-led.png"
 previewAlt: "Mean share of hidden tests passed per ticket, five runs per arm. PRODUCTDELETE: vanilla 25%, disciplined 71%, evidence-led 60%. SUPPORTORDERS: 55%, 80%, 72%. STOCK: 35%, 61%, 63%. REVIEWS: 22%, 34%, 10%. CATEGORYDELETE: 56%, 53%, 53%. CUSTOMERCART: 24%, 20%, 20%. Over all six: vanilla 36%, disciplined 53%, evidence-led 46%."
@@ -41,11 +41,11 @@ findings:
     limits:
       - "which part helps (the requirements list, the tests line, the self-review or the extra spend) is not separated"
       - "one repository, one agent and model at one effort, single turn"
-    source: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/5fd8d56bd0480c45bfd411598a5902819dc703cb/2026-11-evidence-led/REPORT.md"
     status: current
     featured: false
   - id: "ELC-2"
-    statement: "Settings that each worked in their own experiments did not add up to a better setup on hard work"
+    statement: "An agent-generated configuration based on previously supported findings did not outperform common-sense engineering practice on these harder tickets"
     metric: "mean share of hidden tests passed (higher is better)"
     value: "evidence-led 46%: +10 points over no setup (not significant), 7 points below the disciplined setup"
     n: "30 runs per arm"
@@ -57,7 +57,7 @@ findings:
     limits:
       - "E is built from findings mostly measured on easier tasks with this same agent and model"
       - "\"no measurable difference\" is not \"the same\"; a larger round could show a gain"
-    source: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/5fd8d56bd0480c45bfd411598a5902819dc703cb/2026-11-evidence-led/REPORT.md"
     status: current
     featured: false
   - id: "ELC-3"
@@ -70,7 +70,7 @@ findings:
       - "in REVIEWS, 12 of 15 runs broke review creation for every request and still reported success; the suite's only review test is skipped"
     limits:
       - "every arm was asked to end with a VERIFICATION line, the instrument for this count; it may nudge all arms toward checking"
-    source: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/5fd8d56bd0480c45bfd411598a5902819dc703cb/2026-11-evidence-led/REPORT.md"
     status: current
     featured: false
 ---
@@ -79,7 +79,9 @@ findings:
 
 Over the past month I've been running experiments into what actually helps coding agents. This time I wanted to see whether those findings could be put together into something useful, and who is better at doing that: **me, or my AI agent.**
 
-This page is round 1. The agent went first: it read my findings and built its own evidence-led setup. In the follow-on, I read the same findings and write my own. Same evidence, two interpreters, one scoreboard. The agent has the advantage of having read every report in about a minute; I have the advantage of having actually run them, and of writing the page about who won.
+This page is the agent's turn. It went first: it read my findings and built its own evidence-led setup. In the rematch, a separate experiment called **ELC-H1: Human vs Agent Evidence Interpretation**, I read the same findings and write my own. Same evidence, two interpreters, one scoreboard. The agent has the advantage of having read every report in about a minute; I have the advantage of having actually run them, and of writing the page about who won.
+
+There is one snag. I've now seen how the agent's setup did, which is a bit like marking your rival's exam and then sitting it yourself. So the agent isn't letting me cheat: ELC-H1 runs on fresh tickets that I'm not allowed to look at until my setup is frozen, and someone other than the agent checks its tests before anything runs. I've been told this is "good experimental practice". It feels more like being supervised.
 
 **This experiment was written by an AI agent** (Claude Code, working for me): the tickets, the hidden acceptance tests, the reference fixes, the common-sense setup and its skills, and an evidence-led setup built from my published findings. I chose the options and approved the design; I didn't write any of the configurations.
 
@@ -87,9 +89,9 @@ I tested that against a simple common-sense configuration and vanilla Codex on s
 
 The common-sense setup came out ahead, passing 53% of hidden acceptance tests. The agent-generated evidence setup managed 46%, while vanilla scored 36%. Only the common-sense setup's improvement over vanilla was statistically supported.
 
-Not quite what I expected. Round 1 to the agent's own common-sense setup, then, with the agent's evidence-led setup a respectable second and vanilla Codex nursing a 36%. Strictly, the agent beat itself.
+Not quite what I expected. The agent's turn goes to the agent's own common-sense setup, then, with the agent's evidence-led setup a respectable second and vanilla Codex nursing a 36%. Strictly, the agent beat itself.
 
-But there's an important distinction here. This experiment tested **how an AI agent interpreted my findings**: which ones it picked, how it turned them into settings and how it combined them. It didn't test how I would interpret the same data. That's the next experiment: **the same findings, interpreted by me**, with the configuration, the AGENTS.md and the skills written by me, run against the agent's version.
+But there's an important distinction here. This experiment tested **how an AI agent interpreted my findings**: which ones it picked, how it turned them into settings and how it combined them. It didn't test how I would interpret the same data. That's ELC-H1: **the same findings, interpreted by me**, with the configuration, the AGENTS.md and the skills written by me, run against the agent's version.
 
 It is also a **running experiment**. The evidence-led setup is rebuilt only from newly published findings of other experiments, never from this one's own runs, and each round adds two new held-out tickets.
 
@@ -135,7 +137,7 @@ It is also a **running experiment**. The evidence-led setup is rebuilt only from
 
 The resulting setup is shown below. The important point is that I didn't manually design the combination of settings. I wanted to test whether an agent could interpret the research and turn it into something that worked.
 
-So E is the agent's interpretation of the evidence, not the evidence itself. The result tests the findings and the agent's reading of them together, and can't separate the two. Comparing it with my own interpretation of the same findings is what the follow-on is for.
+So E is the agent's interpretation of the evidence, not the evidence itself. The result tests the findings and the agent's reading of them together, and can't separate the two. Comparing it with my own interpretation of the same findings is what ELC-H1 is for.
 
 | Setting | Evidence behind it |
 | --- | --- |
@@ -261,13 +263,13 @@ Bounded to what was tested: Codex 0.157, gpt-5.6-luna at medium effort, single-t
 - This experiment cannot tell whether the evidence itself was ineffective, or whether the agent made poor choices about which findings to apply and how to combine them.
 - Every arm was asked to end with a `VERIFICATION:` line (what it ran and whether it passed), the instrument behind the false-claim count. It is the same in all arms but is a small nudge to check the work.
 
-## What's next: my interpretation of the evidence against the agent's
+## What's next: ELC-H1, my interpretation of the evidence against the agent's
 
 The question is **how an AI agent interprets the evidence compared with how I would**. Before drawing conclusions from this round, I want to see what happens when I read the same findings and build the evidence-led configuration myself.
 
-In this experiment an AI agent wrote everything, including the configurations. For a separate follow-on, I'll write the evidence-led configuration myself: the AGENTS.md, the skills and the settings. I'll go back through the same findings and decide which settings to use, how they fit together and which problems they're actually meant to solve. I'll document the reasons for each decision and freeze the configuration before running it.
+In this experiment an AI agent wrote everything, including the configurations. In a separate experiment, **ELC-H1: Human vs Agent Evidence Interpretation**, I'll write the evidence-led configuration myself: the AGENTS.md, the skills and the settings. I'll go back through the same findings and decide which settings to use, how they fit together and which problems they're actually meant to solve. I'll document the reasons for each decision and freeze the configuration before running it.
 
-The follow-on will compare:
+ELC-H1 will compare:
 
 - vanilla Codex;
 - the original common-sense configuration;
@@ -276,9 +278,13 @@ The follow-on will compare:
 
 I'll use fresh, held-out tickets so I'm not simply tuning my configuration to the failures I've already seen. I'll also measure cost, because doubling the effort to get a small improvement isn't necessarily progress.
 
-The existing ELC experiment will continue under its original rules: round 2 changes the agent-generated setup only when another experiment publishes a finding that supports a change. The follow-on is a separate test, not an attempt to fix the original results after seeing them.
+The agent designed its own exam this time: the same agent wrote the common-sense setup and the hidden acceptance tests. So for ELC-H1, **an independent review of the tickets and hidden tests is a requirement before anything runs**.
+
+ELC keeps its own rounds under its original rules: ELC round 2 changes the agent-generated setup only when another experiment publishes a finding that supports a change. ELC-H1 is a separate test, not an attempt to fix the original results after seeing them.
 
 There are a few possible outcomes. My configuration might improve on the agent-generated one, suggesting that selecting and combining evidence matters. Both might lose to common sense. Or the original agent-generated configuration might turn out to be better. I'm not particularly bothered which wins. What I want to know is whether all this research translates into something useful when the findings are applied together.
 
-- **Experiment 1 (this one):** the agent's interpretation of my findings. Can an agent turn research into practice?
-- **Experiment 2:** my interpretation of the same findings, with the configuration and skills written by me, against the agent's. Does the person interpreting the evidence make a difference?
+It won't prove that people are better at interpreting evidence than agents. If my setup wins, that could come from my domain experience, different design choices or simply more time spent preparing. ELC-H1 can compare the two outcomes; it won't cleanly isolate why one is better.
+
+- **ELC (this one):** the agent's interpretation of my findings. Can an agent turn research into practice?
+- **ELC-H1:** my interpretation of the same findings, with the configuration and skills written by me, against the agent's. Does the person interpreting the evidence make a difference?
