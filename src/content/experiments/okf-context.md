@@ -21,7 +21,7 @@ agents:
     settings: "each report matched to a 22-entry answer key; primary judge checked by hand"
 runs: "3 arms × (5 tickets × 5 runs + 25 FMEAs) = 150 runs; 150 FMEA judgements by two judges"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-context/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/e3d8458eb75b04bd506f0a98bc679d823ea3af1c/2026-11-okf-context/README.md"
 previewImage: "/guide-images/chart-okf-context.png"
 previewAlt: "Context mattered where the code was silent. Feature changes fully correct: 3 tickets whose rule is in the code, 15 of 15 runs in every arm; 2 tickets whose rule is only in the context, vanilla 1 of 10, OKF 10 of 10, AGENTS.md 8 of 10. FMEA answer-key failure modes found: all 22, vanilla 62%, OKF 77%, AGENTS.md 81%; 7 only in the context, 17%, 70%, 72%; 10 visible in the code, 82%, 74%, 78%."
@@ -43,7 +43,7 @@ findings:
     limits:
       - "two context-only tickets, chosen after a pilot showed the first two were solvable from the code"
       - "one repository written for the test, with simulated integrations"
-    source: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-context/REPORT.md"
     status: current
     featured: false
   - id: "OKC-2"
@@ -57,20 +57,20 @@ findings:
       - "an account closed with money still in it: found by 25 of 25 OKF reports and none of the vanilla ones"
     limits:
       - "the answer key, the bundle and the hand check are mine"
-    source: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-context/REPORT.md"
     status: current
     featured: false
   - id: "OKC-3"
     statement: "OKF and the same facts in plain AGENTS.md were not distinguishable, and AGENTS.md was cheaper per correct result"
     metric: "feature runs fully correct of 25; FMEA recall; cost per fully correct feature change (lower is better)"
-    value: "25 vs 23 of 25; 77% vs 81%; $0.124 vs $0.109"
+    value: "25 vs 23 of 25; 77% vs 81%; $0.018 vs $0.016"
     n: "25 runs per arm per task type"
     detail:
       - "pre-registered H5: not supported for features (Holm p = 0.98) or the FMEA (Holm p = 0.30)"
       - "not shown equal either: no equivalence test was planned for B against C"
     limits:
       - "one agent, one model, one bundle"
-    source: "https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-context/REPORT.md"
     status: current
     featured: false
 ---
@@ -753,17 +753,19 @@ C carried fewer of the business facts into its reports than B on several items (
 
 </figure>
 
+Costs at list price for gpt-5.6-luna ($0.20 per million new input tokens, $0.02 cached, $1.20 output; corrected on 5 November 2026, the first version used a wrong price about six times too high).
+
 | Task | A | B | C |
 | --- | --- | --- | --- |
 | feature change: input / output tokens per run | 232k / 3.2k | 352k / 3.8k | 263k / 3.1k |
 | feature change: seconds per run | 74 | 91 | 74 |
-| feature change: cost per run (lower is better) | $0.094 | $0.124 | $0.100 |
-| **per fully correct feature change** (lower is better) | $0.147 | $0.124 | **$0.109** |
+| feature change: cost per run (lower is better) | $0.014 | $0.018 | $0.015 |
+| **per fully correct feature change** (lower is better) | $0.022 | $0.018 | **$0.016** |
 | FMEA: input / output tokens per run | 329k / 5.8k | 300k / 5.6k | 308k / 6.0k |
-| FMEA: cost per run | $0.154 | $0.145 | $0.149 |
-| **per answer-key entry found** (lower is better) | $0.011 | $0.009 | **$0.008** |
+| FMEA: cost per run | $0.022 | $0.021 | $0.021 |
+| **per 1,000 answer-key entries found** (lower is better) | $1.64 | $1.24 | **$1.21** |
 
-- OKF's feature runs read **52% more input tokens** than vanilla's, most on F6 (489k against 229k), and cost 32% more; the gap in cost is smaller because 85–89% of input was cached.
+- OKF's feature runs read **52% more input tokens** than vanilla's, most on F6 (489k against 229k), and cost 34% more; the gap in cost is smaller because 85–89% of input was cached.
 - Per **correct** result, both context arms were cheaper than vanilla, and AGENTS.md cheapest.
 - **Payback** (an estimate on a stated assumption): if writing and reviewing a bundle like this takes a person about 4 hours, and an integration bug that passes every test costs at least an hour to find and fix, the bundle pays back after about 5 tickets that touch an external system (it prevented 0.9 such bugs per ticket here). The run costs are cents beside that.
 
@@ -833,4 +835,4 @@ Everything is in [experiments/2026-11-okf-context](https://github.com/meabs/expe
 - the run, grading, judge, taxonomy and analysis scripts (`scripts/`), and the diagrams (`diagrams/`);
 - every run's diff, grade and FMEA, both judges' verdicts, my overrides and the full analysis (`results/main/`).
 
-The design and its 20 amendments are in [README.md](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/REPORT.md). The commands are in REPORT.md, section 10. The API keys and the Codex login are not published.
+The design and its 20 amendments are in [README.md](https://github.com/meabs/experiments/blob/be6bac4d4cca293ad4955aa84305b762332c187a/2026-11-okf-context/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-context/REPORT.md). The commands are in REPORT.md, section 10. The API keys and the Codex login are not published.
