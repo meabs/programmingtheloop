@@ -18,7 +18,7 @@ agents:
     settings: "medium effort, one turn per run, no network, bubblewrap sandbox; checked in all 90 session files"
 runs: "6 tickets × 3 arms × 5 runs = 90 runs, after a vanilla pilot of every candidate ticket"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/abf5962cdccd6bbb436f2a8db6c4ce218fe1676e/2026-11-evidence-led/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/d902d92a3bba58962c63b1806da884dc9b006daa/2026-11-evidence-led/README.md"
 previewImage: "/guide-images/chart-evidence-led.png"
 previewAlt: "Mean share of hidden tests passed per ticket, five runs per arm. PRODUCTDELETE: vanilla 25%, disciplined 71%, evidence-led 60%. SUPPORTORDERS: 55%, 80%, 72%. STOCK: 35%, 61%, 63%. REVIEWS: 22%, 34%, 10%. CATEGORYDELETE: 56%, 53%, 53%. CUSTOMERCART: 24%, 20%, 20%. Over all six: vanilla 36%, disciplined 53%, evidence-led 46%."
@@ -41,7 +41,7 @@ findings:
     limits:
       - "which part helps (the requirements list, the tests line, the self-review or the extra spend) is not separated"
       - "one repository, one agent and model at one effort, single turn"
-    source: "https://github.com/meabs/experiments/blob/abf5962cdccd6bbb436f2a8db6c4ce218fe1676e/2026-11-evidence-led/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
     status: current
     featured: false
   - id: "ELC-2"
@@ -57,7 +57,7 @@ findings:
     limits:
       - "E is built from findings mostly measured on easier tasks with this same agent and model"
       - "\"no measurable difference\" is not \"the same\"; a larger round could show a gain"
-    source: "https://github.com/meabs/experiments/blob/abf5962cdccd6bbb436f2a8db6c4ce218fe1676e/2026-11-evidence-led/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
     status: current
     featured: false
   - id: "ELC-3"
@@ -70,7 +70,7 @@ findings:
       - "in REVIEWS, 12 of 15 runs broke review creation for every request and still reported success; the suite's only review test is skipped"
     limits:
       - "every arm was asked to end with a VERIFICATION line, the instrument for this count; it may nudge all arms toward checking"
-    source: "https://github.com/meabs/experiments/blob/abf5962cdccd6bbb436f2a8db6c4ce218fe1676e/2026-11-evidence-led/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/8f2f83aebc604d6728e0d2d5da617ac61592eda3/2026-11-evidence-led/REPORT.md"
     status: current
     featured: false
 ---
@@ -87,7 +87,7 @@ The common-sense setup came out ahead, passing 53% of hidden acceptance tests. T
 
 Not quite what I expected.
 
-But there's an important distinction here. This experiment tested whether an AI agent could take my findings and turn them into a useful configuration. It didn't establish whether I could do a better job of applying the same evidence myself. That's the next experiment: **there, I write the configuration, the AGENTS.md and the skills myself.**
+But there's an important distinction here. This experiment tested **how an AI agent interpreted my findings**: which ones it picked, how it turned them into settings and how it combined them. It didn't test how I would interpret the same data. That's the next experiment: **the same findings, interpreted by me**, with the configuration, the AGENTS.md and the skills written by me, run against the agent's version.
 
 It is also a **running experiment**. The evidence-led setup is rebuilt only from newly published findings of other experiments, never from this one's own runs, and each round adds two new held-out tickets.
 
@@ -133,7 +133,7 @@ It is also a **running experiment**. The evidence-led setup is rebuilt only from
 
 The resulting setup is shown below. The important point is that I didn't manually design the combination of settings. I wanted to test whether an agent could interpret the research and turn it into something that worked.
 
-That means the result tests both the underlying findings and the agent's ability to select and combine them. It doesn't separate the two.
+So E is the agent's interpretation of the evidence, not the evidence itself. The result tests the findings and the agent's reading of them together, and can't separate the two. Comparing it with my own interpretation of the same findings is what the follow-on is for.
 
 | Setting | Evidence behind it |
 | --- | --- |
@@ -259,9 +259,9 @@ Bounded to what was tested: Codex 0.157, gpt-5.6-luna at medium effort, single-t
 - This experiment cannot tell whether the evidence itself was ineffective, or whether the agent made poor choices about which findings to apply and how to combine them.
 - Every arm was asked to end with a `VERIFICATION:` line (what it ran and whether it passed), the instrument behind the false-claim count. It is the same in all arms but is a small nudge to check the work.
 
-## What's next: can I do better than the agent?
+## What's next: my interpretation of the evidence against the agent's
 
-There's a question I want to answer before drawing too many conclusions from this result: what happens when I build the evidence-led configuration myself?
+The question is **how an AI agent interprets the evidence compared with how I would**. Before drawing conclusions from this round, I want to see what happens when I read the same findings and build the evidence-led configuration myself.
 
 In this experiment an AI agent wrote everything, including the configurations. For a separate follow-on, I'll write the evidence-led configuration myself: the AGENTS.md, the skills and the settings. I'll go back through the same findings and decide which settings to use, how they fit together and which problems they're actually meant to solve. I'll document the reasons for each decision and freeze the configuration before running it.
 
@@ -269,8 +269,8 @@ The follow-on will compare:
 
 - vanilla Codex;
 - the original common-sense configuration;
-- the original agent-generated evidence configuration;
-- my own evidence-led configuration, with the AGENTS.md and skills written by me.
+- the agent's interpretation of the evidence (E v1, unchanged);
+- my interpretation of the same evidence, with the AGENTS.md and skills written by me.
 
 I'll use fresh, held-out tickets so I'm not simply tuning my configuration to the failures I've already seen. I'll also measure cost, because doubling the effort to get a small improvement isn't necessarily progress.
 
@@ -278,5 +278,5 @@ The existing ELC experiment will continue under its original rules: round 2 chan
 
 There are a few possible outcomes. My configuration might improve on the agent-generated one, suggesting that selecting and combining evidence matters. Both might lose to common sense. Or the original agent-generated configuration might turn out to be better. I'm not particularly bothered which wins. What I want to know is whether all this research translates into something useful when the findings are applied together.
 
-- **Experiment 1 (this one, written by an AI agent):** can an agent turn research into practice?
-- **Experiment 2 (the configuration and skills written by me):** can a human architect make better use of the same research?
+- **Experiment 1 (this one):** the agent's interpretation of my findings. Can an agent turn research into practice?
+- **Experiment 2:** my interpretation of the same findings, with the configuration and skills written by me, against the agent's. Does the person interpreting the evidence make a difference?
