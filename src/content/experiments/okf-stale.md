@@ -21,7 +21,7 @@ agents:
     settings: "did the final summary report the bundle disagreeing with the code or a contract; every verdict checked by hand"
 runs: "6 arms × 3 tickets × 8 runs = 144 runs, after a 12-run pilot"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-stale/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/e18e66e1bc88535e354828969f10db65da8bb08d/2026-11-okf-stale/README.md"
 previewImage: "/guide-images/chart-okf-stale.png"
 previewAlt: "The agent followed the wrong fact only on the timeout ticket. One square per run, 8 per arm and ticket. Stale runs: correct bundle 0 of 24; stale bundle 8 of 24; stale bundle with freshness dates 8 of 24; stale bundle with the verify line 0 of 24; correct bundle with the verify line 0 of 24; no bundle 0 of 24. On the template and daily-limit tickets every run in every arm followed the code or contract."
@@ -43,7 +43,7 @@ findings:
     limits:
       - "three stale facts; the one that bit was repeated in three files and read as a complete recipe"
       - "one repository written for the test, with simulated integrations"
-    source: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-stale/REPORT.md"
     status: current
     featured: false
   - id: "OKS-2"
@@ -56,11 +56,11 @@ findings:
       - "the evidence rests on the timeout ticket: 0 of 8 with the line against 8 of 8 without (95% upper bound for 0 of 8: 37%)"
       - "pre-registered H5 (dates help): 0 points, not supported; no D run ran date or mentioned the dates in any message"
       - "with the line, 24 of 24 runs opened the contract or code before editing; without, 46 to 62%"
-      - "the line cost about $0.015 and 10 seconds a run, and the correct bundle with it was fully correct in 24 of 24 runs"
+      - "the line cost about $0.002 and 10 seconds a run, and the correct bundle with it was fully correct in 24 of 24 runs"
     limits:
       - "one wording of the line, which bundles four things (verify, where to look, which source wins, report); which part works is not isolated"
       - "one agent and model at one effort"
-    source: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-stale/REPORT.md"
     status: current
     featured: false
   - id: "OKS-3"
@@ -73,7 +73,7 @@ findings:
       - "no run in any arm asked the user which source was right, but the runs were one turn with nobody to answer"
     limits:
       - "the summary is one place to report; the agent was not asked for a separate section"
-    source: "https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-stale/REPORT.md"
     status: current
     featured: false
 ---
@@ -315,18 +315,18 @@ Other E summaries, verbatim:
 
 </figure>
 
-Mean per run, at list price for gpt-5.6-luna ($1.25 per million new input tokens, $0.125 cached, $10 output). Lower is cheaper.
+Mean per run, at list price for gpt-5.6-luna ($0.20 per million new input tokens, $0.02 cached, $1.20 output; corrected on 5 November 2026, the first version used a wrong price about six times too high). Lower is cheaper.
 
 | Arm | Seconds | Cost per run | Cost per fully correct run |
 | --- | --- | --- | --- |
-| A, correct | 90 | $0.114 | $0.124 |
-| B, stale | 109 | $0.147 | **$0.220** |
-| D, stale with dates | 97 | $0.128 | $0.205 |
-| E, stale with the verify line | 104 | $0.138 | $0.151 |
-| F, correct with the verify line | 100 | $0.129 | $0.129 |
-| V, no bundle | 86 | $0.104 | $0.139 |
+| A, correct | 90 | $0.017 | $0.018 |
+| B, stale | 109 | $0.022 | **$0.033** |
+| D, stale with dates | 97 | $0.019 | $0.030 |
+| E, stale with the verify line | 104 | $0.020 | $0.022 |
+| F, correct with the verify line | 100 | $0.019 | $0.019 |
+| V, no bundle | 86 | $0.015 | $0.020 |
 
-The wrong fact made the work more expensive, not cheaper: B's timeout runs built a suffix scheme with a new field, a counter and fixture changes. The verify line cost about $0.015 and 10 seconds a run on a correct bundle (F against A). The whole experiment cost about $18 of model use.
+The wrong fact made the work more expensive, not cheaper: B's timeout runs built a suffix scheme with a new field, a counter and fixture changes. The verify line cost about $0.002 and 10 seconds a run on a correct bundle (F against A). The whole experiment cost about $2.70 of model use.
 
 ### Robustness
 
@@ -365,7 +365,7 @@ The wrong fact made the work more expensive, not cheaper: B's timeout runs built
 
 For Codex with gpt-5.6-luna at medium effort, on tickets like these (the configuration tested):
 
-1. **Add the verify line to `AGENTS.md`** whenever you give the agent a context bundle (wording above), including the part that names where to check. It cut stale-following from 8 of 8 to 0 of 8 on the ticket where it mattered, for $0.015 a run. Which of its four parts does the work isn't tested, so keep all four.
+1. **Add the verify line to `AGENTS.md`** whenever you give the agent a context bundle (wording above), including the part that names where to check. It cut stale-following from 8 of 8 to 0 of 8 on the ticket where it mattered, for $0.002 a run. Which of its four parts does the work isn't tested, so keep all four.
 2. **Vendor the authoritative contracts into the repository**, so there is something to check against. The line only works if the truth is in reach.
 3. **Don't rely on `stale_after` or `verified` dates alone to make the agent careful.** Put them in something that acts on them: a CI check that fails when a bundle file passes its `stale_after`, or an instruction saying what to do with an expired file (untested).
 4. **Don't rely on the summary to tell you the bundle is wrong.** Check drift mechanically (for example, a test that every template name in `okf/` exists in the contract), or ask for an explicit "context disagreements" section and measure whether you get it.
@@ -388,4 +388,4 @@ Everything is in [experiments/2026-11-okf-stale](https://github.com/meabs/experi
 - the run, grading, transcript, judge, analysis and diagram scripts (`scripts/`);
 - every run's diff and grade, the extracted transcript fields, both judges' verdicts, my override and the full analysis (`results/main/`).
 
-The design and its three amendments are in [README.md](https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/REPORT.md), with the commands in section 10. The API keys, the Codex login and the agents' raw transcripts are not published.
+The design and its three amendments are in [README.md](https://github.com/meabs/experiments/blob/29c87feb2107360a9c984a54050bd2c0bec3473a/2026-11-okf-stale/README.md); the full report is [REPORT.md](https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-stale/REPORT.md), with the commands in section 10. The API keys, the Codex login and the agents' raw transcripts are not published.
