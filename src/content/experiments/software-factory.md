@@ -6,7 +6,7 @@ summary: "96 runs, 21.4 hours. Hard tickets, share of hidden tests passed: one C
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/8106ca99d2546d1df4c2dc234d12a440a2483a83/2026-11-asf-1"
+    href: "https://github.com/meabs/experiments/tree/2e883e89742258f95cc51fd20f7aa8646c54b09d/2026-11-asf-1"
 draft: false
 experimentId: "ASF"
 question: "Does an open-source software factory (Machinist's standard triage, build, review and repair pipeline) deliver more correct changes on hard bug reports than one coding agent given the same ticket, with the same model in every role?"
@@ -21,7 +21,7 @@ agents:
     settings: "as supplied: its own prompts, stage time limits and 3-repair limit; one fresh private GitHub repository per run"
 runs: "8 tickets × 3 arms × 4 runs = 96 runs, in random order, one at a time (21.4 hours), after a one-agent pilot of every ticket"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/8106ca99d2546d1df4c2dc234d12a440a2483a83/2026-11-asf-1/REPORT.md"
+report: "https://github.com/meabs/experiments/blob/2e883e89742258f95cc51fd20f7aa8646c54b09d/2026-11-asf-1/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/5e99976f53ee3e05e8648166d0ba50ea6195d258/2026-11-asf-1/README.md"
 previewImage: "/guide-images/asf-1-2-scores.png"
 previewAlt: "Mean share of hidden tests passed per ticket, four runs per arm (one agent, Machinist single, Machinist pipeline). CATEGORYDELETE 53%, 56%, 81%. CUSTOMERCART 18%, 30%, 25%. PRODUCTDELETE 32%, 50%, 30%. REVIEWS 50%, 40%, 32%. STOCK 68%, 57%, 73%. SUPPORTORDERS 73%, 56%, 90%. Easy tickets: RETURNS 78%, 72%, 91%; VISIBILITY 82%, 82%, 98%. Hard tickets overall: 49%, 48%, 55%; not significant."
@@ -45,7 +45,7 @@ findings:
     limits:
       - "not significant is not the same: the interval allows a 7-point loss or a 19-point gain"
       - "one model at one effort, one Java repository with no CI, four runs per cell"
-    source: "https://github.com/meabs/experiments/blob/8106ca99d2546d1df4c2dc234d12a440a2483a83/2026-11-asf-1/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2e883e89742258f95cc51fd20f7aa8646c54b09d/2026-11-asf-1/REPORT.md"
     status: current
     featured: false
   - id: "ASF-2"
@@ -59,7 +59,7 @@ findings:
       - "two pipeline stages hung on a stalled model stream until Machinist's 2-hour stage limit ended them"
     limits:
       - "token prices only; nobody's time is counted"
-    source: "https://github.com/meabs/experiments/blob/8106ca99d2546d1df4c2dc234d12a440a2483a83/2026-11-asf-1/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2e883e89742258f95cc51fd20f7aa8646c54b09d/2026-11-asf-1/REPORT.md"
     status: current
     featured: false
   - id: "ASF-3"
@@ -74,7 +74,7 @@ findings:
       - "repairs the reviewer asked for broke 4 of 30 reviewed PRs, two of them from 8 and 7 of 10 tests passing to 1 of 10"
     limits:
       - "with real CI checks the reviewer may behave very differently; that was not tested"
-    source: "https://github.com/meabs/experiments/blob/8106ca99d2546d1df4c2dc234d12a440a2483a83/2026-11-asf-1/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2e883e89742258f95cc51fd20f7aa8646c54b09d/2026-11-asf-1/REPORT.md"
     status: current
     featured: false
   - id: "ASF-4"
@@ -88,7 +88,7 @@ findings:
       - "in 4 runs Machinist recorded no PR at all, though one existed on GitHub"
     limits:
       - "single-agent mode has no reviewer, so ready to merge there means only that a PR was delivered"
-    source: "https://github.com/meabs/experiments/blob/8106ca99d2546d1df4c2dc234d12a440a2483a83/2026-11-asf-1/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2e883e89742258f95cc51fd20f7aa8646c54b09d/2026-11-asf-1/REPORT.md"
     status: current
     featured: false
 ---
