@@ -18,7 +18,7 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
     "@astrojs/starlight": "^0.42.6",
-    "astro": "7.2.10",
+    "astro": "7.4.11",
     "micromark": "^4.0.3"
   },
   "devDependencies": {
