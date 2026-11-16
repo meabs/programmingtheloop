@@ -1,4 +1,4 @@
-// Port of simulation.py / experiment.py for the browser and Node. ES module, no dependencies.
+// Port of simulation.py (model v0.2) / experiment.py for the browser and Node. ES module, no dependencies.
 //
 // The PRNG is a bit-exact port of CPython's random.Random (MT19937, init_by_array seeding,
 // 53-bit random(), getrandbits-based choice, cached-pair gauss), so that for the same seed this
@@ -121,6 +121,13 @@ export const AI_NATIVE = {
   token_cost_per_work: 200, defect_factor: 1.35, decision_cadence: 1, review_strength: 0.55,
 };
 
+// Coefficients both firms share. Defaults are the v0.1 values (mirror of simulation.Assumptions).
+export const DEFAULT_ASSUMPTIONS = {
+  arpu: 82, overhead: 35000, cost_per_customer: 8, start_cash: 2500000,
+  debt_per_build: .068, review_effect: .40, throttle_start: 20, debt_threshold: 28,
+  churn_base: .014, downturn_start: 0, downturn_months: 0, downturn_mult: 1.0,
+};
+
 const scenario = (name, o = {}) => ({
   name, native_capacity_mult: 1.0, native_defect_mult: 1.0, native_tool_mult: 1.0,
   native_review_delta: 0.0, market_growth_mult: 1.0, compliance_shocks: true, ...o,
@@ -136,11 +143,11 @@ const INITIAL_ALLOCATION = { discover: .16, build: .36, harden: .21, grow: .16, 
 // ---------------------------------------------------------------- simulation
 const clamp = (x, lo, hi) => Math.min(Math.max(x, lo), hi);
 
-function newFirm(model) {
+function newFirm(model, cash = 2500000) {
   return {
-    model, customers: 3500, cash: 2500000, product: 49, fit: 48, debt: 18, trust: 72,
+    model, customers: 3500, cash, product: 49, fit: 48, debt: 18, trust: 72,
     governance: 66, lastAllocation: { ...INITIAL_ALLOCATION }, incidents: 0, badBuilds: 0,
-    cumulativeProfit: 0, deliveredWork: 0, alive: true,
+    cumulativeProfit: 0, deliveredWork: 0, alive: true, minCash: cash,
   };
 }
 
@@ -166,7 +173,7 @@ const EVENTS_BASE = [
 const EVENTS_COMPLIANCE = [...EVENTS_BASE, ...Array(4).fill('compliance')];
 
 // Pure formulas (mirrors of simulation.py). Exported so test_parity.mjs can sweep them on a grid.
-export const debtPenalty = debt => clamp(1 - Math.max(0, debt - 20) * .0045, .40, 1.0);
+export const debtPenalty = (debt, throttleStart = 20) => clamp(1 - Math.max(0, debt - throttleStart) * .0045, .40, 1.0);
 
 export function badBuildProbability(governance, fit, review, event) {
   let p = .008 + Math.max(0, 60 - governance) * .0018 + Math.max(0, 55 - fit) * .0008 + (1 - review) * .027;
@@ -174,21 +181,21 @@ export function badBuildProbability(governance, fit, review, event) {
   return p;
 }
 
-export function incidentProbability(debt, governance, event, badBuild) {
-  let risk = .012 + Math.max(0, debt - 28) * .0022 + Math.max(0, 55 - governance) * .0015;
+export function incidentProbability(debt, governance, event, badBuild, threshold = 28) {
+  let risk = .012 + Math.max(0, debt - threshold) * .0022 + Math.max(0, 55 - governance) * .0015;
   if (event === 'outage') risk += .13;
   if (badBuild) risk += .08;
   return Math.min(.45, risk);
 }
 
-export const churnRate = (trust, debt, incident) =>
-  clamp(.014 + Math.max(0, 65 - trust) * .00048 + Math.max(0, debt - 28) * .00018 + (incident ? 0.012 : 0), .004, .14);
+export const churnRate = (trust, debt, incident, base = .014, threshold = 28) =>
+  clamp(base + Math.max(0, 65 - trust) * .00048 + Math.max(0, debt - threshold) * .00018 + (incident ? 0.012 : 0), .004, .14);
 
 function eventForMonth(rng, sc) {
   return rng.choice(sc.compliance_shocks ? EVENTS_COMPLIANCE : EVENTS_BASE);
 }
 
-function applyOperations(firm, month, event, sc, rng) {
+function applyOperations(firm, month, event, sc, rng, a) {
   if (!firm.alive) return { work: 0, incident: false, badBuild: false, cost: 0 };
   const native = firm.model.name === 'AI-native';
   const allocation = chooseAllocation(firm, month, event, rng);
@@ -197,7 +204,7 @@ function applyOperations(firm, month, event, sc, rng) {
   const capMult = native ? sc.native_capacity_mult : 1.0;
   const defectMult = native ? sc.native_defect_mult : 1.0;
   const review = clamp(firm.model.review_strength + (native ? sc.native_review_delta : 0), 0, 1);
-  const work = Math.max(0, firm.model.capacity * capMult * debtPenalty(firm.debt) * clamp(rng.gauss(1, .065), .7, 1.3));
+  const work = Math.max(0, firm.model.capacity * capMult * debtPenalty(firm.debt, a.throttle_start) * clamp(rng.gauss(1, .065), .7, 1.3));
   const units = {};
   for (const k of Object.keys(allocation)) units[k] = work * allocation[k];
   firm.deliveredWork += work;
@@ -207,8 +214,8 @@ function applyOperations(firm, month, event, sc, rng) {
   if (event === 'new-demand') buildValue *= 1.30;
   firm.product = clamp(firm.product + buildValue * (100 - firm.product) / 65, 0, 100);
 
-  const reviewModifier = 1.15 - .40 * review;
-  const newDebt = units.build * .068 * firm.model.defect_factor * defectMult * reviewModifier;
+  const reviewModifier = 1.15 - a.review_effect * review;
+  const newDebt = units.build * a.debt_per_build * firm.model.defect_factor * defectMult * reviewModifier;
   firm.debt = clamp(firm.debt + newDebt - units.harden * .105, 0, 100);
   firm.governance = clamp(firm.governance + units.govern * .078 - units.build * .017, 0, 100);
 
@@ -219,7 +226,7 @@ function applyOperations(firm, month, event, sc, rng) {
     firm.trust = clamp(firm.trust - 3, 0, 100);
   }
 
-  const incident = rng.random() < incidentProbability(firm.debt, firm.governance, event, badBuild);
+  const incident = rng.random() < incidentProbability(firm.debt, firm.governance, event, badBuild, a.debt_threshold);
   if (incident) {
     firm.incidents += 1;
     firm.trust = clamp(firm.trust - rng.uniform(4, 10), 0, 100);
@@ -237,7 +244,7 @@ function applyOperations(firm, month, event, sc, rng) {
   if (incident) penalty += rng.uniform(25000, 100000);
 
   const tokenMult = native ? sc.native_tool_mult : 1.0;
-  const cost = firm.model.monthly_staff_cost + 35000 + firm.customers * 8 +
+  const cost = firm.model.monthly_staff_cost + a.overhead + firm.customers * a.cost_per_customer +
     firm.model.ai_tool_cost * tokenMult + work * firm.model.token_cost_per_work * tokenMult + penalty;
   return { work, incident, badBuild, cost, growthSpend: units.grow };
 }
@@ -258,18 +265,20 @@ function row(seed, month, sc, event, f, profit, revenue, cost, work) {
 }
 
 /** One paired run. Returns { firms: [slot0, slot1], history } (history is unrounded). */
-export function runOnce(seed, months, sc, { keepHistory = false, models = null } = {}) {
+export function runOnce(seed, months, sc, { keepHistory = false, models = null, assumptions = DEFAULT_ASSUMPTIONS } = {}) {
+  const a = assumptions;
   const marketRng = new PyRandom(seed);
   const rngs = [new PyRandom(seed * 73 + 11), new PyRandom(seed * 73 + 29)];
   const [m0, m1] = models ?? [AI_NATIVE, TRADITIONAL];
-  const firms = [newFirm(m0), newFirm(m1)];
+  const firms = [newFirm(m0, a.start_cash), newFirm(m1, a.start_cash)];
   const history = [];
   for (let month = 1; month <= months; month++) {
     const event = eventForMonth(marketRng, sc);
     let marketDemand = Math.max(0, marketRng.gauss(480, 125)) * sc.market_growth_mult;
+    if (a.downturn_months && a.downturn_start <= month && month < a.downturn_start + a.downturn_months) marketDemand *= a.downturn_mult;
     if (event === 'new-demand') marketDemand *= 1.4;
     if (event === 'price-pressure') marketDemand *= .75;
-    const ops = firms.map((f, i) => applyOperations(f, month, event, sc, rngs[i]));
+    const ops = firms.map((f, i) => applyOperations(f, month, event, sc, rngs[i], a));
     const scores = firms.map((f, i) => attractiveness(f, ops[i].growthSpend ?? 0));
     const weights = firms.map((f, i) => (f.alive ? Math.exp((scores[i] - 60) / 17) : 0));
     const denominator = weights[0] + weights[1] + 0.8;
@@ -277,7 +286,7 @@ export function runOnce(seed, months, sc, { keepHistory = false, models = null }
 
     const churnLost = firms.map((f, i) => {
       if (!f.alive) return 0;
-      return f.customers * churnRate(f.trust, f.debt, ops[i].incident);
+      return f.customers * churnRate(f.trust, f.debt, ops[i].incident, a.churn_base, a.debt_threshold);
     });
     const switched = [firms[0].alive ? churnLost[1] * .20 : 0, firms[1].alive ? churnLost[0] * .20 : 0];
 
@@ -287,11 +296,12 @@ export function runOnce(seed, months, sc, { keepHistory = false, models = null }
         return;
       }
       f.customers = Math.max(0, f.customers - churnLost[i] + newCustomers[i] + switched[i]);
-      const revenue = f.customers * 82;
+      const revenue = f.customers * a.arpu;
       const profit = revenue - ops[i].cost;
       f.cash += profit;
       f.cumulativeProfit += profit;
       if (f.cash <= 0) { f.cash = 0; f.alive = false; }
+      f.minCash = Math.min(f.minCash, f.cash);
       if (keepHistory) history.push(row(seed, month, sc, event, f, profit, revenue, ops[i].cost, ops[i].work));
     });
   }
@@ -322,10 +332,10 @@ export function pyRound(x, nd = 0) {
 }
 
 /** Port of simulation.monte_carlo: same summary keys and rounding as the Python output. */
-export function monteCarlo(runs, months, sc, seed = 42, models = null) {
+export function monteCarlo(runs, months, sc, seed = 42, models = null, assumptions = DEFAULT_ASSUMPTIONS) {
   const rows = [];
   for (let i = 0; i < runs; i++) {
-    const { firms } = runOnce(seed + i, months, sc, { models });
+    const { firms } = runOnce(seed + i, months, sc, { models, assumptions });
     rows.push({
       nCash: firms[0].cash, tCash: firms[1].cash, nCust: firms[0].customers, tCust: firms[1].customers,
       nInc: firms[0].incidents, tInc: firms[1].incidents, nBad: firms[0].badBuilds, tBad: firms[1].badBuilds,
@@ -348,11 +358,11 @@ export function monteCarlo(runs, months, sc, seed = 42, models = null) {
 }
 
 /** Port of experiment.paired: slot0 (AI-native by default) vs slot1 on identical seeds. */
-export function paired(models, sc = SCENARIOS.baseline, runs = 1000, months = 36, seed = 42) {
+export function paired(models, sc = SCENARIOS.baseline, runs = 1000, months = 36, seed = 42, assumptions = DEFAULT_ASSUMPTIONS) {
   const diffs = [];
   let wins = 0, inc0 = 0, inc1 = 0, cust0 = 0, cust1 = 0;
   for (let i = 0; i < runs; i++) {
-    const { firms } = runOnce(seed + i, months, sc, { models });
+    const { firms } = runOnce(seed + i, months, sc, { models, assumptions });
     const d = firms[0].cash - firms[1].cash;
     diffs.push(d);
     if (d > 0) wins++;
