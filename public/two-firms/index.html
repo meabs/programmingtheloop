@@ -14,8 +14,8 @@
     addEventListener('storage', function (e) { if (e.key === 'ptl-theme') apply(e.newValue); });
   })();
 </script>
-<title>AI-native vs traditional: a simulation to poke at</title>
-<meta name="description" content="An interactive Monte Carlo model of two rival software firms. Change the AI-native firm's assumptions and see how often it ends up with more cash.">
+<title>Two firms, one model: AI-heavy vs traditional delivery</title>
+<meta name="description" content="An interactive Monte Carlo model of two rival software firms, one delivering with AI-heavy methods and one traditional. Change the assumptions and see when the answer flips. A model, not a forecast.">
 <style>
   /* Chrome uses programmingtheloop.com's tokens (src/styles/global.css). Chart data keeps its own
      validated pair (--series-1 blue, --muted-mark gray): the site's teal accent fails the colour-separation
@@ -133,39 +133,68 @@
   .embed main { padding: 0 0 8px; max-width: none; }
   .embed .chrome { display: none; }
   .embed .card:first-of-type { margin-top: 0; }
+
+  /* v0.2: grouped inputs, defaults and reset, baseline comparison, tipping marker */
+  .group { border: 1px solid var(--border); border-radius: 10px; margin-top: 12px; padding: 0 14px; }
+  .group > summary { cursor: pointer; font-weight: 650; font-size: .95rem; color: var(--ink); padding: 10px 0; list-style-position: outside; }
+  .group[open] > summary { border-bottom: 1px solid var(--grid); margin-bottom: 12px; }
+  .group .gnote { font-size: .8rem; color: var(--ink-3); font-weight: 400; margin-left: 6px; }
+  .group .controls { padding-bottom: 14px; }
+  .gcount { font-weight: 600; color: var(--ink); font-size: .8rem; margin-left: 8px; }
+  .ctl .name { display: inline-flex; align-items: center; gap: 6px; }
+  .ctl .dot { display: none; width: 8px; height: 8px; border-radius: 50%; background: var(--series-1); }
+  .ctl.changed .dot { display: inline-block; }
+  .ctl .meta { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; font-size: .8rem; color: var(--ink-3); margin-top: 2px; }
+  .ctl .what { margin: 2px 0 0; font-size: .8rem; color: var(--ink-2); }
+  .ctl .reset { font: inherit; font-size: .8rem; color: var(--ink); background: none; border: 0; padding: 0 2px; cursor: pointer; text-decoration: underline; visibility: hidden; }
+  .ctl.changed .reset { visibility: visible; }
+  .flip { margin: 14px 0 0; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--series-1); background: var(--callout-bg); font-size: .92rem; color: var(--ink); }
+  .flip:empty { display: none; }
+  .caveat { font-size: .82rem; color: var(--ink-3); margin: 12px 0 0; }
+  .caveat strong { color: var(--ink-2); font-weight: 600; }
+  table.cmp th, table.cmp td { text-align: right; padding: 6px 8px; }
+  table.cmp th:first-child, table.cmp td:first-child { text-align: left; color: var(--ink-2); }
+  table.cmp thead th { font-weight: 600; color: var(--ink); font-size: .85rem; }
+  table.cmp td.big { font-size: 1.15rem; font-weight: 650; color: var(--ink); }
+  .btn { font: inherit; font-size: .85rem; color: var(--ink); background: transparent; border: 1px solid var(--axis); border-radius: 8px; padding: 4px 12px; cursor: pointer; }
+  .btn:hover { background: var(--callout-bg); }
+  svg .tipline { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  optgroup { font-style: normal; }
+
 </style>
 </head>
 <body>
 <main>
   <h1 class="chrome">Two firms, one model</h1>
-  <p class="lede chrome">Two rival subscription businesses start level and face the same market for 36 months. One is organised around AI; one is a traditional team. Change the AI-native firm's assumptions below and see how often it ends up with more cash.</p>
+  <p class="lede chrome">Two rival subscription businesses start level and face the same market for 36 months. One delivers software in an AI-heavy way; one is a traditional team. Change the assumptions below and see which ends up with more cash.</p>
 
   <div id="file-warning" role="alert">This page loads its simulator as an ES module, which browsers block on <code>file://</code>. Serve the folder instead, e.g. <code>python3 -m http.server</code> inside <code>web/</code>, then open <code>localhost:8000</code>.</div>
 
-  <p class="callout chrome"><strong>This is a model, not a forecast.</strong> Every coefficient is invented for illustration. The numbers describe how the simulator behaves, not how real companies perform. What is worth taking away is <em>which assumptions the answer is sensitive to</em>.</p>
+  <p class="callout chrome"><strong>This is a model, not a forecast.</strong> Every coefficient is invented for illustration, and changing an input explores a hypothetical scenario. The numbers describe how the simulator behaves, not how real companies perform. "AI-heavy" means one firm delivers more work with cheaper staff, more defects and lighter review. It does not model a company that is AI-native in how it is run. What is worth taking away is <em>which assumptions the answer is sensitive to</em>.</p>
 
   <section class="card" aria-labelledby="h-assume">
-    <h2 id="h-assume">AI-native firm's assumptions</h2>
-    <p class="sub">The traditional firm is fixed: capacity 100, £205k monthly staff cost, defect factor 1.0, review strength 0.80, quarterly decisions.</p>
+    <h2 id="h-assume">Assumptions</h2>
+    <p class="sub">Defaults are the article's baseline. A dot marks anything you have changed, and each change can be undone on its own.</p>
     <div class="row">
       <span class="sub" style="margin:0">Try:</span>
       <div id="presets" role="group" aria-label="Presets" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      <button type="button" class="btn" id="reset-all" style="margin-left:auto" disabled>Reset all to defaults</button>
     </div>
-    <div class="controls" id="controls"></div>
+    <div id="groups"></div>
     <div class="row" style="margin-top:16px">
       <div class="grow"><label class="sub" for="scenario" style="display:block;margin-bottom:4px">Market scenario</label>
         <select id="scenario"></select></div>
       <div class="grow"><label class="sub" for="runs" style="display:block;margin-bottom:4px">Precision (paired runs)</label>
         <select id="runs">
-          <option value="500">500: quick</option>
-          <option value="1000" selected>1,000</option>
-          <option value="3000">3,000: precise</option>
+          <option value="1000">1,000: quick</option>
+          <option value="2000" selected>2,000: as in the article</option>
+          <option value="5000">5,000: precise</option>
         </select></div>
     </div>
   </section>
 
   <div class="results" id="results">
-    <section class="card" aria-labelledby="h-result">
+    <section class="card" id="card-result" aria-labelledby="h-result">
       <h2 id="h-result">Result</h2>
       <div class="hero" aria-live="polite">
         <div class="hero-fig" id="hero-fig">…</div>
@@ -174,13 +203,15 @@
           <p class="sub" id="hero-sub" style="margin:0"></p>
         </div>
       </div>
-      <div class="tiles" id="tiles"></div>
+      <p class="flip" id="flip" role="status"></p>
+      <div class="scroll"><table class="cmp" id="cmp"></table></div>
+      <p class="caveat"><strong>Read the ± carefully.</strong> It is the random variation from running a finite number of simulated years. It says nothing about whether these assumptions are realistic, and a narrow interval does not make an invented coefficient any less invented. Win rate ignores how big the gap is, so look at the average gap too.</p>
     </section>
 
-    <section class="card" aria-labelledby="h-sweep">
+    <section class="card" id="card-sweep" aria-labelledby="h-sweep">
       <h2 id="h-sweep">How sensitive is the answer to one assumption?</h2>
       <div class="row" style="margin-bottom:4px">
-        <div class="grow" style="max-width:320px"><label class="sub" for="sweep-param" style="display:block;margin-bottom:4px">Sweep this assumption</label>
+        <div class="grow" style="max-width:360px"><label class="sub" for="sweep-param" style="display:block;margin-bottom:4px">Sweep this assumption</label>
           <select id="sweep-param"></select></div>
       </div>
       <p class="sub" id="sweep-sub"></p>
@@ -188,9 +219,9 @@
       <details><summary>View data as table</summary><div class="scroll"><table id="sweep-table"></table></div></details>
     </section>
 
-    <section class="card" aria-labelledby="h-hist">
+    <section class="card" id="card-hist" aria-labelledby="h-hist">
       <h2 id="h-hist">Spread of outcomes</h2>
-      <p class="sub">Final cash gap, AI-native minus traditional, across every paired run. The same market draws hit both firms in each run.</p>
+      <p class="sub">Final cash gap, AI-heavy minus traditional, across every paired run. The same market draws hit both firms in each run.</p>
       <div class="legend" id="hist-legend"></div>
       <div class="chart-wrap" id="hist-wrap"><svg id="hist-svg" role="group" aria-label="Histogram of final cash gap"></svg><div class="tip" id="hist-tip"></div></div>
       <details><summary>View data as table</summary><div class="scroll"><table id="hist-table"></table></div></details>
@@ -201,14 +232,15 @@
     <h2 id="h-try">Things worth trying</h2>
     <ul class="try">
       <li>Drag <strong>defect factor</strong> from 1.0 to 1.7 and watch the win rate collapse. It is the steepest lever in the model.</li>
+      <li>Move the <strong>debt level where incidents begin</strong> from 28 up to 60. A single threshold I picked decides a lot of the answer.</li>
+      <li>Change the <strong>common overhead</strong> and watch nothing happen: both firms pay it, so it cancels out of the gap.</li>
       <li>Set <strong>decision cadence</strong> to 6 months. Almost nothing happens: the "agility" advantage is barely modelled.</li>
       <li>Raise <strong>capacity</strong> and watch incidents climb: more output means more technical debt.</li>
-      <li>Switch to the <strong>ai-friction</strong> scenario to see how fast a bundle of small penalties compounds.</li>
     </ul>
   </section>
 
   <footer class="chrome">
-    <p>Runs entirely in your browser. The JavaScript simulator is a port of the Python one and is checked against it on tens of thousands of fixed-seed comparisons, including the random number stream. Win rate means "AI-native finishes with more cash than traditional", with a 95% interval from the number of runs; it ignores the size of the gap, which the tiles and histogram show.</p>
+    <p>Runs entirely in your browser. The JavaScript simulator is a port of the Python one and is checked against it on tens of thousands of fixed-seed comparisons, including the random number stream and every shared assumption on this page. Win rate means "AI-heavy finishes with more cash than traditional", with a 95% interval from the number of runs. The code still calls this firm "AI-native"; the label is the only thing that changed. Model version 0.2: with the defaults it reproduces the original model exactly.</p>
   </footer>
 </main>
 
@@ -216,36 +248,79 @@
   if (location.protocol === 'file:') document.getElementById('file-warning').style.display = 'block';
 </script>
 <script type="module">
-import { paired, AI_NATIVE, TRADITIONAL, SCENARIOS } from './sim.js';
+import { paired, AI_NATIVE, TRADITIONAL, SCENARIOS, DEFAULT_ASSUMPTIONS } from './sim.js';
 
 // ------------------------------------------------------------------ parameters
-const DEFAULTS = { capacity: 135, defect_factor: 1.35, review_strength: 0.55,
-  monthly_staff_cost: 150000, token_cost_per_work: 200, ai_tool_cost: 32000, decision_cadence: 1 };
+// `group` says whose value it is; `field` is the name in sim.js (Model or Assumptions). Defaults are read
+// from sim.js, so this page cannot drift from the simulator.
 const k = n => `£${Math.round(n / 1000)}k`;
-const PARAMS = {
-  defect_factor:       { label: 'Defect factor',        min: 0.7, max: 2.0, step: 0.05, fmt: v => v.toFixed(2),
-                         hint: 'Technical debt created per unit of build work (traditional = 1.0)' },
-  review_strength:     { label: 'Review strength',      min: 0.3, max: 0.9, step: 0.01, fmt: v => v.toFixed(2),
-                         hint: 'Quality assurance applied before shipping (traditional = 0.80)' },
-  capacity:            { label: 'Capacity',             min: 100, max: 170, step: 1, fmt: v => `${v} units/mo`,
-                         hint: 'Work units delivered per month (traditional = 100)' },
-  monthly_staff_cost:  { label: 'Monthly staff cost',   min: 100000, max: 205000, step: 1000, fmt: k,
-                         hint: 'Traditional = £205k' },
-  token_cost_per_work: { label: 'Token cost per work unit', min: 50, max: 400, step: 5, fmt: v => `£${v}`,
-                         hint: 'Traditional = £15' },
-  ai_tool_cost:        { label: 'Monthly tooling',      min: 10000, max: 60000, step: 1000, fmt: k,
-                         hint: 'Traditional = £6k' },
-  decision_cadence:    { label: 'Decision cadence',     options: [1, 2, 3, 6], fmt: v => (v === 1 ? 'monthly' : `every ${v} months`),
-                         hint: 'How often strategy is reallocated (traditional = 3)' },
+const GROUPS = {
+  ai:     { title: 'AI-heavy firm', note: 'the firm being tested', open: true, source: AI_NATIVE },
+  shared: { title: 'Shared assumptions', note: 'apply to both firms', open: false, source: DEFAULT_ASSUMPTIONS },
+  trad:   { title: 'Traditional firm', note: 'the comparison', open: false, source: TRADITIONAL },
 };
+const PARAMS = {
+  ai_defect_factor:   { group: 'ai', field: 'defect_factor', label: 'Defect factor', min: 0.7, max: 2.0, step: 0.05, fmt: v => v.toFixed(2),
+    what: 'Technical debt created per unit of build work, relative to 1.0.' },
+  ai_review_strength: { group: 'ai', field: 'review_strength', label: 'Review strength', min: 0.3, max: 0.9, step: 0.01, fmt: v => v.toFixed(2),
+    what: 'Quality assurance before shipping. Higher means less debt created and fewer bad builds.' },
+  ai_capacity:        { group: 'ai', field: 'capacity', label: 'Capacity', min: 100, max: 170, step: 1, fmt: v => `${v} units/mo`,
+    what: 'Work units delivered per month, before debt slows it down.' },
+  ai_monthly_staff_cost: { group: 'ai', field: 'monthly_staff_cost', label: 'Monthly staff cost', min: 100000, max: 205000, step: 1000, fmt: k,
+    what: 'What the engineering team costs each month.' },
+  ai_token_cost_per_work: { group: 'ai', field: 'token_cost_per_work', label: 'Token cost per work unit', min: 50, max: 400, step: 5, fmt: v => `£${v}`,
+    what: 'AI usage cost for each unit of work delivered.' },
+  ai_ai_tool_cost:    { group: 'ai', field: 'ai_tool_cost', label: 'Monthly tooling', min: 10000, max: 60000, step: 1000, fmt: k,
+    what: 'Fixed monthly spend on AI tools and platforms.' },
+  ai_decision_cadence:{ group: 'ai', field: 'decision_cadence', label: 'Decision cadence', options: [1, 2, 3, 6], fmt: v => (v === 1 ? 'monthly' : `every ${v} months`),
+    what: 'How often the firm re-plans how it splits its effort. Barely matters here.' },
+
+  shared_debt_per_build: { group: 'shared', field: 'debt_per_build', label: 'Technical debt per build unit', min: 0.03, max: 0.12, step: 0.005, fmt: v => v.toFixed(3),
+    what: 'How fast building adds debt, before the firm\'s defect factor and review.' },
+  shared_review_effect:  { group: 'shared', field: 'review_effect', label: 'How much review cuts debt', min: 0, max: 0.8, step: 0.05, fmt: v => v.toFixed(2),
+    what: 'How strongly review strength reduces the debt each build creates. Zero means review does nothing.' },
+  shared_debt_threshold: { group: 'shared', field: 'debt_threshold', label: 'Debt level where incidents begin', min: 15, max: 60, step: 1, fmt: v => v.toFixed(0),
+    what: 'Above this, incident risk and churn rise. It is a cliff I chose, and it decides a lot.' },
+  shared_churn_base:     { group: 'shared', field: 'churn_base', label: 'Base monthly churn', min: 0.005, max: 0.04, step: 0.001, fmt: v => `${(v * 100).toFixed(1)}%`,
+    what: 'Share of customers lost each month when trust is high and nothing has gone wrong.' },
+  shared_arpu:           { group: 'shared', field: 'arpu', label: 'Revenue per customer', min: 50, max: 120, step: 1, fmt: v => `£${v}`,
+    what: 'Monthly revenue per customer, the same for both firms.' },
+  shared_cost_per_customer: { group: 'shared', field: 'cost_per_customer', label: 'Running cost per customer', min: 2, max: 40, step: 1, fmt: v => `£${v}`,
+    what: 'Monthly support and hosting cost per customer.' },
+  shared_overhead:       { group: 'shared', field: 'overhead', label: 'Common monthly overhead', min: 10000, max: 100000, step: 1000, fmt: k,
+    what: 'Fixed costs both firms pay. It cancels out of the cash gap, so it matters only if a firm runs out of cash.' },
+
+  trad_capacity:         { group: 'trad', field: 'capacity', label: 'Capacity', min: 70, max: 150, step: 1, fmt: v => `${v} units/mo`,
+    what: 'Work units delivered per month, before debt slows it down.' },
+  trad_defect_factor:    { group: 'trad', field: 'defect_factor', label: 'Defect factor', min: 0.5, max: 1.5, step: 0.05, fmt: v => v.toFixed(2),
+    what: 'Technical debt created per unit of build work, relative to 1.0.' },
+  trad_review_strength:  { group: 'trad', field: 'review_strength', label: 'Review strength', min: 0.5, max: 0.95, step: 0.01, fmt: v => v.toFixed(2),
+    what: 'Quality assurance before shipping.' },
+  trad_monthly_staff_cost: { group: 'trad', field: 'monthly_staff_cost', label: 'Monthly staff cost', min: 140000, max: 260000, step: 1000, fmt: k,
+    what: 'What the engineering team costs each month.' },
+};
+const defaultOf = key => GROUPS[PARAMS[key].group].source[PARAMS[key].field];
+const DEFAULTS = Object.fromEntries(Object.keys(PARAMS).map(key => [key, defaultOf(key)]));
 const PRESETS = [
   { name: 'Baseline', set: {} },
-  { name: 'Sloppy AI (defect 1.7)', set: { defect_factor: 1.7 } },
-  { name: 'Disciplined AI', set: { defect_factor: 1.0, review_strength: 0.8, capacity: 150 } },
-  { name: 'Expensive tokens', set: { token_cost_per_work: 400 } },
+  { name: 'Sloppy AI (defect 1.7)', set: { ai_defect_factor: 1.7 } },
+  { name: 'Disciplined AI', set: { ai_defect_factor: 1.0, ai_review_strength: 0.8, ai_capacity: 150 } },
+  { name: 'Expensive tokens', set: { ai_token_cost_per_work: 400 } },
+  { name: 'Debt cliff further out', set: { shared_debt_threshold: 45 } },
 ];
 
-const state = { ...DEFAULTS, scenario: 'baseline', runs: 1000, sweep: 'defect_factor' };
+const state = { ...DEFAULTS, scenario: 'baseline', runs: 2000, sweep: 'ai_defect_factor' };
+const same = (a, b) => Math.abs(a - b) < 1e-9;
+const changedKeys = () => Object.keys(PARAMS).filter(key => !same(state[key], DEFAULTS[key]));
+
+// Build the two firms and the shared assumptions from the page state (plus overrides, for sweeps).
+function setup(over = {}) {
+  const v = { ...state, ...over };
+  const parts = { ai: { ...AI_NATIVE }, trad: { ...TRADITIONAL }, shared: { ...DEFAULT_ASSUMPTIONS } };
+  for (const [key, p] of Object.entries(PARAMS)) parts[p.group][p.field] = v[key];
+  return { models: [parts.ai, parts.trad], assumptions: parts.shared };
+}
+const run = (over, sc, n) => { const { models, assumptions } = setup(over); return paired(models, sc, n, 36, 42, assumptions); };
 
 // ------------------------------------------------------------------ formatting
 const MINUS = '−';
@@ -265,36 +340,59 @@ const el = (tag, attrs = {}, text) => {
 const svgEl = (tag, attrs = {}, text) => el(tag, { ns: 1, ...attrs }, text);
 
 // ------------------------------------------------------------------ controls
-const controls = document.getElementById('controls');
-const inputs = {};
-for (const [key, p] of Object.entries(PARAMS)) {
-  const wrap = el('div', { class: 'ctl' });
-  const id = `c-${key}`;
-  const label = el('label', { for: id });
-  label.append(el('span', {}, p.label));
-  const out = el('output', { for: id });
-  label.append(out);
-  wrap.append(label);
-  let input;
-  if (p.options) {
-    input = el('select', { id });
-    for (const o of p.options) input.append(el('option', { value: o }, p.fmt(o)));
-  } else {
-    input = el('input', { id, type: 'range', min: p.min, max: p.max, step: p.step });
+const groupsEl = document.getElementById('groups');
+const inputs = {}, ctls = {}, gcounts = {};
+for (const [gk, g] of Object.entries(GROUPS)) {
+  const det = el('details', { class: 'group' });
+  if (g.open) det.setAttribute('open', '');
+  const sum = el('summary');
+  sum.append(document.createTextNode(g.title), el('span', { class: 'gnote' }, g.note));
+  gcounts[gk] = el('span', { class: 'gcount' });
+  sum.append(gcounts[gk]);
+  det.append(sum);
+  const grid = el('div', { class: 'controls' });
+  for (const [key, p] of Object.entries(PARAMS).filter(([, q]) => q.group === gk)) {
+    const wrap = el('div', { class: 'ctl' });
+    const id = `c-${key}`;
+    const label = el('label', { for: id });
+    const name = el('span', { class: 'name' });
+    name.append(el('span', { class: 'dot', 'aria-hidden': 'true' }), document.createTextNode(p.label));
+    const out = el('output', { for: id });
+    label.append(name, out);
+    wrap.append(label);
+    let input;
+    if (p.options) {
+      input = el('select', { id });
+      for (const o of p.options) input.append(el('option', { value: o }, p.fmt(o)));
+    } else {
+      input = el('input', { id, type: 'range', min: p.min, max: p.max, step: p.step });
+    }
+    input.addEventListener('input', () => { state[key] = Number(input.value); syncUI(); schedule(); });
+    const meta = el('div', { class: 'meta' });
+    const reset = el('button', { type: 'button', class: 'reset', 'aria-label': `Reset ${p.label} to ${p.fmt(DEFAULTS[key])}` }, 'reset');
+    reset.addEventListener('click', () => { state[key] = DEFAULTS[key]; syncUI(); schedule(); });
+    meta.append(el('span', {}, `default ${p.fmt(DEFAULTS[key])}`), reset);
+    wrap.append(input, meta, el('p', { class: 'what' }, p.what));
+    grid.append(wrap);
+    inputs[key] = { input, out }; ctls[key] = wrap;
   }
-  input.addEventListener('input', () => { state[key] = Number(input.value); syncUI(); schedule(); });
-  wrap.append(input, el('div', { class: 'fixed-note', style: 'margin:2px 0 0' }, p.hint));
-  controls.append(wrap);
-  inputs[key] = { input, out };
+  det.append(grid);
+  groupsEl.append(det);
 }
 function syncUI() {
   for (const [key, p] of Object.entries(PARAMS)) {
     inputs[key].input.value = state[key];
     inputs[key].out.textContent = p.options ? '' : p.fmt(state[key]);
+    ctls[key].classList.toggle('changed', !same(state[key], DEFAULTS[key]));
   }
+  for (const gk of Object.keys(GROUPS)) {
+    const n = changedKeys().filter(key => PARAMS[key].group === gk).length;
+    gcounts[gk].textContent = n ? `${n} changed` : '';
+  }
+  document.getElementById('reset-all').disabled = changedKeys().length === 0 && state.scenario === 'baseline';
   document.querySelectorAll('#presets .chip').forEach((b, i) => {
     const target = { ...DEFAULTS, ...PRESETS[i].set };
-    b.setAttribute('aria-pressed', Object.keys(DEFAULTS).every(x => state[x] === target[x]) ? 'true' : 'false');
+    b.setAttribute('aria-pressed', Object.keys(DEFAULTS).every(x => same(state[x], target[x])) ? 'true' : 'false');
   });
 }
 const presets = document.getElementById('presets');
@@ -303,22 +401,31 @@ PRESETS.forEach(pr => {
   b.addEventListener('click', () => { Object.assign(state, DEFAULTS, pr.set); syncUI(); schedule(); });
   presets.append(b);
 });
+document.getElementById('reset-all').addEventListener('click', () => {
+  Object.assign(state, DEFAULTS, { scenario: 'baseline' }); scenarioSel.value = 'baseline'; syncUI(); schedule();
+});
 const scenarioSel = document.getElementById('scenario');
 for (const name of Object.keys(SCENARIOS)) scenarioSel.append(el('option', { value: name }, name));
-scenarioSel.addEventListener('change', () => { state.scenario = scenarioSel.value; schedule(); });
+scenarioSel.addEventListener('change', () => { state.scenario = scenarioSel.value; syncUI(); schedule(); });
 document.getElementById('runs').addEventListener('change', e => { state.runs = Number(e.target.value); schedule(); });
 const sweepSel = document.getElementById('sweep-param');
-for (const [key, p] of Object.entries(PARAMS)) sweepSel.append(el('option', { value: key }, p.label));
+for (const [gk, g] of Object.entries(GROUPS)) {
+  const og = el('optgroup', { label: g.title });
+  for (const [key, p] of Object.entries(PARAMS).filter(([, q]) => q.group === gk)) og.append(el('option', { value: key }, p.label));
+  sweepSel.append(og);
+}
 sweepSel.value = state.sweep;
-sweepSel.addEventListener('change', () => { state.sweep = sweepSel.value; schedule(); });
+sweepSel.addEventListener('change', () => { state.sweep = sweepSel.value; busy(['card-sweep'], true); clearTimeout(sweepTimer); sweepTimer = setTimeout(computeSweep, 30); });
 
 // ------------------------------------------------------------------ compute
-const sweepRuns = () => Math.min(state.runs, 1000);   // same seeds + same n as the headline => identical numbers at the current setting
-const aiModel = over => ({ ...AI_NATIVE, ...Object.fromEntries(Object.keys(DEFAULTS).map(x => [x, state[x]])), ...over });
-let result = null, sweepData = null, timer = null, busyTimer = null;
+const sweepRuns = () => Math.min(state.runs, 2000);   // same seeds + same n as the headline (up to 2,000) => identical numbers at the current setting
+let result = null, baseline = null, sweepData = null, timer = null, sweepTimer = null;
+const cardIds = ['card-result', 'card-sweep', 'card-hist'];
+const busy = (ids, on) => ids.forEach(id => document.getElementById(id).classList.toggle('busy', on));
+const baselineCache = new Map();
 
 function schedule() {
-  document.getElementById('results').classList.add('busy');
+  busy(cardIds, true);
   clearTimeout(timer);
   timer = setTimeout(compute, 90);
 }
@@ -333,43 +440,74 @@ function sweepValues(key) {
   const cur = Number(state[key].toFixed(4));
   return [...new Set([...vals.map(v => Number(v.toFixed(4))), cur])].sort((a, b) => a - b);
 }
+/** Where the average cash gap changes sign between neighbouring sweep points (linear interpolation), or null. */
+function tippingPoint(points) {
+  if (PARAMS[state.sweep].options) return null;
+  for (let i = 0; i + 1 < points.length; i++) {
+    const a = points[i], b = points[i + 1];
+    if (a.mean_cash_diff === 0) return a.x;
+    if (a.mean_cash_diff * b.mean_cash_diff < 0) return a.x + (b.x - a.x) * (-a.mean_cash_diff) / (b.mean_cash_diff - a.mean_cash_diff);
+  }
+  return null;
+}
 function compute() {
   const sc = SCENARIOS[state.scenario];
-  result = paired([aiModel({}), TRADITIONAL], sc, state.runs);
+  const bkey = `${state.scenario}|${state.runs}`;
+  if (!baselineCache.has(bkey)) baselineCache.set(bkey, run(DEFAULTS, sc, state.runs));
+  baseline = baselineCache.get(bkey);
+  result = changedKeys().length ? run({}, sc, state.runs) : baseline;
   renderResult();
-  // sweep second, so the headline appears first
-  setTimeout(() => {
-    const key = state.sweep;
-    sweepData = { key, scenario: state.scenario, points: sweepValues(key).map(v => ({
-      x: v, ...paired([aiModel({ [key]: v }), TRADITIONAL], sc, sweepRuns()) })), runs: sweepRuns() };
-    renderSweep();
-    renderHist();
-    document.getElementById('results').classList.remove('busy');
-  }, 0);
+  renderHist();
+  busy(['card-result', 'card-hist'], false);
+  // The sweep is the slow part (about ten settings), so it waits until the sliders stop moving.
+  clearTimeout(sweepTimer);
+  sweepTimer = setTimeout(computeSweep, 450);
+}
+function computeSweep() {
+  const sc = SCENARIOS[state.scenario], key = state.sweep;
+  sweepData = { key, scenario: state.scenario, points: sweepValues(key).map(v => ({ x: v, ...run({ [key]: v }, sc, sweepRuns()) })), runs: sweepRuns() };
+  renderSweep();
+  busy(['card-sweep'], false);
 }
 
 // ------------------------------------------------------------------ result figures
+const verdictOf = r => Math.abs(r.mean_cash_diff) <= r.mean_cash_diff_ci95 ? 'tie' : (r.mean_cash_diff > 0 ? 'ai' : 'trad');
+const VERDICT_TEXT = { ai: 'AI-heavy ahead', trad: 'traditional ahead', tie: 'too close to call' };
 function renderResult() {
-  const r = result, p = r.win_fraction;
+  const r = result, p = r.win_fraction, v = verdictOf(r);
   document.getElementById('hero-fig').replaceChildren(
-    document.createTextNode(pct(p)), el('small', {}, `±${(r.win_ci95 * 100).toFixed(1)}`));
-  const noise = Math.abs(r.mean_cash_diff) <= r.mean_cash_diff_ci95;
-  const verdict = noise ? 'Too close to call'
-    : r.mean_cash_diff > 0 ? `AI-native ahead by about ${gbp(r.mean_cash_diff)}`
-    : `Traditional ahead by about ${gbp(-r.mean_cash_diff)}`;
-  document.getElementById('verdict').textContent = verdict;
+    document.createTextNode(pct(p, 1)), el('small', {}, `±${(r.win_ci95 * 100).toFixed(1)}`));
+  document.getElementById('verdict').textContent = v === 'tie' ? 'Too close to call'
+    : v === 'ai' ? `AI-heavy ahead by about ${gbp(r.mean_cash_diff)}` : `Traditional ahead by about ${gbp(-r.mean_cash_diff)}`;
   document.getElementById('hero-sub').textContent =
-    `of ${r.runs.toLocaleString()} paired runs end with the AI-native firm holding more cash after 36 months (95% interval).`;
-  const tiles = document.getElementById('tiles');
-  tiles.replaceChildren(
-    tile('Average cash gap', gbp(r.mean_cash_diff, true), `95% interval ±${gbp(r.mean_cash_diff_ci95)}; median ${gbp(r.median_cash_diff, true)}`),
-    tile('Incidents in 36 months', `${r.mean_incidents_slot0.toFixed(1)} vs ${r.mean_incidents_slot1.toFixed(1)}`, 'AI-native vs traditional, mean per run'),
-    tile('Customers at month 36', `${(r.mean_customers_slot0 / 1000).toFixed(1)}k vs ${(r.mean_customers_slot1 / 1000).toFixed(1)}k`, 'AI-native vs traditional, mean per run'));
-}
-function tile(k, v, s) {
-  const t = el('div', { class: 'tile' });
-  t.append(el('div', { class: 'k' }, k), el('div', { class: 'v' }, v), el('div', { class: 's' }, s));
-  return t;
+    `of ${r.runs.toLocaleString()} paired runs end with the AI-heavy firm holding more cash after 36 months (95% interval). This is a hypothetical scenario, not a forecast.`;
+
+  // Does the verdict differ from the baseline's? Say so plainly.
+  const flip = document.getElementById('flip'), bv = verdictOf(baseline);
+  flip.textContent = (changedKeys().length || state.scenario !== 'baseline') && bv !== v
+    ? `This changes the baseline verdict: ${VERDICT_TEXT[bv]} at the defaults, ${VERDICT_TEXT[v]} with these settings.` +
+      (bv !== 'tie' && v !== 'tie' ? ' It reverses the result.' : '')
+    : '';
+
+  const cmp = document.getElementById('cmp');
+  const atDefaults = !changedKeys().length;
+  const cols = atDefaults ? [['Baseline (the defaults)', baseline]] : [['Baseline', baseline], ['Your settings', r]];
+  const rows = [
+    ['AI-heavy ends with more cash in', x => `${pct(x.win_fraction, 1)} ±${(x.win_ci95 * 100).toFixed(1)}`, true],
+    ['Average cash gap (AI-heavy minus traditional)', x => `${gbp(x.mean_cash_diff, true)} ±${gbp(x.mean_cash_diff_ci95)}`, true],
+    ['Incidents in 36 months (AI-heavy vs traditional)', x => `${x.mean_incidents_slot0.toFixed(1)} vs ${x.mean_incidents_slot1.toFixed(1)}`, false],
+    ['Customers at month 36 (AI-heavy vs traditional)', x => `${(x.mean_customers_slot0 / 1000).toFixed(1)}k vs ${(x.mean_customers_slot1 / 1000).toFixed(1)}k`, false],
+  ];
+  const head = el('tr'); head.append(el('th', { scope: 'col' }, ''));
+  cols.forEach(([t]) => head.append(el('th', { scope: 'col' }, t)));
+  const thead = el('thead'); thead.append(head);
+  const tbody = el('tbody');
+  rows.forEach(([label, f, big]) => {
+    const tr = el('tr'); tr.append(el('th', { scope: 'row', style: 'font-weight:400' }, label));
+    cols.forEach(([, x]) => tr.append(el('td', big ? { class: 'big' } : {}, f(x))));
+    tbody.append(tr);
+  });
+  cmp.replaceChildren(thead, tbody);
 }
 
 // ------------------------------------------------------------------ chart helpers
@@ -403,9 +541,12 @@ function renderSweep() {
   const X = v => m.l + (x1 === x0 ? 0.5 : (v - x0) / (x1 - x0)) * (W - m.l - m.r);
   const Y = v => m.t + (1 - v) * (H - m.t - m.b);
 
+  const tp = tippingPoint(points);
   document.getElementById('sweep-sub').textContent =
-    `How often the AI-native firm ends with more cash as ${p.label.toLowerCase()} changes, other assumptions as set above. Each point is ${sweepData.runs.toLocaleString()} paired runs; the shaded band is the 95% interval.`;
-  svg.setAttribute('aria-label', `Win rate for the AI-native firm across ${p.label.toLowerCase()}, from ${pct(points[0].win_fraction)} at ${p.fmt(x0)} to ${pct(points.at(-1).win_fraction)} at ${p.fmt(x1)}. Use left and right arrow keys to read each point.`);
+    `How often the AI-heavy firm ends with more cash as ${p.label.toLowerCase()} changes, other assumptions as set above. Each point is ${sweepData.runs.toLocaleString()} paired runs; the shaded band is the 95% interval from random variation only, so the slope is what tells you how much the assumption matters. ` +
+    (tp === null ? 'The average gap does not change sign within this range.'
+      : `The average gap changes sign near ${p.fmt(tp)} (interpolated between sweep points, so it moves a little with the random draws).`);
+  svg.setAttribute('aria-label', `Win rate for the AI-heavy firm across ${p.label.toLowerCase()}, from ${pct(points[0].win_fraction)} at ${p.fmt(x0)} to ${pct(points.at(-1).win_fraction)} at ${p.fmt(x1)}. Use left and right arrow keys to read each point.`);
 
   for (const t of [0, .25, .5, .75, 1]) {
     svg.append(svgEl('line', { class: t === 0 ? 'axis' : 'grid', x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t) }));
@@ -427,6 +568,11 @@ function renderSweep() {
   const lower = points.map(q => `${X(q.x)},${Y(Math.max(0, q.win_fraction - q.win_ci95))}`).reverse();
   svg.append(svgEl('polygon', { class: 'band', points: [...upper, ...lower].join(' ') }));
   svg.append(svgEl('polyline', { class: 'line', points: points.map(q => `${X(q.x)},${Y(q.win_fraction)}`).join(' ') }));
+  if (tp !== null) {
+    const right = tp > (x0 + x1) / 2;
+    svg.append(svgEl('line', { class: 'tipline', x1: X(tp), x2: X(tp), y1: m.t, y2: H - m.b }));
+    svg.append(svgEl('text', { class: 'lbl2', x: X(tp) + (right ? -6 : 6), y: m.t + 12, 'text-anchor': right ? 'end' : 'start' }, `gap = 0 near ${p.fmt(tp)}`));
+  }
 
   // "you are here": ring around the point for the current setting (it IS a sweep point)
   const now = points.find(q => Math.abs(q.x - state[key]) < 1e-9);
@@ -502,8 +648,8 @@ function renderHist() {
   const ahead = diffs.filter(d => d > 0).length / n;
   const lg = document.getElementById('hist-legend');
   const sw = (cls, text) => { const s = el('span'); const i = el('i'); i.style.background = cls; s.append(i, document.createTextNode(text)); return s; };
-  lg.replaceChildren(sw('var(--series-1)', `AI-native ahead: ${pct(ahead)} of runs`), sw('var(--muted-mark)', `Traditional ahead: ${pct(1 - ahead)} of runs`));
-  svg.setAttribute('aria-label', `Histogram of final cash gap across ${n} runs. AI-native ahead in ${pct(ahead)} of runs. Gap ranges from ${gbp(lo, true)} to ${gbp(hi, true)}.`);
+  lg.replaceChildren(sw('var(--series-1)', `AI-heavy ahead: ${pct(ahead)} of runs`), sw('var(--muted-mark)', `Traditional ahead: ${pct(1 - ahead)} of runs`));
+  svg.setAttribute('aria-label', `Histogram of final cash gap across ${n} runs. AI-heavy ahead in ${pct(ahead)} of runs. Gap ranges from ${gbp(lo, true)} to ${gbp(hi, true)}.`);
 
   for (let g = 0; g <= ymax + 1e-9; g += ymax / 4) {
     svg.append(svgEl('line', { class: g === 0 ? 'axis' : 'grid', x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g) }));
@@ -511,8 +657,8 @@ function renderHist() {
   }
   const xt = niceTicks(bins[0].from, bins.at(-1).to, W < 480 ? 3 : 6).ticks;
   xt.forEach(t => svg.append(svgEl('text', { x: X(t), y: H - m.b + 18, 'text-anchor': 'middle' }, t === 0 ? '0' : gbp(t, true))));
-  svg.append(svgEl('text', { class: 'lbl2', x: (m.l + W - m.r) / 2, y: H - 6, 'text-anchor': 'middle' }, 'Final cash gap (AI-native minus traditional)'));
-  svg.append(svgEl('text', { class: 'lbl2', x: X(0) + 6, y: m.t - 10 }, 'AI-native ahead →'));
+  svg.append(svgEl('text', { class: 'lbl2', x: (m.l + W - m.r) / 2, y: H - 6, 'text-anchor': 'middle' }, 'Final cash gap (AI-heavy minus traditional)'));
+  svg.append(svgEl('text', { class: 'lbl2', x: X(0) + 6, y: m.t - 10 }, 'AI-heavy ahead →'));
   svg.append(svgEl('text', { class: 'lbl2', x: X(0) - 6, y: m.t - 10, 'text-anchor': 'end' }, '← traditional ahead'));
 
   const gap = 2, rad = 4;
@@ -542,6 +688,7 @@ function renderHist() {
   bins.filter(b => b.n).forEach(b => { const tr = el('tr');
     [`${gbp(b.from, true)} to ${gbp(b.to, true)}`, b.n, pct(b.n / n, 1)].forEach(c => tr.append(el('td', {}, String(c)))); tbl.append(tr); });
 }
+
 
 // ------------------------------------------------------------------ embed: report height to the parent article
 if (window.parent !== window) {
