@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_OG_IMAGE, LINKS } from '../../site';
+import { getPublishedExperiments } from '../../lib/collections';
+
+const experiments = await getPublishedExperiments();
+
+// Traffic and feedback live behind logins, so this page only links to them.
+// Nothing here reads or embeds a token or any visitor data.
+const sections = [
+  {
+    title: 'Traffic',
+    items: [
+      {
+        label: 'Cloudflare Web Analytics',
+        href: 'https://dash.cloudflare.com/?to=/:account/web-analytics',
+        note: 'Page views, visits, top pages, referrers, countries and Core Web Vitals for programmingtheloop.com. The beacon is already on every page.',
+      },
+      {
+        label: 'GitHub traffic: this site\'s repository',
+        href: `${LINKS.githubSite}/graphs/traffic`,
+        note: 'Views, clones and referring sites for the source. GitHub keeps only the last 14 days.',
+      },
+      {
+        label: 'GitHub traffic: experiments repository',
+        href: 'https://github.com/meabs/experiments/graphs/traffic',
+        note: 'Who is opening the data and reports behind each experiment, and where they came from.',
+      },
+      {
+        label: 'Google Search Console',
+        href: 'https://search.google.com/search-console?resource_id=https%3A%2F%2Fprogrammingtheloop.com%2F',
+        note: 'Search queries, impressions and indexing. Works only if the domain has been verified there.',
+      },
+    ],
+  },
+  {
+    title: 'Reviews and feedback',
+    items: [
+      { label: 'GitHub Discussions', href: LINKS.discussions, note: 'Questions, challenges and comments on the experiments.' },
+      { label: 'Issues on this site', href: `${LINKS.githubSite}/issues`, note: 'Corrections and bug reports.' },
+      { label: 'Stars and forks', href: LINKS.githubSite, note: 'A rough signal of who is bookmarking the project.' },
+      { label: 'Mentions on X', href: 'https://x.com/search?q=programmingtheloop.com&f=live', note: 'People sharing or discussing a page.' },
+    ],
+  },
+] as const;
+---
+<BaseLayout
+  title="Site insights"
+  description="Private shortcuts to traffic and feedback."
+  canonicalPath="/site-insights/"
+  ogImage={SITE_OG_IMAGE}
+  noindex
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Private</p>
+      <h1>Site insights</h1>
+      <p>
+        Shortcuts to traffic and feedback. This page is unlisted: it is not linked from the site, not in the sitemap and
+        marked noindex. It holds no data itself, because the site is static and the numbers sit behind your logins.
+        {experiments.length} experiments are published.
+      </p>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="wrap">
+      {sections.map((s) => (
+        <section aria-labelledby={`${s.title.toLowerCase().replace(/\W+/g, '-')}-h`}>
+          <h2 id={`${s.title.toLowerCase().replace(/\W+/g, '-')}-h`}>{s.title}</h2>
+          <ul>
+            {s.items.map((i) => (
+              <li><a href={i.href} rel="noopener noreferrer" target="_blank">{i.label}</a>: {i.note}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

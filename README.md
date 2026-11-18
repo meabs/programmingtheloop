@@ -81,3 +81,5 @@ Licence: free to read; share unchanged with attribution and the copyright notice
 ## Analytics
 
 Cloudflare Web Analytics beacon once per page (`src/site.ts` token; `BaseLayout` + Starlight `head`).
+
+An unlisted, noindex page at `/site-insights/` links to the traffic and feedback dashboards. It is not linked from the site or in the sitemap, and holds no data or tokens.
