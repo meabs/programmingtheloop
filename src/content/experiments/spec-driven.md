@@ -21,7 +21,7 @@ repo: "https://github.com/meabs/experiments"
 report: "https://github.com/meabs/experiments/blob/121485546003956824fa7b3dcd959730cb2399f7/2026-11-spec-driven/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/121485546003956824fa7b3dcd959730cb2399f7/2026-11-spec-driven/README.md"
 previewImage: "/guide-images/chart-sdd-process.png"
-previewAlt: "Share of hidden tests passed, mean over six tickets, higher is better: no setup 42.3%, six-line disciplined setup 53.5%, long AGENTS.md 52.8%, research-plan-implement 42.6%, Spec Kit 40.7%, OpenSpec 38.2%. Cost per hidden test passed, lower is better: no setup $0.013, disciplined $0.019, research-plan-implement $0.020, Spec Kit $0.023, OpenSpec $0.026."
+previewAlt: "Share of hidden tests passed, mean over six tickets, higher is better: no setup 42.3%, six-line disciplined setup 53.5%, long AGENTS.md 52.8%, research-plan-implement 42.6%, Spec Kit 40.7%, OpenSpec 38.2%. Cost per hidden test passed, lower is better: no setup $0.0128, disciplined $0.0187, long AGENTS.md $0.0175, research-plan-implement $0.0199, Spec Kit $0.0228, OpenSpec $0.0257."
 topics:
   - skills
   - briefs
@@ -192,7 +192,7 @@ Findings SDD-1 to SDD-6 are at the top of the page.
 
 <figure class="guide-figure">
 
-<img src="/guide-images/chart-sdd-process.png" alt="Share of hidden tests passed, mean over six tickets, higher is better: no setup 42.3%, six-line disciplined setup 53.5%, long AGENTS.md 52.8%, research-plan-implement 42.6%, Spec Kit 40.7%, OpenSpec 38.2%. Cost per hidden test passed, lower is better: no setup $0.013, disciplined $0.019, research-plan-implement $0.020, Spec Kit $0.023, OpenSpec $0.026." width="1800" height="920" loading="lazy" />
+<img src="/guide-images/chart-sdd-process.png" alt="Share of hidden tests passed, mean over six tickets, higher is better: no setup 42.3%, six-line disciplined setup 53.5%, long AGENTS.md 52.8%, research-plan-implement 42.6%, Spec Kit 40.7%, OpenSpec 38.2%. Cost per hidden test passed, lower is better: no setup $0.0128, disciplined $0.0187, long AGENTS.md $0.0175, research-plan-implement $0.0199, Spec Kit $0.0228, OpenSpec $0.0257." width="1800" height="920" loading="lazy" />
 
 <figcaption>The three process setups did no better than no setup, and cost more per hidden test passed. The six-line setup did best. Source: github.com/meabs/experiments, 2026-11-spec-driven (Codex 0.157, gpt-5.6-luna, medium effort).</figcaption>
 
@@ -204,16 +204,16 @@ A process was followed every time: all 90 runs of the three process arms left th
 
 Each cell is the mean share of hidden tests passed per run, each ticket counted equally (higher is better).
 
-| Setup | Hidden tests passed | Cost per hidden test passed |
-| --- | --- | --- |
-| No setup | 42.3% | $0.013 |
-| Disciplined | 53.5% | $0.019 |
-| Long AGENTS.md | 52.8% | not reported |
-| Research, plan, implement | 42.6% | $0.020 |
-| Spec Kit | 40.7% | $0.023 |
-| OpenSpec | 38.2% | $0.026 |
+| Setup | Hidden tests passed | Runs passing every test | Cost per run | Cost per hidden test passed |
+| --- | --- | --- | --- | --- |
+| No setup | 42.3% | 1 of 30 | $0.063 | $0.0128 |
+| Disciplined | 53.5% | 2 of 30 | $0.115 | $0.0187 |
+| Long AGENTS.md | 52.8% | 3 of 30 | $0.107 | $0.0175 |
+| Research, plan, implement | 42.6% | 1 of 30 | $0.098 | $0.0199 |
+| Spec Kit | 40.7% | 1 of 30 | $0.106 | $0.0228 |
+| OpenSpec | 38.2% | 0 of 30 | $0.112 | $0.0257 |
 
-Costs are estimates at list prices.
+Costs are estimates at list prices ($0.20, $0.02 and $1.20 per million input, cached and output tokens); the whole experiment cost about $18.
 
 ### Hypotheses
 
@@ -222,27 +222,48 @@ Costs are estimates at list prices.
 | H1 | Spec Kit − no setup | −1.6 points (−11.3 to +8.0), Holm p 1.00 | no measurable difference |
 | H2 | OpenSpec − no setup | −4.2 points (−14.9 to +5.8), Holm p 1.00 | no measurable difference |
 | H3 | research-plan-implement − no setup | +0.3 points (−10.7 to +11.1), Holm p 1.00 | no measurable difference |
-| H4 | each process arm vs the disciplined setup | Spec Kit −12.8 (−21.3 to −3.6), OpenSpec −15.3, research-plan-implement −10.9 | none beat it; "worse than" is exploratory |
+| H4 | research-plan-implement − disciplined | −10.9 points (−20.5 to −0.9), Holm p 1.00 | holds: does not beat it |
+| H4 | Spec Kit − disciplined | −12.8 points (−21.3 to −3.6), Holm p 1.00 | holds: does not beat it |
+| H4 | OpenSpec − disciplined | −15.3 points (−24.6 to −5.8), Holm p 1.00 | holds: does not beat it |
 | H5 | long AGENTS.md − short | −0.7 points (−10.7 to +9.6), one-sided p 0.45 | not supported |
 
 - **The difference** is in percentage points of hidden tests passed, averaged over the six tickets, with a 95% interval within ticket.
-- **The Holm p** is the chance of a difference this large if there were really none, corrected for testing three hypotheses. Below 0.05 counts as measurable.
+- **The Holm p** is the chance of a difference this large if there were really none, corrected within each group of hypotheses (H1 to H3 together, the three H4 comparisons together, H5 alone). Below 0.05 counts as measurable.
 - **"No measurable difference"** means the test couldn't tell the setups apart, not that they're equal.
-- **Against no setup,** the disciplined and long files were each about 10 points ahead (exploratory: +11.1 and +10.4, Holm p 0.065 for both), which is not clearly different from no setup after correction.
+- **The intervals for the three process arms against the disciplined setup exclude zero,** but only the "does not beat" direction was pre-registered, so "worse than" is exploratory.
+- **Against no setup,** the disciplined and long files were each about 10 points ahead (exploratory, added afterwards: disciplined +11.1, interval +0.1 to +21.4; long +10.4, interval −0.7 to +21.2; Holm p 0.065 for both), which is not clearly different from no setup after correction.
 
 ### Where the failures were
 
-- **PRODUCTDELETE is all or nothing:** a run either finds the hidden cause or passes one test of eleven. Spec Kit found it in 0 of 5 runs against 2 of 5 with no setup, and OpenSpec found it in none of its five. That ticket accounts for their gap to no setup, and it is five runs per cell. Without it, Spec Kit is about 5 points ahead, still within noise.
-- **SUPPORTORDERS:** OpenSpec passed 53% against 70% for every other arm except research-plan-implement.
-- **Few runs passed everything:** 1 of 30 with Spec Kit and 1 of 30 with no setup; 0 of 30 with OpenSpec.
+Mean share of hidden tests passed, five runs per cell:
+
+| Ticket | No setup | Disciplined | Long | R-P-I | Spec Kit | OpenSpec |
+| --- | --- | --- | --- | --- | --- | --- |
+| CATEGORYDELETE | 44% | 53% | 62% | 58% | 67% | 60% |
+| CUSTOMERCART | 22% | 22% | 20% | 18% | 20% | 22% |
+| PRODUCTDELETE | 42% | 62% | 64% | 40% | 9% | 9% |
+| REVIEWS | 24% | 54% | 34% | 20% | 32% | 34% |
+| STOCK | 52% | 60% | 67% | 55% | 47% | 51% |
+| SUPPORTORDERS | 70% | 70% | 70% | 65% | 70% | 53% |
+
+- **PRODUCTDELETE is all or nothing:** a run either finds the hidden cause (9 to 11 of 11 tests) or passes 1 of 11. Runs that found it: no setup 2 of 5, disciplined 2 of 5 (plus two partial at 6), long 2 of 5 (two partial), research-plan-implement 2 of 5, Spec Kit 0 of 5, OpenSpec 0 of 5. That one ticket accounts for all of Spec Kit's and OpenSpec's gap to no setup; without it, OpenSpec would be about 2 points and Spec Kit about 5 points ahead, still within noise.
+- **CUSTOMERCART was hard for every setup,** between 18% and 22%.
+- **SUPPORTORDERS:** OpenSpec passed 53% against 70% for every other arm except research-plan-implement (65%).
+- **Few runs passed everything:** 0 to 3 of 30 in every arm.
 
 ### Cost
 
-Every setup roughly doubled the tokens: about 1.9 million per run with no setup against 3.1 to 3.7 million with the others. OpenSpec's changes were the largest, 11.6 files per run on average against 5.9 with no setup. At list prices, a hidden test passed cost $0.013 with no setup and $0.019 to $0.026 with the others.
+Every setup roughly doubled the tokens: about 1.9 million per run with no setup against 3.1 to 3.7 million with the others. A run cost $0.063 with no setup and $0.098 to $0.115 with the others, about 1.5 to 2 times as much. The process arms changed more files per run, on average 5.9 with no setup, 6.6 disciplined, 6.8 long, 8.3 research-plan-implement, 9.6 Spec Kit and 11.6 OpenSpec.
 
 ### What the agent said about its own work
 
-Among runs that missed hidden tests, the final message said the work was done and passed, admitting nothing unfinished, in 27 of 29 with no setup, 28 of 28 disciplined, 29 of 29 research-plan-implement, 28 of 30 OpenSpec and 13 of 29 Spec Kit. Spec Kit's agent said "partial" in 11 of its 29 failing runs; none of the no-setup, disciplined or research-plan-implement runs did. It was more candid, not more correct. This is exploratory and a mechanical rule on the final message: it measures what the agent said, not what it knew.
+Among runs that missed hidden tests, the final message said the work was done and passed, admitting nothing unfinished, in 27 of 29 with no setup, 28 of 28 disciplined, 26 of 27 long, 29 of 29 research-plan-implement, 28 of 30 OpenSpec and 13 of 29 Spec Kit. Spec Kit's agent said "partial" in 11 of its 29 failing runs; none of the no-setup, disciplined or research-plan-implement runs did. It was more candid, not more correct. This is exploratory and a mechanical rule on the final message: it measures what the agent said, not what it knew.
+
+### Checks on the runs
+
+- **All 180 runs finished and compiled.** One Spec Kit run lost its connection and was re-run.
+- **The process was used, not skipped:** all 30 runs of each process arm left the files it asks for (counted from the files in each change, not from the summary).
+- **My first count was wrong.** It read only shell commands and said research-plan-implement used its notes files in 10 of 30 runs; counting files in the change gives 30 of 30, and the page uses that.
 
 ## Limits
 
