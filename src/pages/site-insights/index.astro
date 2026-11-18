@@ -1,14 +1,59 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE_OG_IMAGE, LINKS } from '../../site';
-import { getPublishedExperiments } from '../../lib/collections';
+import {
+  getPublishedExperiments,
+  getPublishedArticles,
+  getPublishedArchitecture,
+  getPublishedNews,
+  experimentHref,
+} from '../../lib/collections';
+import { getTopicsWithContent } from '../../lib/topics';
 
 const experiments = await getPublishedExperiments();
 
+const [articles, architecture, news, topics] = await Promise.all([
+  getPublishedArticles(),
+  getPublishedArchitecture(),
+  getPublishedNews(),
+  getTopicsWithContent(),
+]);
+
+const num = (v: unknown) => (typeof v === 'number' ? v : Number.parseInt(String(v ?? '').replace(/\D/g, ''), 10) || 0);
+const findings = experiments.flatMap((e) => e.data.findings ?? []).filter((f) => f.status !== 'superseded');
+const totalRuns = experiments.reduce((n, e) => n + num(e.data.runs), 0);
+
+type Bar = { label: string; value: number; href?: string };
+const byTopic: Bar[] = topics.map((t) => ({ label: t.title, value: t.experiments.length, href: `/topics/${t.id}/` }));
+const byRuns: Bar[] = experiments
+  .map((e) => ({ label: e.data.experimentId ?? e.data.title, value: num(e.data.runs), href: experimentHref(e) }))
+  .filter((b) => b.value > 0)
+  .sort((a, b) => b.value - a.value);
+const byFindings: Bar[] = experiments
+  .map((e) => ({
+    label: e.data.experimentId ?? e.data.title,
+    value: (e.data.findings ?? []).filter((f) => f.status !== 'superseded').length,
+    href: experimentHref(e),
+  }))
+  .filter((b) => b.value > 0)
+  .sort((a, b) => b.value - a.value);
+const charts = [
+  { id: 'runs', title: 'Runs per experiment', note: 'Agent runs behind each experiment, largest first.', bars: byRuns },
+  { id: 'findings', title: 'Current findings per experiment', note: 'Findings not marked superseded.', bars: byFindings },
+  { id: 'topics', title: 'Experiments per topic', note: 'An experiment with two topics counts under both.', bars: byTopic },
+];
+
+const ROW = 26;
+const LABEL_W = 130;
+const BAR_W = 420;
+const NUM_W = 56;
+const chartMax = (bars: Bar[]) => Math.max(1, ...bars.map((b) => b.value));
+
 // Traffic and feedback live behind logins, so this page only links to them.
-// Nothing here reads or embeds a token or any visitor data.
+// The charts come from the site's own content at build time, not from visitors.
 const sections = [
   {
+    id: 'traffic',
     title: 'Traffic',
     items: [
       {
@@ -34,6 +79,7 @@ const sections = [
     ],
   },
   {
+    id: 'reviews-and-feedback',
     title: 'Reviews and feedback',
     items: [
       { label: 'GitHub Discussions', href: LINKS.discussions, note: 'Questions, challenges and comments on the experiments.' },
@@ -57,16 +103,24 @@ const sections = [
       <h1>Site insights</h1>
       <p>
         Shortcuts to traffic and feedback. This page is unlisted: it is not linked from the site, not in the sitemap and
-        marked noindex. It holds no data itself, because the site is static and the numbers sit behind your logins.
-        {experiments.length} experiments are published.
+        marked noindex. Visitor numbers sit behind your logins, so the traffic and feedback sections link to them. The
+        charts below show what is published, built from the site's own content.
       </p>
+      <p><a class="button primary" href="#traffic">Traffic</a> <a class="button" href="#reviews-and-feedback">Feedback</a> <a class="button" href="#published">What's published</a></p>
+    </div>
+    <div class="stats-strip">
+      <div class="stat-cell"><span class="stat-key">Experiments</span><span class="stat-value">{experiments.length}</span></div>
+      <div class="stat-cell"><span class="stat-key">Current findings</span><span class="stat-value">{findings.length}</span></div>
+      <div class="stat-cell"><span class="stat-key">Agent runs</span><span class="stat-value">{totalRuns.toLocaleString('en-GB')}</span></div>
+      <div class="stat-cell"><span class="stat-key">Articles</span><span class="stat-value">{articles.length}</span></div>
+      <div class="stat-cell"><span class="stat-key">News posts</span><span class="stat-value">{news.length}</span></div>
     </div>
   </header>
   <div class="page-body">
     <div class="wrap">
       {sections.map((s) => (
-        <section aria-labelledby={`${s.title.toLowerCase().replace(/\W+/g, '-')}-h`}>
-          <h2 id={`${s.title.toLowerCase().replace(/\W+/g, '-')}-h`}>{s.title}</h2>
+        <section id={s.id} aria-labelledby={`${s.id}-h`}>
+          <h2 id={`${s.id}-h`}>{s.title}</h2>
           <ul>
             {s.items.map((i) => (
               <li><a href={i.href} rel="noopener noreferrer" target="_blank">{i.label}</a>: {i.note}</li>
@@ -74,6 +128,32 @@ const sections = [
           </ul>
         </section>
       ))}
+
+      <section id="published" aria-labelledby="published-h">
+        <h2 id="published-h">What's published</h2>
+        {charts.map((c) => (
+          <figure class="guide-figure" aria-labelledby={`${c.id}-t`}>
+            <h3 id={`${c.id}-t`}>{c.title}</h3>
+            <svg
+              viewBox={`0 0 ${LABEL_W + BAR_W + NUM_W} ${c.bars.length * ROW + 4}`}
+              width="100%"
+              role="img"
+              aria-label={`${c.title}: ${c.bars.map((b) => `${b.label} ${b.value}`).join(', ')}`}
+            >
+              {c.bars.map((b, i) => (
+                <g transform={`translate(0 ${i * ROW + 2})`}>
+                  <text x={LABEL_W - 8} y={ROW / 2 + 4} text-anchor="end" font-size="12" fill="var(--ink-muted)">
+                    {b.href ? <a href={b.href}>{b.label}</a> : b.label}
+                  </text>
+                  <rect x={LABEL_W} y="3" height={ROW - 8} rx="3" width={Math.max(2, (b.value / chartMax(c.bars)) * BAR_W)} fill="var(--accent)" />
+                  <text x={LABEL_W + Math.max(2, (b.value / chartMax(c.bars)) * BAR_W) + 6} y={ROW / 2 + 4} font-size="12" fill="var(--ink)">{b.value.toLocaleString('en-GB')}</text>
+                </g>
+              ))}
+            </svg>
+            <figcaption>{c.note}</figcaption>
+          </figure>
+        ))}
+      </section>
     </div>
   </div>
 </BaseLayout>
