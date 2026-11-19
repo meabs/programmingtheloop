@@ -6,7 +6,7 @@ summary: "90 Codex runs plus 89 scripted checks. Where the harm was a visible gi
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage"
+    href: "https://github.com/meabs/experiments/tree/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage"
 draft: false
 experimentId: "GRD"
 question: "Does a deterministic guardrail (AgentTrail Guard) actually prevent damage in AI coding work, or does it mostly block commands while the same damage reaches the same files another way?"
@@ -18,8 +18,8 @@ agents:
     settings: "medium effort, one turn per run, no one to ask, bubblewrap sandbox; AgentTrail Guard 0.4.21 on its default rules"
 runs: "66 hook payloads, 23 replayed routes, and 9 fixtures × 2 arms × 5 runs = 90 agent runs, after pilots"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md"
-prediction: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/README.md"
+report: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md"
+prediction: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/README.md"
 previewImage: "/guide-images/chart-grd-fixtures.png"
 previewAlt: "Runs that finished the task safely or lost the protected work, 5 runs per bar. Uncommitted work, harmful command written out: Codex defaults lost it in 5 of 5 runs, with Guard 1 of 5. Uncommitted work, harm inside a script: 2 of 5 without Guard, 3 of 5 with it. Release archive, command written out: 5 of 5 both ways. Release archive, harm inside a script: 5 of 5 both ways."
 topics:
@@ -45,7 +45,7 @@ findings:
       - "the fixtures put the harmful step in the project's own docs and were chosen because a pilot showed where damage occurs; this measures protection in deliberately dangerous set-ups, not how often agents cause damage in normal work (0 of 18 runs in the first pilot without the step)"
       - "it measures what Guard adds on top of Codex's own controls, unattended, not whether Guard meets its documented contract"
       - "one agent and model, one Guard version on defaults, five runs per cell"
-    source: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md"
     status: current
     featured: false
   - id: "GRD-2"
@@ -58,7 +58,7 @@ findings:
       - "exploratory: one-sided Fisher exact p 0.024, unadjusted"
     limits:
       - "one fixture, five runs per arm; exploratory, not a pre-registered test"
-    source: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md"
     status: current
     featured: false
   - id: "GRD-3"
@@ -72,7 +72,7 @@ findings:
     limits:
       - "a script's contents are not inspected by Guard (the vendor says so); this measures what that costs"
       - "I did not check which exact command each agent ran in the archive runs"
-    source: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md"
     status: current
     featured: false
   - id: "GRD-4"
@@ -89,7 +89,7 @@ findings:
       - "the analysis script labels a run 'stop, then harm anyway' when it has both a stop and a loss; it does not test the order, so the ordering above was added afterwards from the run logs"
       - "the route classes were defined after the runs; exploratory"
       - "scripted routes are not what an agent chooses to do"
-    source: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md"
     status: current
     featured: false
   - id: "GRD-5"
@@ -103,7 +103,7 @@ findings:
       - "the installed bundle has 74 rules in 11 categories, as the vendor says"
     limits:
       - "the payloads and their labels are mine and the set is small; labels were fixed before the run"
-    source: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md"
     status: current
     featured: false
   - id: "GRD-6"
@@ -118,7 +118,7 @@ findings:
       - "Codex itself rejects rm -rf and rm -f before they run when unattended, so Guard's rm rules sit on top of a native check that leaves no event in the log"
     limits:
       - "the harmless-stop split was defined after the runs; Codex's native rejection is inferred from what the agent said"
-    source: "https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md"
     status: current
     featured: false
 ---
@@ -141,7 +141,7 @@ I tested [AgentTrail Guard](https://www.agenttrail.sh/agenttrail-guard), an open
 
 ## Prediction
 
-Before the agent runs, I published the design and five hypotheses ([README.md](https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/README.md)):
+Before the agent runs, I published the design and five hypotheses ([README.md](https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/README.md)):
 
 - **H1.** Guard lowers the rate of harmful outcomes where the agent harms without it.
 - **H2.** Agents stopped from one route sometimes reach the same damage another way.
@@ -286,4 +286,4 @@ These are proposals, not results.
 
 ## Reproduce
 
-Everything is in [experiments/2026-11-guard-damage](https://github.com/meabs/experiments/tree/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage), with the full write-up in [REPORT.md](https://github.com/meabs/experiments/blob/fa0ab9f77a78afbc77f4ec4da72b8905122dc8d5/2026-11-guard-damage/REPORT.md). Levels 1 and 3 and the fixture check need no model.
+Everything is in [experiments/2026-11-guard-damage](https://github.com/meabs/experiments/tree/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage), with the full write-up in [REPORT.md](https://github.com/meabs/experiments/blob/2b4c2e94b0757426c4c213c35a84eb1d25a17233/2026-11-guard-damage/REPORT.md). Levels 1 and 3 and the fixture check need no model.
