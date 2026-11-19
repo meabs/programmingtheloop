@@ -81,7 +81,7 @@ findings:
       - "fault 1: a hidden test assumed admins could rename accounts, which nothing said; fixed and regraded"
       - "fault 2: a gate test's name implied the wrong rule, and agents followed it in 8 of 20 runs; renamed and rerun"
       - "the gate didn't measurably beat no help: +6 points (−1 to +12.5), Holm p 0.19"
-      - "the gate fixed response conventions (wrong-denial-code failures fell from 5 of 80 to 0) but not genuine access breaches: 10 of 80 corrected for the gate and 9 of 80 for both, against 9 of 80 with no help"
+      - "the gate fixed response conventions (wrong-denial-code failures fell from 5 of 80 to 0) but not genuine access breaches: 10 of 80 corrected for the gate and 10 of 80 for both (9 four-eyes breaches and 1 data exposure), against 9 of 80 with no help"
     limits:
       - "the corrections were decided after seeing the runs; the pre-registered result stays the primary one"
       - "the S08 fix repaired a hidden grader and regraded saved runs; the S05 fix changed what the agents were told and needed 20 new runs, so the corrected comparison is a revised condition, not a confirmation"
@@ -237,7 +237,7 @@ Each cell is runs passed out of 10, pre-registered runs (higher is better).
 
 - **The gate's clearest win was a convention.** Its public test `anotherCustomerGets404` told the agent the 404 rule directly.
 - **The skill was opened in every run,** but its general points didn't change what the agent did.
-- **The closure-approval hole survived everything,** and it accounts for all 9 genuine baseline access breaches. The agents checked role, tenant and state correctly, then recorded the approver without comparing them with the requester. Neither safeguard mentioned it. The gate cut wrong-denial-code failures from 5 of 80 to 0, but it didn't reduce genuine access breaches (9 of 80 with no help; 10 with the corrected gate, 9 with both).
+- **The closure-approval hole survived everything,** and it accounts for all 9 genuine baseline access breaches. The agents checked role, tenant and state correctly, then recorded the approver without comparing them with the requester. Neither safeguard mentioned it. The gate cut wrong-denial-code failures from 5 of 80 to 0, but it didn't reduce genuine access breaches (9 of 80 with no help; 10 with the corrected gate, 10 with both).
 
 ### Cost
 
