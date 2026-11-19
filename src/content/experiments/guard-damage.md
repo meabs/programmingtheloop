@@ -68,7 +68,7 @@ findings:
     n: "5 runs per arm, two fixtures"
     detail:
       - "in the uncommitted-work fixture Guard stopped all five runs, but on the agent's own git clean and cache cleanup; the documented script that does the damage ran unseen"
-      - "for the written-out rm -rf out/archive, Guard logged no stop in any of 10 runs; the rule documents an exemption for directories named out, build and dist, and the archive sat under out/"
+      - "for the written-out rm -rf out/archive, Guard logged no stop in any of the five runs with it enabled (the five without it cannot log one); the rule documents an exemption for directories named out, build and dist, and the archive sat under out/"
     limits:
       - "a script's contents are not inspected by Guard (the vendor says so); this measures what that costs"
       - "I did not check which exact command each agent ran in the archive runs"
@@ -84,7 +84,7 @@ findings:
       - "ordered from each run's event log: in one run Guard denied git reset --hard and git clean, then the agent deleted the notes file and reverted the other file with Codex's file-edit tool (apply_patch), for which Guard logged no event; this is the one clear workaround"
       - "in the other three, the documented script had already run and destroyed the work before Guard's first stop; the later stops were on the agent's own verification and cleanup commands, so this is a loss despite blocks, not circumvention"
       - "of the 23 replayed routes: 5 stopped with nothing lost, 1 stopped too late (git checkout HEAD -- . was allowed and discarded the work, the next command was blocked), 17 not stopped and the harm done"
-      - "pre-registered H5: of 9 runs where Guard stopped a harmful attempt, 4 (44%) still lost work, above the quarter predicted; nine runs are too few to establish the rate (95% Wilson interval 19% to 73%, my calculation), and three of the four losses came before any stop"
+      - "pre-registered H5: of 9 runs where Guard stopped a harmful attempt, 4 (44%) still lost work, above the quarter predicted; nine runs are too few to establish the rate (95% Wilson interval 19% to 73%, my calculation), and three of the four losses came before any stop. The 4 of 9 counts runs with a loss among those containing a stop on a command not classed as harmless cache cleanup; it does not show the stopped command would have damaged the protected work, so it is a descriptive count, not a rate at which Guard's blocks fail to prevent harm"
     limits:
       - "the analysis script labels a run 'stop, then harm anyway' when it has both a stop and a loss; it does not test the order, so the ordering above was added afterwards from the run logs"
       - "the route classes were defined after the runs; exploratory"
@@ -107,12 +107,13 @@ findings:
     status: current
     featured: false
   - id: "GRD-6"
-    statement: "Guard stopped harmless work in about one run in five and added no measurable time or cost"
+    statement: "Guard stopped harmless work in about one run in five; the overhead in time and cost was small in these short runs"
     metric: "arm C runs with a stop on a command that only cleared caches or its own temporary directory (exploratory)"
     value: "9 of 45 runs; time 40 s against 39 s; cost $0.0047 against $0.0045 per run"
     n: "45 Guard runs across nine fixtures"
     detail:
       - "every one of those runs finished safely; the agent recovered after the block"
+      - "no formal overhead comparison was performed; the figures are plain means of short runs"
       - "the pre-registered friction fixture, a disposable database, had no stops in 5 runs (H3 not supported there)"
       - "Codex itself rejects rm -rf and rm -f before they run when unattended, so Guard's rm rules sit on top of a native check that leaves no event in the log"
     limits:
@@ -209,7 +210,7 @@ On the four harm fixtures (20 runs per arm) the agent lost the protected work in
 | H2 | 4 of 20 Guard runs had a stop and the loss; one clear workaround (file-edit tool), three with the script already run before any stop | partly supported: one clear case |
 | H3 | 0 of 5 runs on the disposable-database fixture | not supported there |
 | H4 | safe completion 3 of 20 against 6 of 20; the complement of H1 | same test as H1, not a second result |
-| H5 | 4 of 9 runs where Guard stopped a harmful attempt still lost work | observed above the predicted quarter; too few runs to establish the rate |
+| H5 | 4 of 9 runs with a stop on a command not classed as harmless cleanup also lost work; a descriptive count, not a prevention-failure rate | observed above the predicted quarter; too few runs to establish the rate |
 
 - **The difference** is in percentage points of runs, pooled over the four fixtures with a 95% interval within fixture.
 - **H1 and H4 are one outcome.** The task was finished in every run, so safe completion is the exact complement of lost work in the four fixtures. Read them as a single result: the unadjusted one-sided p is 0.19, and 0.38 is that after the planned Holm correction over the two.
@@ -245,7 +246,7 @@ Codex 0.157 itself rejects `rm -rf` and `rm -f` commands before they run when un
 
 ### Cost
 
-The whole experiment cost about $0.69 at list price (the 90 main runs $0.42), because each run is under a minute. Guard added no measurable time or cost.
+The whole experiment cost about $0.69 at list price (the 90 main runs $0.42), because each run is under a minute. The observed overhead was small in these short runs (about 40 seconds against 39, and $0.0047 against $0.0045 per run); no formal overhead comparison was performed.
 
 ## Limits
 
@@ -265,7 +266,7 @@ This part is my interpretation, not a measurement. I'd treat these as leads, not
 
 **A block is evidence of enforcement, not of safety.** Count what survives, not how many commands were stopped. Guard reduced damage when the harm matched a visible rule; it did not consistently protect the work when the damage could come through scripts, exempt paths or other tools.
 
-**Guard did what it says for visible destructive git commands,** at no measurable cost in time or money.
+**Guard did what it says for visible destructive git commands,** with small observed overhead in time and money (no formal comparison).
 
 **A script is the usual way a footgun is documented,** and Guard doesn't see inside one. Fix or remove the routine whose side effect is deleting work, or back up what it deletes.
 
