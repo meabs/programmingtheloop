@@ -5,6 +5,7 @@ import { formatItemDate, getPublishedExperiments, experimentHref } from '../../l
 import { absoluteUrl, articleJsonLd, resolveExperimentOgImage } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { LINKS } from '../../site';
+import { displayTitle } from '../../lib/titles';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -78,13 +79,14 @@ const jsonLd = articleJsonLd({
           ? `${item.data.type} · ${formatItemDate(publishedOn)}`
           : item.data.type}
       </p>
-      <h1>{item.data.title}</h1>
+      <h1>{displayTitle(item.data.title)}</h1>
       <p>{item.data.description}</p>
       {mine.size > 0 && (
-        <p class="exp-topic-links">Topics: {[...mine].map((t, i) => <><a href={`/topics/${t}/`}>{TOPICS[t as keyof typeof TOPICS].title}</a>{i < mine.size - 1 ? ', ' : ''}</>)}</p>
+        <p class="exp-topic-links"><span>Topics</span>{[...mine].map((t) => <a href={`/topics/${t}/`}>{TOPICS[t as keyof typeof TOPICS].title}</a>)}</p>
       )}
-      {(item.data.github.length > 0 || item.data.guideLinks.length > 0) && (
+      {(item.data.github.length > 0 || item.data.guideLinks.length > 0 || d.video) && (
         <div class="actions">
+          {d.video && <a class="button primary" href={d.video.url} rel="noopener noreferrer">{d.video.label ?? 'Watch this experiment explained'} ↗</a>}
           {item.data.guideLinks.map((link) => (
             <a class="button" href={link.href}>{link.label}</a>
           ))}
@@ -134,7 +136,7 @@ const jsonLd = articleJsonLd({
           <h2 id="exp-related-title">Related experiments</h2>
           <ul>{related.map((e) => (
             <li>
-              <a href={experimentHref(e)}>{e.data.title}</a>
+              <a href={experimentHref(e)}>{displayTitle(e.data.title)}</a>
               {e.data.question && <span>{e.data.question}</span>}
             </li>
           ))}</ul>
@@ -149,43 +151,7 @@ const jsonLd = articleJsonLd({
 </BaseLayout>
 
 <script>
-  // Every prose table stacks as cards on phones (label + values), including
-  // numeric result tables that used to show only the first column at 390px.
-  document.querySelectorAll<HTMLTableElement>('.view-prose table').forEach((table) => {
-    const rows = Array.from(table.rows);
-    if (rows.length === 0) return;
-    const labels = Array.from(rows[0].cells).map((c) => (c.textContent ?? '').trim());
-    for (const row of rows) {
-      Array.from(row.cells).forEach((cell, i) => {
-        if (cell.tagName === 'TD' && labels[i]) cell.dataset.label = labels[i];
-        // Wrap mixed text/code children so stacked layout does not split them
-        // into separate grid items (e.g. `AGENTS.md` on its own label row).
-        if (cell.tagName === 'TD' && cell.childNodes.length > 1) {
-          const wrap = document.createElement('span');
-          wrap.className = 'table-cell-text';
-          while (cell.firstChild) wrap.appendChild(cell.firstChild);
-          cell.appendChild(wrap);
-        }
-      });
-    }
-    table.classList.add('table-prose');
-  });
-
-  // Charts: wrap each figure image in a link to the full-size file (tap to enlarge).
-  document.querySelectorAll<HTMLImageElement>('.view-prose .guide-figure img').forEach((img) => {
-    if (img.closest('a')) return;
-    const href = img.currentSrc || img.src;
-    if (!href) return;
-    const link = document.createElement('a');
-    link.href = href;
-    link.className = 'guide-figure-link';
-    link.setAttribute('target', '_blank');
-    link.setAttribute('rel', 'noopener noreferrer');
-    link.setAttribute('aria-label', 'Open full-size chart');
-    img.replaceWith(link);
-    link.appendChild(img);
-    if (!img.getAttribute('loading')) img.setAttribute('loading', 'lazy');
-  });
+  import '../../scripts/prose-enhance';
 </script>
 
 <style>
@@ -208,11 +174,12 @@ const jsonLd = articleJsonLd({
   .exp-evidence li, .exp-related li { margin: 0; }
   .exp-related li { display: grid; gap: .15rem; }
   .exp-related li a { font-weight: 600; }
+  .exp-topic-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; }
+  .exp-topic-links span { font: .7rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
   .exp-topic-links a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    padding: 0.2rem 0.35rem;
   }
   .exp-related li span { font-size: .9rem; color: var(--ink-muted); overflow-wrap: anywhere; }
 </style>

@@ -1,0 +1,32 @@
+---
+import type { TopicFinding } from '../../lib/topics';
+import { toResultPoint, statusText } from '../../lib/results';
+import { displayTitle } from '../../lib/titles';
+interface Props { rows: TopicFinding[] }
+const { rows } = Astro.props;
+---
+<ul class="frows">
+  {rows.map(({ f, e }) => {
+    const point = toResultPoint(f);
+    const status = point ? statusText(point) : null;
+    return (
+      <li>
+        <a class="frow-id" href={`/experiments/${e.id}/`} title={displayTitle(e.data.title)}>{f.id}</a>
+        <span class="frow-text">{f.statement}</span>
+        <span class="frow-value">{f.value && <b>{f.value}</b>}{status && <small>{status}</small>}</span>
+      </li>
+    );
+  })}
+</ul>
+
+<style>
+  .frows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .frows li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) 11rem; gap: .25rem 1rem; margin: 0; padding: .75rem .25rem; border-bottom: 1px solid var(--line); }
+  .frow-id { font: .78rem 'IBM Plex Mono', ui-monospace, monospace; padding-top: .15rem; color: var(--accent); text-decoration: none; }
+  .frow-id:hover { text-decoration: underline; }
+  .frow-text { max-width: 62ch; line-height: 1.5; }
+  .frow-value { display: grid; align-content: start; gap: .1rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .frow-value b { font-weight: 600; font-size: .95rem; color: var(--ink); }
+  .frow-value small { font: .68rem 'IBM Plex Mono', ui-monospace, monospace; color: var(--ink-muted); }
+  @media (max-width: 760px) { .frows li { grid-template-columns: 1fr; } .frow-value { grid-auto-flow: column; justify-content: start; gap: .75rem; align-items: baseline; } }
+</style>

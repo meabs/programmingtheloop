@@ -3,7 +3,7 @@ title: "5. Proof, not promises"
 description: "From Programming the Loop — 5. Proof, not promises."
 ---
 
-<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/resources/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Of everything in this book, this is the practice I'd keep: **give the agent an executable way to check its work, and judge the work by an independent check, not by the agent's account of it.** Instructions that reassure ("make sure the tests pass") are not verification. A command that runs is. And keep apart two questions that are easily blurred: *is the change correct?* and *did the agent report honestly what it ran and saw?* They are answered by two different comparisons.
 

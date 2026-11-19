@@ -100,3 +100,15 @@ export async function getGuideLandingStats(): Promise<
 export function findingDisplayValue(f: Finding): string {
   return f.value?.trim() || f.statement;
 }
+
+/** Site-wide counts, calculated from content so no page hard-codes them. */
+export async function getSiteCounts(): Promise<{ experiments: number; findings: number; topics: number }> {
+  const { getPublishedExperiments } = await import('./collections');
+  const { getTopicsWithContent } = await import('./topics');
+  const [experiments, topics] = await Promise.all([getPublishedExperiments(), getTopicsWithContent()]);
+  const findings = experiments.reduce(
+    (n, e) => n + (e.data.findings ?? []).filter((f) => f.status !== 'superseded').length,
+    0,
+  );
+  return { experiments: experiments.length, findings, topics: topics.length };
+}

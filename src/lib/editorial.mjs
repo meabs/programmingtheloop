@@ -3,13 +3,14 @@ export function byPublicationDate(a, b) {
   return b.date.valueOf() - a.date.valueOf() || a.href.localeCompare(b.href);
 }
 
-/** An explicit pick wins; otherwise favour a substantial piece over a roundup. */
+/**
+ * The hero is the newest piece of original work (article, architecture post or experiment), so it
+ * never goes stale. Daily news and the guide catalogue never take it. The `featured` flag no longer pins it.
+ */
+const ORIGINAL_WORK = new Set(['article', 'architecture', 'experiment']);
 export function selectFeatured(items) {
   const sorted = [...items].sort(byPublicationDate);
-  return sorted.find((item) => item.featured) ??
-    sorted.find((item) => item.kind === 'article') ??
-    sorted.find((item) => item.kind === 'architecture') ??
-    sorted.find((item) => item.kind === 'experiment') ??
+  return sorted.find((item) => ORIGINAL_WORK.has(item.kind)) ??
     sorted.find((item) => item.kind === 'guide') ??
     sorted[0];
 }

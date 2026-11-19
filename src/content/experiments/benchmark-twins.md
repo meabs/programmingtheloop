@@ -21,6 +21,9 @@ agents:
     settings: "low reasoning, read-only, answer only"
 runs: 1312
 repo: "https://github.com/meabs/experiments"
+video:
+  url: "https://www.youtube.com/shorts/ifcR-uG8VL8"
+  label: "Watch the short video"
 report: "https://github.com/meabs/experiments/blob/332886b8ba803d6982bbafcf1abfeaa132884c8c/2026-10-benchmark-twins/REPORT.md"
 prediction: "https://github.com/meabs/experiments/blob/332886b8ba803d6982bbafcf1abfeaa132884c8c/2026-10-benchmark-twins/README.md"
 previewImage: "/guide-images/chart-bt-twins.png"

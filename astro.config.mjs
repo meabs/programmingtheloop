@@ -14,7 +14,7 @@ import { RSS_FEEDS } from './src/lib/seo.ts';
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og/default.png`;
-const ogImageAlt = 'Programming the Loop: Building software with coding agents';
+const ogImageAlt = 'Programming the Loop: Independent experiments and practical architecture for building AI systems that actually work';
 const guideBase = '/guides/programming-the-loop';
 const navCounts = readNavCollectionCountsSync();
 const siteNavSidebar = siteSidebarItems(navCounts);
@@ -44,6 +44,10 @@ export default defineConfig({
     '/book/': `${guideBase}/`,
     '/contents': `${guideBase}/`,
     '/contents/': `${guideBase}/`,
+    '/downloads': '/resources/',
+    '/downloads/': '/resources/',
+    '/resources/ebook': '/resources/',
+    '/resources/ebook/': '/resources/',
   },
   integrations: [
     // Register before Starlight so Starlight does not add a second sitemap integration.
@@ -53,6 +57,8 @@ export default defineConfig({
         if (page.includes('/site-insights')) return false;
         // Legacy /guide/<chapter>/ URLs only redirect to /guides/…; keep them out of the sitemap.
         if (/\/guide\//.test(page)) return false;
+        // Redirect stubs to /resources/.
+        if (/\/(downloads|resources\/ebook)\/$/.test(page)) return false;
         // Hide empty collection sections until something is published.
         if (navCounts.articles < 1 && /\/articles(\/|$)/.test(page)) return false;
         if (navCounts.architecture < 1 && /\/architecture(\/|$)/.test(page)) return false;
@@ -65,6 +71,12 @@ export default defineConfig({
         'Practical thinking on AI, software engineering, architecture and the tools we build with.',
       favicon: '/favicon.svg',
       head: [
+        {
+          // Carry the main site's saved theme into Starlight before its theme provider reads it.
+          tag: 'script',
+          content:
+            "try{var t=localStorage.getItem('ptl-theme');if(t==='light'||t==='dark')localStorage.setItem('starlight-theme',t);else localStorage.removeItem('starlight-theme')}catch(e){}",
+        },
         {
           tag: 'meta',
           attrs: { property: 'og:image', content: ogImage },
@@ -112,6 +124,7 @@ export default defineConfig({
         },
       ],
       customCss: ['./src/styles/starlight.css'],
+      components: { Header: './src/components/starlight/Header.astro' },
       sidebar: [
         {
           label: 'Site',

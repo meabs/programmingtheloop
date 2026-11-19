@@ -3,7 +3,7 @@ title: "6. The harness and the friction loop"
 description: "From Programming the Loop — 6. The harness and the friction loop."
 ---
 
-<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/resources/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 Agents trip over the same few things again and again: an undocumented migration, a generated directory missing from a fresh checkout, a contract they can't find. Most of it is invisible unless you read transcripts all day. That's why the system around the agent (its instructions, scripts, checks and sandboxes) matters more than any single prompt, and why it deserves the treatment you'd give any production system. Measure where it fails and fix the cause at the strongest level available. In practice that means making the agent report its friction, grouping the reports, and fixing the repeats, in code first and prose last.
 

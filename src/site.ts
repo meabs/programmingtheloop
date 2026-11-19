@@ -5,7 +5,7 @@ export const SITE_AUTHOR = 'Garry Meaburn';
 /** X handle for twitter:site / twitter:creator (leading @). */
 export const SITE_TWITTER = '@Mav1972';
 export const SITE_DESCRIPTION =
-  "Practical thinking on AI, software engineering, architecture and the tools we build with. Experiments, projects and guides.";
+  "Independent experiments and practical architecture for building AI systems that actually work. Method and limits published.";
 
 /** Base path for the Programming the Loop multi-page guide. */
 export const PTL_GUIDE_HREF = '/guides/programming-the-loop/';
@@ -25,7 +25,7 @@ export const PDF_PATH = '/downloads/Programming-the-Loop-1st-edition.pdf';
 /** Default link-preview image (1200×630 typographic, light theme). */
 export const SITE_OG_IMAGE = `${SITE_URL}/og/default.png`;
 export const SITE_OG_IMAGE_ALT =
-  'Programming the Loop: Building software with coding agents';
+  'Programming the Loop: Independent experiments and practical architecture for building AI systems that actually work';
 /** @deprecated Use SITE_OG_IMAGE; kept as an alias so older imports keep working. */
 export const BOOK_OG_IMAGE = SITE_OG_IMAGE;
 
@@ -50,33 +50,38 @@ export type NavCollection =
   | 'news';
 
 export type NavItem = {
-  num: string;
   label: string;
   href: string;
   /** Always shown regardless of counts. */
   always?: boolean;
   /** Gate on published count for this collection. */
   collection?: NavCollection;
-  /** Override NAV_MIN_ITEMS for this item (e.g. Guides: 1). */
+  /** Shown when any of these collections has published items (a hub over several collections). */
+  collections?: NavCollection[];
+  /** Override NAV_MIN_ITEMS for this item (e.g. Guide: 1). */
   minItems?: number;
+  /** Path prefixes that count as being inside this section (defaults to `href`). */
+  match?: string[];
 };
 
 /**
- * Main nav — numbered like an engineering index.
- * Updates lives in the footer only.
- * Collection sections are filtered + renumbered via nav-gate (getVisibleNav /
- * siteSidebarItems). Static `num` values here are source-order only.
+ * Main nav: original work first. Search is rendered separately, with a text label.
+ * The same list feeds the header, the mobile menu and the Guide header. News, Updates and Resources are footer links.
+ * Collection sections are filtered via nav-gate (getVisibleNav / siteSidebarItems).
  */
 export const NAV: readonly NavItem[] = [
-  { num: '00', label: 'Home', href: '/', always: true },
-  // Each section appears with its first published item.
-  { num: '01', label: 'Articles', href: '/articles/', collection: 'articles' },
-  { num: '02', label: 'Architecture', href: '/architecture/', collection: 'architecture' },
-  { num: '03', label: 'News', href: '/news/', collection: 'news' },
-  { num: '04', label: 'Experiments', href: '/experiments/', collection: 'experiments' },
+  // Findings is a view of the experiments (a tab on /experiments/), so it highlights this item rather than having its own.
+  {
+    label: 'Experiments',
+    href: '/experiments/',
+    collection: 'experiments',
+    match: ['/experiments/', '/topics/', '/findings/', '/measured/'],
+  },
+  { label: 'Architecture', href: '/architecture/', collection: 'architecture', match: ['/architecture/'] },
+  { label: 'Articles', href: '/articles/', collection: 'articles', match: ['/articles/'] },
   // Book hub: show once at least one guide is published.
-  { num: '05', label: 'Guides', href: '/guides/', collection: 'guides', minItems: 1 },
-  { num: '06', label: 'About', href: '/about/', always: true },
+  { label: 'Guide', href: '/guides/', collection: 'guides', minItems: 1, match: ['/guides/', '/guide/', '/resources/'] },
+  { label: 'About', href: '/about/', always: true },
 ];
 
 /**
@@ -86,22 +91,6 @@ export const NAV: readonly NavItem[] = [
  * SITE_STATS / FINDING_DASHBOARD / SYSTEM_STATUS hard-coded chrome.
  */
 
-/** Ticker topics drawn from Guide chapter titles / thesis — not marketing fluff. */
-export const TOPIC_TICKER = [
-  'Briefs',
-  'Context',
-  'Verification',
-  'Harness',
-  'Friction loop',
-  'Contracts',
-  'Freshness gates',
-  'Review tiers',
-  'Honest measurement',
-  'Human in the loop',
-  'Take-home kit',
-  'Right facts, not every fact',
-] as const;
-
 /**
  * Where to start: reader situation → Guide entry → where it leads.
  * Situations and destinations follow the book’s own reading advice and chapter jobs.
@@ -109,11 +98,18 @@ export const TOPIC_TICKER = [
  */
 export type StartThenPart = string | { label: string; href: string };
 
+/**
+ * A chip on the "where to start" table. Plain text, or a number read from the findings so it cannot drift:
+ * `{ finding: 'J-1' }` shows that finding's value; `{ headlineCount: true }` shows how many findings are
+ * marked as Foreword headline findings.
+ */
+export type StartChip = string | { finding: string } | { headlineCount: true };
+
 export const START_ROUTES: ReadonlyArray<{
   have: string;
   startWith: { label: string; href: string; detail: string };
   then: ReadonlyArray<StartThenPart>;
-  chips: ReadonlyArray<string>;
+  chips: ReadonlyArray<StartChip>;
   accent: 'teal' | 'rose' | 'blue' | 'green' | 'orange';
 }> = [
   {
@@ -158,7 +154,7 @@ export const START_ROUTES: ReadonlyArray<{
       'Lean AGENTS.md; add layers only when they pay — see the ',
       { label: 'take-home kit', href: '/guides/programming-the-loop/take-home-kit/' },
     ],
-    chips: ['+35–48%', 'tokens'],
+    chips: [{ finding: 'J-1' }, 'tokens'],
     accent: 'blue',
   },
   {
@@ -172,7 +168,7 @@ export const START_ROUTES: ReadonlyArray<{
       'Contracts and freshness gates in ',
       { label: 'Chapter 5', href: '/guides/programming-the-loop/proof-not-promises/' },
     ],
-    chips: ['3 → 18–19/20'],
+    chips: [{ finding: 'OKF-2' }],
     accent: 'green',
   },
   {
@@ -202,7 +198,7 @@ export const START_ROUTES: ReadonlyArray<{
       'Independent checks the agent cannot rewrite — stay in ',
       { label: 'Chapter 5', href: '/guides/programming-the-loop/proof-not-promises/' },
     ],
-    chips: ['12 runs', 'freshness gate'],
+    chips: [{ finding: 'B3-1' }, 'freshness gate'],
     accent: 'rose',
   },
   {
@@ -275,7 +271,7 @@ export const START_ROUTES: ReadonlyArray<{
       ' onward, or the ',
       { label: 'Guide contents', href: '/guides/programming-the-loop/' },
     ],
-    chips: ['4 findings', 'thesis'],
+    chips: [{ headlineCount: true }, 'thesis'],
     accent: 'teal',
   },
 ];

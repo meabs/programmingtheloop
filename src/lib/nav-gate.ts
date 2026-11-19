@@ -40,10 +40,7 @@ export function collectionIsVisible(
   return isNavItemVisible(item, counts);
 }
 
-/**
- * Filter nav to visible items and renumber sequentially (00, 01, 02…).
- * Static `num` on NAV is only a source-order hint; display nums come from here.
- */
+/** Filter nav to the items that have something published. */
 export function visibleNavFromCounts(
   nav: readonly NavItem[],
   counts: NavCounts,

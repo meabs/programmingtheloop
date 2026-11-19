@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import WritingCard from '../components/home/WritingCard.astro';
 import ExperimentCard from '../components/experiments/ExperimentCard.astro';
-import PostCard from '../components/home/PostCard.astro';
 import { SITE_NAME, SITE_DESCRIPTION, SITE_OG_IMAGE, LINKS, PDF_PATH } from '../site';
 import {
   getHomepageSelection, getPublishedArticles, getPublishedArchitecture,
@@ -9,74 +9,109 @@ import {
   articleHref, architectureHref, newsHref, formatItemDate,
 } from '../lib/collections';
 import { personJsonLd } from '../lib/seo';
+import ResultPlot from '../components/experiments/ResultPlot.astro';
+import Strongest from '../components/home/Strongest.astro';
+import Follow from '../components/home/Follow.astro';
+import HowToRead from '../components/home/HowToRead.astro';
+import { latestExperiments, latestWriting } from '../lib/home-selection.mjs';
+import Counts from '../components/home/Counts.astro';
+import { axisFor, statusText, toResultPoint, kindCaption } from '../lib/results';
+import { displayTitle } from '../lib/titles';
 
 const { featured } = await getHomepageSelection();
 const [articles, architecture, experiments, guides, news] = await Promise.all([
   getPublishedArticles(), getPublishedArchitecture(), getPublishedExperiments(),
   getPublishedGuides(), getPublishedNews(),
 ]);
-// Original work leads. The featured item already has the hero. News and the guide have their own places.
+// Cards are for experiments only; text lists are rows. The hero already shows the newest piece, so no list repeats it.
 const LATEST_ROW = 5;
-const latestWork = [
-  ...experiments.map((e) => ({ kind: 'experiment' as const, date: e.data.date, href: `/experiments/${e.id}/`, entry: e })),
-  ...articles.map((a) => ({ kind: 'article' as const, date: a.data.date, href: articleHref(a), entry: a })),
-  ...architecture.map((a) => ({ kind: 'architecture' as const, date: a.data.date, href: architectureHref(a), entry: a })),
-]
-  .filter((x) => x.href !== featured?.href)
-  .sort((x, y) => y.date.valueOf() - x.date.valueOf() || x.href.localeCompare(y.href))
-  .slice(0, LATEST_ROW);
-const shown = new Set(latestWork.map((x) => x.href));
-const latestArticles = articles.filter((a) => !shown.has(articleHref(a))).slice(0, 3);
-const latestArchitecture = architecture.filter((a) => !shown.has(architectureHref(a))).slice(0, 3);
+type ExpItem = { href: string; date: Date; entry: (typeof experiments)[number] };
+const latestExp = latestExperiments(
+  experiments.map((e): ExpItem => ({ href: `/experiments/${e.id}/`, date: e.data.date, entry: e })),
+  featured?.href,
+  LATEST_ROW,
+) as ExpItem[];
+type WritingItem = { kind: string; href: string; date: Date; title: string; line: string; topics: string[] };
+const writing = latestWriting(
+  [
+    ...articles.map((a) => ({ kind: 'Article', href: articleHref(a), date: a.data.date, title: a.data.title, line: a.data.summary ?? a.data.description, topics: a.data.topics ?? [] })),
+    ...architecture.map((a) => ({ kind: 'Architecture', href: architectureHref(a), date: a.data.date, title: a.data.title, line: a.data.summary ?? a.data.description, topics: a.data.topics ?? [] })),
+  ],
+  featured?.href,
+  6,
+) as WritingItem[];
 const latestNews = news.slice(0, 3);
+
+// The hero shows the featured experiment's headline result as evidence, not just a title.
+const featuredExp = featured ? experiments.find((e) => `/experiments/${e.id}/` === featured.href) : undefined;
+const heroFindings = (featuredExp?.data.findings ?? []).filter((f) => f.status !== 'superseded');
+const heroFinding = heroFindings.find((f) => f.featured) ?? heroFindings[0];
+const heroPoint = toResultPoint(heroFinding);
+const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
 ---
 <BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE} jsonLd={personJsonLd()}>
   <section class="publication-hero">
     <div class="wrap publication-hero-grid">
       <div class="publication-intro">
         <p class="section-label">An independent technical publication</p>
-        <h1>I measure what coding agents actually do, and publish the method and the limits.</h1>
-        <p>Practical thinking on AI, software engineering, architecture and the tools we build with. Experiments I've run, with the data, and what I think they mean.</p>
+        <h1>{experiments.length} experiments on whether AI coding agents can be trusted, with the method and limits published.</h1>
+        <p class="audience">For engineers building, securing and trusting AI systems.</p>
+        <p>Independent experiments and practical architecture for building AI systems that actually work: the data, the method and the limits, plus plain-English explainers on how GenAI works.</p>
         <div class="actions">
           <a class="button primary" href="/findings/">Start here →</a>
-          <a class="button" href="/guides/programming-the-loop/">Read the guide →</a>
+          <a class="button" href="/experiments/">All experiments →</a>
         </div>
       </div>
       {featured && <article class="editorial-feature">
-        <div class="feature-meta"><span>Featured {featured.tag}</span><time datetime={featured.date.toISOString()}>{formatItemDate(featured.date)}</time></div>
-        <h2><a href={featured.href}>{featured.title}</a></h2>
-        <p>{featured.summary}</p>
+        <div class="feature-meta"><span>Latest {featured.tag}</span><time datetime={featured.date.toISOString()}>{formatItemDate(featured.date)}</time></div>
+        <h2><a href={featured.href}>{displayTitle(featured.title)}</a></h2>
+        {heroFinding && heroPoint && heroAxis ? (
+          <>
+            <p class="feature-finding">{heroFinding.statement}</p>
+            <div class="feature-result">
+              {heroFinding.value && <p class="feature-value">{heroFinding.value}</p>}
+              <ResultPlot rows={[{ point: heroPoint }]} axis={heroAxis} />
+              <p class="feature-caption">{kindCaption(heroPoint.kind)}{statusText(heroPoint) ? ` · ${statusText(heroPoint)}` : ''}</p>
+            </div>
+          </>
+        ) : (
+          <p>{featured.summary}</p>
+        )}
         <a class="text-link" href={featured.href}>Read the {featured.kind} →</a>
       </article>}
     </div>
   </section>
 
-  {latestWork.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
+  <div class="results-block">
+    <Strongest heading="What the experiments show" intro="Three results to read first. The findings page groups all of them by engineering problem." />
+    <HowToRead />
+  </div>
+
+  {latestExp.length > 0 && <section class="publication-section original-work" aria-labelledby="work-title">
     <div class="wrap">
-      <div class="publication-heading"><div><h2 id="work-title">Latest work</h2><p>Experiments, articles and architecture. Each states its method and its limits.</p></div><a class="text-link" href="/experiments/">All {experiments.length} experiments →</a></div>
+      <div class="publication-heading"><div><h2 class="section-title" id="work-title">Latest experiments</h2><p>Each states its method and its limits.</p></div><a class="text-link" href="/experiments/">All {experiments.length} experiments →</a></div>
       <div class="latest-row-wrap">
-        <ul class="latest-row" id="latest-row" role="region" aria-label="Latest work, scroll sideways for more" tabindex="0">
-          {latestWork.map((x) => (
-            <li class="latest-item">
-              {x.kind === 'experiment' ? <ExperimentCard item={x.entry} /> : (
-                <PostCard
-                  kind={x.kind === 'article' ? 'Article' : 'Architecture'}
-                  title={x.entry.data.title}
-                  summary={x.entry.data.summary ?? x.entry.data.description}
-                  href={x.href}
-                  date={x.date}
-                />
-              )}
-            </li>
+        <ul class="latest-row" id="latest-row" aria-label="Latest experiments, scroll sideways for more" tabindex="0">
+          {latestExp.map((x) => (
+            <li class="latest-item"><ExperimentCard item={x.entry} /></li>
           ))}
         </ul>
-        {latestWork.length > 1 && (
+        {latestExp.length > 1 && (
           <div class="latest-controls" hidden id="latest-controls">
             <button type="button" id="latest-prev" aria-label="Previous">←</button>
-            <span id="latest-pos" aria-hidden="true">1 of {latestWork.length}</span>
+            <span id="latest-pos" aria-hidden="true">1 of {latestExp.length}</span>
             <button type="button" id="latest-next" aria-label="Next">→</button>
           </div>
         )}
+      </div>
+    </div>
+  </section>}
+
+  {writing.length > 0 && <section class="publication-section" aria-labelledby="writing-title">
+    <div class="wrap">
+      <div class="publication-heading"><div><h2 class="section-title" id="writing-title">Writing</h2><p>Articles and architecture notes, newest first.</p></div><a class="text-link" href="/writing/">All writing →</a></div>
+      <div class="writing-grid">
+        {writing.map((post) => <WritingCard {...post} />)}
       </div>
     </div>
   </section>}
@@ -86,43 +121,17 @@ const latestNews = news.slice(0, 3);
       <img src="/book-cover.png" alt="Cover of Programming the Loop: What I Measured with Coding Agents" width="260" height="390" loading="lazy" />
       <div>
         <p class="section-label">Featured guide · Free ebook</p>
-        <h2 id="guide-feature-title">Programming the Loop</h2>
+        <h2 class="section-title" id="guide-feature-title">Programming the Loop</h2>
         <p class="guide-subtitle">What I Measured with Coding Agents</p>
         <p>Eleven chapters of practical engineering judgement and small controlled trials, with the evidence and its limits close to each conclusion. Read it online or keep the first edition PDF.</p>
-        <div class="actions"><a class="button primary" href="/guides/programming-the-loop/">Read online</a><a class="button" href={PDF_PATH} download>Download PDF ↓</a></div>
+        <div class="actions"><a class="button primary" href="/guides/programming-the-loop/">Read online →</a><a class="button" href={PDF_PATH} download>Download PDF ↓</a><a class="button" href="/resources/">Resources →</a></div>
       </div>
     </div>
   </section>}
 
-  {latestArticles.length > 0 && <section class="publication-section" aria-labelledby="articles-title">
+  {latestNews.length > 0 && <section class="publication-section home-news" aria-labelledby="news-title">
     <div class="wrap">
-      <div class="publication-heading"><div><h2 id="articles-title">Latest articles</h2></div><a class="text-link" href="/articles/">All articles →</a></div>
-      <div class="publication-feed">
-        {latestArticles.map((post) => <article class="feed-item">
-          <div class="feed-meta"><span>Article</span><time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time></div>
-          <div><h3><a href={articleHref(post)}>{post.data.title}</a></h3><p>{post.data.summary ?? post.data.description}</p></div>
-          <a class="feed-arrow" href={articleHref(post)} aria-label={`Read ${post.data.title}`}>↗</a>
-        </article>)}
-      </div>
-    </div>
-  </section>}
-
-  {latestArchitecture.length > 0 && <section class="publication-section" aria-labelledby="architecture-title">
-    <div class="wrap">
-      <div class="publication-heading"><div><h2 id="architecture-title">Latest architecture</h2></div><a class="text-link" href="/architecture/">All architecture →</a></div>
-      <div class="publication-feed">
-        {latestArchitecture.map((post) => <article class="feed-item">
-          <div class="feed-meta"><span>Architecture</span><time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time></div>
-          <div><h3><a href={architectureHref(post)}>{post.data.title}</a></h3><p>{post.data.summary ?? post.data.description}</p></div>
-          <a class="feed-arrow" href={architectureHref(post)} aria-label={`Read ${post.data.title}`}>↗</a>
-        </article>)}
-      </div>
-    </div>
-  </section>}
-
-  {latestNews.length > 0 && <section class="publication-section news-strip" aria-labelledby="news-title">
-    <div class="wrap">
-      <div class="publication-heading"><div><h2 id="news-title">News</h2><p>Relevant developments, kept short.</p></div><a class="text-link" href="/news/">All news →</a></div>
+      <div class="publication-heading"><div><h2 class="section-title" id="news-title">News</h2><p>Short digests of tool and model releases.</p></div><a class="text-link" href="/news/">News digest →</a></div>
       <ul class="news-strip-list">
         {latestNews.map((post) => <li>
           <time datetime={post.data.date.toISOString()}>{formatItemDate(post.data.date)}</time>
@@ -132,8 +141,10 @@ const latestNews = news.slice(0, 3);
     </div>
   </section>}
 
+  <Follow />
+
   <section class="publication-section publication-about" aria-labelledby="about-title">
-    <div class="wrap about-grid"><h2 id="about-title">About the publication</h2><div><p>I'm Garry Meaburn. I use this space to work through practical technical questions, share original work and offer evidence-based opinions. Findings are measured; recommendations are judgement.</p><div class="about-links"><a href="/about/">More about me →</a><a href={LINKS.githubAuthor}>GitHub ↗</a><a href={LINKS.x}>X ↗</a><a href={LINKS.linkedin}>LinkedIn ↗</a></div></div></div>
+    <div class="wrap about-grid"><h2 class="section-title" id="about-title">About the publication</h2><div><p>I'm Garry Meaburn. I use this space to work through practical technical questions, share original work and offer evidence-based opinions. Findings are measured; recommendations are judgement.</p><div class="about-links"><a href="/about/">More about me →</a><a href={LINKS.githubAuthor}>GitHub ↗</a><a href={LINKS.x}>X ↗</a><a href={LINKS.linkedin}>LinkedIn ↗</a></div></div></div>
   </section>
 </BaseLayout>
 

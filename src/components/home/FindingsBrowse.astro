@@ -1,0 +1,64 @@
+---
+import { getTopicsWithContent } from '../../lib/topics';
+import { getPublishedExperiments, formatItemDate } from '../../lib/collections';
+import { displayTitle } from '../../lib/titles';
+
+const SHOWN = 8;
+const [topics, experiments] = await Promise.all([getTopicsWithContent(), getPublishedExperiments()]);
+---
+<section class="browse" aria-labelledby="browse-topics-h">
+  <div class="wrap">
+    <h2 id="browse-topics-h">By topic</h2>
+    <p class="browse-intro">Each topic page lists its findings first, then the experiments behind them.</p>
+    <ul class="browse-topics">
+      {topics.map((t) => (
+        <li>
+          <a href={`/topics/${t.id}/`}>
+            <strong>{t.title}</strong>
+            <span>{t.findings.length} {t.findings.length === 1 ? 'finding' : 'findings'} · {t.experiments.length} {t.experiments.length === 1 ? 'experiment' : 'experiments'}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="browse-ref"><a href="/measured/">Every finding in one reference list →</a></p>
+  </div>
+</section>
+
+<section class="browse" aria-labelledby="browse-exp-h">
+  <div class="wrap">
+    <h2 id="browse-exp-h">The experiments</h2>
+    <p class="browse-intro">The write-ups behind the findings, newest first.</p>
+    <ol class="browse-exps">
+      {experiments.slice(0, SHOWN).map((e) => (
+        <li>
+          <time datetime={e.data.date.toISOString()}>{formatItemDate(e.data.date)}</time>
+          <div>
+            <a href={`/experiments/${e.id}/`}>{displayTitle(e.data.title)}</a>
+            {e.data.question && <p>{e.data.question}</p>}
+          </div>
+        </li>
+      ))}
+    </ol>
+    <p class="browse-ref"><a href="/experiments/">All {experiments.length} experiments →</a></p>
+  </div>
+</section>
+
+<style>
+  .browse { padding: 2.5rem 0; border-bottom: 1px solid var(--line); }
+  .browse :global(h2) { margin-top: 0; }
+  .browse-intro { max-width: 44rem; color: var(--ink-muted); }
+  .browse-topics { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+  .browse-topics li { margin: 0; }
+  .browse-topics a { display: grid; gap: .15rem; height: 100%; padding: .85rem 1rem; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); }
+  .browse-topics a:hover { border-color: var(--accent); }
+  .browse-topics span { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .03em; color: var(--ink-muted); }
+  .browse-exps { list-style: none; margin: 1rem 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .browse-exps li { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: .25rem 1.5rem; margin: 0; padding: .85rem 0; border-bottom: 1px solid var(--line); }
+  .browse-exps time { padding-top: .2rem; font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .browse-exps a { font-weight: 600; color: var(--ink); text-decoration: none; }
+  .browse-exps a:hover { color: var(--accent); }
+  .browse-exps p { margin: .2rem 0 0; max-width: 62ch; color: var(--ink-muted); overflow-wrap: anywhere; }
+  .browse-ref { margin: 1rem 0 0; }
+  .browse-ref a { font-weight: 600; }
+  @media (max-width: 640px) { .browse-exps li { grid-template-columns: 1fr; } .browse-exps time { padding-top: 0; } }
+</style>

@@ -17,6 +17,10 @@ const articleSchema = z.object({
   /** Optional share-preview image (path under /public). */
   previewImage: z.string().optional(),
   previewAlt: z.string().optional(),
+  /** Optional topics (ids from src/data/topics.ts); used for related reading. */
+  topics: z.array(z.string().refine(isTopicId, { message: 'Unknown topic id' })).default([]),
+  /** Optional video about this article (YouTube). Only set when one exists. */
+  video: z.object({ url: z.string().url(), label: z.string().optional() }).optional(),
 });
 
 /**
@@ -44,6 +48,8 @@ const findingSchema = z.object({
   source: z.string().url(),
   status: z.enum(['current', 'superseded']).default('current'),
   featured: z.boolean().default(false),
+  /** Optional: 1 is shown first in the homepage "what the experiments show" strip (at most three). */
+  homeRank: z.number().int().positive().optional(),
 });
 
 const agentSchema = z.object({
@@ -88,6 +94,8 @@ const experimentSchema = z.object({
   repo: z.string().url().optional(),
   report: z.string().url().optional(),
   prediction: z.string().url().optional(),
+  /** Optional video that explains this experiment (YouTube). Only set when one exists. */
+  video: z.object({ url: z.string().url(), label: z.string().optional() }).optional(),
   topics: z.array(z.string().refine(isTopicId, { message: 'Unknown topic id' })).optional(),
   publishedOn: z.coerce.date().optional(),
   findings: z.array(findingSchema).default([]),

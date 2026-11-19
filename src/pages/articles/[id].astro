@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostFooter from '../../components/home/PostFooter.astro';
 import { getPublishedArticles, formatItemDate } from '../../lib/collections';
 import { absoluteUrl, articleJsonLd, resolveOgImageWithAlt } from '../../lib/seo';
 import { render } from 'astro:content';
@@ -42,14 +43,22 @@ const jsonLd = articleJsonLd({
     <div class="wrap">
       <p class="section-label">Article · {formatItemDate(post.data.date)}</p>
       <h1>{post.data.title}</h1>
+      {post.data.video && (
+        <p class="actions"><a class="button primary" href={post.data.video.url} rel="noopener noreferrer">{post.data.video.label ?? 'Watch the video'} ↗</a></p>
+      )}
     </div>
   </header>
   <div class="page-body">
     <div class="wrap view-prose">
       <Content />
+      <PostFooter kind="article" href={canonicalPath} topics={post.data.topics} />
       <p class="view-back">
         <a href="/articles/">← All articles</a>
       </p>
     </div>
   </div>
 </BaseLayout>
+
+<script>
+  import '../../scripts/prose-enhance';
+</script>

@@ -3,7 +3,7 @@ title: "Cheat sheet"
 description: "From Programming the Loop — Cheat sheet."
 ---
 
-<p class="guide-edition-note">Free to read on the web. <a href="/downloads/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
+<p class="guide-edition-note">Free to read on the web. <a href="/resources/">October 2026 PDF</a> · <a href="/updates/">Updates</a></p>
 
 ![Cheat sheet: thesis and eleven chapter reminders from Programming the Loop](/guide-images/cheatsheet.png)
 

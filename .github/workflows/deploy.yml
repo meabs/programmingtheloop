@@ -33,6 +33,8 @@ jobs:
         run: npm run test:content
       - name: Check and build
         run: npm run build
+      - name: Internal links
+        run: npm run check:links
       - name: Verify custom domain file
         run: test "$(cat dist/CNAME)" = "programmingtheloop.com"
       - name: Upload Pages artifact

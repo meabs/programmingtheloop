@@ -1,0 +1,58 @@
+---
+import { formatPoint, type Axis, type ResultPoint } from '../../lib/results';
+
+interface Row {
+  /** Visible text above the interval in compact mode, e.g. "EM-1 · +67.5 pts". */
+  text?: string;
+  point: ResultPoint;
+}
+interface Props {
+  rows: Row[];
+  axis: Axis;
+  /** Compact mode (cards) prints a text line above each interval. */
+  compact?: boolean;
+}
+const { rows, axis, compact = false } = Astro.props;
+const nullLabel = axis.nullAt === null ? null : formatPoint(rows[0].point.kind === 'ratio' ? 'ratio' : 'pts', axis.nullAt).replace('+', '');
+
+const style = (p: ResultPoint) => {
+  const l = axis.pos(p.low);
+  const w = Math.max(axis.pos(p.high) - l, 0);
+  return `left:${l.toFixed(2)}%;width:${w.toFixed(2)}%`;
+};
+---
+<div class:list={['rp', { 'is-compact': compact }]} aria-hidden="true">
+  {rows.map((r) => (
+    <div class="rp-row">
+      {compact && r.text && <p class="rp-text">{r.text}</p>}
+      <div class="rp-track">
+        {axis.nullAt !== null && <span class="rp-null" style={`left:${axis.pos(axis.nullAt).toFixed(2)}%`} />}
+        <span class:list={['rp-bar', `is-${r.point.status}`]} style={style(r.point)} />
+        {r.point.est !== null && (
+          <span class:list={['rp-dot', `is-${r.point.status}`]} style={`left:${axis.pos(r.point.est).toFixed(2)}%`} />
+        )}
+      </div>
+    </div>
+  ))}
+  {nullLabel !== null && (
+    <div class="rp-axis">
+      <span style={`left:${axis.pos(axis.nullAt as number).toFixed(2)}%`}>{nullLabel}</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .rp { display: grid; gap: .55rem; width: 100%; min-width: 0; }
+  .rp-row { display: grid; gap: .2rem; min-width: 0; }
+  .rp-text { margin: 0; font: .7rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .02em; color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rp-track { position: relative; height: 14px; }
+  .rp-null { position: absolute; top: -2px; bottom: -2px; width: 0; border-left: 1px dashed var(--ink-faint); }
+  .rp-bar { position: absolute; top: 5px; height: 4px; min-width: 3px; border-radius: 2px; background: var(--accent); }
+  .rp-bar.is-includes-null, .rp-bar.is-no-difference { background: var(--ink-faint); }
+  .rp-dot { position: absolute; top: 2px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; box-sizing: border-box; background: var(--accent); border: 2px solid var(--surface); }
+  .rp-dot.is-includes-null, .rp-dot.is-no-difference { background: var(--surface); border: 2px solid var(--ink-faint); }
+  .rp-axis { position: relative; height: .9rem; }
+  .rp-axis span { position: absolute; top: 0; transform: translateX(-50%); font: .68rem 'IBM Plex Mono', ui-monospace, monospace; color: var(--ink-faint); }
+  .is-compact { gap: .5rem; }
+  .is-compact .rp-axis { height: .8rem; }
+</style>

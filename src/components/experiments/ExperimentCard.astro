@@ -3,6 +3,9 @@ import type { CollectionEntry } from 'astro:content';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { formatItemDate, experimentHref } from '../../lib/collections';
 import { cardHeadline } from '../../lib/experiment-cards';
+import { axisFor, kindCaption, toResultPoint, type ResultPoint } from '../../lib/results';
+import ResultPlot from './ResultPlot.astro';
+import { displayTitle } from '../../lib/titles';
 
 interface Props {
   item: CollectionEntry<'experiments'>;
@@ -13,14 +16,36 @@ const d = item.data;
 const finding =
   (d.findings ?? []).filter((f) => f.status !== 'superseded').find((f) => f.featured) ??
   (d.findings ?? []).filter((f) => f.status !== 'superseded')[0];
-const topics = (d.topics ?? []).filter(isTopicId);
+const topics = (d.topics ?? []).filter(isTopicId).slice(0, 3);
 const label = d.experimentId ?? '';
 const headline = cardHeadline(finding);
-const plainUnder = d.description;
+
+// The preview shows the headline itself when it is a stat block; otherwise one headline number sits under the title.
+const statBlock = (plotted: unknown[]) => plotted.length === 0 && !d.previewImage;
+
+// Preview: up to three intervals of one unit, on a shared axis. Falls back to the chart image or headline figure.
+const live = (d.findings ?? []).filter((f) => f.status !== 'superseded');
+const withPoint = live
+  .map((f) => ({ f, point: toResultPoint(f) }))
+  .filter((r): r is { f: (typeof live)[number]; point: ResultPoint } => r.point !== null);
+const lead = withPoint.find((r) => r.f.featured) ?? withPoint[0];
+const plotted = lead
+  ? [lead, ...withPoint.filter((r) => r !== lead && r.point.kind === lead.point.kind)].slice(0, 3)
+  : [];
+const plotAxis = plotted.length > 0 ? axisFor(plotted.map((r) => r.point)) : null;
 ---
 <article class="exp-card" data-topics={topics.join(' ')}>
-  <div class:list={['exp-preview', { 'has-image': !!d.previewImage, 'is-text': !d.previewImage }]}>
-    {d.previewImage ? (
+  <div class:list={['exp-preview', { 'has-plot': plotted.length > 0, 'has-image': plotted.length === 0 && !!d.previewImage, 'is-text': plotted.length === 0 && !d.previewImage }]}>
+    {plotted.length > 0 && plotAxis ? (
+      <div class="exp-plot">
+        <ResultPlot
+          compact
+          axis={plotAxis}
+          rows={plotted.map((r) => ({ text: `${r.f.id} · ${r.f.value ?? ''}`, point: r.point }))}
+        />
+        <p class="exp-plot-caption">{kindCaption(lead.point.kind)}</p>
+      </div>
+    ) : d.previewImage ? (
       <img src={d.previewImage} alt={d.previewAlt ?? ''} loading="lazy" width="1800" height="920" />
     ) : headline ? (
       <p class:list={['exp-figure', { 'is-long': headline.text.length > 28 || headline.notMeasurable }]}>
@@ -35,12 +60,10 @@ const plainUnder = d.description;
       <span>{d.type}{label && <> · {label}</>}</span>
       <time datetime={d.date.toISOString()}>{formatItemDate(d.date)}</time>
     </p>
-    <h2 class="exp-title"><a href={experimentHref(item)}>{d.title}</a></h2>
-    {d.question && <p class="exp-question">{d.question}</p>}
-    {plainUnder && (
-      <p class="exp-finding">
-        <span>{plainUnder}</span>
-      </p>
+    <h2 class="exp-title"><a href={experimentHref(item)}>{displayTitle(d.title)}</a></h2>
+    {d.question && <p class="exp-question" title={d.question}>{d.question}</p>}
+    {headline && !statBlock(plotted) && (
+      <p class="exp-headline"><strong>{headline.text}</strong>{finding?.metric && <span> · {finding.metric}</span>}</p>
     )}
     {topics.length > 0 && (
       <ul class="exp-topics">
@@ -58,8 +81,12 @@ const plainUnder = d.description;
   .exp-card:hover, .exp-card:focus-within { border-color: var(--accent); }
   .exp-preview { aspect-ratio: 2 / 1; display: grid; place-items: center; overflow: hidden; border-bottom: 1px solid var(--line); background: var(--accent-soft, rgba(13,122,114,.1)); }
   .exp-preview.has-image { background: #fff; }
+  .exp-preview.has-plot { aspect-ratio: auto; display: block; background: var(--surface); }
+  @media (min-width: 641px) { .exp-preview { height: 10.5rem; aspect-ratio: auto; } .exp-preview.has-plot .exp-plot { height: 100%; align-content: center; } }
+  .exp-plot { box-sizing: border-box; width: 100%; align-content: start; padding: .9rem 1rem .8rem; display: grid; gap: .6rem; }
+  .exp-plot-caption { margin: 0; font: .66rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .03em; color: var(--ink-faint); }
   .exp-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .exp-figure { margin: 0; padding: 1rem 1.25rem; text-align: center; font-size: clamp(1.75rem, 5.5vw, 2.5rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.15; color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .exp-figure { margin: 0; padding: 1rem 1.25rem; text-align: center; font-size: clamp(1.75rem, 5.5vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
   .exp-figure.is-long { font-size: clamp(1.05rem, 3.6vw, 1.35rem); letter-spacing: -.01em; line-height: 1.3; font-weight: 650; }
   .exp-body { display: flex; flex-direction: column; gap: .4rem; padding: .85rem 1rem 1rem; flex: 1; }
   .exp-meta { display: flex; justify-content: space-between; gap: .75rem; margin: 0; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
@@ -68,8 +95,9 @@ const plainUnder = d.description;
   .exp-title a::after { content: ''; position: absolute; inset: 0; }
   .exp-title a:focus-visible { outline: none; }
   .exp-card:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .exp-question { margin: 0; font-size: .9rem; line-height: 1.4; color: var(--ink); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .exp-finding { margin: 0; padding-top: .45rem; border-top: 1px solid var(--line); font-size: .86rem; line-height: 1.4; color: var(--ink-muted); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .exp-question { margin: 0; font-size: .9rem; line-height: 1.4; color: var(--ink); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .exp-headline { margin: 0; font-size: .9rem; line-height: 1.35; color: var(--ink-muted); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .exp-headline strong { color: var(--ink); font-variant-numeric: tabular-nums; }
   .exp-topics { list-style: none; display: flex; flex-wrap: wrap; gap: .35rem; margin: .1rem 0 0; padding: 0; position: relative; z-index: 1; }
   .exp-topics li { margin: 0; }
   .exp-topics a { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .65rem; font-size: .75rem; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-muted); text-decoration: none; }
@@ -81,6 +109,5 @@ const plainUnder = d.description;
     .exp-figure.is-long { font-size: 1.05rem; }
     .exp-body { padding: .75rem .85rem .9rem; gap: .35rem; }
     .exp-question { -webkit-line-clamp: 2; font-size: .88rem; }
-    .exp-finding { -webkit-line-clamp: 2; font-size: .84rem; }
   }
 </style>

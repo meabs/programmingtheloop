@@ -1,0 +1,50 @@
+---
+// Same pattern as ExperimentCard: label and date, title, one line, up to three topics, link.
+// Writing has no chart or headline number, so there is no image area (no placeholder tiles).
+import { TOPICS, isTopicId } from '../../data/topics';
+import { formatItemDate } from '../../lib/collections';
+import { displayTitle } from '../../lib/titles';
+
+interface Props {
+  kind: string;
+  href: string;
+  date: Date;
+  title: string;
+  line: string;
+  topics?: string[];
+}
+const { kind, href, date, title, line, topics = [] } = Astro.props;
+const tags = topics.filter(isTopicId).slice(0, 3);
+---
+<article class="wr-card">
+  <div class="wr-body">
+    <p class="wr-meta"><span>{kind}</span><time datetime={date.toISOString()}>{formatItemDate(date)}</time></p>
+    <h3 class="wr-title"><a href={href}>{displayTitle(title)}</a></h3>
+    <p class="wr-line" title={line}>{line}</p>
+    {tags.length > 0 && (
+      <ul class="wr-topics">
+        {tags.map((t) => <li><a href={`/topics/${t}/`}>{TOPICS[t].title}</a></li>)}
+      </ul>
+    )}
+    <span class="wr-open" aria-hidden="true">Read the {kind.toLowerCase()} →</span>
+  </div>
+</article>
+
+<style>
+  .wr-card { position: relative; display: flex; flex-direction: column; min-width: 0; background: var(--surface); border: 1px solid var(--line); transition: border-color .18s ease; }
+  .wr-card:hover, .wr-card:focus-within { border-color: var(--accent); }
+  .wr-card:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wr-body { display: flex; flex-direction: column; gap: .4rem; padding: .85rem 1rem 1rem; flex: 1; }
+  .wr-meta { display: flex; justify-content: space-between; gap: .75rem; margin: 0; font: .68rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .wr-meta span { color: var(--accent); }
+  .wr-title { margin: 0; font-size: 1.08rem; line-height: 1.3; }
+  .wr-title a { color: var(--ink); text-decoration: none; }
+  .wr-title a::after { content: ''; position: absolute; inset: 0; }
+  .wr-title a:focus-visible { outline: none; }
+  .wr-line { margin: 0; font-size: .9rem; line-height: 1.4; color: var(--ink-muted); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .wr-topics { list-style: none; display: flex; flex-wrap: wrap; gap: .35rem; margin: .1rem 0 0; padding: 0; position: relative; z-index: 1; }
+  .wr-topics li { margin: 0; }
+  .wr-topics a { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .65rem; font-size: .75rem; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-muted); text-decoration: none; }
+  .wr-topics a:hover { color: var(--accent); border-color: var(--accent); }
+  .wr-open { margin-top: auto; padding-top: .4rem; font-size: .88rem; font-weight: 600; color: var(--accent); }
+</style>
