@@ -19,9 +19,14 @@ const [articles, architecture, news, topics] = await Promise.all([
   getTopicsWithContent(),
 ]);
 
-const num = (v: unknown) => (typeof v === 'number' ? v : Number.parseInt(String(v ?? '').replace(/\D/g, ''), 10) || 0);
+// `runs` is free text on many experiments ("66 payloads, 23 routes, 90 agent runs"), so only a plain number or a plain
+// integer string counts; anything else is left out rather than guessed.
+const num = (v: unknown) => {
+  if (typeof v === 'number') return v;
+  const t = String(v ?? '').trim().replace(/,/g, '');
+  return /^\d+$/.test(t) ? Number.parseInt(t, 10) : 0;
+};
 const findings = experiments.flatMap((e) => e.data.findings ?? []).filter((f) => f.status !== 'superseded');
-const totalRuns = experiments.reduce((n, e) => n + num(e.data.runs), 0);
 
 type Bar = { label: string; value: number; href?: string };
 const byTopic: Bar[] = topics.map((t) => ({ label: t.title, value: t.experiments.length, href: `/topics/${t.id}/` }));
@@ -38,15 +43,15 @@ const byFindings: Bar[] = experiments
   .filter((b) => b.value > 0)
   .sort((a, b) => b.value - a.value);
 const charts = [
-  { id: 'runs', title: 'Runs per experiment', note: 'Agent runs behind each experiment, largest first.', bars: byRuns },
+  { id: 'runs', title: 'Runs per experiment', note: 'Agent runs behind each experiment, largest first. Experiments whose run count is written as free text are left out rather than guessed.', bars: byRuns },
   { id: 'findings', title: 'Current findings per experiment', note: 'Findings not marked superseded.', bars: byFindings },
   { id: 'topics', title: 'Experiments per topic', note: 'An experiment with two topics counts under both.', bars: byTopic },
 ];
 
 const ROW = 26;
-const LABEL_W = 130;
-const BAR_W = 420;
-const NUM_W = 56;
+const LABEL_W = 110;
+const BAR_W = 240;
+const NUM_W = 50;
 const chartMax = (bars: Bar[]) => Math.max(1, ...bars.map((b) => b.value));
 
 // Traffic and feedback live behind logins, so this page only links to them.
@@ -111,7 +116,7 @@ const sections = [
     <div class="stats-strip">
       <div class="stat-cell"><span class="stat-key">Experiments</span><span class="stat-value">{experiments.length}</span></div>
       <div class="stat-cell"><span class="stat-key">Current findings</span><span class="stat-value">{findings.length}</span></div>
-      <div class="stat-cell"><span class="stat-key">Agent runs</span><span class="stat-value">{totalRuns.toLocaleString('en-GB')}</span></div>
+      <div class="stat-cell"><span class="stat-key">Topics</span><span class="stat-value">{topics.length}</span></div>
       <div class="stat-cell"><span class="stat-key">Articles</span><span class="stat-value">{articles.length}</span></div>
       <div class="stat-cell"><span class="stat-key">News posts</span><span class="stat-value">{news.length}</span></div>
     </div>
