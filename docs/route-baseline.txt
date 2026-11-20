@@ -19,6 +19,7 @@
 /experiments/d2-stale-knowledge/
 /experiments/documentation-layer-study/
 /experiments/e-confidence-labels/
+/experiments/emergent-room/
 /experiments/f-crossrepo-change-small/
 /experiments/g-crossrepo-change-hard/
 /experiments/h1-contract-vs-okf-changes/
