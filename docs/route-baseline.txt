@@ -28,6 +28,7 @@
 /experiments/h2-contract-vs-okf-questions/
 /experiments/h3-incomplete-openapi/
 /experiments/okf-worked-example/
+/experiments/planted-flaws/
 /experiments/rss.xml
 /findings/
 /guide/
