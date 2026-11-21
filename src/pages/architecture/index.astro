@@ -6,14 +6,16 @@ import {
   architectureHref,
   formatItemDate,
 } from '../../lib/collections';
+import { collectionJsonLd } from '../../lib/seo';
 
 const posts = await getPublishedArchitecture();
 ---
 <BaseLayout
   title="Architecture"
-  description="Notes and experiments on how systems fit together, mostly from my own hobby projects."
+  description="Practical architecture for coding agents: where checks, permissions and approvals should live, with diagrams, snippets and the experiments behind them."
   canonicalPath="/architecture/"
   ogImage={SITE_OG_IMAGE}
+  jsonLd={collectionJsonLd({ name: 'Architecture', description: 'Practical architecture for coding agents, with diagrams, snippets and the experiments behind them.', path: '/architecture/', items: posts.map((p) => ({ name: p.data.title, path: architectureHref(p) })) })}
   noindex={posts.length === 0}
 >
   <header class="page-head">

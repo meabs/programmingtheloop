@@ -4,6 +4,7 @@ import ExperimentTabs from '../../components/experiments/ExperimentTabs.astro';
 import ExperimentCard from '../../components/experiments/ExperimentCard.astro';
 import { SITE_OG_IMAGE } from '../../site';
 import { getPublishedExperiments } from '../../lib/collections';
+import { collectionJsonLd } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 
 const items = await getPublishedExperiments();
@@ -14,9 +15,10 @@ const filters = [...counts].sort((a, b) => b[1] - a[1]).map(([id, n]) => ({ id, 
 ---
 <BaseLayout
   title="Experiments"
-  description="Controlled trials and worked examples on coding agents, with limits stated."
+  description="Controlled experiments on AI coding agents and agent teams, each published with its data, method, confidence intervals and limits, and pinned to a commit."
   canonicalPath="/experiments/"
   ogImage={SITE_OG_IMAGE}
+  jsonLd={collectionJsonLd({ name: 'Experiments', description: 'Controlled experiments on AI coding agents and agent teams, with data, method and limits published.', path: '/experiments/', items: items.map((e) => ({ name: e.data.title, path: `/experiments/${e.id}/` })) })}
 >
   <header class="page-head">
     <div class="wrap">

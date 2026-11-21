@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostFooter from '../../components/home/PostFooter.astro';
 import { getPublishedArchitecture, formatItemDate } from '../../lib/collections';
-import { absoluteUrl, articleJsonLd, resolveOgImageWithAlt } from '../../lib/seo';
+import { absoluteUrl, articleJsonLd, breadcrumbJsonLd, resolveOgImageWithAlt } from '../../lib/seo';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -18,6 +18,7 @@ const { Content } = await render(post);
 const canonicalPath = `/architecture/${post.id}/`;
 const og = resolveOgImageWithAlt(post.data.previewImage, post.data.previewAlt);
 const publishedTime = post.data.date.toISOString();
+const breadcrumb = breadcrumbJsonLd([{ name: 'Architecture', path: '/architecture/' }, { name: post.data.title, path: canonicalPath }]);
 const jsonLd = articleJsonLd({
   headline: post.data.title,
   description: post.data.description,
@@ -35,7 +36,7 @@ const jsonLd = articleJsonLd({
   ogImageAlt={og.alt}
   ogImageHasStandardSize={og.hasStandardSize}
   publishedTime={publishedTime}
-  jsonLd={jsonLd}
+  jsonLd={[jsonLd, breadcrumb]}
 
   searchable
 >

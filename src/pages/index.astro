@@ -8,7 +8,7 @@ import {
   getPublishedExperiments, getPublishedGuides, getPublishedNews,
   articleHref, architectureHref, newsHref, formatItemDate,
 } from '../lib/collections';
-import { personJsonLd } from '../lib/seo';
+import { personJsonLd, websiteJsonLd } from '../lib/seo';
 import ResultPlot from '../components/experiments/ResultPlot.astro';
 import Strongest from '../components/home/Strongest.astro';
 import Follow from '../components/home/Follow.astro';
@@ -49,7 +49,7 @@ const heroFinding = heroFindings.find((f) => f.featured) ?? heroFindings[0];
 const heroPoint = toResultPoint(heroFinding);
 const heroAxis = heroPoint ? axisFor([heroPoint]) : null;
 ---
-<BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE} jsonLd={personJsonLd()}>
+<BaseLayout title={`${SITE_NAME} — Practical technical thinking`} description={SITE_DESCRIPTION} canonicalPath="/" ogImage={SITE_OG_IMAGE} jsonLd={[personJsonLd(), websiteJsonLd()]}>
   <section class="publication-hero">
     <div class="wrap publication-hero-grid">
       <div class="publication-intro">

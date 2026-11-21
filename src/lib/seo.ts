@@ -155,3 +155,57 @@ export function articleJsonLd(opts: {
     },
   };
 }
+
+
+/** BreadcrumbList JSON-LD: Home > section > page. */
+export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [{ name: SITE_NAME, path: '/' }, ...trail].map((t, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: t.name,
+      item: absoluteUrl(t.path),
+    })),
+  };
+}
+
+/** CollectionPage JSON-LD with an ItemList of the pages it links to. */
+export function collectionJsonLd(opts: {
+  name: string;
+  description: string;
+  path: string;
+  items: { name: string; path: string }[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: opts.name,
+    description: opts.description,
+    url: absoluteUrl(opts.path),
+    isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: opts.items.length,
+      itemListElement: opts.items.map((it, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: it.name,
+        url: absoluteUrl(it.path),
+      })),
+    },
+  };
+}
+
+/** WebSite JSON-LD for the home page. */
+export function websiteJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    inLanguage: 'en-GB',
+    author: { '@type': 'Person', name: SITE_AUTHOR, url: absoluteUrl('/about/') },
+  };
+}

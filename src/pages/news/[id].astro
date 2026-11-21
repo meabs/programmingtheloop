@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublishedNews, formatItemDate } from '../../lib/collections';
-import { absoluteUrl, articleJsonLd, resolveOgImage } from '../../lib/seo';
+import { absoluteUrl, articleJsonLd, breadcrumbJsonLd, resolveOgImage } from '../../lib/seo';
 import { renderMarkdown } from '../../lib/markdown';
 
 export async function getStaticPaths() {
@@ -20,6 +20,7 @@ const items = post.data.items.map((item) => ({
 const canonicalPath = `/news/${post.id}/`;
 const og = resolveOgImage();
 const publishedTime = post.data.date.toISOString();
+const breadcrumb = breadcrumbJsonLd([{ name: 'News', path: '/news/' }, { name: post.data.title, path: canonicalPath }]);
 const jsonLd = articleJsonLd({
   headline: post.data.title,
   description: post.data.summary,
@@ -37,7 +38,7 @@ const jsonLd = articleJsonLd({
   ogImageAlt={og.alt}
   ogImageHasStandardSize={og.hasStandardSize}
   publishedTime={publishedTime}
-  jsonLd={jsonLd}
+  jsonLd={[jsonLd, breadcrumb]}
   searchable
 >
   <header class="page-head">

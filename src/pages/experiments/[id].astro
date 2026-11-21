@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FindingsTable from '../../components/experiments/FindingsTable.astro';
 import { formatItemDate, getPublishedExperiments, experimentHref } from '../../lib/collections';
-import { absoluteUrl, articleJsonLd, resolveExperimentOgImage } from '../../lib/seo';
+import { absoluteUrl, articleJsonLd, breadcrumbJsonLd, resolveExperimentOgImage } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { LINKS } from '../../site';
 import { displayTitle } from '../../lib/titles';
@@ -50,6 +50,7 @@ const canonicalPath = `/experiments/${item.id}/`;
 const og = resolveExperimentOgImage(item.id, d.previewImage, d.previewAlt);
 const published = d.publishedOn ?? d.date;
 const publishedTime = published.toISOString();
+const breadcrumb = breadcrumbJsonLd([{ name: 'Experiments', path: '/experiments/' }, { name: item.data.title, path: canonicalPath }]);
 const jsonLd = articleJsonLd({
   headline: item.data.title,
   description: item.data.description,
@@ -67,7 +68,7 @@ const jsonLd = articleJsonLd({
   ogImageAlt={og.alt}
   ogImageHasStandardSize={og.hasStandardSize}
   publishedTime={publishedTime}
-  jsonLd={jsonLd}
+  jsonLd={[jsonLd, breadcrumb]}
   noindex={isDraft}
 
   searchable

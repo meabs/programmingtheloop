@@ -6,14 +6,16 @@ import {
   newsHref,
   formatItemDate,
 } from '../../lib/collections';
+import { collectionJsonLd } from '../../lib/seo';
 
 const items = await getPublishedNews();
 ---
 <BaseLayout
   title="News"
-  description="Technical developments and their implications, with primary sources linked."
+  description="Weekday roundups of technical developments in AI engineering tools, with primary sources linked and what they mean for people building with them."
   canonicalPath="/news/"
   ogImage={SITE_OG_IMAGE}
+  jsonLd={collectionJsonLd({ name: 'News', description: 'Weekday roundups of technical developments in AI engineering tools, with primary sources linked.', path: '/news/', items: items.map((n) => ({ name: n.data.title, path: newsHref(n) })) })}
 >
   <header class="page-head">
     <div class="wrap">

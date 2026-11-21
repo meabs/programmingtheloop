@@ -11,12 +11,14 @@ import {
   siteSidebarItems,
 } from './src/lib/nav-gate.ts';
 import { RSS_FEEDS } from './src/lib/seo.ts';
+import { readSitemapDatesSync } from './src/lib/sitemap-dates.mjs';
 
 const site = 'https://programmingtheloop.com';
 const ogImage = `${site}/og/default.png`;
 const ogImageAlt = 'Programming the Loop: Independent experiments and practical architecture for building AI systems that actually work';
 const guideBase = '/guides/programming-the-loop';
 const navCounts = readNavCollectionCountsSync();
+const sitemapDates = readSitemapDatesSync();
 const siteNavSidebar = siteSidebarItems(navCounts);
 const rssAlternateHead = RSS_FEEDS.map((feed) => ({
   tag: 'link',
@@ -52,6 +54,11 @@ export default defineConfig({
   integrations: [
     // Register before Starlight so Starlight does not add a second sitemap integration.
     sitemap({
+      serialize(item) {
+        const lastmod = sitemapDates.get(new URL(item.url).pathname);
+        if (lastmod) item.lastmod = lastmod;
+        return item;
+      },
       filter: (page) => {
         if (page.includes('/search')) return false;
         if (page.includes('/site-insights')) return false;
