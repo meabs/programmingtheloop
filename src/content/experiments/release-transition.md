@@ -6,7 +6,7 @@ summary: "90 trajectories (two Codex runs each) on a toy estate. Independent age
 type: "Controlled trial"
 github:
   - label: "Data and code on GitHub"
-    href: "https://github.com/meabs/experiments/tree/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition"
+    href: "https://github.com/meabs/experiments/tree/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition"
 draft: false
 experimentId: "TRX"
 question: "Can several AI agents, each delivering a correct change that passes its own tests, still break a multi-service estate when the changes are deployed together, and does coordination or an external transition gate change that?"
@@ -18,8 +18,8 @@ agents:
     settings: "medium effort, one turn per run, no one to ask, bubblewrap sandbox; one run per changed service, runs cannot talk to each other"
 runs: "6 scenarios × 3 arms × 5 repetitions = 90 trajectories after a 15-trajectory pilot"
 repo: "https://github.com/meabs/experiments"
-report: "https://github.com/meabs/experiments/blob/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition/REPORT.md"
-prediction: "https://github.com/meabs/experiments/blob/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition/README.md"
+report: "https://github.com/meabs/experiments/blob/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition/REPORT.md"
+prediction: "https://github.com/meabs/experiments/blob/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition/README.md"
 previewImage: "/guide-images/chart-trx-outcomes.png"
 previewAlt: "Safe delivery by arm over 25 hazard trajectories each. Independent agents: 25 released unsafe. Told to coordinate: 20 safe, 5 unsafe. With the gate: 22 safe, 3 unsafe."
 topics:
@@ -37,8 +37,8 @@ findings:
       - "all 25 also delivered their tickets; safe delivery was 0%"
       - "the control scenario with no hazard (S0) delivered safely in 5 of 5"
     limits:
-      - "a toy estate, scenarios I chose to contain a transition hazard, one model; this shows the hazard can occur, not how often it does in real estates"
-    source: "https://github.com/meabs/experiments/blob/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition/REPORT.md"
+      - "a toy estate, scenarios I chose to contain a transition hazard, one model; this shows the hazard can occur, not how often it does in real estates. Arm A is a basic pipeline (unit tests, a smoke test of the all-new estate, alphabetical deployment), not a mature CI/CD pipeline, so it does not show that existing practice is insufficient"
+    source: "https://github.com/meabs/experiments/blob/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition/REPORT.md"
     status: current
     featured: false
   - id: "TRX-2"
@@ -52,10 +52,10 @@ findings:
     n: "5 scenarios × 5 trajectories per arm"
     detail:
       - "B was safe in 20 of 25; the 5 unsafe were 1 in retries and 4 in consent"
-      - "B bundles awareness of the other change with the instruction to write a plan; I did not separate them"
+      - "B bundles four things (peer source, the other ticket's title, a rolling-deployment paragraph and the instruction to plan), and its plan can change the deployment order; I did not separate them, so part of the gain may be a better order"
     limits:
       - "one model, five repetitions per cell"
-    source: "https://github.com/meabs/experiments/blob/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition/REPORT.md"
     status: current
     featured: false
   - id: "TRX-3"
@@ -74,7 +74,7 @@ findings:
       - "the gate and the oracle share an author, simulator and hazard vocabulary, which may flatter the gate on the hazards it was built around; that is a suspicion I have not tested, not an upper bound"
     limits:
       - "the gate was built by the same AI agent that built the oracle; the interval (-4 to +20 points) includes no benefit and a large one, so 25 trajectories per arm do not show that the gate has no benefit"
-    source: "https://github.com/meabs/experiments/blob/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition/REPORT.md"
+    source: "https://github.com/meabs/experiments/blob/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition/REPORT.md"
     status: current
     featured: false
 ---
@@ -89,7 +89,7 @@ Each agent was given one ticket for one service. Each change was correct and pas
 
 ## Prediction
 
-Written into the [README](https://github.com/meabs/experiments/blob/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition/README.md) before the pilot:
+Written into the [README](https://github.com/meabs/experiments/blob/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition/README.md) before the pilot:
 
 - **H1.** In arm A at least half the unsafe releases have green CI.
 - **H2.** Telling agents to coordinate does not lift safe delivery above A's by much. (Contradicted.)
@@ -139,7 +139,8 @@ The release plan was present in 30 of 30 B and 30 of 30 C trajectories, and the 
 - The gate and the oracle share an author, simulator and hazard vocabulary, and both were built by the same AI agent (Claude Code). The result is about this gate, a rehearsal of the release plan on a staging copy with eight generic rules, not about deterministic gates in general.
 - I chose the scenarios to contain a hazard; how often real changes do is not measured.
 - B changes four things at once: read-only copies of the peer services, the other ticket's title, a paragraph on rolling deployment, rollback and persisted state, and the instruction to write a plan. I did not separate them.
-- The default deployment order is alphabetical, so arm A's complete failure depends partly on that convention; B and C can change the order.
+- The default deployment order is alphabetical, so arm A's complete failure depends partly on that convention; B and C can change the order, so part of their gain may be the order and not safer code.
+- **Arm A is a basic pipeline, not a mature one:** unit tests, a smoke test of the all-new estate (the destination, not the journey), one repair round. It has no contract tests, mixed-version tests, rollback rehearsal or business-invariant tests. I did not run that arm, so the experiment does not show that existing CI/CD practice is insufficient for agents. It shows that independently successful changes can produce unsafe transitions when estate-level assurance is missing or basic.
 - Delivery is measured per trajectory (both tickets' requirements working): C delivered 23 of 25 trajectories against 25 of 25 for A and B.
 - **A mistake of mine:** the first main run was invalid. Per-run copies of the Codex login rotated its refresh token and I threw the new one away, so 163 of 180 sessions failed. I kept that data labelled invalid, fixed the runner and reran all 90.
 
@@ -151,6 +152,7 @@ Leads, not rules. Here the missing ingredient was awareness of the other change 
 
 These are proposals, not results.
 
+- **A mature-CI/CD arm:** contract tests, mixed-version tests, rollback rehearsal and business-invariant tests, with B and C built on top, to see whether agent awareness and release planning add anything beyond established practice. Measured on first-time success, repair cycles, cost and time per safe release, unnecessary blocking and invariant violations throughout the transition; if mature CI/CD does as well for less, that is a result.
 - Separate the four things B bundles: peer source, awareness of the other ticket, the rolling-deployment paragraph and the instruction to plan.
 - Hazards the gate was not built around, such as a feature-flag removal or a cache-key change.
 - A stronger model, and agents that can run the gate while they work.
@@ -158,4 +160,4 @@ These are proposals, not results.
 
 ## Reproduce
 
-Everything is in [experiments/2026-11-release-transition](https://github.com/meabs/experiments/tree/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition), with the full write-up in [REPORT.md](https://github.com/meabs/experiments/blob/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition/REPORT.md).
+Everything is in [experiments/2026-11-release-transition](https://github.com/meabs/experiments/tree/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition), with the full write-up in [REPORT.md](https://github.com/meabs/experiments/blob/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition/REPORT.md).

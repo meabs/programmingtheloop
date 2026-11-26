@@ -37,6 +37,12 @@ There were five hazards, each a way that two correct changes can hurt each other
 
 One detail matters for how you read the first result. Unless a plan says otherwise, the pipeline deploys the changed services in alphabetical order. That's an arbitrary convention, and several of the hazards bite in that order, so the independent agents' results depend partly on it.
 
+## What A is, and what it isn't
+
+A is a basic pipeline, not a mature one. It runs each service's unit tests and a smoke test of the all-new estate, which tests the destination and not the journey there. It deploys one instance at a time in alphabetical order, with one repair round if CI fails. It has no consumer-driven contract tests, no mixed-version tests, no rollback rehearsal and no business-invariant tests. Those are what a mature pipeline would add, and I haven't run that version.
+
+So please don't read A's 0 of 25 as "what CI does to agents". It's what a basic pipeline does.
+
 ## The result that made me sit back
 
 I ran three set-ups, five times per scenario each.
@@ -59,7 +65,7 @@ In B, 20 of the 25 were safe. I'd guessed 40%.
 
 No new tool, no verifier. The agents knew the other change was coming, had been told what rolling deployment can do to old and new versions, and had somewhere to write down how their change had to be released.
 
-I'm cautious about this. B bundles four things: read-only copies of the other services, the title of the other ticket, a paragraph on what rolling deployment, rollback and persisted state can do, and the instruction to write a release plan. Seeing the neighbour's code, knowing the neighbour's change exists, being told what kind of hazard to look for, and being asked to plan the release are four different interventions, and I didn't separate any of them. So I can't tell you which part did the work. It's one model on a toy estate, and five goes per cell isn't many. But +80 points isn't a rounding error either.
+I'm cautious about this. B bundles four things: read-only copies of the other services, the title of the other ticket, a paragraph on what rolling deployment, rollback and persisted state can do, and the instruction to write a release plan. Seeing the neighbour's code, knowing the neighbour's change exists, being told what kind of hazard to look for, and being asked to plan the release are four different interventions, and I didn't separate any of them. So I can't tell you which part did the work. There's a fifth thing I can't separate either: B's plan is executed, so its constraints can change the deployment order, make two services switch together, or drain events first. Some of B's gain may be a better order and not safer code. It's one model on a toy estate, and five goes per cell isn't many. But +80 points isn't a rounding error either.
 
 ## What didn't
 
@@ -101,7 +107,20 @@ The whole proper run cost $2.34. I've spent more on a bad pint.
 
 ## This isn't a new problem
 
-The underlying difficulty is old. Amazon's Builders' Library has a [piece on ensuring rollback safety during deployments](https://aws.amazon.com/builders-library/ensuring-rollback-safety-during-deployments/), about software that has to work during the upgrade and after a rollback. Google's SRE Workbook has a chapter on [canarying releases](https://sre.google/workbook/canarying-releases/). Integration and contract tests, expand-and-contract migrations, progressive delivery and rollback compatibility are all established answers to parts of it.
+The underlying difficulty is old. Amazon's Builders' Library has a [piece on ensuring rollback safety during deployments](https://aws.amazon.com/builders-library/ensuring-rollback-safety-during-deployments/), about software that has to work during the upgrade and after a rollback. Google's SRE Workbook has a chapter on [canarying releases](https://sre.google/workbook/canarying-releases/). Integration and contract tests, expand-and-contract migrations, progressive delivery and rollback compatibility are all established answers to parts of it. AWS's Well-Architected guidance on [mitigating deployment risks](https://docs.aws.amazon.com/wellarchitected/latest/operational-excellence-pillar/mitigate-deployment-risks) and the SRE book's chapter on [testing for reliability](https://sre.google/sre-book/testing-reliability/) cover the same ground.
+
+Here's the practice I'd reach for in each of my five scenarios. They aim at these problems. I haven't tested whether they would have caught my cases.
+
+| Scenario | Established practice aimed at it |
+| --- | --- |
+| Event schema change | Schema compatibility checks and consumer-driven contract tests |
+| Database migration | Expand-and-contract migrations and backward-compatibility tests |
+| Retries and duplicates | Idempotency tests and fault injection |
+| Consent | End-to-end business-invariant tests |
+| Decision model | Mixed-version tests and contract verification |
+| Failed rollout and rollback | Progressive delivery, deployment rehearsals and rollback tests |
+
+None of these problems is unique to agents. Two human teams working independently could produce exactly the same failures, and an organisation with a mature pipeline would have some of these mechanisms already. So what this experiment shows is an established distributed-systems problem turning up with agents. Whether anything about it is new is a separate question, and I come to it below.
 
 What I was after is narrower: what happens when the people making the changes are agents who each see only their own ticket. There's related work on agents collaborating asynchronously, such as [AsynCodeBench](https://arxiv.org/abs/2609.32662), which, going by its abstract (I haven't read the paper), measures whether dependencies between agents' tasks get satisfied. I didn't find work that checks live business correctness across a deployment, but that was a quick search, not a literature review.
 
@@ -109,11 +128,15 @@ What I was after is narrower: what happens when the people making the changes ar
 
 This bit is opinion, not measurement.
 
+**What this does and doesn't show.** It doesn't establish that existing CI/CD practice is insufficient for agentic development. It shows that changes that each succeed independently can produce an unsafe release transition when estate-level assurance is missing or basic. Whether agent coordination adds anything on top of mature release engineering is an open question, and this experiment can't answer it.
+
 We've spent twenty years getting very good at checking changes, and plenty of that practice does look past a single change. Contract tests, expand-and-contract and canaries exist because the problem is real. What none of it does by itself is know that somebody else is changing something else this week. In a human team, somebody half does: a release manager, a senior who remembers the last time, a Slack channel where somebody says "hang on, are we shipping the notifier as well?" Agents working in parallel haven't got a Slack channel, unless you give them one. In A, nothing in the pipeline told them the neighbour existed.
 
-So if you're thinking of running several agents on one estate, the cheap thing to try first is not clever. Make sure each one knows what else is changing, tell them what the release can do to old and new versions, and make them write down how their change has to be released, in a place something else reads. In my small test that did most of the work.
+So if you're thinking of running several agents on one estate and you don't already have mature release engineering, the cheap thing to try first is not clever. Make sure each one knows what else is changing, tell them what the release can do to old and new versions, and make them write down how their change has to be released, in a place something else reads. In my small test that did most of the work.
 
-The idea I'd like to take further from this is that the unit of assurance can't always be the pull request. Sometimes it has to be the transition of the whole estate. I'd call the pattern **release-aware agentic engineering**: a lightweight mechanism where agents working at the same time can discover each other's pending changes, declare what has to go before or after what, and name the business rules, like consent, that have to hold all the way through. It isn't an orchestration framework, and it isn't a team of agents pretending to be an engineering department. I haven't built it, and nothing here proves it works. It's a name for where B points.
+Is anything different with agents? Plausibly the scale and the economics, not the nature of the problem. These are plausible differences, not things this experiment established. There could be many more concurrent changes, limited by compute and not headcount. There's less informal coordination, so dependencies have to be exposed by a mechanism. And release intent has to be supplied or inferred, not understood from experience. Picture 20 agents changing 12 repositories overnight. The CI/CD you already have still matters, but the number of interacting changes goes up. The question then is whether it's cheaper to stop incompatible changes at implementation or to find them in environment testing. That's the question I find interesting.
+
+The idea I'd like to take further from this is that the unit of assurance can't always be the pull request. Sometimes it has to be the transition of the whole estate. I'd call the pattern **release-aware agentic engineering**: a lightweight mechanism where agents working at the same time can discover each other's pending changes, declare what has to go before or after what, and name the business rules, like consent, that have to hold all the way through. It isn't an orchestration framework, and it isn't a team of agents pretending to be an engineering department. I haven't built it, and nothing here proves it works. It's a name for where B points, and whether it adds anything beyond a mature pipeline is the open question above.
 
 After that, a check on the transition itself might help, but mine didn't prove it, and it's easy to build one that satisfies its own rules while the hazard is still there.
 
@@ -121,11 +144,13 @@ After that, a check on the transition itself might help, but mine didn't prove i
 
 - It's four small services, one fault pattern, one model, five runs per cell.
 - I picked the scenarios because they hold a hazard. I haven't measured how often real changes do.
-- Arm A deploys in alphabetical order by default, so its complete failure depends partly on that.
-- B changes four things at once: peer source code, the other ticket's title, a hint about rolling deployment and rollback, and the instruction to plan. I don't know which did the work.
+- Arm A is a basic pipeline, not a mature one, and deploys in alphabetical order by default, so its complete failure depends partly on both. I didn't run an arm with mature CI/CD.
+- B changes four things at once: peer source code, the other ticket's title, a hint about rolling deployment and rollback, and the instruction to plan. Its plan can also change the deployment order. I don't know which did the work.
 - The gate and oracle were built by the same AI agent, Claude Code, with the same simulator and list of hazards. That may flatter the gate on those hazards, which I haven't tested. Don't read C as what a gate does against surprises, and don't read it as what gates do in general. A wide interval that includes no benefit is not evidence that the gate has none.
 - Delivery is counted per trajectory, both tickets together.
 
-What I'd try next: building the release-aware mechanism properly and testing it against B, separating the four things B bundles, hazards the gate wasn't built around, a stronger model, agents that can run the gate while they work, and a closer look at why the consent repairs ended in an admit.
+The experiment I'd run next keeps the estate and the scenarios and changes the arms. A is a mature pipeline: contract tests, mixed-version tests, rollback rehearsal, business-invariant tests, and failures returned to the agent to repair. B is the same plus awareness of concurrent changes and peer services. C is B plus an executable release plan written by the agents. I'd measure more than safe delivery: first-time success, repair cycles, cost and time per safe release, unnecessary blocking, and invariant violations throughout the transition. If all three arms are completely safe, the difference becomes efficiency, and if the mature pipeline does as well for less money, I'll publish that.
 
-Everything is in the [experiment page](/experiments/release-transition/) and the [repo](https://github.com/meabs/experiments/tree/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition), including the invalid run.
+Other things I'd try: building the release-aware mechanism properly and testing it against B, separating the four things B bundles, hazards the gate wasn't built around, a stronger model, agents that can run the gate while they work, and a closer look at why the consent repairs ended in an admit.
+
+Everything is in the [experiment page](/experiments/release-transition/) and the [repo](https://github.com/meabs/experiments/tree/5719f5a3555773b2404d5dc82627adc2f90e9564/2026-11-release-transition), including the invalid run.
