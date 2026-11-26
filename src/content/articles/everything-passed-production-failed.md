@@ -9,7 +9,7 @@ topics:
   - verification
 ---
 
-*A note before I start. Claude Code drafted this for me from the experiment's results, in my voice, and I've gone through it. The numbers all come from the [experiment page](/experiments/release-transition/) and its report.*
+*A note before I start. I've got mild dyslexia, so I use AI tooling to help with my writing. Claude Code drafted this from the experiment's results, in my voice, and I've gone through it. The thoughts are mine, and the numbers all come from the [experiment page](/experiments/release-transition/) and its report.*
 
 You know the sort of release where nobody did anything wrong.
 
