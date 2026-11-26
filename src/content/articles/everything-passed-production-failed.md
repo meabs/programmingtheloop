@@ -111,7 +111,7 @@ We've spent twenty years getting very good at checking changes, and plenty of th
 
 So if you're thinking of running several agents on one estate, the cheap thing to try first is not clever. Make sure each one knows what else is changing, tell them what the release can do to old and new versions, and make them write down how their change has to be released, in a place something else reads. In my small test that did most of the work.
 
-The idea I'd like to take further from this is that the unit of assurance can't always be the pull request. Sometimes it has to be the transition of the whole estate. In practice that might be a lightweight mechanism where agents working at the same time can discover each other's pending changes, declare what has to go before or after what, and name the business rules, like consent, that have to hold all the way through. I haven't built that, and nothing here proves it works. It's where B points.
+The idea I'd like to take further from this is that the unit of assurance can't always be the pull request. Sometimes it has to be the transition of the whole estate. I'd call the pattern **release-aware agentic engineering**: a lightweight mechanism where agents working at the same time can discover each other's pending changes, declare what has to go before or after what, and name the business rules, like consent, that have to hold all the way through. It isn't an orchestration framework, and it isn't a team of agents pretending to be an engineering department. I haven't built it, and nothing here proves it works. It's a name for where B points.
 
 After that, a check on the transition itself might help, but mine didn't prove it, and it's easy to build one that satisfies its own rules while the hazard is still there.
 
@@ -124,6 +124,6 @@ After that, a check on the transition itself might help, but mine didn't prove i
 - The gate and oracle were built by the same AI agent, with the same simulator and list of hazards. So don't read C as what a gate does against surprises, and don't read it as what gates do in general.
 - Delivery is counted per trajectory, both tickets together.
 
-What I'd try next: separating awareness, the hint and the plan, hazards the gate wasn't built around, a stronger model, agents that can run the gate while they work, and a closer look at why the consent repairs ended in an admit.
+What I'd try next: building the release-aware mechanism properly and testing it against B, separating awareness, the hint and the plan, hazards the gate wasn't built around, a stronger model, agents that can run the gate while they work, and a closer look at why the consent repairs ended in an admit.
 
 Everything is in the [experiment page](/experiments/release-transition/) and the [repo](https://github.com/meabs/experiments/tree/36e1ea17f6d857384c00420716027b72e7e729ca/2026-11-release-transition), including the invalid run.
