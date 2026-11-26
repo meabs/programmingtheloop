@@ -1,8 +1,8 @@
 ---
 title: "I Tested My OKF Skill Against Google's. It Wins One Thing and Loses Another"
-description: "I compared my own interview skill for the Open Knowledge Format with Google's two skills on a small test. Mine kept the unanswered questions in a log. Google's had nowhere to put them. Mine dropped a fact that theirs kept."
+description: "I compared my own interview skill for the Open Knowledge Format with Google's two skills, twice. Mine kept the unanswered questions in a log and Google's had nowhere to put them, but Google's covered more of what the engineer said. I fixed mine and told Google."
 date: 2026-11-26T15:00:00+00:00
-summary: "A small test of my OKF interview skill against Google's okf-generate and okf-consume. Same validator results, one clear difference in where the unknowns go, and a rule of mine that dropped something useful."
+summary: "Two small tests of my OKF interview skill against Google's. Same validator results, a clear difference in where unknowns go, a coverage gap in mine, and what I changed."
 draft: false
 topics:
   - context
@@ -75,14 +75,37 @@ Every run got all five answerable questions right and said the other four weren'
 
 I'd made it too easy. The one real difference was that with `okf-consume` the agent reported trust tier and status far more often. It didn't make the answers more correct.
 
-## What I'd do about it
+## Round two: a more realistic engineer
 
-I've made two small changes to my checker. There's one decision I haven't made yet, which is whether my skill should record things it can see in the code even when nobody can say why. I'm leaning towards yes, with the "why" marked as unknown.
+My first engineer was seven canned answers, which is a bit convenient. So I redid it with a separate model playing a senior engineer who owns the code and has read it. Plain, first person, hedging, saying "no idea" when it doesn't know. I gave it two honest mistakes to make: "I'd assume the vendor deduplicates, never checked" and "we never retry automatically", when the worker in my new second file retries up to three times.
 
-Google's skill doesn't have anywhere to put an unanswered question, and mine does. If they'd want it, an "engineer interview" use case in their repo looks like a fair fit. I haven't written one or sent anything.
+My skill ran three rounds of questions with that engineer and then wrote the bundle. Google's can't interview, so the engineer wrote it one handover note instead. Five runs each, and four versions of my skill as I fixed things between rounds.
+
+Every bundle passed the validator. None invented a detail, none stated the deduplication guess as fact, and none claimed there were no retries. I read every line my script flagged and they were all false alarms. In every interview my skill found the retry behaviour from the code before the engineer mentioned it, which is the thing it's built for. Google's engineer note mentioned it too, so this test couldn't separate them on that.
+
+What it could separate was coverage. I scored eight things the engineer said or the code does. Google's route covered 7.6 of them on average. Mine covered between 5.2 and 6.4, depending on version. With three rounds, my interviewer went deep on retry safety and how the store works, and never asked about proxy settings or why the timeouts are what they are. A handover note tells you what the engineer thinks matters. An interview tells you what you thought to ask.
+
+## What I changed
+
+- The checker now catches the gap sentences it was missing, and an unused footnote is a warning, not an error.
+- Where the code visibly does something nobody can explain, the skill now writes down the value and says the reason isn't known.
+- The skill keeps a list of what the code does (flags, timeouts, limits, retry counts) and has to account for each item, so it can't quietly skip one.
+- A few small things borrowed from Google's skills by linking to them: the `team:` actor, their migration rules, and a pointer to `okf-consume` for reading bundles.
+
+Sentences about gaps left in concept bodies fell from about one per bundle to about none. Coverage went up a bit with the list, but it's still short of Google's, and a breadth-first rule I tried fixed one fact and lost others, so I can't call it a win. Five runs each doesn't give me a ranking, and I tuned each version after seeing the last one, so these numbers flatter my changes.
+
+## What I sent Google
+
+Their skill has nowhere to put an unanswered question, in either round. I didn't send a pull request, because that needs me to sign their CLA first. I raised [an issue](https://github.com/open-knowledge-format/open-knowledge-format/issues/20) asking whether an "engineer interview" use case would fit, with my review log and completeness check as the worked example. I've not had a reply yet.
 
 ## What this doesn't show
 
-It's one tiny made-up scenario, one model, five runs each. I wrote the fixture, the answer key and the scoring, and the scoring is partly pattern matching that I then checked by hand. My skill was built for a live interview and here ran on a recorded one. Google's wasn't built for interviews at all, so this isn't a fair test of what theirs is for.
+- It's one tiny made-up scenario, one model, five runs each.
+- I wrote the fixture, the answer key and the scoring. The scoring is partly pattern matching, with the flagged lines read by hand, and I changed two patterns after seeing data.
+- The engineer is a model, so it's more consistent and more helpful than a person.
+- My three-round limit was my test setup, not the skill. Let it keep going and it might well cover more.
+- Google's skill wasn't built for interviews, so this isn't a fair test of what theirs is for.
 
-All it really says is how the two behave on this one case. The most useful result is a short list of things to fix in mine.
+All it really says is how the two behave on this one case. The useful part for me is a list of things I've now fixed, and one I haven't.
+
+Everything is in the [test folder](https://github.com/meabs/experiments/tree/1a133405fbd80ecb644db74aaa639a586cd4cf6c/2026-11-okf-skill-compare), with [round one](https://github.com/meabs/experiments/blob/1a133405fbd80ecb644db74aaa639a586cd4cf6c/2026-11-okf-skill-compare/FINDINGS.md) and [round two](https://github.com/meabs/experiments/blob/1a133405fbd80ecb644db74aaa639a586cd4cf6c/2026-11-okf-skill-compare/FINDINGS2.md) written up.
