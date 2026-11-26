@@ -70,7 +70,7 @@ findings:
     detail:
       - "C was safe in 22 of 25; consent (S4) was 2 of 5 for C and 1 of 5 for B"
       - "in S4 the gate rejected the first candidate in 4 of 5 trajectories, admitted all five after one repair round, and three of those still sent offers without consent"
-      - "C delivered 92% against B's 100%: the gate cost some deliveries (difference −8 points, 95% interval −16 to 0)"
+      - "C delivered 92% of trajectories (23 of 25, both tickets' requirements working) against B's 100%: the gate cost some deliveries (difference −8 points, 95% interval −16 to 0)"
       - "the gate and the oracle share an author, simulator and hazard vocabulary, so C is an upper bound for hazards the gate was not built around"
     limits:
       - "the gate was built by the same AI agent that built the oracle; 25 trajectories per arm cannot rule out a small benefit"
@@ -105,8 +105,8 @@ Codex CLI 0.157 with hosted `gpt-5.6-luna`, medium effort. A trajectory is two a
 
 | Arm | What the agents get |
 | --- | --- |
-| A | ticket and service contracts; normal CI |
-| B | A, plus the other ticket's title, read-only copies of the peer services, and an instruction to write a release plan |
+| A | ticket and service contracts; normal CI; changed services deploy in alphabetical order, one instance at a time; one repair round on a CI failure |
+| B | A, plus the other ticket's title, read-only copies of the peer services, a paragraph on rolling deployment, rollback and persisted state, and an instruction to keep versions compatible and write a release plan (the plan's constraints are merged and executed) |
 | C | B, plus a deterministic gate that rehearses the plan; one repair round on a reject |
 
 Five hazard scenarios (event schema, database migration, retries, consent, decision model) and a control. Safe delivery needs a release, working requirements, no oracle violation and a recovered rollback. The oracle reads the simulator's final state, not the agents' reports.
@@ -136,9 +136,11 @@ The release plan was present in 30 of 30 B and 30 of 30 C trajectories, and the 
 ## Limits
 
 - A toy estate, one fault schedule, one model, five repetitions per cell.
-- The gate and the oracle share an author, simulator and hazard vocabulary.
+- The gate and the oracle share an author, simulator and hazard vocabulary, and both were built by the same AI agent (Claude Code). The result is about this gate, a rehearsal of the release plan on a staging copy with eight generic rules, not about deterministic gates in general.
 - I chose the scenarios to contain a hazard; how often real changes do is not measured.
-- B bundles awareness with an instruction.
+- B changes several things at once: awareness of the other change (its ticket title and its code), a paragraph on rolling deployment, rollback and persisted state, and the instruction to write a plan. I did not separate them.
+- The default deployment order is alphabetical, so arm A's complete failure depends partly on that convention; B and C can change the order.
+- Delivery is measured per trajectory (both tickets' requirements working): C delivered 23 of 25 trajectories against 25 of 25 for A and B.
 - **A mistake of mine:** the first main run was invalid. Per-run copies of the Codex login rotated its refresh token and I threw the new one away, so 163 of 180 sessions failed. I kept that data labelled invalid, fixed the runner and reran all 90.
 
 ## What this means
