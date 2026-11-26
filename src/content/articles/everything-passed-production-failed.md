@@ -23,9 +23,9 @@ It helps to have names for this, so here's mine. It's my framing, not a standard
 
 - **Change correctness.** Does this one change do what its ticket says, and do its tests pass? We're good at this: tests, CI, review.
 - **Composition correctness.** Do changes made separately work together once they're all in? Integration tests and contract tests aim at this one.
-- **Transition correctness.** Does the estate stay safe while it gets from the old state to the new one? That means the order things go out in, old and new versions running side by side, events still in flight, a rollout that fails halfway, and what's left behind after a rollback.
+- **Transition correctness.** Does the estate stay safe while it gets from the old state to the new one? That means the order things go out in, old and new versions running side by side, events still in flight, a rollout that fails halfway, and what's left behind after a rollback. It also means the business obligations still hold all the way through, not just that the services can talk to each other.
 
-Most of the conversation about agents writing software stops at the first, with a nod to the second. This experiment is about the third.
+Most of the conversation about agents writing software stops at the first, with a nod to the second. This experiment is about the third, including the part of it that a compatibility check can't see: whether a promise to a customer survives the release.
 
 ## What I built
 
@@ -59,15 +59,17 @@ In B, 20 of the 25 were safe. I'd guessed 40%.
 
 No new tool, no verifier. The agents knew the other change was coming, had been told what rolling deployment can do to old and new versions, and had somewhere to write down how their change had to be released.
 
-I'm cautious about this. B bundles awareness of the other change, a hint about the kind of hazard to look for, and an instruction to write a plan, and I didn't separate any of them. So I can't tell you which part did the work. It's one model on a toy estate, and five goes per cell isn't many. But +80 points isn't a rounding error either.
+I'm cautious about this. B bundles four things: read-only copies of the other services, the title of the other ticket, a paragraph on what rolling deployment, rollback and persisted state can do, and the instruction to write a release plan. Seeing the neighbour's code, knowing the neighbour's change exists, being told what kind of hazard to look for, and being asked to plan the release are four different interventions, and I didn't separate any of them. So I can't tell you which part did the work. It's one model on a toy estate, and five goes per cell isn't many. But +80 points isn't a rounding error either.
 
 ## What didn't
 
 C, the one with the gate, was safe in 22 of 25. That's two better than B, and with 25 trajectories each I can't tell it from nothing (the interval ran from minus 4 to plus 20 points, and the corrected test said no measurable difference).
 
+That isn't the same as the gate doing nothing. An interval that wide includes no benefit and it includes a benefit of 20 points. All I can say is that this experiment didn't show one.
+
 It also cost some deliveries. This is counted per trajectory, meaning both tickets' requirements working: C delivered 23 of 25 trajectories, where A and B delivered all 25.
 
-Be careful what you take from this. It's a result about this particular gate: a rehearsal of the release plan on a staging copy, with eight generic rules. It isn't a result about deterministic gates in general. A gate built around different hazards, or one the agents could run while they work, might do better, and I haven't tried either.
+Be careful what you take from this. It's a result about this particular gate: a rehearsal of the release plan on a staging copy, with eight generic rules. It isn't a result about deterministic gates in general. A gate built around different hazards, or one the agents could run while they work, might do better, and I haven't tried either. The gate and the oracle came from the same author, simulator and list of hazards. That may flatter the gate on the hazards it was built around. It's a suspicion I haven't tested, not a proven limit on what a gate could do.
 
 ## The consent runs
 
@@ -85,7 +87,7 @@ Consent is different from the other four. The event schema, the migration, the r
 
 *Trajectories that were released safely, out of five per cell.*
 
-In four of the five consent runs the gate rejected the first attempt. After one round of repair, all five ended up admitted, and three of the five still sent offers to customers who hadn't agreed. So the gate was satisfied and the oracle wasn't.
+In four of the five consent runs the gate rejected the first attempt. After one round of repair, all five ended up admitted, and three of the five still sent offers to customers who hadn't agreed. So the gate was satisfied and the oracle wasn't. This is the part of transition correctness that compatibility checks can't see: every service was up and every contract honoured, and a customer's refusal was still ignored for a while during the release.
 
 I don't know why, and I want to be careful not to over-read it. The report shows the gate's rules were met while the hazard remained. It doesn't show that the agents were gaming the gate, and I wouldn't claim that. What it shows is that a gate is only as good as its rules, and that a repair loop which stops after one round can end in an admit with the problem still there. Why that happened in consent is the first thing I'd look at next.
 
@@ -120,10 +122,10 @@ After that, a check on the transition itself might help, but mine didn't prove i
 - It's four small services, one fault pattern, one model, five runs per cell.
 - I picked the scenarios because they hold a hazard. I haven't measured how often real changes do.
 - Arm A deploys in alphabetical order by default, so its complete failure depends partly on that.
-- B changes several things at once. I don't know whether the awareness, the hint about rolling deployment or the written plan did the work.
-- The gate and oracle were built by the same AI agent, with the same simulator and list of hazards. So don't read C as what a gate does against surprises, and don't read it as what gates do in general.
+- B changes four things at once: peer source code, the other ticket's title, a hint about rolling deployment and rollback, and the instruction to plan. I don't know which did the work.
+- The gate and oracle were built by the same AI agent, Claude Code, with the same simulator and list of hazards. That may flatter the gate on those hazards, which I haven't tested. Don't read C as what a gate does against surprises, and don't read it as what gates do in general. A wide interval that includes no benefit is not evidence that the gate has none.
 - Delivery is counted per trajectory, both tickets together.
 
-What I'd try next: building the release-aware mechanism properly and testing it against B, separating awareness, the hint and the plan, hazards the gate wasn't built around, a stronger model, agents that can run the gate while they work, and a closer look at why the consent repairs ended in an admit.
+What I'd try next: building the release-aware mechanism properly and testing it against B, separating the four things B bundles, hazards the gate wasn't built around, a stronger model, agents that can run the gate while they work, and a closer look at why the consent repairs ended in an admit.
 
-Everything is in the [experiment page](/experiments/release-transition/) and the [repo](https://github.com/meabs/experiments/tree/36e1ea17f6d857384c00420716027b72e7e729ca/2026-11-release-transition), including the invalid run.
+Everything is in the [experiment page](/experiments/release-transition/) and the [repo](https://github.com/meabs/experiments/tree/6cbd6220499ae898ea936c610b80cfd1b9fdec72/2026-11-release-transition), including the invalid run.
