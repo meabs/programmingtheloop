@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { youtubeId, isShort, youtubeThumbnail, videoJsonLd } from '../src/lib/video.ts';
+import { youtubeId, isShort, youtubeThumbnail, youtubeThumbnailLarge, videoJsonLd } from '../src/lib/video.ts';
 
 test('reads the id from every plain YouTube URL form', () => {
   assert.equal(youtubeId('https://www.youtube.com/shorts/c4UijzLkxFM'), 'c4UijzLkxFM');
@@ -47,4 +47,9 @@ test('only /shorts/ URLs are treated as vertical', () => {
   assert.equal(isShort('https://www.youtube.com/watch?v=Tatb6yie2bk'), false);
   assert.equal(isShort('https://youtu.be/K5_Zc7t8yxM'), false);
   assert.equal(isShort('nonsense'), false);
+});
+
+test('the large thumbnail is the 1280x720 poster and the standard one is the guaranteed fallback', () => {
+  assert.equal(youtubeThumbnailLarge('c4UijzLkxFM'), 'https://i.ytimg.com/vi/c4UijzLkxFM/maxresdefault.jpg');
+  assert.equal(youtubeThumbnail('c4UijzLkxFM'), 'https://i.ytimg.com/vi/c4UijzLkxFM/hqdefault.jpg');
 });

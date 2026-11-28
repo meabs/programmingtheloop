@@ -28,8 +28,14 @@ export function isShort(url: string): boolean {
   }
 }
 
+/** Standard thumbnail: 480x360, about 13 KB, exists for every video. Vertical videos sit in the middle with blurred sides. */
 export function youtubeThumbnail(id: string): string {
   return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+}
+
+/** Large poster frame: 1280x720, about 100 KB. May be missing for old low-resolution uploads; fall back to the standard one. */
+export function youtubeThumbnailLarge(id: string): string {
+  return `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
 }
 
 /**
