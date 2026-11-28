@@ -12,6 +12,7 @@ import {
 } from '../../lib/collections';
 import { collectionJsonLd } from '../../lib/seo';
 import { displayTitle } from '../../lib/titles';
+import VideoEmbed from '../../components/VideoEmbed.astro';
 
 // Every page that records an explainer video, newest video first. Nothing here is typed by hand:
 // add `video:` to a page's frontmatter and it appears.
@@ -70,8 +71,9 @@ const subscribe = `${LINKS.youtube}?sub_confirmation=1`;
                 <span class="video-kind">{r.kind}</span>
                 <a href={r.href}>{r.title}</a>
                 <p>{r.summary}</p>
+                <VideoEmbed compact url={r.video!.url} title={r.title} />
               </div>
-              <a class="watch" href={r.video!.url} rel="noopener noreferrer">{r.video!.label ?? 'Watch the video'} ↗</a>
+              <a class="watch" href={r.video!.url} rel="noopener noreferrer">{r.video!.label ? `${r.video!.label} on YouTube` : 'Watch on YouTube'} ↗</a>
             </li>
           ))}
         </ol>

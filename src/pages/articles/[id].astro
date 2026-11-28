@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostFooter from '../../components/home/PostFooter.astro';
 import { getPublishedArticles, formatItemDate } from '../../lib/collections';
 import { videoJsonLd } from '../../lib/video';
+import VideoEmbed from '../../components/VideoEmbed.astro';
 import { absoluteUrl, articleJsonLd, breadcrumbJsonLd, resolveOgImageWithAlt } from '../../lib/seo';
 import { render } from 'astro:content';
 
@@ -47,12 +48,13 @@ const jsonLd = articleJsonLd({
       <p class="section-label">Article · {formatItemDate(post.data.date)}</p>
       <h1>{post.data.title}</h1>
       {post.data.video && (
-        <p class="actions"><a class="button primary" href={post.data.video.url} rel="noopener noreferrer">{post.data.video.label ?? 'Watch the video'} ↗</a></p>
+        <p class="actions"><a class="button primary" href="#video">{post.data.video.label ?? 'Watch the video'} →</a></p>
       )}
     </div>
   </header>
   <div class="page-body">
     <div class="wrap view-prose">
+      {post.data.video && <VideoEmbed id="video" url={post.data.video.url} title={post.data.title} />}
       <Content />
       <PostFooter kind="article" href={canonicalPath} topics={post.data.topics} />
       <p class="view-back">

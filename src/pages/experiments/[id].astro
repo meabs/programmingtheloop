@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import FindingsTable from '../../components/experiments/FindingsTable.astro';
 import { formatItemDate, getPublishedExperiments, experimentHref } from '../../lib/collections';
 import { videoJsonLd } from '../../lib/video';
+import VideoEmbed from '../../components/VideoEmbed.astro';
 import { absoluteUrl, articleJsonLd, breadcrumbJsonLd, resolveExperimentOgImage } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { LINKS } from '../../site';
@@ -89,7 +90,7 @@ const jsonLd = articleJsonLd({
       )}
       {(item.data.github.length > 0 || item.data.guideLinks.length > 0 || d.video) && (
         <div class="actions">
-          {d.video && <a class="button primary" href={d.video.url} rel="noopener noreferrer">{d.video.label ?? 'Watch this experiment explained'} ↗</a>}
+          {d.video && <a class="button primary" href="#video">{d.video.label ?? 'Watch this experiment explained'} →</a>}
           {item.data.guideLinks.map((link) => (
             <a class="button" href={link.href}>{link.label}</a>
           ))}
@@ -119,6 +120,7 @@ const jsonLd = articleJsonLd({
           </dl>
         </section>
       )}
+      {d.video && <VideoEmbed id="video" url={d.video.url} title={d.title} />}
       <FindingsTable findings={findings} />
       {sections.length > 2 && (
         <nav class="exp-jump" aria-label="Sections of this write-up">

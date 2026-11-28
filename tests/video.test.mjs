@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { youtubeId, youtubeThumbnail, videoJsonLd } from '../src/lib/video.ts';
+import { youtubeId, isShort, youtubeThumbnail, videoJsonLd } from '../src/lib/video.ts';
 
 test('reads the id from every plain YouTube URL form', () => {
   assert.equal(youtubeId('https://www.youtube.com/shorts/c4UijzLkxFM'), 'c4UijzLkxFM');
@@ -40,4 +40,11 @@ test('every video in the content is a plain, valid YouTube video URL', () => {
       assert.ok(!/[?&](si|feature|utm_[a-z]+)=/.test(m[1]), `${section}/${name} has a tracking parameter`);
     }
   }
+});
+
+test('only /shorts/ URLs are treated as vertical', () => {
+  assert.equal(isShort('https://www.youtube.com/shorts/c4UijzLkxFM'), true);
+  assert.equal(isShort('https://www.youtube.com/watch?v=Tatb6yie2bk'), false);
+  assert.equal(isShort('https://youtu.be/K5_Zc7t8yxM'), false);
+  assert.equal(isShort('nonsense'), false);
 });

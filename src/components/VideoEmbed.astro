@@ -1,0 +1,87 @@
+---
+/**
+ * Click-to-play YouTube embed. Nothing is requested from YouTube until the visitor presses play, so the page stays
+ * fast and no data goes to Google unprompted. On play it loads the privacy-enhanced player (youtube-nocookie.com).
+ * Without JavaScript it is an ordinary link to the video.
+ */
+import { youtubeId, isShort } from '../lib/video';
+
+interface Props {
+  url: string;
+  title: string;
+  label?: string;
+  compact?: boolean;
+  id?: string;
+}
+const { url, title, label, compact = false, id: anchor } = Astro.props;
+const videoId = youtubeId(url);
+const short = isShort(url);
+const text = label ?? (short ? 'Play the short here' : 'Play the video here');
+---
+{videoId && (
+  <figure
+    class:list={['video-embed', short ? 'is-short' : 'is-wide', compact && 'is-compact']}
+    id={anchor}
+    data-video-id={videoId}
+    data-video-title={title}
+    data-video-url={url}
+  >
+    <a class="video-embed-play" href={url} rel="noopener noreferrer">
+      <span class="video-embed-icon" aria-hidden="true">▶</span>
+      <span class="video-embed-text">
+        <strong>{text}</strong>
+        <small>Loads from YouTube when you press play</small>
+      </span>
+    </a>
+  </figure>
+)}
+
+<script>
+  document.addEventListener('click', (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const link = (event.target as Element | null)?.closest('.video-embed-play');
+    const box = link?.closest<HTMLElement>('.video-embed');
+    const id = box?.dataset.videoId;
+    if (!link || !box || !id) return;
+    event.preventDefault();
+    const frame = document.createElement('iframe');
+    frame.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+    frame.title = box.dataset.videoTitle ?? 'YouTube video';
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    const out = document.createElement('a');
+    out.className = 'video-embed-out';
+    out.href = box.dataset.videoUrl ?? `https://www.youtube.com/watch?v=${id}`;
+    out.rel = 'noopener noreferrer';
+    out.textContent = 'Open on YouTube ↗';
+    box.classList.add('is-playing');
+    link.replaceWith(frame, out);
+    frame.focus();
+  });
+</script>
+
+<style is:global>
+  .video-embed { margin: 1.25rem 0; width: 100%; max-width: 40rem; }
+  .video-embed.is-short { max-width: 20rem; }
+  .video-embed.is-compact { margin: .75rem 0 0; }
+  .video-embed-play {
+    display: flex; align-items: center; gap: .85rem; width: 100%;
+    padding: .8rem 1rem; border: 1px solid var(--line-strong); border-radius: 8px;
+    background: var(--surface); color: var(--ink); text-decoration: none;
+  }
+  .video-embed-play:hover { border-color: var(--accent); }
+  .video-embed-icon {
+    flex: none; display: grid; place-items: center; width: 2.4rem; height: 2.4rem;
+    border-radius: 50%; background: var(--accent); color: var(--surface); font-size: .85rem; padding-left: .1rem;
+  }
+  .video-embed-text { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+  .video-embed-text strong { font-weight: 600; }
+  .video-embed-text small { color: var(--ink-muted); font-size: .8rem; }
+  .video-embed.is-compact .video-embed-play { padding: .55rem .8rem; }
+  .video-embed.is-compact .video-embed-icon { width: 2rem; height: 2rem; }
+  .video-embed iframe { display: block; width: 100%; border: 0; border-radius: 8px; background: var(--surface-2); }
+  .video-embed.is-short iframe { aspect-ratio: 9 / 16; }
+  .video-embed.is-wide iframe { aspect-ratio: 16 / 9; }
+  .video-embed-out { display: inline-block; margin-top: .5rem; font-size: .85rem; }
+</style>

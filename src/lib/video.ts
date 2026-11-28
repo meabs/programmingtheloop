@@ -19,6 +19,15 @@ export function youtubeId(url: string): string | null {
   }
 }
 
+/** True for youtube.com/shorts/ID URLs, which are vertical (9:16); everything else is treated as 16:9. */
+export function isShort(url: string): boolean {
+  try {
+    return new URL(url).pathname.startsWith('/shorts/');
+  } catch {
+    return false;
+  }
+}
+
 export function youtubeThumbnail(id: string): string {
   return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 }
