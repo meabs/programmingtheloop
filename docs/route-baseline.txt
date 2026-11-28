@@ -84,5 +84,6 @@
 /resources/ebook/
 /start/
 /updates/
+/videos/
 /views/
 /writing/

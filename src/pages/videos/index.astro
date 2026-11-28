@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LINKS, SITE_OG_IMAGE } from '../../site';
+import {
+  getPublishedArticles,
+  getPublishedArchitecture,
+  getPublishedExperiments,
+  articleHref,
+  architectureHref,
+  experimentHref,
+  formatItemDate,
+} from '../../lib/collections';
+import { collectionJsonLd } from '../../lib/seo';
+import { displayTitle } from '../../lib/titles';
+
+// Every page that records an explainer video, newest video first. Nothing here is typed by hand:
+// add `video:` to a page's frontmatter and it appears.
+const [experiments, articles, architecture] = await Promise.all([
+  getPublishedExperiments(),
+  getPublishedArticles(),
+  getPublishedArchitecture(),
+]);
+const rows = [
+  ...experiments.map((e) => ({ kind: 'Experiment', title: displayTitle(e.data.title), summary: e.data.summary, date: e.data.date, href: experimentHref(e), video: e.data.video })),
+  ...articles.map((a) => ({ kind: 'Article', title: a.data.title, summary: a.data.summary ?? a.data.description, date: a.data.date, href: articleHref(a), video: a.data.video })),
+  ...architecture.map((a) => ({ kind: 'Architecture', title: a.data.title, summary: a.data.summary ?? a.data.description, date: a.data.date, href: architectureHref(a), video: a.data.video })),
+]
+  .filter((r) => r.video)
+  .map((r) => ({ ...r, shown: r.video!.uploadedOn ?? r.date }))
+  .sort((a, b) => b.shown.getTime() - a.shown.getTime());
+const subscribe = `${LINKS.youtube}?sub_confirmation=1`;
+---
+<BaseLayout
+  title="Videos"
+  description="Short videos from the Frugal AI Engineer channel that explain the experiments on this site. Each links to the experiment, its data and its limits."
+  canonicalPath="/videos/"
+  ogImage={SITE_OG_IMAGE}
+  jsonLd={collectionJsonLd({
+    name: 'Videos',
+    description: 'Short videos from the Frugal AI Engineer channel that explain the experiments on this site.',
+    path: '/videos/',
+    items: rows.map((r) => ({ name: r.title, path: r.href })),
+  })}
+  noindex={rows.length === 0}
+>
+  <header class="page-head">
+    <div class="wrap">
+      <p class="section-label">Frugal AI Engineer</p>
+      <h1>Videos</h1>
+      <p>
+        The channel explains the work in short videos. The site holds the evidence: each video here links to the
+        experiment it is about, with the method, the data and the limits.
+      </p>
+      <p class="actions">
+        <a class="button primary" href={LINKS.youtube} rel="noopener noreferrer">Open the channel ↗</a>
+        <a class="button" href={subscribe} rel="noopener noreferrer">Subscribe ↗</a>
+      </p>
+    </div>
+  </header>
+  <div class="page-body video-listing">
+    <div class="wrap">
+      {rows.length === 0 ? (
+        <p class="empty-note">No videos linked yet.</p>
+      ) : (
+        <ol class="video-list">
+          {rows.map((r) => (
+            <li>
+              <time datetime={r.shown.toISOString()}>{formatItemDate(r.shown)}</time>
+              <div>
+                <span class="video-kind">{r.kind}</span>
+                <a href={r.href}>{r.title}</a>
+                <p>{r.summary}</p>
+              </div>
+              <a class="watch" href={r.video!.url} rel="noopener noreferrer">{r.video!.label ?? 'Watch the video'} ↗</a>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+  .video-list { list-style: none; margin: 0; padding: 0; max-width: 60rem; border-top: 1px solid var(--line); }
+  .video-list li { display: grid; grid-template-columns: 8rem minmax(0, 1fr) auto; gap: .25rem 1.5rem; align-items: baseline; margin: 0; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  .video-list time { font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .video-kind { display: block; font: .72rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: .15rem; }
+  .video-list li > div > a { font-weight: 600; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+  .video-list li > div > a:hover { color: var(--accent); }
+  .video-list p { margin: .25rem 0 0; max-width: 62ch; color: var(--ink-muted); line-height: 1.5; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .watch { font: .78rem 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .03em; white-space: nowrap; }
+  @media (max-width: 640px) { .video-list li { grid-template-columns: 1fr; } }
+</style>

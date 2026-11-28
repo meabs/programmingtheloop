@@ -85,6 +85,10 @@ findings:
     source: "https://github.com/meabs/experiments/blob/3026cede8e884fbb61ba5285d345eb0cf36429e5/2026-10-grilling/REPORT.md"
     status: current
     featured: false
+video:
+  url: "https://www.youtube.com/shorts/xP5isH2MDRs"
+  label: "Watch the short"
+  uploadedOn: 2026-11-06
 ---
 
 ## Question

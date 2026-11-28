@@ -76,6 +76,10 @@ findings:
     source: "https://github.com/meabs/experiments/blob/45265e75c3219d3b49bac9e46dd11e523e1bf396/2026-10-egm-pilot/REPORT.md"
     status: current
     featured: false
+video:
+  url: "https://www.youtube.com/shorts/wbAoG0IgLbQ"
+  label: "Watch the short"
+  uploadedOn: 2026-11-11
 ---
 
 ## Question

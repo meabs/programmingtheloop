@@ -8,6 +8,10 @@ topics:
   - review
   - parallel
   - safety-cost
+video:
+  url: "https://www.youtube.com/shorts/1czHNo8t4uk"
+  label: "Watch the short"
+  uploadedOn: 2026-11-04
 ---
 
 *Quick note before I start. I've got mild dyslexia, so I use AI tooling to help with my writing, but the thoughts are all mine.*

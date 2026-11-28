@@ -91,6 +91,10 @@ findings:
     source: "https://github.com/meabs/experiments/blob/16a721d43bec18b5c3c3ded9f660dc8ef93c762e/2026-10-poisoned-retrieval/REPORT.md"
     status: current
     featured: false
+video:
+  url: "https://www.youtube.com/shorts/cVbLOcvSf0E"
+  label: "Watch the short"
+  uploadedOn: 2026-11-05
 ---
 
 ## Question

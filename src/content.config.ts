@@ -20,7 +20,7 @@ const articleSchema = z.object({
   /** Optional topics (ids from src/data/topics.ts); used for related reading. */
   topics: z.array(z.string().refine(isTopicId, { message: 'Unknown topic id' })).default([]),
   /** Optional video about this article (YouTube). Only set when one exists. */
-  video: z.object({ url: z.string().url(), label: z.string().optional() }).optional(),
+  video: z.object({ url: z.string().url(), label: z.string().optional(), uploadedOn: z.coerce.date().optional() }).optional(),
 });
 
 /**
@@ -95,7 +95,7 @@ const experimentSchema = z.object({
   report: z.string().url().optional(),
   prediction: z.string().url().optional(),
   /** Optional video that explains this experiment (YouTube). Only set when one exists. */
-  video: z.object({ url: z.string().url(), label: z.string().optional() }).optional(),
+  video: z.object({ url: z.string().url(), label: z.string().optional(), uploadedOn: z.coerce.date().optional() }).optional(),
   topics: z.array(z.string().refine(isTopicId, { message: 'Unknown topic id' })).optional(),
   publishedOn: z.coerce.date().optional(),
   findings: z.array(findingSchema).default([]),

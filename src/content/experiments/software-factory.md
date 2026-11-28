@@ -91,6 +91,10 @@ findings:
     source: "https://github.com/meabs/experiments/blob/2e883e89742258f95cc51fd20f7aa8646c54b09d/2026-11-asf-1/REPORT.md"
     status: current
     featured: false
+video:
+  url: "https://www.youtube.com/shorts/K5_Zc7t8yxM"
+  label: "Watch the short"
+  uploadedOn: 2026-11-18
 ---
 
 ## Question

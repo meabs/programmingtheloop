@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FindingsTable from '../../components/experiments/FindingsTable.astro';
 import { formatItemDate, getPublishedExperiments, experimentHref } from '../../lib/collections';
+import { videoJsonLd } from '../../lib/video';
 import { absoluteUrl, articleJsonLd, breadcrumbJsonLd, resolveExperimentOgImage } from '../../lib/seo';
 import { TOPICS, isTopicId } from '../../data/topics';
 import { LINKS } from '../../site';
@@ -50,6 +51,7 @@ const canonicalPath = `/experiments/${item.id}/`;
 const og = resolveExperimentOgImage(item.id, d.previewImage, d.previewAlt);
 const published = d.publishedOn ?? d.date;
 const publishedTime = published.toISOString();
+const videoLd = item.data.video ? videoJsonLd({ name: item.data.title, description: item.data.description, video: item.data.video }) : null;
 const breadcrumb = breadcrumbJsonLd([{ name: 'Experiments', path: '/experiments/' }, { name: item.data.title, path: canonicalPath }]);
 const jsonLd = articleJsonLd({
   headline: item.data.title,
@@ -68,7 +70,7 @@ const jsonLd = articleJsonLd({
   ogImageAlt={og.alt}
   ogImageHasStandardSize={og.hasStandardSize}
   publishedTime={publishedTime}
-  jsonLd={[jsonLd, breadcrumb]}
+  jsonLd={[jsonLd, breadcrumb, ...(videoLd ? [videoLd] : [])]}
   noindex={isDraft}
 
   searchable

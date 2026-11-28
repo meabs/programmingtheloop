@@ -76,6 +76,10 @@ findings:
     source: "https://github.com/meabs/experiments/blob/f0458ecf076c8360fa569fc1ecacdb79d5e9b425/2026-11-okf-stale/REPORT.md"
     status: current
     featured: false
+video:
+  url: "https://www.youtube.com/shorts/Tatb6yie2bk"
+  label: "Watch the short"
+  uploadedOn: 2026-11-19
 ---
 
 ## Question

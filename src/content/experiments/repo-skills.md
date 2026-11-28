@@ -68,6 +68,10 @@ findings:
     source: "https://github.com/meabs/experiments/blob/4eb88a9ef2dce98b987b0076b614ab206723f1ab/2026-10-repo-skills/REPORT.md"
     status: current
     featured: false
+video:
+  url: "https://www.youtube.com/shorts/c4UijzLkxFM"
+  label: "Watch the short"
+  uploadedOn: 2026-11-20
 ---
 
 ## Question
