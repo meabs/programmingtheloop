@@ -71,12 +71,4 @@ export const NEXT_EXPERIMENTS: NextExperiment[] = [
     fromLabel: 'SWT',
     topics: ['parallel', 'review'],
   },
-  {
-    title: 'Does agent coordination add value beyond mature CI/CD?',
-    question:
-      'TRX\u2019s baseline was a basic pipeline. With contract tests, mixed-version tests, rollback rehearsal and business-invariant tests in place, do awareness of concurrent changes and an executable release plan still improve first-time success, repair cycles and cost per safe release?',
-    from: 'release-transition',
-    fromLabel: 'TRX',
-    topics: ['parallel', 'verification'],
-  },
 ];
